@@ -1,16 +1,12 @@
 module RegisterGenerator::Base
   class ComponentFactory
-    def initialize
-      @item_factories = {}
-    end
-
     def create(*args)
       parent    = (@root_factory) ? nil : args.pop
       sources   = args
 
       component = create_component(parent, *sources)
 
-      unless @item_factories.empty?
+      if @item_factories
         create_items(component, *sources)
       end
 
@@ -26,6 +22,7 @@ module RegisterGenerator::Base
     end
 
     def register_item_factory(name, item_factory)
+      @item_factories ||= {}
       @item_factories[name] = item_factory
     end
 
