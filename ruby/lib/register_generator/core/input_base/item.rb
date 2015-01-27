@@ -6,21 +6,20 @@ module RegisterGenerator::InputBase
         return
       end
 
-      if block_given?
-        define_method(field_name, &body)
-      elsif args.key?(:default)
+      unless block_given?
         variable_name = "@#{field_name}"
         default_value = args[:default]
-        define_method(field_name) do
+
+        body  = Proc.new do
           unless instance_variable_defined?(variable_name)
             default_value
           else
             instance_variable_get(variable_name)
           end
         end
-      else
-        attr_reader(field_name)
       end
+
+      define_method(field_name, body)
       fields  << field_name
     end
 
