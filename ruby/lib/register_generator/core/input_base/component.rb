@@ -8,5 +8,10 @@ module RegisterGenerator::InputBase
         end
       end
     end
+
+    def validate
+      items.each(&:validate)
+      children.each(&:validate)
+    end
   end
 end

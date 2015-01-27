@@ -106,5 +106,12 @@ module RegisterGenerator::InputBase
         expect(i.fields).to match fields
       end
     end
+
+    describe "#validate" do
+      it "エラー無く実行できる" do
+        i = Class.new(Item).new(owner)
+        expect{i.validate}.to_not raise_error
+      end
+    end
   end
 end

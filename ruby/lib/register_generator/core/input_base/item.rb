@@ -24,5 +24,8 @@ module RegisterGenerator::InputBase
     end
 
     attr_class_reader :fields
+
+    def validate
+    end
   end
 end
