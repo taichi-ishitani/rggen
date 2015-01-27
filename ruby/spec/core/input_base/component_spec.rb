@@ -20,6 +20,26 @@ module RegisterGenerator::InputBase
       end
     end
 
+    describe "#fields" do
+      let(:owner) do
+        Component.new
+      end
+
+      let(:fields) do
+        [:foo, :bar, :baz, :qux]
+      end
+
+      it "直下のアイテムオブジェクトのフィールド一覧を返す" do
+        fields.each_slice(2) do |field_slice|
+          Class.new(Item) {
+            define_field  field_slice[0]
+            define_field  field_slice[1]
+          }.new(owner)
+        end
+        expect(owner.fields).to match fields
+      end
+    end
+
     describe "#validate" do
       let(:root) do
         Component.new

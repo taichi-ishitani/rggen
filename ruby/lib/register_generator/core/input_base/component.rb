@@ -9,6 +9,10 @@ module RegisterGenerator::InputBase
       end
     end
 
+    def fields
+      items.flat_map(&:fields)
+    end
+
     def validate
       items.each(&:validate)
       children.each(&:validate)
