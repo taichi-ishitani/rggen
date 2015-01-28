@@ -2,24 +2,6 @@ require_relative  '../../spec_helper'
 
 module RegisterGenerator::Base
   describe Component do
-    describe "#initialize" do
-      context "親コンポーネントがない場合、" do
-        it "エラー無く生成される" do
-          expect{Component.new}.not_to raise_error
-        end
-      end
-
-      context "親コンポーネントが与えられた場合、" do
-        it "自身を引数として、親コンポーネントの#append_childを呼び出す" do
-          parent  = Component.new
-          allow(parent).to receive(:append_child)
-
-          child = Component.new(parent)
-          expect(parent).to have_received(:append_child).with(child)
-        end
-      end
-    end
-
     describe "#parent" do
       it "親コンポーネントを返す" do
         parent  = Component.new

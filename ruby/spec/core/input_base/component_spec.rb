@@ -11,9 +11,11 @@ module RegisterGenerator::InputBase
         fields  = {a:Object.new, b:Object.new}
         item    = Class.new(Item) {
           fields.each do |name, value|
-              define_field(name, default:value)
+            define_field(name, default:value)
           end
         }.new(owner)
+
+        owner.append_item(item)
         fields.keys.each do |name|
           expect(owner.send(name)).to eq item.send(name)
         end
@@ -31,10 +33,11 @@ module RegisterGenerator::InputBase
 
       it "直下のアイテムオブジェクトのフィールド一覧を返す" do
         fields.each_slice(2) do |field_slice|
-          Class.new(Item) {
+          item  = Class.new(Item) {
             define_field  field_slice[0]
             define_field  field_slice[1]
           }.new(owner)
+          owner.append_item(item)
         end
         expect(owner.fields).to match fields
       end
@@ -60,7 +63,11 @@ module RegisterGenerator::InputBase
           2.times do
             item  = item_class.new(c)
             expect(item).to receive(:validate).with(no_args)
+            c.append_item(item)
           end
+        end
+        children.each do |c|
+          root.append_child(c)
         end
         root.validate
       end

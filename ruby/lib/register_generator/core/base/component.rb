@@ -4,7 +4,6 @@ module RegisterGenerator::Base
       @parent   = parent
       @items    = []
       @children = []
-      parent.append_child(self) if parent
     end
 
     attr_reader :parent
