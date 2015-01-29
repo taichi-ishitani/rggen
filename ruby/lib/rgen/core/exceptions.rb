@@ -4,4 +4,7 @@ module RGen
 
   class LoadError < RGenError
   end
+
+  class ConfigurationError < RGenError
+  end
 end
