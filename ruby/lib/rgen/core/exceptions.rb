@@ -1,7 +1,7 @@
 module RGen
-  class RegisterGeneratorError < StandardError
+  class RGenError < StandardError
   end
 
-  class LoadError < RegisterGeneratorError
+  class LoadError < RGenError
   end
 end
