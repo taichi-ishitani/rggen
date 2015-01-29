@@ -107,10 +107,53 @@ module RGen::InputBase
       end
     end
 
+    describe "#perse" do
+      let(:source) do
+        :source
+      end
+
+      context ".parseでブロックが登録されているとき" do
+        it "登録されたブロックを呼び出してパースを行う" do
+          i = Class.new(Item) {
+            define_field  :field
+            parse do |source|
+              @field  = source
+            end
+          }.new(owner)
+
+          i.parse(source)
+          expect(i.field).to eq source
+        end
+      end
+
+      context "パースブロックが登録されていないとき" do
+        it "エラーなく実行される" do
+          i = Class.new(Item).new(owner)
+          expect{i.parse(source)}.not_to raise_error
+        end
+      end
+    end
+
     describe "#validate" do
-      it "エラー無く実行できる" do
-        i = Class.new(Item).new(owner)
-        expect{i.validate}.to_not raise_error
+      context ".validateでブロックが登録されているとき" do
+        it "登録されたブロックを呼び出してバリデートを行う" do
+          v = nil
+          i = Class.new(Item) {
+            validate do
+              v = self
+            end
+          }.new(owner)
+
+          i.validate
+          expect(v).to eq i
+        end
+      end
+
+      context "バリデートブロックが登録されていないとき" do
+        it "エラー無く実行できる" do
+          i = Class.new(Item).new(owner)
+          expect{i.validate}.to_not raise_error
+        end
       end
     end
   end
