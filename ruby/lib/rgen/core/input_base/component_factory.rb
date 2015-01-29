@@ -38,7 +38,7 @@ class RGen::InputBase::ComponentFactory < RGen::Base::ComponentFactory
     if loader
       loader.new
     else
-      raise RGen::InputError, "unsupported file type: #{File.extname(file)}"
+      raise RGen::LoadError, "unsupported file type: #{File.extname(file)}"
     end
   end
   private :find_loader

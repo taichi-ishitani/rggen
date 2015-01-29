@@ -2,6 +2,6 @@ module RGen
   class RegisterGeneratorError < StandardError
   end
 
-  class InputError < RegisterGeneratorError
+  class LoadError < RegisterGeneratorError
   end
 end
