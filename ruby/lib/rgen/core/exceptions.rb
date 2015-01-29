@@ -1,4 +1,4 @@
-module RegisterGenerator
+module RGen
   class RegisterGeneratorError < StandardError
   end
 

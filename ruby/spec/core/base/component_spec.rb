@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::Base
+module RGen::Base
   describe Component do
     describe "#parent" do
       it "親コンポーネントを返す" do

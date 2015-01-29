@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::InputBase
+module RGen::InputBase
   describe Component do
     describe "#append_item" do
       let(:owner) do

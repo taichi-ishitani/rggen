@@ -1,6 +1,4 @@
-module RegisterGenerator
-  module Base
-  end
+module RGen::Base
 end
 
 require_relative  'base/component'

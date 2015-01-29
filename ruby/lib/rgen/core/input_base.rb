@@ -1,7 +1,4 @@
-module RegisterGenerator
-  module InputBase
-    include RegisterGenerator
-  end
+module RGen::InputBase
 end
 
 require_relative  'input_base/component'

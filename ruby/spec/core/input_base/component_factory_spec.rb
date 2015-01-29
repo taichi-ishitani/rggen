@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::InputBase
+module RGen::InputBase
   describe ComponentFactory do
     describe "#create" do
       context "ルートファクトリのとき" do
@@ -59,7 +59,7 @@ module RegisterGenerator::InputBase
             f.register_loader(bar_loader)
             f.root_factory
 
-            expect {f.create(file_name)}.to raise_error(InputError, "unsupported file type: .foo")
+            expect {f.create(file_name)}.to raise_error(RGen::InputError, "unsupported file type: .foo")
           end
         end
       end

@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::Base
+module RGen::Base
   describe ItemFactory do
     let(:test_factory) do
       ItemFactory.new

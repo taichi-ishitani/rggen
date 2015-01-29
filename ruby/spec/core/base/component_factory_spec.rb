@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::Base
+module RGen::Base
   describe ComponentFactory do
     let(:component_class) do
       Class.new(Component)

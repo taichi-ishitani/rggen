@@ -1,9 +1,9 @@
 require_relative  '../../spec_helper'
 
-module RegisterGenerator::InputBase
+module RGen::InputBase
   describe Item do
     let(:owner) do
-      Base::Component.new
+      Component.new
     end
 
     describe ".define_field" do

@@ -1,1 +1,1 @@
-require_relative '../lib/register_generator'
+require_relative '../lib/rgen'
