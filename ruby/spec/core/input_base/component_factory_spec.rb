@@ -53,7 +53,7 @@ module RGen::InputBase
         end
 
         context "入力ファイルに対応するローダが登録されていない場合" do
-          it "InputErrorを発生させる" do
+          it "LoadErrorを発生させる" do
             f = ComponentFactory.new
             f.register_component(Component)
             f.register_loader(bar_loader)
