@@ -21,3 +21,4 @@ class RGen::RegisterMap::GenericMap
 end
 
 require_relative  'generic_map/sheet'
+require_relative  'generic_map/cell'
