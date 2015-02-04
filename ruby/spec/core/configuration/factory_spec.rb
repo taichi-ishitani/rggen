@@ -7,39 +7,27 @@ module RGen::Configuration
       f.register_component(Configuration)
       f.register_item_factory(:foo, foo_factory)
       f.register_item_factory(:bar, bar_factory)
+      f.register_item_factory(:baz, baz_factory)
       f.register_loader(loader)
       f.root_factory
       f
     end
 
-    let(:foo_item) do
-      Class.new(Item) do
-        define_field  :foo, default: :foo
-        parse do |data|
-          @foo  = data
+    [:foo, :bar, :baz].each do |item_name|
+      let("#{item_name}_item") do
+        Class.new(Item) do
+          define_field  item_name, default: item_name
+          parse do |data|
+            instance_variable_set("@#{item_name}", data)
+          end
         end
       end
-    end
 
-    let(:bar_item) do
-      Class.new(Item) do
-        define_field  :bar, default: :bar
-        parse do |data|
-          @bar  = data
-        end
+      let("#{item_name}_factory") do
+        f = ItemFactory.new
+        f.register(item_name, send("#{item_name}_item"))
+        f
       end
-    end
-
-    let(:foo_factory) do
-      f = ItemFactory.new
-      f.register(:foo, foo_item)
-      f
-    end
-
-    let(:bar_factory) do
-      f = ItemFactory.new
-      f.register(:bar, bar_item)
-      f
     end
 
     let(:loader) do
@@ -51,7 +39,7 @@ module RGen::Configuration
     describe "#create" do
       it "登録されたアイテムオブジェクト全てを持つコンフィグレーションオブジェクトを生成する" do
         c = factory.create
-        expect(c.items).to match [kind_of(foo_item), kind_of(bar_item)]
+        expect(c.items).to match [kind_of(foo_item), kind_of(bar_item), kind_of(baz_item)]
       end
 
       context "入力が無いとき" do
@@ -59,6 +47,7 @@ module RGen::Configuration
           c = factory.create
           expect(c.foo).to eq :foo
           expect(c.bar).to eq :bar
+          expect(c.baz).to eq :baz
         end
       end
 
@@ -67,6 +56,7 @@ module RGen::Configuration
           c = factory.create("")
           expect(c.foo).to eq :foo
           expect(c.bar).to eq :bar
+          expect(c.baz).to eq :baz
         end
       end
 
@@ -74,19 +64,20 @@ module RGen::Configuration
         before do
           loader.class_eval do
             def load_file(file)
-              {foo: :foofoo}
+              {:foo => :foofoo, "bar" => :barbar}
             end
           end
         end
 
-        it "ロード結果のキーと同じキーを持つアイテムオブジェクトのパースを行う" do
+        it "ロード結果のキーと同じシンボルのキーを持つアイテムオブジェクトのパースを行う" do
           c = factory.create("test.txt")
           expect(c.foo).to eq :foofoo
+          expect(c.bar).to eq :barbar
         end
 
         it "ロード結果のキーと異なるキーを持つアイテムオブジェクトのパースを行わない" do
           c = factory.create("test.txt")
-          expect(c.bar).to eq :bar
+          expect(c.baz).to eq :baz
         end
       end
 

@@ -11,6 +11,7 @@ class RGen::Configuration::Factory < RGen::InputBase::ComponentFactory
       unless load_data.kind_of?(Hash)
         raise RGen::LoadError, "Hash type required for configuration: #{load_data.class}}"
       end
+      load_data.symbolize_keys!
     else
       load_data = {}
     end
