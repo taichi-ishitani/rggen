@@ -7,4 +7,13 @@ module RGen
 
   class ConfigurationError < RGenError
   end
+
+  class RegisterMapError < RGenError
+    def initialize(message, position)
+      super(message)
+      @position = position
+    end
+
+    attr_reader :position
+  end
 end
