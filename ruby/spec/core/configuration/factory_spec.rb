@@ -17,7 +17,7 @@ module RGen::Configuration
       let("#{item_name}_item") do
         Class.new(Item) do
           define_field  item_name, default: item_name
-          parse do |data|
+          build do |data|
             instance_variable_set("@#{item_name}", data)
           end
         end
@@ -43,7 +43,7 @@ module RGen::Configuration
       end
 
       context "入力が無いとき" do
-        it "アイテムオブジェクトのパースを行わない" do
+        it "アイテムオブジェクトのビルドを行わない" do
           c = factory.create
           expect(c.foo).to eq :foo
           expect(c.bar).to eq :bar
@@ -52,7 +52,7 @@ module RGen::Configuration
       end
 
       context "入力が空文字列のとき" do
-        it "アイテムオブジェクトのパースを行わない" do
+        it "アイテムオブジェクトのビルドを行わない" do
           c = factory.create("")
           expect(c.foo).to eq :foo
           expect(c.bar).to eq :bar
@@ -69,13 +69,13 @@ module RGen::Configuration
           end
         end
 
-        it "ロード結果のキーと同じシンボルのキーを持つアイテムオブジェクトのパースを行う" do
+        it "ロード結果のキーと同じシンボルのキーを持つアイテムオブジェクトのビルドを行う" do
           c = factory.create("test.txt")
           expect(c.foo).to eq :foofoo
           expect(c.bar).to eq :barbar
         end
 
-        it "ロード結果のキーと異なるキーを持つアイテムオブジェクトのパースを行わない" do
+        it "ロード結果のキーと異なるキーを持つアイテムオブジェクトのビルドを行わない" do
           c = factory.create("test.txt")
           expect(c.baz).to eq :baz
         end

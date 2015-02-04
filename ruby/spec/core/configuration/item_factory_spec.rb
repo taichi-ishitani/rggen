@@ -26,15 +26,15 @@ module RGen::Configuration
           Object.new
         end
 
-        it "生成したアイテムオブジェクトの#parseを呼び出す" do
-          expect(item).to receive(:parse).with(data)
+        it "生成したアイテムオブジェクトの#buildを呼び出す" do
+          expect(item).to receive(:build).with(data)
           factory.create(configuration, data)
         end
       end
 
       context "入力データがnilのとき" do
-        it "生成したアイテムオブジェクトの#parseを呼び出さない" do
-          expect(item).not_to receive(:parse)
+        it "生成したアイテムオブジェクトの#buildを呼び出さない" do
+          expect(item).not_to receive(:build)
           factory.create(configuration, nil)
         end
       end

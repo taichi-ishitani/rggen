@@ -107,29 +107,29 @@ module RGen::InputBase
       end
     end
 
-    describe "#perse" do
+    describe "#build" do
       let(:source) do
         :source
       end
 
-      context ".parseでブロックが登録されているとき" do
-        it "登録されたブロックを呼び出してパースを行う" do
+      context ".buildでブロックが登録されているとき" do
+        it "登録されたブロックを呼び出してビルドを行う" do
           i = Class.new(Item) {
             define_field  :field
-            parse do |source|
+            build do |source|
               @field  = source
             end
           }.new(owner)
 
-          i.parse(source)
+          i.build(source)
           expect(i.field).to eq source
         end
       end
 
-      context "パースブロックが登録されていないとき" do
+      context "ビルドブロックが登録されていないとき" do
         it "エラーなく実行される" do
           i = Class.new(Item).new(owner)
-          expect{i.parse(source)}.not_to raise_error
+          expect{i.build(source)}.not_to raise_error
         end
       end
     end

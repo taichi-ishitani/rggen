@@ -22,8 +22,8 @@ class RGen::InputBase::Item < RGen::Base::Item
     fields  << field_name
   end
 
-  def self.parse(&body)
-    @parser ||= body
+  def self.build(&body)
+    @builder  ||= body
   end
 
   def self.validate(&body)
@@ -31,11 +31,11 @@ class RGen::InputBase::Item < RGen::Base::Item
   end
 
   attr_class_reader :fields
-  attr_class_reader :parser
+  attr_class_reader :builder
   attr_class_reader :validator
 
-  def parse(*sources)
-    instance_exec(*sources, &parser) if parser
+  def build(*sources)
+    instance_exec(*sources, &builder) if builder
   end
 
   def validate
