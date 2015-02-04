@@ -19,7 +19,7 @@ module RGen::Configuration
           end
         }.new(configuration)
 
-        expect{i.validate}.to raise_error(RGen::ConfigurationError, message)
+        expect{i.validate}.to raise_configuration_error message
       end
     end
   end
