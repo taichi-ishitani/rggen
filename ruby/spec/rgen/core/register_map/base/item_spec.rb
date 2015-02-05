@@ -15,9 +15,7 @@ module RGen::RegisterMap::Base
     end
 
     let(:cell) do
-      c       = RGen::RegisterMap::GenericMap::Cell.new("foo.csv", "foo", 0, 0)
-      c.value = value
-      c
+      create_cells(value)
     end
 
     let(:position) do
@@ -25,16 +23,14 @@ module RGen::RegisterMap::Base
     end
 
     describe "#build" do
-      it "入力セルの値(#value)をビルドブロックに入力する" do
-        v = nil
+      it "入力セルの値(#value)でビルドを行う" do
         i = Class.new(Item) {
-          build do |cell|
-            v = cell
-          end
+          define_field  :foo
+          build {|cell| @foo = cell}
         }.new(component)
 
         i.build(configuration, cell)
-        expect(v).to eql value
+        expect(i.foo).to eql value
       end
     end
 

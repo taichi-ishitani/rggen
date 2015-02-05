@@ -2,40 +2,38 @@ require_relative  '../../../spec_helper'
 
 module RGen::Configuration
   describe ItemFactory do
+    class FooItem < RGen::Configuration::Item
+      define_field  :foo, default: :foo
+      build {|data| @foo = data}
+    end
+
     let(:configuration) do
       Configuration.new
     end
 
-    let(:item) do
-      Item.new(configuration)
+    let(:factory) do
+      f = ItemFactory.new
+      f.register(:foo, FooItem)
+      f
     end
 
     describe "#create" do
-      let(:factory) do
-        i = item
-        f = Class.new(ItemFactory) {
-          define_method(:create_item) do |c, d|
-            i
-          end
-        }.new
-        f
-      end
-
       context "入力データがnilではないとき" do
         let(:data) do
-          Object.new
+          :bar
         end
 
-        it "生成したアイテムオブジェクトの#buildを呼び出す" do
-          expect(item).to receive(:build).with(data)
-          factory.create(configuration, data)
+        it "アイテムオブジェクトの生成とビルドを行う" do
+          i = factory.create(configuration, data)
+          expect(i).to be_kind_of(FooItem).and have_attributes(foo: data)
         end
       end
 
       context "入力データがnilのとき" do
-        it "生成したアイテムオブジェクトの#buildを呼び出さない" do
-          expect(item).not_to receive(:build)
-          factory.create(configuration, nil)
+        it "アイテムオブジェクトの生成のみ行う" do
+          i = factory.create(configuration, nil)
+          # ビルドを行わないのでデフォルト値のままになっている
+          expect(i).to be_kind_of(FooItem).and have_attributes(foo: :foo)
         end
       end
     end
