@@ -1,4 +1,4 @@
-require_relative  '../../../spec_helper'
+require_relative  '../../../../spec_helper'
 
 module RGen::RegisterMap::Base
   describe Item do

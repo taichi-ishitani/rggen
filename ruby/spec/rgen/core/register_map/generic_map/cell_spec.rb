@@ -1,4 +1,4 @@
-require_relative  '../../../spec_helper'
+require_relative  '../../../../spec_helper'
 
 class RGen::RegisterMap::GenericMap
   describe Cell do
