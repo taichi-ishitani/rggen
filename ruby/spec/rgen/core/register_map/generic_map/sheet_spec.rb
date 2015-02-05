@@ -6,16 +6,12 @@ class RGen::RegisterMap::GenericMap
       "foo.csv"
     end
 
-    let(:map) do
-      RGen::RegisterMap::GenericMap.new(file)
-    end
-
-    let(:sheet_name) do
+    let(:name) do
       "foo"
     end
 
     let(:sheet) do
-      map[sheet_name]
+      Sheet.new(file, name)
     end
 
     let(:positions) do
@@ -29,7 +25,7 @@ class RGen::RegisterMap::GenericMap
     def match_cell(row, column, value = nil)
       be_kind_of(RGen::RegisterMap::GenericMap::Cell).and have_attributes(
         value:    value,
-        position: have_attributes(file: file, sheet: sheet_name, row: row, column: column)
+        position: have_attributes(file: file, sheet: name, row: row, column: column)
       )
     end
 

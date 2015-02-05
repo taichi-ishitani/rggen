@@ -1,6 +1,6 @@
 class RGen::RegisterMap::GenericMap::Sheet
-  def initialize(map, name)
-    @map  = map
+  def initialize(file, name)
+    @file = file
     @name = name
     @rows = []
   end
@@ -18,7 +18,7 @@ class RGen::RegisterMap::GenericMap::Sheet
   end
 
   def create_cell(row, column)
-    RGen::RegisterMap::GenericMap::Cell.new(@map.file, name, row, column)
+    RGen::RegisterMap::GenericMap::Cell.new(@file, name, row, column)
   end
   private :create_cell
 end

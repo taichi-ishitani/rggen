@@ -9,7 +9,7 @@ class RGen::RegisterMap::GenericMap
   def [](sheet_name_or_index)
     case sheet_name_or_index
     when String
-      @sheets[sheet_name_or_index]  ||= Sheet.new(self, sheet_name_or_index)
+      @sheets[sheet_name_or_index]  ||= Sheet.new(file, sheet_name_or_index)
     when Integer
       sheets[sheet_name_or_index]
     end
