@@ -6,4 +6,8 @@ class RGen::RegisterMap::RegisterBlock::RegisterBlock < RGen::InputBase::Compone
   def registers
     children
   end
+
+  def bit_fields
+    registers.flat_map(&:bit_fields)
+  end
 end
