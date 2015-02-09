@@ -6,15 +6,13 @@ class RGen::Configuration::Factory < RGen::InputBase::ComponentFactory
   end
 
   def load(file)
-    unless file.nil? || file.empty?
-      load_data = load_file(file)
-      unless load_data.kind_of?(Hash)
-        raise RGen::LoadError, "Hash type required for configuration: #{load_data.class}}"
-      end
+    return {} if file.nil? || file.empty?
+
+    load_data = load_file(file)
+    if load_data.kind_of?(Hash)
       load_data.symbolize_keys!
     else
-      load_data = {}
+      fail RGen::LoadError, "Hash type required for configuration: #{load_data.class}}"
     end
-    load_data
   end
 end

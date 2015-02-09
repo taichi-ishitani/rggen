@@ -1,6 +1,5 @@
 class RGen::RegisterMap::GenericMap::Cell
-  class Position < Struct.new(:file, :sheet, :row, :column)
-  end
+  Position  = Struct.new(:file, :sheet, :row, :column)
 
   def initialize(file, sheet, row, column)
     @position = Position.new(file, sheet, row, column)
