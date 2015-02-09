@@ -8,7 +8,7 @@ class RGen::RegisterMap::Base::Item < RGen::InputBase::Item
   end
 
   def error(message)
-    raise RGen::RegisterMapError.new(message, @position)
+    fail RGen::RegisterMapError.new(message, @position)
   end
   private :error
 end

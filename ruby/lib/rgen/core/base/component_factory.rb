@@ -5,13 +5,8 @@ class RGen::Base::ComponentFactory
 
     component = create_component(parent, *sources)
 
-    if @item_factories
-      create_items(component, *sources)
-    end
-
-    if @child_factory
-      create_children(component, *sources)
-    end
+    create_items(component, *sources) if @item_factories
+    create_children(component, *sources) if @child_factory
 
     component
   end
