@@ -15,7 +15,7 @@ module RGen::RegisterMap::Base
     end
 
     let(:cell) do
-      create_cells(value)
+      create_cell(value)
     end
 
     let(:position) do

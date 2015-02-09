@@ -1,6 +1,6 @@
 class RGen::Base::ComponentFactory
   def create(*args)
-    parent    = (@root_factory) ? nil : args.pop
+    parent    = (@root_factory) ? nil : args.shift
     sources   = args
 
     component = create_component(parent, *sources)
