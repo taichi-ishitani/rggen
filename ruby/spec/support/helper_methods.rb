@@ -16,3 +16,15 @@ def create_cells(values, options = {})
     create_cell(value, new_options)
   end
 end
+
+def create_sheet(values, options = {})
+  file        = options[:file]  || "foo.csv"
+  sheet_name  = options[:sheet] || "foo"
+  sheet       = RGen::RegisterMap::GenericMap::Sheet.new(file, sheet_name)
+  values.each_with_index do |row, row_index|
+    row.each_with_index do |value, column_index|
+      sheet[row_index, column_index]  = value
+    end
+  end
+  sheet
+end
