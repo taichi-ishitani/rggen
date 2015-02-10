@@ -1,2 +1,4 @@
-class RGen::RegisterMap::BitField::ItemFactory < RGen::RegisterMap::Base::ItemFactory
+module RGen::RegisterMap::BitField
+  class ItemFactory < RGen::RegisterMap::Base::ItemFactory
+  end
 end

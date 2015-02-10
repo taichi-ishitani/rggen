@@ -1,4 +1,6 @@
-module RGen::RegisterMap::Base
+module RGen::RegisterMap
+  module Base
+  end
 end
 
 require_relative  'base/item'

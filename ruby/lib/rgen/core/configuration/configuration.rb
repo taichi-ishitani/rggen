@@ -1,2 +1,4 @@
-class RGen::Configuration::Configuration < RGen::InputBase::Component
+module RGen::Configuration
+  class Configuration < RGen::InputBase::Component
+  end
 end

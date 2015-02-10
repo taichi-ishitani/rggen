@@ -1,4 +1,6 @@
-module RGen::RegisterMap
+module RGen
+  module RegisterMap
+  end
 end
 
 require_relative  'register_map/generic_map'

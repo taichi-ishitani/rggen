@@ -1,22 +1,24 @@
-class RGen::RegisterMap::GenericMap
-  def initialize(file)
-    @file   = file
-    @sheets = {}
-  end
-
-  attr_reader :file
-
-  def [](sheet_name_or_index)
-    case sheet_name_or_index
-    when String
-      @sheets[sheet_name_or_index]  ||= Sheet.new(file, sheet_name_or_index)
-    when Integer
-      sheets[sheet_name_or_index]
+module RGen::RegisterMap
+  class GenericMap
+    def initialize(file)
+      @file   = file
+      @sheets = {}
     end
-  end
 
-  def sheets
-    @sheets.values
+    attr_reader :file
+
+    def [](sheet_name_or_index)
+      case sheet_name_or_index
+      when String
+        @sheets[sheet_name_or_index]  ||= Sheet.new(file, sheet_name_or_index)
+      when Integer
+        sheets[sheet_name_or_index]
+      end
+    end
+
+    def sheets
+      @sheets.values
+    end
   end
 end
 

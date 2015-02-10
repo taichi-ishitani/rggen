@@ -1,4 +1,6 @@
-module RGen::InputBase
+module RGen
+  module InputBase
+  end
 end
 
 require_relative  'input_base/component'

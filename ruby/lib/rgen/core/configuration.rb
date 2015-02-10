@@ -1,4 +1,6 @@
-module RGen::Configuration
+module RGen
+  module Configuration
+  end
 end
 
 require_relative  'configuration/configuration'

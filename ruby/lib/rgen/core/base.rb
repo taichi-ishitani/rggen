@@ -1,4 +1,6 @@
-module RGen::Base
+module RGen
+  module Base
+  end
 end
 
 require_relative  'base/component'

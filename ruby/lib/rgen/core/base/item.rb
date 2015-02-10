@@ -1,7 +1,9 @@
-class RGen::Base::Item
-  def initialize(owner)
-    @owner  = owner
-  end
+module RGen::Base
+  class Item
+    def initialize(owner)
+      @owner  = owner
+    end
 
-  attr_reader :owner
+    attr_reader :owner
+  end
 end
