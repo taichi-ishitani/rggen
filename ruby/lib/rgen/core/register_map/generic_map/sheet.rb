@@ -17,8 +17,9 @@ class RGen::RegisterMap::GenericMap::Sheet
     self[row, column].value = value
   end
 
+  private
+
   def create_cell(row, column)
     RGen::RegisterMap::GenericMap::Cell.new(@file, name, row, column)
   end
-  private :create_cell
 end

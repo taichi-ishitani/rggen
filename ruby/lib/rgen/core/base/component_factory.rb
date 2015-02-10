@@ -28,20 +28,19 @@ class RGen::Base::ComponentFactory
     @root_factory = true
   end
 
+  private
+
   def create_component(parent, *sources)
     @target_component.new(parent)
   end
-  private :create_component
 
   def create_item(item_factory, component, *sources)
     item  = item_factory.create(component, *sources)
     component.append_item(item)
   end
-  private :create_item
 
   def create_child(component, *sources)
     child = @child_factory.create(component, *sources)
     component.append_child(child)
   end
-  private :create_child
 end

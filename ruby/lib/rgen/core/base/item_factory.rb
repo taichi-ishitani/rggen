@@ -7,8 +7,9 @@ class RGen::Base::ItemFactory
     create_item(owner, *args)
   end
 
+  private
+
   def create_item(owner, *args)
     @target_item.new(owner)
   end
-  private :create_item
 end

@@ -17,21 +17,20 @@ class RGen::InputBase::ComponentFactory < RGen::Base::ComponentFactory
     loaders << loader
   end
 
+  private
+
   def loaders
     @loaders  ||= []
   end
-  private :loaders
 
   def load(file)
     load_file(file)
   end
-  private :load
 
   def load_file(file)
     loader  = find_loader(file)
     loader.load_file(file) if loader
   end
-  private :load_file
 
   def find_loader(file)
     loader  = loaders.find {|l| l.acceptable?(file)}
@@ -41,5 +40,4 @@ class RGen::InputBase::ComponentFactory < RGen::Base::ComponentFactory
       fail RGen::LoadError, "unsupported file type: #{File.extname(file)}"
     end
   end
-  private :find_loader
 end
