@@ -22,5 +22,5 @@ module RGen::RegisterMap
   end
 end
 
-require_relative  'generic_map/sheet'
-require_relative  'generic_map/cell'
+require_relative 'generic_map/sheet'
+require_relative 'generic_map/cell'

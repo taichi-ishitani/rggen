@@ -13,7 +13,8 @@ module RGen::Configuration
       if load_data.kind_of?(Hash)
         load_data.symbolize_keys!
       else
-        fail RGen::LoadError, "Hash type required for configuration: #{load_data.class}}"
+        message = "Hash type required for configuration: #{load_data.class}}"
+        fail RGen::LoadError, message
       end
     end
   end

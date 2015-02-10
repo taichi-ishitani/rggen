@@ -3,5 +3,5 @@ module RGen::RegisterMap
   end
 end
 
-require_relative  'base/item'
-require_relative  'base/item_factory'
+require_relative 'base/item'
+require_relative 'base/item_factory'
