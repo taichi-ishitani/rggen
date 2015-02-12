@@ -28,3 +28,16 @@ def create_sheet(values, options = {})
   end
   sheet
 end
+
+def create_map(values, file_name = "foo.csv")
+  map = RGen::RegisterMap::GenericMap.new(file_name)
+  values.each do |sheet, table|
+    sheet = map[sheet]
+    table.each_with_index do |row, row_index|
+      row.each_with_index do |value, column_index|
+        sheet[row_index, column_index]  = value
+      end
+    end
+  end
+  map
+end

@@ -80,3 +80,13 @@ shared_context 'register_block sample factories' do
     end
   end
 end
+
+shared_context 'register_map sample factory' do
+  let(:register_map_factory) do
+    f = RGen::RegisterMap::Factory.new
+    f.register_component(RGen::RegisterMap::RegisterMap)
+    f.register_child_factory(register_block_factory)
+    f.root_factory
+    f
+  end
+end
