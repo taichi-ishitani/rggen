@@ -22,7 +22,8 @@ module RGen::RegisterMap::RegisterBlock
         [nil, "foo" , "bar" , "foo"   , "bar"   ],
         [nil, :foo_0, :bar_0, :foo_0_0, :bar_0_0],
         [nil, nil   , nil   , :foo_0_1, :bar_0_1],
-        [nil, :foo_1, :bar_1, :foo_1_0, :bar_1_0]
+        [nil, :foo_1, :bar_1, :foo_1_0, :bar_1_0],
+        [nil, nil   , nil   , nil     , nil     ]
       ])
     end
 
