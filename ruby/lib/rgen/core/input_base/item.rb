@@ -1,7 +1,8 @@
 module RGen::InputBase
   class Item < RGen::Base::Item
+    extend Forwardable
+
     def self.define_field(field_name, args = {}, &body)
-      @fields ||= []
       return if fields.include?(field_name)
 
       body  ||= lambda do
@@ -16,6 +17,10 @@ module RGen::InputBase
       fields  << field_name
     end
 
+    def self.fields
+      @fields ||= []
+    end
+
     def self.build(&body)
       @builder  ||= body
     end
@@ -24,9 +29,9 @@ module RGen::InputBase
       @validator  ||= body
     end
 
-    attr_class_reader :fields
-    attr_class_reader :builder
-    attr_class_reader :validator
+    def_class_delegator :fields
+    attr_class_reader   :builder
+    attr_class_reader   :validator
 
     def build(*sources)
       instance_exec(*sources, &builder) if builder

@@ -1,12 +1,10 @@
 module RGen::InputBase
   class Component < RGen::Base::Component
+    include SingleForwardable
+
     def append_item(item)
       super(item)
-      item.fields.each do |field|
-        define_singleton_method(field) do
-          item.__send__(field)
-        end
-      end
+      def_object_delegators(item, *item.fields)
     end
 
     def fields
