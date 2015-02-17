@@ -14,11 +14,11 @@ module RGen::Builder
 
     attr_reader :entries
 
-    def base(base_class)
+    def base(base_class = nil)
       @base_class ||= base_class
     end
 
-    def factory(item_factory)
+    def factory(item_factory = nil)
       @factory  ||= item_factory
     end
 
