@@ -27,8 +27,10 @@ module RGen::Builder
         end
 
         it "#baseで登録されたクラスを親クラスとしてクラスを定義し、アイテム名で登録する" do
-          expect(registry.entries[:foo].item_class.superclass).to eql base
-          expect(registry.entries[:foo].item_class).to be_method_defined(:foo)
+          expect(registry.entries[:foo].item_class).to have_attributes(
+            superclass:       base,
+            instance_methods: include(:foo)
+          )
         end
 
         it "#factoryで登録されたファクトリクラスを、対応するファクトリとして登録する" do
