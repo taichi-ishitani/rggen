@@ -3,5 +3,4 @@ module RGen
   end
 end
 
-require_relative 'builder/registry'
-require_relative 'builder/category'
+require_relative 'builder/item_registry'
