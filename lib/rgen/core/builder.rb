@@ -4,3 +4,4 @@ module RGen
 end
 
 require_relative 'builder/item_registry'
+require_relative 'builder/component_entry'
