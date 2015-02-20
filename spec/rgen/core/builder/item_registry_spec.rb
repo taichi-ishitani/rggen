@@ -37,7 +37,7 @@ module RGen::Builder
       end
     end
 
-    describe "#enabled_factoreis" do
+    describe "#build_factories" do
       before do
         [:foo, :bar, :baz, :qux].each do |name|
           item_registry.register_item(name) do
@@ -47,15 +47,15 @@ module RGen::Builder
         item_registry.enable(:qux)
       end
 
-      let(:enabled_factories) do
-        item_registry.enabled_factories
+      let(:factories) do
+        item_registry.build_factories
       end
 
       let(:items) do
-        enabled_factories.each_with_object({}) {|(n, f), h| h[n] = f.create(nil, nil)}
+        factories.each_with_object({}) {|(n, f), h| h[n] = f.create(nil, nil)}
       end
 
-      it "#enableで有効にされたアイテムを生成するファクトリクラス一覧を有効にされた順で返す" do
+      it "#enableで有効にされたアイテムを生成するファクトリオブジェクトを有効にされた順で生成する" do
         expect(items).to match({
           foo: be_kind_of(item_registry.entries[:foo].klass),
           baz: be_kind_of(item_registry.entries[:baz].klass),
@@ -68,7 +68,7 @@ module RGen::Builder
           item_registry.enable(:qux, :foo)
         end
 
-        specify "2回目以降の有効化を無視して、ファクトリクラス一覧を返す" do
+        specify "2回目以降の有効化を無視して、ファクトリオブジェクトを生成する" do
           expect(items).to match({
             foo: be_kind_of(item_registry.entries[:foo].klass),
             baz: be_kind_of(item_registry.entries[:baz].klass),

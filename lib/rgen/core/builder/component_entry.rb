@@ -14,7 +14,7 @@ module RGen::Builder
       factory = component_factory.new
       factory.register_component(component_class)
 
-      item_registry.enabled_factories.each do |name, item_factory|
+      item_registry.build_factories.each do |name, item_factory|
         factory.register_item_factory(name, item_factory)
       end if item_registry
 

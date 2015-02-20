@@ -26,7 +26,7 @@ module RGen::Builder
       enabled_items.concat(item_names)
     end
 
-    def enabled_factories
+    def build_factories
       enabled_items.uniq.each_with_object({}) do |name, factories|
         factories[name] = entries[name].build_factory if entries[name]
       end
