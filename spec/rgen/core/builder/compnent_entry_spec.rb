@@ -10,12 +10,19 @@ module RGen::Builder
       RGen::Configuration::Factory
     end
 
-    let(:item_class) do
+    let(:item_base) do
       RGen::Configuration::Item
     end
 
     let(:item_factory) do
       RGen::Configuration::ItemFactory
+    end
+
+    let(:component_entry) do
+      entry = ComponentEntry.new
+      entry.component_class(component_class)
+      entry.component_factory(component_factory)
+      entry
     end
 
     let(:factory) do
@@ -29,23 +36,17 @@ module RGen::Builder
     end
 
     describe "#build_factory" do
-      context "item, item_factoryを含まない時" do
-        let(:component_entry) do
-          ComponentEntry.new(component_class, component_factory)
-        end
-
+      context "アイテムを持たないとき" do
         it "アイテムを含まないコンポーネントオブジェクトを生成するファクトリを返す" do
           expect(component).to be_kind_of(component_class)
           expect(component.fields).to be_empty
         end
       end
 
-      context "item, item_factoryを含む時" do
-        let(:component_entry) do
-          ComponentEntry.new(component_class, component_factory, item_class, item_factory)
-        end
-
+      context "アイテムを持つとき" do
         before do
+          component_entry.item_base(item_base)
+          component_entry.item_factory(item_factory)
           [:foo, :bar].each do |item_name|
             component_entry.item_registry.register_item(item_name) do
               define_field item_name, default: item_name
