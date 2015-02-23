@@ -14,6 +14,10 @@ module RGen::Builder
       ItemRegistry.new(item_base, item_factory)
     end
 
+    let(:item_entries) do
+      item_registry.instance_variable_get(:@entries)
+    end
+
     describe "#register_item" do
       before do
         item_registry.register_item(:foo) do
@@ -22,7 +26,7 @@ module RGen::Builder
       end
 
       let(:entry) do
-        item_registry.entries[:foo]
+        item_entries[:foo]
       end
 
       it "#baseを親クラスとしてアイテムクラスを定義し、アイテム名で登録する" do
@@ -57,9 +61,9 @@ module RGen::Builder
 
       it "#enableで有効にされたアイテムを生成するファクトリオブジェクトを有効にされた順で生成する" do
         expect(items).to match({
-          foo: be_kind_of(item_registry.entries[:foo].klass),
-          baz: be_kind_of(item_registry.entries[:baz].klass),
-          qux: be_kind_of(item_registry.entries[:qux].klass)
+          foo: be_kind_of(item_entries[:foo].klass),
+          baz: be_kind_of(item_entries[:baz].klass),
+          qux: be_kind_of(item_entries[:qux].klass)
         })
       end
 
@@ -70,9 +74,9 @@ module RGen::Builder
 
         specify "2回目以降の有効化を無視して、ファクトリオブジェクトを生成する" do
           expect(items).to match({
-            foo: be_kind_of(item_registry.entries[:foo].klass),
-            baz: be_kind_of(item_registry.entries[:baz].klass),
-            qux: be_kind_of(item_registry.entries[:qux].klass)
+            foo: be_kind_of(item_entries[:foo].klass),
+            baz: be_kind_of(item_entries[:baz].klass),
+            qux: be_kind_of(item_entries[:qux].klass)
           })
         end
       end
