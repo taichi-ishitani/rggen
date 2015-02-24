@@ -14,6 +14,13 @@ module RGen::Builder
     def register_item(item_name, &body)
       @current_item_name  = item_name
       instance_exec(&body)
+      @current_item_name  = nil
+    end
+
+    def enable(*item_names)
+      @item_registries.each_value do |item_registry|
+        item_registry.enable(*item_names)
+      end
     end
 
     private
