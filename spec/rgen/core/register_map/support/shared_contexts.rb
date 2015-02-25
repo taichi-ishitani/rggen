@@ -74,7 +74,7 @@ shared_context 'register_block sample factories' do
     end
 
     let("register_block_#{item_name}_factory") do
-      f = RGen::RegisterMap::Register::ItemFactory.new
+      f = RGen::RegisterMap::RegisterBlock::ItemFactory.new
       f.register(item_name, send("register_block_#{item_name}_item"))
       f
     end
