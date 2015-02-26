@@ -28,5 +28,28 @@ module RGen::Builder
       loader.support_types(*support_types)
       @loaders  << loader
     end
+
+    def build_factory
+      @entries.each_with_object([]) do |entry, factories|
+        if factories.empty?
+          factory = build_root_factory(entry)
+        else
+          factory = entry.build_factory
+          factories.last.register_child_factory(factory)
+        end
+        factories << factory
+      end.first
+    end
+
+    private
+
+    def build_root_factory(entry)
+      factory = entry.build_factory
+      factory.root_factory
+      @loaders.each do |loader|
+        factory.register_loader(loader)
+      end
+      factory
+    end
   end
 end

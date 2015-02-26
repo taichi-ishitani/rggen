@@ -151,5 +151,96 @@ module RGen::Builder
         end
       end
     end
+
+    describe "#build_factory" do
+      before do
+        component_registry.loader_base(loader_base)
+        component_registry.register_component do
+          component_class   RGen::RegisterMap::RegisterMap
+          component_factory RGen::RegisterMap::Factory
+        end
+        component_registry.register_component(:register_block) do
+          component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
+          component_factory RGen::RegisterMap::RegisterBlock::Factory
+          item_base         RGen::RegisterMap::RegisterBlock::Item
+          item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+        end
+        component_registry.register_component(:register) do
+          component_class   RGen::RegisterMap::Register::Register
+          component_factory RGen::RegisterMap::Register::Factory
+          item_base         RGen::RegisterMap::Register::Item
+          item_factory      RGen::RegisterMap::Register::ItemFactory
+        end
+        categories[:register_block].register_item(:bar) do
+          foo do
+          end
+        end
+        categories[:register].register_item(:bar) do
+          foo do
+          end
+        end
+        categories[:register_block].enable(:bar)
+        categories[:register].enable(:bar)
+      end
+
+      let(:built_factories) do
+        factory   = component_registry.build_factory
+        factories = [factory]
+        loop do
+          factory = factory.instance_variable_get(:@child_factory)
+          break unless factory
+          factories << factory
+        end
+        factories
+      end
+
+      it "登録された順にComponentEntry#build_factoryを呼び出して、ファクトリを生成する" do
+        component_entries.each do |entry|
+          expect(entry).to receive(:build_factory).and_call_original.ordered
+        end
+        component_registry.build_factory
+      end
+
+      specify "生成されたファクトリは登録順に親子関係をもつ" do
+        [
+          RGen::RegisterMap::Factory,
+          RGen::RegisterMap::RegisterBlock::Factory,
+          RGen::RegisterMap::Register::Factory
+        ].each_with_index do |f, i|
+          expect(built_factories[i]).to be_kind_of(f)
+        end
+      end
+
+      specify "1番目のファクトリはルートファクトリ" do
+        expect(built_factories.first.instance_variable_get(:@root_factory)).to be_truthy
+      end
+
+      specify "2番目以降はルートファクトリではない" do
+        built_factories.from(1).each do |f|
+          expect(f.instance_variable_get(:@root_factory)).to be_falsey
+        end
+      end
+
+      context "ローダが登録されているとき" do
+        before do
+          [:xls, :csv].each do |type|
+            component_registry.register_loader(type) do
+              def loader(file)
+              end
+            end
+          end
+        end
+
+        specify "ルートファクトリのみローダを持つ" do
+          built_factories.each_with_index do |f, i|
+            if i == 0
+              expect(f.instance_variable_get(:@loaders)).to match loaders
+            else
+              expect(f.instance_variable_get(:@loaders)).not_to match loaders
+            end
+          end
+        end
+      end
+    end
   end
 end
