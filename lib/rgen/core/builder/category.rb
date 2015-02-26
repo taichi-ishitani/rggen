@@ -5,10 +5,9 @@ module RGen::Builder
     end
 
     def append_item_registry(name, item_registry)
-      unless @item_registries.key?(name)
-        @item_registries[name]  = item_registry
-        define_registry_method(name)
-      end
+      return if @item_registries.key?(name)
+      @item_registries[name]  = item_registry
+      define_registry_method(name)
     end
 
     def register_item(item_name, &body)
