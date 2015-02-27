@@ -21,8 +21,8 @@ module RGen::Builder
       @registries[registry_name].instance_exec(&body)
     end
 
-    def register_loader(registry_name, *support_types, &body)
-      @registries[registry_name].register_loader(*support_types, &body)
+    def register_loader(registry_name, type_or_types, &body)
+      @registries[registry_name].register_loader(type_or_types, &body)
     end
 
     def build_factory(registry_name)

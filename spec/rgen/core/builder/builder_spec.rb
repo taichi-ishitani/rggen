@@ -60,8 +60,8 @@ module RGen::Builder
       end
 
       it "引数で与えられた名前のコンポーネントレジストリの#register_loader、ローダの登録を行う" do
-        expect(registries[:register_map]).to receive(:register_loader).with(*support_types)
-        builder.register_loader(:register_map, *support_types) do
+        expect(registries[:register_map]).to receive(:register_loader).with(support_types).and_call_original
+        builder.register_loader(:register_map, support_types) do
         end
       end
     end
@@ -133,8 +133,8 @@ module RGen::Builder
       end
 
       it "引数で与えられた名前のカテゴリの#enableを呼び出して、アイテムの有効化を行う" do
-        expect(categories[:global]).to receive(:enable).with([:foo, :bar])
-        expect(categories[:global]).to receive(:enable).with(:qux)
+        expect(categories[:global]).to receive(:enable).with([:foo, :bar]).and_call_original
+        expect(categories[:global]).to receive(:enable).with(:qux).and_call_original
         builder.enable(:global, [:foo, :bar])
         builder.enable(:global, :qux)
       end

@@ -14,10 +14,10 @@ module RGen::InputBase
         end
       end
 
-      context "引数が1個以上の時" do
+      context "タイプが与えられとき" do
         it "与えられたタイプをsupport_typesに追加する" do
           loader.support_types(:foo)
-          loader.support_types(:bar, :baz)
+          loader.support_types([:bar, :baz])
           expect(loader.support_types).to match [:foo, :bar, :baz]
         end
       end
@@ -30,14 +30,14 @@ module RGen::InputBase
 
       context "入力ファイルの拡張子が、登録したタイプに含まれる場合" do
         it "真を返す" do
-          loader.support_types(:foo, :bar)
+          loader.support_types([:foo, :bar])
           expect(loader.acceptable?(file_name)).to be_truthy
         end
       end
 
       context "入力ファイルの拡張子が、登録したタイプに含まれない場合" do
         it "偽を返す" do
-          loader.support_types(:bar, :baz)
+          loader.support_types([:bar, :baz])
           expect(loader.acceptable?(file_name)).to be_falsy
         end
       end

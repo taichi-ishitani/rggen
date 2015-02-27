@@ -22,10 +22,10 @@ module RGen::Builder
       @entries  << entry
     end
 
-    def register_loader(*support_types, &body)
+    def register_loader(type_or_types, &body)
       return unless loader_base
       loader  = Class.new(loader_base, &body)
-      loader.support_types(*support_types)
+      loader.support_types(type_or_types)
       @loaders  << loader
     end
 
