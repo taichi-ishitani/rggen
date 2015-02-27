@@ -1,5 +1,8 @@
 module RGen::RegisterMap
   class GenericMap
+    require_relative 'generic_map/sheet'
+    require_relative 'generic_map/cell'
+
     def initialize(file)
       @file   = file
       @sheets = {}
@@ -21,6 +24,3 @@ module RGen::RegisterMap
     end
   end
 end
-
-require_relative 'generic_map/sheet'
-require_relative 'generic_map/cell'
