@@ -6,12 +6,16 @@ module RGen::Builder
       Builder.new
     end
 
+    let(:categories) do
+      builder.categories
+    end
+
     let(:registries) do
       builder.instance_variable_get(:@registries)
     end
 
     it "4種類のカテゴリを持つ" do
-      expect(builder.categories).to match(
+      expect(categories).to match(
         global:         be_kind_of(Category),
         register_block: be_kind_of(Category),
         register:       be_kind_of(Category),
@@ -40,6 +44,28 @@ module RGen::Builder
       end
     end
 
+    describe "#register_loader" do
+      before do
+        builder.component_registry(:register_map) do
+          loader_base RGen::InputBase::Loader
+          register_component do
+            component_class   RGen::RegisterMap::RegisterMap
+            component_factory RGen::RegisterMap::Factory
+          end
+        end
+      end
+
+      let(:support_types) do
+        [:xls, :xlsx]
+      end
+
+      it "引数で与えられた名前のコンポーネントレジストリの#register_loader、ローダの登録を行う" do
+        expect(registries[:register_map]).to receive(:register_loader).with(*support_types)
+        builder.register_loader(:register_map, *support_types) do
+        end
+      end
+    end
+
     describe "#build_factory" do
       before do
         builder.component_registry(:register_map) do
@@ -59,6 +85,60 @@ module RGen::Builder
       it "引数で与えられた名前のコンポーネントレジストリの#build_factoryを呼び出して、ファクトリの生成を行う" do
         expect(registries[:register_map]).to receive(:build_factory).and_call_original
         builder.build_factory(:register_map)
+      end
+    end
+
+    describe "#register_item" do
+      before do
+        builder.component_registry(:configuration) do
+          register_component do
+            component_class   RGen::Configuration::Configuration
+            component_factory RGen::Configuration::Factory
+            item_base         RGen::Configuration::Item
+            item_factory      RGen::Configuration::ItemFactory
+          end
+        end
+      end
+
+      let(:item_name) do
+        :foo
+      end
+
+      it "引数で与えられた名前のカテゴリの#register_itemを呼び出して、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:register_item).with(item_name).and_call_original
+        builder.register_item(:global, item_name) do
+          configuration do
+          end
+        end
+      end
+    end
+
+    describe "#enable" do
+      before do
+        builder.component_registry(:configuration) do
+          register_component do
+            component_class   RGen::Configuration::Configuration
+            component_factory RGen::Configuration::Factory
+            item_base         RGen::Configuration::Item
+            item_factory      RGen::Configuration::ItemFactory
+          end
+        end
+
+        item_names.each do |item_name|
+          builder.register_item(:global, item_name) do
+            configuration do
+            end
+          end
+        end
+      end
+
+      let(:item_names) do
+        [:foo, :bar]
+      end
+
+      it "引数で与えられた名前のカテゴリの#enableを呼び出して、アイテムの有効化を行う" do
+        expect(categories[:global]).to receive(:enable).with(*item_names)
+        builder.enable(:global, *item_names)
       end
     end
   end

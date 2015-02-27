@@ -21,8 +21,20 @@ module RGen::Builder
       @registries[registry_name].instance_exec(&body)
     end
 
+    def register_loader(registry_name, *support_types, &body)
+      @registries[registry_name].register_loader(*support_types, &body)
+    end
+
     def build_factory(registry_name)
       @registries[registry_name].build_factory
+    end
+
+    def register_item(category_name, item_name, &body)
+      @categories[category_name].register_item(item_name, &body)
+    end
+
+    def enable(category_name, *item_names)
+      @categories[category_name].enable(*item_names)
     end
   end
 end
