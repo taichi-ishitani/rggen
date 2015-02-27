@@ -47,7 +47,7 @@ module RGen::Builder
           item_registry.register_item(name) do
           end
         end
-        item_registry.enable(:foo, :baz)
+        item_registry.enable([:foo, :baz])
         item_registry.enable(:qux)
       end
 
@@ -69,7 +69,7 @@ module RGen::Builder
 
       context "#enableで同一アイテムが複数回有効にされた場合" do
         before do
-          item_registry.enable(:qux, :foo)
+          item_registry.enable([:qux, :foo])
         end
 
         specify "2回目以降の有効化を無視して、ファクトリオブジェクトを生成する" do

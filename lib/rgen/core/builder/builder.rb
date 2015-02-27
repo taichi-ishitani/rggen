@@ -33,8 +33,8 @@ module RGen::Builder
       @categories[category_name].register_item(item_name, &body)
     end
 
-    def enable(category_name, *item_names)
-      @categories[category_name].enable(*item_names)
+    def enable(category_name, item_or_itmes)
+      @categories[category_name].enable(item_or_itmes)
     end
   end
 end

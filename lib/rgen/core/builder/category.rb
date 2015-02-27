@@ -16,9 +16,9 @@ module RGen::Builder
       @current_item_name  = nil
     end
 
-    def enable(*item_names)
+    def enable(item_or_items)
       @item_registries.each_value do |item_registry|
-        item_registry.enable(*item_names)
+        item_registry.enable(item_or_items)
       end
     end
 

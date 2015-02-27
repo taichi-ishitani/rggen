@@ -23,12 +23,15 @@ module RGen::Builder
       @entries[name]  = Entry.new(name, klass, factory)
     end
 
-    def enable(*item_names)
-      @enabled_items.concat(item_names)
+    def enable(item_or_items)
+      additional_items  = Array(item_or_items).reject do |item|
+        @enabled_items.include?(item)
+      end
+      @enabled_items.concat(additional_items)
     end
 
     def build_factories
-      @enabled_items.uniq.each_with_object({}) do |name, factories|
+      @enabled_items.each_with_object({}) do |name, factories|
         factories[name] = @entries[name].build_factory if @entries.key?(name)
       end
     end

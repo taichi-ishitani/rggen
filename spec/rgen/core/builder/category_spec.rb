@@ -63,7 +63,7 @@ module RGen::Builder
         item_registries.each do |name, registry|
           category.append_item_registry(name, registry)
         end
-        [:foo, :bar, :baz].each do |item_name|
+        [:foo, :bar, :baz, :qux].each do |item_name|
           category.register_item(item_name) do
             configuration do
             end
@@ -74,9 +74,12 @@ module RGen::Builder
       end
 
       it "与えられたアイテム名を引数として、登録されたエントリの#enableを呼び出す" do
-        expect(item_registries[:configuration]).to receive(:enable).with(:foo, :baz)
-        expect(item_registries[:register_map ]).to receive(:enable).with(:foo, :baz)
-        category.enable(:foo, :baz)
+        expect(item_registries[:configuration]).to receive(:enable).with([:foo, :baz])
+        expect(item_registries[:register_map ]).to receive(:enable).with([:foo, :baz])
+        expect(item_registries[:configuration]).to receive(:enable).with(:qux)
+        expect(item_registries[:register_map ]).to receive(:enable).with(:qux)
+        category.enable([:foo, :baz])
+        category.enable(:qux)
       end
     end
   end

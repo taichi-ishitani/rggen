@@ -124,7 +124,7 @@ module RGen::Builder
           end
         end
 
-        item_names.each do |item_name|
+        [:foo, :bar, :baz, :qux].each do |item_name|
           builder.register_item(:global, item_name) do
             configuration do
             end
@@ -132,13 +132,11 @@ module RGen::Builder
         end
       end
 
-      let(:item_names) do
-        [:foo, :bar]
-      end
-
       it "引数で与えられた名前のカテゴリの#enableを呼び出して、アイテムの有効化を行う" do
-        expect(categories[:global]).to receive(:enable).with(*item_names)
-        builder.enable(:global, *item_names)
+        expect(categories[:global]).to receive(:enable).with([:foo, :bar])
+        expect(categories[:global]).to receive(:enable).with(:qux)
+        builder.enable(:global, [:foo, :bar])
+        builder.enable(:global, :qux)
       end
     end
   end
