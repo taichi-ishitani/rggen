@@ -96,7 +96,7 @@ module RGen::Configuration
         end
 
         it "LoadErrorを発生させる" do
-          expect{factory.create("test.txt")}.to raise_load_error "Hash type required for configuration: #{load_data.class}}"
+          expect{factory.create("test.txt")}.to raise_load_error "Hash type required for configuration: #{load_data.class}"
         end
       end
     end
