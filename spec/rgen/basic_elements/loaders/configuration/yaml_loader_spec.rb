@@ -12,10 +12,6 @@ describe "yaml_loader" do
     clear_enabled_items
   end
 
-  let(:configuraiton) do
-    @factory.create(yaml_file)
-  end
-
   it "拡張子がymlのYAMLフォーマットのファイルをロードする" do
     c = @factory.create(File.join(__dir__, "files", "sample.yml"))
     expect(c).to match_address_width(16)
