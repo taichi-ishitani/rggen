@@ -12,17 +12,10 @@ describe 'address_width/configuration' do
     clear_enabled_items
   end
 
-  let(:configuration) do
-    @factory.create(configuration_file)
-  end
-
   describe "#address_width" do
     context "ロード結果のHashに:address_widthが含まれないとき" do
-      before do
-        ConfigurationDummyLoader.load_data({})
-      end
-
       it "デフォルト値(32)を返す" do
+        ConfigurationDummyLoader.load_data({})
         c = @factory.create(configuration_file)
         expect(c).to match_address_width(32)
       end
@@ -35,11 +28,9 @@ describe 'address_width/configuration' do
 
       it "変換結果を返す" do
         load_data.each do |data|
-          w = Integer(data)
-          ConfigurationDummyLoader.load_data({address_width: w})
-
+          ConfigurationDummyLoader.load_data({address_width: data})
           c = @factory.create(configuration_file)
-          expect(c).to match_address_width(w)
+          expect(c).to match_address_width(Integer(data))
         end
       end
     end
