@@ -18,13 +18,13 @@ describe "yaml_loader" do
 
   it "拡張子がymlのYAMLフォーマットのファイルをロードする" do
     c = @factory.create(File.join(__dir__, "files", "sample.yml"))
-    expect(c). match_address_width(16)
-    epxect(c). match_data_width(64)
+    expect(c).to match_address_width(16)
+    expect(c).to match_data_width(64)
   end
 
   it "拡張子がyamlのYAMLフォーマットのファイルをロードする" do
     c = @factory.create(File.join(__dir__, "files", "sample.yaml"))
-    expect(c). match_address_width(64)
-    epxect(c). match_data_width(16)
+    expect(c).to match_address_width(64)
+    expect(c).to match_data_width(16)
   end
 end
