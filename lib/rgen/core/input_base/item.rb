@@ -2,7 +2,7 @@ module RGen::InputBase
   class Item < RGen::Base::Item
     extend Forwardable
 
-    def self.define_field(field_name, args = {}, &body)
+    def self.field(field_name, args = {}, &body)
       return if fields.include?(field_name)
 
       body  ||= lambda do

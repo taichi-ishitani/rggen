@@ -6,7 +6,7 @@ module RGen::InputBase
       Component.new
     end
 
-    describe ".define_field" do
+    describe ".field" do
       let(:field_name) do
         :foo
       end
@@ -22,7 +22,7 @@ module RGen::InputBase
       it "引数で与えられたフィールド名のインスタンスメソッドを定義する" do
         f = field_name
         k = Class.new(Item) do
-          define_field  f
+          field f
         end
         expect(k.method_defined?(field_name)).to be true
       end
@@ -32,7 +32,7 @@ module RGen::InputBase
           f = field_name
           v = field_value
           k = Class.new(Item) do
-            define_field  f
+            field f
             define_method(:initialize) do |owner|
               super(owner)
               instance_variable_set("@#{f}", v)
@@ -49,7 +49,7 @@ module RGen::InputBase
           f = field_name
           v = field_value
           k = Class.new(Item) do
-            define_field  f do
+            field f do
               v
             end
           end
@@ -65,7 +65,7 @@ module RGen::InputBase
             f = field_name
             v = field_default_value
             k = Class.new(Item) do
-              define_field  f, default:v
+              field f, default:v
             end
             i = k.new(owner)
 
@@ -79,7 +79,7 @@ module RGen::InputBase
             v = field_value
             d = field_default_value
             k = Class.new(Item) do
-              define_field  f, default:d
+              field f, default:d
               define_method(:initialize) do |owner|
                 super(owner)
                 instance_variable_set("@#{f}", v)
@@ -94,11 +94,11 @@ module RGen::InputBase
     end
 
     describe "#fields" do
-      it ".define_fieldで定義されたメソッド一覧を返す" do
+      it ".fieldで定義されたメソッド一覧を返す" do
         fields  = [:foo, :bar]
         k = Class.new(Item) do
           fields.each do |f|
-            define_field  f
+            field f
           end
         end
         i = k.new(owner)
@@ -115,7 +115,7 @@ module RGen::InputBase
       context ".buildでブロックが登録されているとき" do
         it "登録されたブロックを呼び出してビルドを行う" do
           i = Class.new(Item) {
-            define_field  :field
+            field :field
             build do |source|
               @field  = source
             end

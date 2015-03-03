@@ -25,7 +25,7 @@ module RGen::RegisterMap::Base
     describe "#build" do
       it "入力セルの値(#value)でビルドを行う" do
         i = Class.new(Item) {
-          define_field  :foo
+          field :foo
           build {|cell| @foo = cell}
         }.new(component)
 

@@ -21,7 +21,7 @@ module RGen::Builder
     describe "#register_item" do
       before do
         item_registry.register_item(:foo) do
-          define_field :foo
+          field :foo
         end
       end
 

@@ -3,7 +3,7 @@ require_relative  '../spec_helper'
 module RGen::RegisterMap::Base
   describe ItemFactory do
     class FooItem < RGen::RegisterMap::Base::Item
-      define_field  :foo
+      field :foo
       build {|cell| @foo = cell}
     end
 

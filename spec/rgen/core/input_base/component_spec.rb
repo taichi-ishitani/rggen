@@ -11,7 +11,7 @@ module RGen::InputBase
         fields  = {a:Object.new, b:Object.new}
         item    = Class.new(Item) {
           fields.each do |name, value|
-            define_field(name, default:value)
+            field(name, default:value)
           end
         }.new(owner)
 
@@ -34,8 +34,8 @@ module RGen::InputBase
       it "直下のアイテムオブジェクトのフィールド一覧を返す" do
         fields.each_slice(2) do |field_slice|
           item  = Class.new(Item) {
-            define_field  field_slice[0]
-            define_field  field_slice[1]
+            field field_slice[0]
+            field field_slice[1]
           }.new(owner)
           owner.append_item(item)
         end
@@ -54,7 +54,7 @@ module RGen::InputBase
 
       let(:item_class) do
         Class.new(Item) do
-          define_field  :foo
+          field :foo
         end
       end
 

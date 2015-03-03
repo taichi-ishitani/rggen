@@ -3,7 +3,7 @@ require_relative  '../../../spec_helper'
 module RGen::Configuration
   describe ItemFactory do
     class FooItem < RGen::Configuration::Item
-      define_field  :foo, default: :foo
+      field :foo, default: :foo
       build {|data| @foo = data}
     end
 

@@ -10,7 +10,7 @@ shared_context 'bit_field sample factories' do
   [:foo, :bar].each do |item_name|
     let("bit_field_#{item_name}_item") do
       Class.new(RGen::RegisterMap::BitField::Item) do
-        define_field item_name
+        field item_name
         build do |cell|
           instance_variable_set("@#{item_name}", cell)
         end
@@ -38,7 +38,7 @@ shared_context 'register sample factories' do
   [:foo, :bar].each do |item_name|
     let("register_#{item_name}_item") do
       Class.new(RGen::RegisterMap::Register::Item) do
-        define_field item_name
+        field item_name
         build do |cell|
           instance_variable_set("@#{item_name}", cell)
         end
@@ -66,7 +66,7 @@ shared_context 'register_block sample factories' do
   [:foo, :bar].each do |item_name|
     let("register_block_#{item_name}_item") do
       Class.new(RGen::RegisterMap::RegisterBlock::Item) do
-        define_field item_name
+        field item_name
         build do |cell|
           instance_variable_set("@#{item_name}", cell)
         end

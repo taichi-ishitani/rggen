@@ -43,16 +43,16 @@ module RGen::Builder
 
         category.register_item(:foo) do
           configuration do
-            define_field :foo
+            field :foo
           end
           register_map do
-            define_field :foo
+            field :foo
           end
         end
 
         category.register_item(:bar) do
           configuration do
-            define_field :bar
+            field :bar
           end
         end
       end
