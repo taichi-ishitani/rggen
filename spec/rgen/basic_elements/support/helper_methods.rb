@@ -7,6 +7,10 @@ def match_data_width(width)
   have_attributes(data_width: width, byte_size: byte_size)
 end
 
+def match_name(name)
+  have_attributes(name: name)
+end
+
 def clear_enabled_items
   RGen.generator.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_registries).each_value do |item_registry|
