@@ -15,11 +15,11 @@ module RGen::RegisterMap::RegisterBlock
     end
 
     def cell_blocks(sheet)
-      start_row     = @item_factories.size + 2
-      start_column  = 1
+      drop_row_size     = @item_factories.size + 2
+      drop_column_size  = 1
 
-      sheet.rows.from(start_row).each_with_object([]) do |row, blocks|
-        valid_cells = row.from(start_column)
+      sheet.rows.drop(drop_row_size).each_with_object([]) do |row, blocks|
+        valid_cells = row.drop(drop_column_size)
         next if valid_cells.all?(&:empty?)
         blocks      << [] unless valid_cells.first.empty?
         blocks.last << valid_cells

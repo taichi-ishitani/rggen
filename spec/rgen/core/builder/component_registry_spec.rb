@@ -216,7 +216,7 @@ module RGen::Builder
       end
 
       specify "2番目以降はルートファクトリではない" do
-        built_factories.from(1).each do |f|
+        built_factories.drop(1).each do |f|
           expect(f.instance_variable_get(:@root_factory)).to be_falsey
         end
       end
