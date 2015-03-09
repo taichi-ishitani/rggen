@@ -6,8 +6,7 @@ RGen.item(:register_block, :name) do
       @name = cell.to_s
       if invalid_value?(@name)
         error "invalid value for register block name: #{cell.inspect}"
-      end
-      if repeated_name?(@name)
+      elsif repeated_name?(@name)
         error "repeated register block name: #{@name}"
       end
     end
