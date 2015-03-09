@@ -4,20 +4,20 @@ RGen.item(:register_block, :name) do
 
     build do |cell|
       @name = cell.to_s
-      unless valid_name?(@name)
+      if invalid_value?(@name)
         error "invalid value for register block name: #{cell.inspect}"
       end
-      unless unique_name?(@name)
+      if repeated_name?(@name)
         error "repeated register block name: #{@name}"
       end
     end
 
-    def valid_name?(name)
-      /\A[a-z_][a-z0-9_]*\z/i.match(name).not_nil?
+    def invalid_value?(name)
+      /\A[a-z_][a-z0-9_]*\z/i.match(name).nil?
     end
 
-    def unique_name?(name)
-      register_map.register_blocks.none? do |block|
+    def repeated_name?(name)
+      register_map.register_blocks.any? do |block|
         name == block.name
       end
     end
