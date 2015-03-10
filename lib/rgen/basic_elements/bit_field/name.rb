@@ -16,8 +16,8 @@ RGen.item(:bit_field, :name) do
     end
 
     def repeated_name?(name)
-      register_block.bit_fields.any? do |register|
-        name == register.name
+      register_block.bit_fields.any? do |bit_field|
+        name == bit_field.name
       end
     end
   end
