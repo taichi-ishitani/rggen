@@ -21,9 +21,9 @@ class RGen::RegisterMap::GenericMap
       end
 
       context "#valueが文字列で空白のとき" do
-        it "trueを返す" do
+        it "falseを返す" do
           cell.value  = " \n\t\r "
-          expect(cell).to be_empty
+          expect(cell).not_to be_empty
         end
       end
 

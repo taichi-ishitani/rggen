@@ -10,7 +10,7 @@ class RGen::RegisterMap::GenericMap
     attr_reader   :position
 
     def empty?
-      value.to_s.strip.empty?
+      value.to_s.empty?
     end
   end
 end
