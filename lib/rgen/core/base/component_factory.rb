@@ -1,12 +1,12 @@
 module RGen::Base
   class ComponentFactory
     def create(*args)
-      parent    = (@root_factory) ? nil : args.shift
-      sources   = args
+      parent  = (@root_factory) ? nil : args.shift
+      sources = args
 
       component = create_component(parent, *sources)
-
       create_items(component, *sources) if @item_factories
+      parent.append_child(component) unless @root_factory
       create_children(component, *sources) if @child_factory
 
       component
@@ -42,7 +42,6 @@ module RGen::Base
 
     def create_child(component, *sources)
       child = @child_factory.create(component, *sources)
-      component.append_child(child)
     end
   end
 end

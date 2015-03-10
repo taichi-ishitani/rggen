@@ -19,7 +19,7 @@ module RGen::Base
     describe "#create" do
       it "#register_componentで登録されたコンポーネントオブジェクトを生成する" do
         factory   = create_factory
-        component = factory.create(factory)
+        component = factory.create(parent)
         expect(component).to be_kind_of(component_class)
       end
 
@@ -33,10 +33,19 @@ module RGen::Base
       end
 
       context "ルートファクトリではないとき" do
+        let(:factory) do
+          create_factory
+        end
+
         it "親コンポーネントの子コンポーネントを生成する" do
-          factory   = create_factory
           component = factory.create(parent)
           expect(component.parent).to be parent
+        end
+
+        it "#append_childを呼び出して、親コンポーネントに生成したコンポーネントを登録する" do
+          allow(parent).to receive(:append_child).and_call_original
+          component = factory.create(parent)
+          expect(parent).to have_received(:append_child).with(component)
         end
       end
 
@@ -52,29 +61,6 @@ module RGen::Base
 
           component = factory.create(parent)
           expect(component.children).to match [kind_of(component_class)]
-        end
-
-        it "Component#append_childを呼び出して、子コンポーネントを登録する" do
-          component = component_class.new(parent)
-          child     = component_class.new(component)
-
-          child_factory = create_factory do
-            define_method(:create_component) do |parent, *args|
-              child
-            end
-          end
-          factory = create_factory do
-            define_method(:create_component) do |parent, *args|
-              component
-            end
-            def create_children(component, *args)
-              create_child(component, *args)
-            end
-          end
-          factory.register_child_factory(child_factory)
-
-          expect(component).to receive(:append_child).with(child)
-          factory.create(parent)
         end
       end
 
