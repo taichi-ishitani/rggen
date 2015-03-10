@@ -32,7 +32,7 @@ shared_context 'configuration common' do
 end
 
 shared_context 'register_map common' do
-  class RegisterMapDummyLoader < RGen::RegisterMap::Loader
+  class RegisterMapDummyLoader < RGen::InputBase::Loader
     support_types :txt
 
     def self.load_data(data = nil)
@@ -45,7 +45,7 @@ shared_context 'register_map common' do
     end
 
     def load_file(file)
-      self.class.load_data
+      create_map(self.class.load_data, file)
     end
   end
 
@@ -57,6 +57,10 @@ shared_context 'register_map common' do
 
   def build_register_block_factory
     build_register_map_factory.instance_variable_get(:@child_factory)
+  end
+
+  def position(sheet_name, row, column)
+    RGen::RegisterMap::GenericMap::Cell::Position.new(register_map_file, sheet_name, row, column)
   end
 
   let(:register_map_file) do

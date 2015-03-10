@@ -17,17 +17,6 @@ describe 'name/register' do
     RGen::Configuration::Configuration.new
   end
 
-  def create_load_data(values)
-    hash  = values.each_with_object({}).with_index do |(names, h), index|
-      block_name    = "block_#{index}"
-      h[block_name] = [[nil, nil, block_name], [], []]
-      names.each do |name|
-        h[block_name] << [nil, name]
-      end
-    end
-    create_map(hash, register_map_file)
-  end
-
   context "適切な入力が与えられた場合" do
     describe "#name" do
       let(:valid_names) do
@@ -35,7 +24,17 @@ describe 'name/register' do
       end
 
       let(:load_data) do
-        create_load_data([valid_names])
+        {
+          "block_0" => [
+            [nil, nil           , "block_0"],
+            [nil, nil           , nil      ],
+            [nil, nil           , nil      ],
+            [nil, valid_names[0], nil      ],
+            [nil, valid_names[1], nil      ],
+            [nil, valid_names[2], nil      ],
+            [nil, valid_names[3], nil      ]
+          ]
+        }
       end
 
       let(:register_map) do
@@ -61,35 +60,73 @@ describe 'name/register' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_values.each do |value|
-        load_data = create_load_data([[value]])
+        load_data = {
+          "block_0" => [
+            [nil, nil, "block_0"],
+            [nil, nil  , nil    ],
+            [nil, nil  , nil    ],
+            [nil, value, nil    ]
+          ]
+        }
         RegisterMapDummyLoader.load_data(load_data)
 
-        m         = "invalid value for register name: #{value.inspect}"
-        position  = load_data[0][3, 1].position
+        message = "invalid value for register name: #{value.inspect}"
         expect{
           @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(m, position)
+        }.to raise_register_map_error(message, position("block_0", 3, 1))
       end
     end
   end
 
   context "入力名がブロック内で重複するとき" do
-    it "RegisterMapErrorを発生させる" do
-      load_data = create_load_data([["foo", "foo"]])
-      RegisterMapDummyLoader.load_data(load_data)
+    let(:load_data) do
+      {
+        "block_0" => [
+          [nil, nil, "block_0"],
+          [nil, nil  , nil    ],
+          [nil, nil  , nil    ],
+          [nil, "foo", nil    ],
+          [nil, "foo", nil    ]
+        ]
+      }
+    end
 
-      m         = "repeated register name: foo"
-      position  = load_data[0][4, 1].position
+    before do
+      RegisterMapDummyLoader.load_data(load_data)
+    end
+
+    it "RegisterMapErrorを発生させる" do
+
+      message = "repeated register name: foo"
       expect{
         @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(m, position)
+      }.to raise_register_map_error(message, position("block_0", 4, 1))
     end
   end
 
   context "入力名がブロック外で重複するとき" do
-    specify "RegisterMapErrorは発生しない" do
-      load_data = create_load_data([["foo"], ["foo"]])
+    let(:load_data) do
+      {
+        "block_0" => [
+          [nil, nil, "block_0"],
+          [nil, nil  , nil    ],
+          [nil, nil  , nil    ],
+          [nil, "foo", nil    ]
+        ],
+        "block_1" => [
+          [nil, nil, "block_1"],
+          [nil, nil  , nil    ],
+          [nil, nil  , nil    ],
+          [nil, "foo", nil    ]
+        ]
+      }
+    end
+
+    before do
       RegisterMapDummyLoader.load_data(load_data)
+    end
+
+    it "RegisterMapErrorは発生させない" do
       expect{
         @factory.create(configuration, register_map_file)
       }.not_to raise_register_map_error
