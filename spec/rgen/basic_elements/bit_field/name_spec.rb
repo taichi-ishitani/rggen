@@ -99,8 +99,8 @@ describe 'name/bit_field' do
     it "RegisterMapErrorを発生させる" do
       message = "repeated bit field name: foo"
       expect{
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(message, position("block_0", 4, 2))
+        @factory.create(configuration, register_map_file)
+      }.to raise_register_map_error(message, position("block_0", 4, 2))
     end
   end
 
@@ -124,8 +124,8 @@ describe 'name/bit_field' do
     it "RegisterMapErrorを発生させる" do
       message = "repeated bit field name: foo"
       expect{
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(message, position("block_0", 4, 2))
+        @factory.create(configuration, register_map_file)
+      }.to raise_register_map_error(message, position("block_0", 4, 2))
     end
   end
 
@@ -153,8 +153,8 @@ describe 'name/bit_field' do
 
     it "RegisterMapErrorを発生させない" do
       expect{
-          @factory.create(configuration, register_map_file)
-        }.not_to raise_register_map_error
+        @factory.create(configuration, register_map_file)
+      }.not_to raise_register_map_error
     end
   end
 end
