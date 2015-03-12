@@ -19,6 +19,15 @@ module RGen::RegisterMap
       end
     end
 
+    def []=(sheet_name, table)
+      @sheets[sheet_name] = Sheet.new(file, sheet_name)
+      table.each_with_index do |values, row|
+        values.each_with_index do |value, column|
+          @sheets[sheet_name][row, column]  = value
+        end
+      end
+    end
+
     def sheets
       @sheets.values
     end
