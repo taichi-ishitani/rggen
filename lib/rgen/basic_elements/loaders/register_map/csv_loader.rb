@@ -8,6 +8,6 @@ RGen.loader(:register_map, [:csv, :tsv]) do
   end
 
   def separator(file)
-    (File.extname(file) == ".csv") ? "," : "\t"
+    (File.ext(file) == "csv") ? "," : "\t"
   end
 end

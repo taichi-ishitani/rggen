@@ -38,7 +38,7 @@ module RGen::InputBase
       if loader
         loader.new
       else
-        fail RGen::LoadError, "unsupported file type: #{File.extname(file)}"
+        fail RGen::LoadError, "unsupported file type: #{File.ext(file)}"
       end
     end
   end

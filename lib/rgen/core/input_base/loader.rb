@@ -7,8 +7,7 @@ module RGen::InputBase
     end
 
     def self.acceptable?(file_name)
-      extension = File.extname(file_name)
-      support_types.any? {|type| extension == ".#{type}"}
+      support_types.include?(File.ext(file_name).to_sym)
     end
   end
 end

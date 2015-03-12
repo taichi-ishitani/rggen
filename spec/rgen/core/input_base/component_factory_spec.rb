@@ -59,7 +59,7 @@ module RGen::InputBase
             f.register_loader(bar_loader)
             f.root_factory
 
-            expect {f.create(file_name)}.to raise_load_error "unsupported file type: .foo"
+            expect {f.create(file_name)}.to raise_load_error "unsupported file type: foo"
           end
         end
       end
