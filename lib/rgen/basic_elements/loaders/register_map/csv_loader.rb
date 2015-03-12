@@ -3,7 +3,8 @@ RGen.loader(:register_map, [:csv, :tsv]) do
 
   def load_file(file)
     create_map(file) do |map|
-      map['N/A']  = CSV.read(file, col_sep: separator(file))
+      sheet_name      = File.basename(file, '.*')
+      map[sheet_name] = CSV.read(file, col_sep: separator(file))
     end
   end
 

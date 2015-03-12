@@ -20,16 +20,16 @@ describe 'csv_loader' do
     File.join(__dir__, 'files', 'sample.tsv')
   end
 
-  let(:sheet) do
-    'N/A'
-  end
-
   let(:configuration) do
     RGen::Configuration::Configuration.new
   end
 
 
   shared_examples_for "loader" do |file_ext|
+    let(:sheet) do
+      File.basename(file, '.*')
+    end
+
     let(:register_map) do
       register_map = @factory.create(configuration, file)
     end
