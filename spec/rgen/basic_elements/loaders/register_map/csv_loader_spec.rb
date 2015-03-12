@@ -24,7 +24,6 @@ describe 'csv_loader' do
     RGen::Configuration::Configuration.new
   end
 
-
   shared_examples_for "loader" do |file_ext|
     let(:sheet) do
       File.basename(file, '.*')
