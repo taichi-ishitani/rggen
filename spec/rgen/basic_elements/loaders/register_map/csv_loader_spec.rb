@@ -30,7 +30,7 @@ describe 'csv_loader' do
     end
 
     let(:register_map) do
-      register_map = @factory.create(configuration, file)
+      @factory.create(configuration, file)
     end
 
     let(:register_blocks) do
