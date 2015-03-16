@@ -143,7 +143,7 @@ describe 'base address/register_map' do
     end
 
     it "RegisterMapErrorを発生させる" do
-      message = "exceeds the maximum address(0xffff): 0x0_fffc - 0x1_0003"
+      message = "exceeds the maximum base address(0xffff): 0x0_fffc - 0x1_0003"
       expect{
         @factory.create(configuration, register_map_file)
       }.to raise_register_map_error(message, position("block_0", 0, 2))

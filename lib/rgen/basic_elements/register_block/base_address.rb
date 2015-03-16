@@ -9,7 +9,8 @@ RGen.item(:register_block, :base_address) do
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
       when @end_address > max_address
-        error "exceeds the maximum address(0x#{max_address.to_s(16)}): #{cell}"
+        error "exceeds the maximum base address" \
+              "(0x#{max_address.to_s(16)}): #{cell}"
       when unaligned_address?
         error "unaligned base address: #{cell}"
       when overlapped_address?
