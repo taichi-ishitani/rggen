@@ -33,8 +33,8 @@ RGen.item(:register_block, :base_address) do
     end
 
     def unaligned_address?
-      return true unless (@start_address + 0).multiple?(configuration.byte_size)
-      return true unless (@end_address   + 1).multiple?(configuration.byte_size)
+      return true unless (@start_address + 0).multiple?(configuration.byte_width)
+      return true unless (@end_address   + 1).multiple?(configuration.byte_width)
       false
     end
 

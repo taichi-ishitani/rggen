@@ -3,8 +3,8 @@ def match_address_width(width)
 end
 
 def match_data_width(width)
-  byte_size = width / 8
-  have_attributes(data_width: width, byte_size: byte_size)
+  byte_width  = width / 8
+  have_attributes(data_width: width, byte_width: byte_width)
 end
 
 def match_name(name)

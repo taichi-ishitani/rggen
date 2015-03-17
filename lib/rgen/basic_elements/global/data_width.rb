@@ -1,7 +1,7 @@
 RGen.item(:global, :data_width) do
   configuration do
     field :data_width, default: 32
-    field :byte_size do
+    field :byte_width do
       data_width / 8
     end
 
