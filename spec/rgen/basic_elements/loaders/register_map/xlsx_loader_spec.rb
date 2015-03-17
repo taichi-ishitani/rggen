@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe 'xls_loader' do
+describe 'xlsx_loader' do
   before(:all) do
     RGen.enable(:register_block, :name)
     RGen.enable(:register      , :name)
@@ -13,7 +13,7 @@ describe 'xls_loader' do
   end
 
   let(:file) do
-    File.join(__dir__, 'files', 'sample.xls')
+    File.join(__dir__, 'files', 'sample.xlsx')
   end
 
   let(:configuration) do
@@ -36,7 +36,7 @@ describe 'xls_loader' do
     register_map.bit_fields
   end
 
-  it "拡張子がxlsのExcel(2003以前)フォーマットのファイルをロードする" do
+  it "拡張子がxlsxのExcel(2007以降)フォーマットのファイルをロードする" do
     expect(register_blocks).to match([
       have_item(file, 'sheet_0', 0, 2, name: 'block_0'),
       have_item(file, 'sheet_2', 0, 2, name: 'block_2')
