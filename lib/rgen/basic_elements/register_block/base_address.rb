@@ -15,7 +15,8 @@ RGen.item(:register_block, :base_address) do
         error "exceeds the maximum base address" \
               "(0x#{max_address.to_s(16)}): #{cell}"
       when unaligned_address?
-        error "unaligned base address: #{cell}"
+        error "not aligned with data width" \
+              "(#{configuration.data_width}): #{cell}"
       when overlapped_address?
         error "overlapped base address: #{cell}"
       end

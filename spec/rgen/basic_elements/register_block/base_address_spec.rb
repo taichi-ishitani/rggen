@@ -150,7 +150,7 @@ describe 'base address/register_map' do
     end
   end
 
-  context "スタートアドレス、エンドアドレスがデータ幅でアラインメントされていないとき" do
+  context "スタートアドレス、エンドアドレスがデータ幅に揃っていないとき" do
     let(:invalid_values) do
       ["0x0001-0x0003", "0x0000-0x0004", "0x0001-0x0002"]
     end
@@ -164,7 +164,7 @@ describe 'base address/register_map' do
         }
         RegisterMapDummyLoader.load_data(load_data)
 
-        message = "unaligned base address: #{value}"
+        message = "not aligned with data width(#{data_width}): #{value}"
         expect{
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 0, 2))
