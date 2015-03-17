@@ -2,6 +2,9 @@ RGen.item(:register_block, :base_address) do
   register_map do
     field :start_address
     field :end_address
+    field :byte_size do
+      end_address - start_address + 1
+    end
 
     build do |cell|
       parse_address(cell.to_s)
