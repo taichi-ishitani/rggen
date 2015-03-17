@@ -16,6 +16,10 @@ def match_base_address(start_address, end_address)
   have_attributes(start_address: start_address, end_address: end_address, byte_size: byte_size)
 end
 
+def match_byte_size(byte_size)
+  have_attributes(byte_size: byte_size)
+end
+
 def clear_enabled_items
   RGen.generator.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_registries).each_value do |item_registry|
