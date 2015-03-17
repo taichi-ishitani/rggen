@@ -24,7 +24,7 @@ describe 'csv_loader' do
     RGen::Configuration::Configuration.new
   end
 
-  shared_examples_for "loader" do |file_ext|
+  shared_examples_for "loader" do |file_format|
     let(:sheet) do
       File.basename(file, '.*')
     end
@@ -45,7 +45,7 @@ describe 'csv_loader' do
       register_map.bit_fields
     end
 
-    it "拡張子が#{file_ext}の#{file_ext.upcase}フォーマットのファイルをロードする" do
+    it "#{file_format}フォーマットのファイルをロードする" do
       expect(register_blocks).to match([
         have_item(file, sheet, 0, 2, name: 'block_0')
       ])
@@ -62,7 +62,7 @@ describe 'csv_loader' do
   end
 
   context "入力ファイルの拡張子がcsvのとき" do
-    it_should_behave_like 'loader', 'csv' do
+    it_should_behave_like 'loader', 'CSV' do
       let(:file) do
         csv_file
       end
@@ -70,7 +70,7 @@ describe 'csv_loader' do
   end
 
   context "入力ファイルの拡張子がtsvのとき" do
-    it_should_behave_like 'loader', 'tsv' do
+    it_should_behave_like 'loader', 'TSV' do
       let(:file) do
         tsv_file
       end
