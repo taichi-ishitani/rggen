@@ -11,12 +11,12 @@ RGen.item(:register_block, :base_address) do
       case
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
-      when @end_address > max_address
-        error "exceeds the maximum base address" \
-              "(0x#{max_address.to_s(16)}): #{cell}"
       when unaligned_address?
         error "not aligned with data width" \
               "(#{configuration.data_width}): #{cell}"
+      when @end_address > max_address
+        error "exceeds the maximum base address" \
+              "(0x#{max_address.to_s(16)}): #{cell}"
       when overlapped_address?
         error "overlapped base address: #{cell}"
       end
@@ -32,15 +32,15 @@ RGen.item(:register_block, :base_address) do
       end
     end
 
-    def max_address
-      2**configuration.address_width - 1
-    end
-
     def unaligned_address?
       byte_width  = configuration.byte_width
       return true unless (@start_address + 0).multiple?(byte_width)
       return true unless (@end_address   + 1).multiple?(byte_width)
       false
+    end
+
+    def max_address
+      2**configuration.address_width - 1
     end
 
     def overlapped_address?

@@ -33,7 +33,7 @@ describe 'base address/register_map' do
   end
 
   context "適切な入力が与えられた場合" do
-    describe "#start_address/end_address" do
+    describe "#start_address/#end_address/#byte_size" do
       let(:valid_values) do
         [
           ["0x0000-0x0FFF"   , 0x0000, 0x0FFF],
@@ -63,9 +63,9 @@ describe 'base address/register_map' do
         RegisterMapDummyLoader.load_data(load_data)
       end
 
-      it "入力されたスタートアドレス/エンドアドレスを返す" do
+      it "入力されたスタートアドレス/エンドアドレス/バイトサイズを返す" do
         valid_values.each_with_index do |(_, start_address, end_address), i|
-          expect(register_map.register_blocks[i]).to match_base_address(start_address, end_address)
+          expect(register_map.register_blocks[i]).to match_address(start_address, end_address)
         end
       end
     end
@@ -131,25 +131,6 @@ describe 'base address/register_map' do
     end
   end
 
-  context "最大アドレスを超えたとき" do
-    let(:load_data) do
-      {"block_0" => [
-        [nil, nil, "0x0_fffc - 0x1_0003"]
-      ]}
-    end
-
-    before do
-      RegisterMapDummyLoader.load_data(load_data)
-    end
-
-    it "RegisterMapErrorを発生させる" do
-      message = "exceeds the maximum base address(0xffff): 0x0_fffc - 0x1_0003"
-      expect{
-        @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 0, 2))
-    end
-  end
-
   context "スタートアドレス、エンドアドレスがデータ幅に揃っていないとき" do
     let(:invalid_values) do
       ["0x0001-0x0003", "0x0000-0x0004", "0x0001-0x0002"]
@@ -169,6 +150,25 @@ describe 'base address/register_map' do
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 0, 2))
       end
+    end
+  end
+
+  context "最大アドレスを超えるとき" do
+    let(:load_data) do
+      {"block_0" => [
+        [nil, nil, "0x0_fffc - 0x1_0003"]
+      ]}
+    end
+
+    before do
+      RegisterMapDummyLoader.load_data(load_data)
+    end
+
+    it "RegisterMapErrorを発生させる" do
+      message = "exceeds the maximum base address(0xffff): 0x0_fffc - 0x1_0003"
+      expect{
+        @factory.create(configuration, register_map_file)
+      }.to raise_register_map_error(message, position("block_0", 0, 2))
     end
   end
 
