@@ -11,7 +11,7 @@ def match_name(name)
   have_attributes(name: name)
 end
 
-def match_base_address(start_address, end_address)
+def match_address(start_address, end_address)
   byte_size = end_address - start_address + 1
   have_attributes(start_address: start_address, end_address: end_address, byte_size: byte_size)
 end
