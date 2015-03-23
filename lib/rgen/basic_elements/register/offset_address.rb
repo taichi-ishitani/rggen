@@ -27,7 +27,7 @@ RGen.item(:register, :offset_address) do
       when /\A(0x\h[\h_]*)\z/i
         @start_address  = Regexp.last_match[1].hex
         @end_address    = @start_address + configuration.byte_width - 1
-      when /\A(0x\h[\h_]*)[ \t]*-[ \t]*(0x\h[\h_]*)\z/i
+      when /\A(0x\h[\h_]*) *- *(0x\h[\h_]*)\z/i
         @start_address  = Regexp.last_match[1].hex
         @end_address    = Regexp.last_match[2].hex
       else

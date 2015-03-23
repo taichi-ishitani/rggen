@@ -23,7 +23,7 @@ RGen.item(:register_block, :base_address) do
     end
 
     def parse_address(value)
-      match = /\A(0x\h[\h_]*)[ \t]*-[ \t]*(0x\h[\h_]*)\z/i.match(value)
+      match = /\A(0x\h[\h_]*) *- *(0x\h[\h_]*)\z/i.match(value)
       if match
         @start_address  = match.captures[0].hex
         @end_address    = match.captures[1].hex
