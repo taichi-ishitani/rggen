@@ -4,20 +4,20 @@ RGen.item(:bit_field, :name) do
 
     build do |cell|
       @name = cell.to_s
-      if invalid_value?(@name)
+      if invalid_value?
         error "invalid value for bit field name: #{cell.inspect}"
-      elsif repeated_name?(@name)
+      elsif repeated_name?
         error "repeated bit field name: #{@name}"
       end
     end
 
-    def invalid_value?(name)
-      /\A[a-z_][a-z0-9_]*\z/i.match(name).nil?
+    def invalid_value?
+      /\A[a-z_][a-z0-9_]*\z/i.match(@name).nil?
     end
 
-    def repeated_name?(name)
+    def repeated_name?
       register_block.bit_fields.any? do |bit_field|
-        name == bit_field.name
+        @name == bit_field.name
       end
     end
   end
