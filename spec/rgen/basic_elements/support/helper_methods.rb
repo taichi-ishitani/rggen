@@ -20,6 +20,11 @@ def match_byte_size(byte_size)
   have_attributes(byte_size: byte_size)
 end
 
+def match_bit_assignment(msb, lsb)
+  width = msb - lsb + 1
+  have_attributes(msb: msb, lsb: lsb, width: width)
+end
+
 def clear_enabled_items
   RGen.generator.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_registries).each_value do |item_registry|
