@@ -25,6 +25,10 @@ def match_bit_assignment(msb, lsb)
   have_attributes(msb: msb, lsb: lsb, width: width)
 end
 
+def match_initial_value(value)
+  have_attributes(initial_value: value)
+end
+
 def clear_enabled_items
   RGen.generator.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_registries).each_value do |item_registry|
