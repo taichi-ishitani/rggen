@@ -13,7 +13,7 @@ module RGen::Configuration
 
     let(:factory) do
       f = ItemFactory.new
-      f.register(:foo, FooItem)
+      f.register(FooItem)
       f
     end
 

@@ -75,7 +75,7 @@ module RGen::Base
 
         it "アイテムを含むコンポーネントオブジェクトを生成する" do
           item_factory  = ItemFactory.new
-          item_factory.register(item_name, item_class)
+          item_factory.register(item_class)
 
           factory = create_factory do
             def create_items(component, *args)

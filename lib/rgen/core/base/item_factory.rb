@@ -1,6 +1,6 @@
 module RGen::Base
   class ItemFactory
-    def register(name, item)
+    def register(item)
       @target_item  = item  unless @target_item
     end
 

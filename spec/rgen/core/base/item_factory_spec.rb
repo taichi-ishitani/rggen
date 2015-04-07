@@ -20,8 +20,8 @@ module RGen::Base
 
     describe "#create" do
       it "#registerで一番に登録されたItemオブジェクトを生成する" do
-        test_factory.register(:item_a, item_a)
-        test_factory.register(:item_b, item_b)
+        test_factory.register(item_a)
+        test_factory.register(item_b)
         item  = test_factory.create(owner)
         expect(item).to be_kind_of(item_a)
       end

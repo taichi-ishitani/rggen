@@ -1,9 +1,9 @@
 module RGen::Builder
   class ItemRegistry
-    Entry = Struct.new(:name, :klass, :factory) do
+    Entry = Struct.new(:klass, :factory) do
       def build_factory
         f = factory.new
-        f.register(name, klass)
+        f.register(klass)
         f
       end
     end
@@ -20,7 +20,7 @@ module RGen::Builder
 
     def register_item(name, &body)
       klass           = Class.new(base, &body)
-      @entries[name]  = Entry.new(name, klass, factory)
+      @entries[name]  = Entry.new(klass, factory)
     end
 
     def enable(item_or_items)
