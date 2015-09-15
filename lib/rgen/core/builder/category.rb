@@ -11,9 +11,7 @@ module RGen::Builder
     end
 
     def register_item(item_name, &body)
-      @current_item_name  = item_name
-      instance_exec(&body)
-      @current_item_name  = nil
+      do_registration(:register_item, item_name, &body)
     end
 
     def enable(item_or_items)
@@ -26,8 +24,16 @@ module RGen::Builder
 
     def define_registry_method(component_name)
       define_singleton_method(component_name) do |&body|
-        @item_registries[component_name].register_item(@current_item_name, &body)
+        @item_registries[component_name].__send__(@current_register_method, *@current_arguments, &body)
       end
+    end
+
+    def do_registration(register_method, *arguments, &body)
+      @current_register_method  = register_method
+      @current_arguments        = arguments
+      instance_exec(&body)
+      remove_instance_variable(:@current_register_method)
+      remove_instance_variable(:@current_arguments)
     end
   end
 end
