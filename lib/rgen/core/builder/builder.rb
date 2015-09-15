@@ -16,17 +16,17 @@ module RGen::Builder
 
     attr_reader :categories
 
-    def component_registry(registry_name, &body)
-      @registries[registry_name]  ||= ComponentRegistry.new(self, registry_name)
-      @registries[registry_name].instance_exec(&body)
+    def component_registry(component_name, &body)
+      @registries[component_name] ||= ComponentRegistry.new(self, component_name)
+      @registries[component_name].instance_exec(&body)
     end
 
-    def register_loader(registry_name, type_or_types, &body)
-      @registries[registry_name].register_loader(type_or_types, &body)
+    def register_loader(component_name, type_or_types, &body)
+      @registries[component_name].register_loader(type_or_types, &body)
     end
 
-    def build_factory(registry_name)
-      @registries[registry_name].build_factory
+    def build_factory(component_name)
+      @registries[component_name].build_factory
     end
 
     def register_item(category_name, item_name, &body)

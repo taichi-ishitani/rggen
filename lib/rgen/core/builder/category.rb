@@ -4,10 +4,10 @@ module RGen::Builder
       @item_registries  = {}
     end
 
-    def append_item_registry(name, item_registry)
-      return if @item_registries.key?(name)
-      @item_registries[name]  = item_registry
-      define_registry_method(name)
+    def append_item_registry(component_name, item_registry)
+      return if @item_registries.key?(component_name)
+      @item_registries[component_name]  = item_registry
+      define_registry_method(component_name)
     end
 
     def register_item(item_name, &body)
@@ -24,9 +24,9 @@ module RGen::Builder
 
     private
 
-    def define_registry_method(name)
-      define_singleton_method(name) do |&body|
-        @item_registries[name].register_item(@current_item_name, &body)
+    def define_registry_method(component_name)
+      define_singleton_method(component_name) do |&body|
+        @item_registries[component_name].register_item(@current_item_name, &body)
       end
     end
   end

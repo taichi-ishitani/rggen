@@ -1,10 +1,10 @@
 module RGen::Builder
   class ComponentRegistry
-    def initialize(builder, name)
-      @builder  = builder
-      @name     = name
-      @entries  = []
-      @loaders  = []
+    def initialize(builder, component_name)
+      @builder        = builder
+      @component_name = component_name
+      @entries        = []
+      @loaders        = []
     end
 
     attr_setter :loader_base
@@ -15,7 +15,7 @@ module RGen::Builder
 
       @builder.categories.each do |name, category|
         if associated_category.nil? || name == associated_category
-          category.append_item_registry(@name, entry.item_registry)
+          category.append_item_registry(@component_name, entry.item_registry)
         end
       end if entry.item_registry
 
