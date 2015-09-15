@@ -10,7 +10,7 @@ module RGen::Builder
     attr_reader :base
     attr_reader :factory
 
-    def register_item(item_name, &body)
+    def register_value_item(item_name, &body)
       entry = ValueItemEntry.new(factory)
       entry.item_class(base, &body)
       @entries[item_name] = entry

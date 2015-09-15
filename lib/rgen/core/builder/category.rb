@@ -10,8 +10,8 @@ module RGen::Builder
       define_registry_method(component_name)
     end
 
-    def register_item(item_name, &body)
-      do_registration(:register_item, item_name, &body)
+    def register_value_item(item_name, &body)
+      do_registration(:register_value_item, item_name, &body)
     end
 
     def enable(item_or_items)

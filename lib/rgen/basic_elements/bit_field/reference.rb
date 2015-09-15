@@ -1,4 +1,4 @@
-RGen.item(:bit_field, :reference) do
+RGen.value_item(:bit_field, :reference) do
   register_map do
     field(:has_reference?) do
       @reference.not.empty?

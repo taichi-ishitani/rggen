@@ -1,4 +1,4 @@
-RGen.item(:register, :offset_address) do
+RGen.value_item(:register, :offset_address) do
   register_map do
     field :start_address
     field :end_address

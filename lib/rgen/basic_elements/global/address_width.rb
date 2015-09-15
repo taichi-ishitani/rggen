@@ -1,4 +1,4 @@
-RGen.item(:global, :address_width) do
+RGen.value_item(:global, :address_width) do
   configuration do
     field :address_width, default: 32
 

@@ -1,4 +1,4 @@
-RGen.item(:register, :name) do
+RGen.value_item(:register, :name) do
   register_map do
     field :name
 

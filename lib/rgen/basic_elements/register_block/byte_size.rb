@@ -1,4 +1,4 @@
-RGen.item(:register_block, :byte_size) do
+RGen.value_item(:register_block, :byte_size) do
   register_map do
     field :byte_size
 

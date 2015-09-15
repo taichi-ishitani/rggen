@@ -88,7 +88,7 @@ module RGen::Builder
       end
     end
 
-    describe "#register_item" do
+    describe "#register_value_item" do
       before do
         builder.component_registry(:configuration) do
           register_component do
@@ -104,9 +104,9 @@ module RGen::Builder
         :foo
       end
 
-      it "引数で与えられた名前のカテゴリの#register_itemを呼び出して、アイテムの登録を行う" do
-        expect(categories[:global]).to receive(:register_item).with(item_name).and_call_original
-        builder.register_item(:global, item_name) do
+      it "引数で与えられた名前のカテゴリの#register_value_itemを呼び出して、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:register_value_item).with(item_name).and_call_original
+        builder.register_value_item(:global, item_name) do
           configuration do
           end
         end
@@ -125,7 +125,7 @@ module RGen::Builder
         end
 
         [:foo, :bar, :baz, :qux].each do |item_name|
-          builder.register_item(:global, item_name) do
+          builder.register_value_item(:global, item_name) do
             configuration do
             end
           end

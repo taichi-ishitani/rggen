@@ -29,8 +29,8 @@ module RGen::Builder
       @registries[component_name].build_factory
     end
 
-    def register_item(category_name, item_name, &body)
-      @categories[category_name].register_item(item_name, &body)
+    def register_value_item(category_name, item_name, &body)
+      @categories[category_name].register_value_item(item_name, &body)
     end
 
     def enable(category_name, item_or_itmes)

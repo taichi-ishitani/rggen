@@ -29,7 +29,7 @@ module RGen::Builder
       end
     end
 
-    describe "#register_item" do
+    describe "#register_value_item" do
       before do
         item_registries.each do |name, registry|
           category.append_item_registry(name, registry)
@@ -37,11 +37,11 @@ module RGen::Builder
       end
 
       it "引数で与えた名前で、ブロック内で指定した対象アイテムの定義を行う" do
-        expect(item_registries[:configuration]).to receive(:register_item).with(:foo)
-        expect(item_registries[:configuration]).to receive(:register_item).with(:bar)
-        expect(item_registries[:register_map ]).to receive(:register_item).with(:foo)
+        expect(item_registries[:configuration]).to receive(:register_value_item).with(:foo)
+        expect(item_registries[:configuration]).to receive(:register_value_item).with(:bar)
+        expect(item_registries[:register_map ]).to receive(:register_value_item).with(:foo)
 
-        category.register_item(:foo) do
+        category.register_value_item(:foo) do
           configuration do
             field :foo
           end
@@ -50,7 +50,7 @@ module RGen::Builder
           end
         end
 
-        category.register_item(:bar) do
+        category.register_value_item(:bar) do
           configuration do
             field :bar
           end
@@ -64,7 +64,7 @@ module RGen::Builder
           category.append_item_registry(name, registry)
         end
         [:foo, :bar, :baz, :qux].each do |item_name|
-          category.register_item(item_name) do
+          category.register_value_item(item_name) do
             configuration do
             end
             register_map do

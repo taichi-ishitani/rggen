@@ -1,4 +1,4 @@
-RGen.item(:bit_field, :name) do
+RGen.value_item(:bit_field, :name) do
   register_map do
     field :name
 
