@@ -1,13 +1,5 @@
 module RGen::Builder
   class ItemRegistry
-    Entry = Struct.new(:klass, :factory) do
-      def build_factory
-        f = factory.new
-        f.register(klass)
-        f
-      end
-    end
-
     def initialize(base, factory)
       @base           = base
       @factory        = factory
@@ -18,9 +10,10 @@ module RGen::Builder
     attr_reader :base
     attr_reader :factory
 
-    def register_item(name, &body)
-      klass           = Class.new(base, &body)
-      @entries[name]  = Entry.new(klass, factory)
+    def register_item(item_name, &body)
+      entry = ValueItemEntry.new(factory)
+      entry.item_class(base, &body)
+      @entries[item_name] = entry
     end
 
     def enable(item_or_items)
