@@ -11,9 +11,7 @@ module RGen::Builder
     attr_reader :factory
 
     def register_value_item(item_name, &body)
-      entry = ValueItemEntry.new(factory)
-      entry.item_class(base, &body)
-      @entries[item_name] = entry
+      @entries[item_name] = ValueItemEntry.new(base, body, factory)
     end
 
     def enable(item_or_items)
