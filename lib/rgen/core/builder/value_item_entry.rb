@@ -9,7 +9,7 @@ module RGen::Builder
     attr_reader :factory
 
     def build_factory
-      f = @factory.new
+      f = @factory.new(:value_item_factory)
       f.register(@item_class)
       f
     end
