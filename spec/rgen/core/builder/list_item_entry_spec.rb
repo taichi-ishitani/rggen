@@ -112,7 +112,7 @@ module RGen::Builder
       end
 
       specify "ファクトリオブジェクトは#enableで有効にされなかったアイテムは生成できない" do
-        expect {factory.create(nil, :bar)}.to raise_error
+        expect {factory.create(nil, :bar)}.to raise_error RuntimeError
       end
     end
   end
