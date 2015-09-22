@@ -14,9 +14,13 @@ module RGen::Builder
       do_registration(:register_value_item, item_name, &body)
     end
 
-    def enable(item_or_items)
+    def register_list_item(list_name, item_name = nil, &body)
+      do_registration(:register_list_item, list_name, item_name, &body)
+    end
+
+    def enable(*list_name, item_or_items)
       @item_registries.each_value do |item_registry|
-        item_registry.enable(item_or_items)
+        item_registry.enable(*list_name, item_or_items)
       end
     end
 

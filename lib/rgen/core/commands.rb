@@ -9,6 +9,7 @@ module RGen
     [
       [:component_registry , :component_registry],
       [:register_value_item, :value_item        ],
+      [:register_list_item , :list_item         ],
       [:enable             , :enable            ],
       [:register_loader    , :loader            ]
     ].each do |method_name, alias_name|

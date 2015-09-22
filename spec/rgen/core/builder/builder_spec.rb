@@ -113,6 +113,41 @@ module RGen::Builder
       end
     end
 
+    describe "#register_list_item" do
+      before do
+        builder.component_registry(:configuration) do
+          register_component do
+            component_class   RGen::Configuration::Configuration
+            component_factory RGen::Configuration::Factory
+            item_base         RGen::Configuration::Item
+            item_factory      RGen::Configuration::ItemFactory
+          end
+        end
+      end
+
+      let(:list_name) do
+        :foo
+      end
+
+      let(:item_name) do
+        :bar
+      end
+
+      it "引数で与えられた名前のカテゴリの#register_list_itemを呼び出して、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:register_list_item).with(list_name, nil      ).and_call_original
+        expect(categories[:global]).to receive(:register_list_item).with(list_name, item_name).and_call_original
+        builder.register_list_item(:global, list_name) do
+          configuration do
+          end
+        end
+        builder.register_list_item(:global, list_name, item_name) do
+          configuration do
+          end
+        end
+      end
+    end
+
+
     describe "#enable" do
       before do
         builder.component_registry(:configuration) do
@@ -124,8 +159,15 @@ module RGen::Builder
           end
         end
 
-        [:foo, :bar, :baz, :qux].each do |item_name|
+        [:baz, :qux].each do |item_name|
           builder.register_value_item(:global, item_name) do
+            configuration do
+            end
+          end
+        end
+
+        [:baz, :qux].each do |item_name|
+          builder.register_list_item(:global, item_name) do
             configuration do
             end
           end
@@ -135,8 +177,12 @@ module RGen::Builder
       it "引数で与えられた名前のカテゴリの#enableを呼び出して、アイテムの有効化を行う" do
         expect(categories[:global]).to receive(:enable).with([:foo, :bar]).and_call_original
         expect(categories[:global]).to receive(:enable).with(:qux).and_call_original
+        expect(categories[:global]).to receive(:enable).with(:qux, :foo).and_call_original
+        expect(categories[:global]).to receive(:enable).with(:qux, [:bar, :baz]).and_call_original
         builder.enable(:global, [:foo, :bar])
         builder.enable(:global, :qux)
+        builder.enable(:global, :qux, :foo)
+        builder.enable(:global, :qux, [:bar, :baz])
       end
     end
   end
