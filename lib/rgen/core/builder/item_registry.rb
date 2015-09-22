@@ -22,6 +22,10 @@ module RGen::Builder
         @list_item_entries[list_name] = ListItemEntry.new(base, factory)
         @list_item_entries[list_name].instance_exec(&body)
       else
+        unless @list_item_entries.key?(list_name)
+          message = "undefined list item entry: #{list_name}"
+          fail RGen::BuilderError, message
+        end
         @list_item_entries[list_name].register_list_item(item_name, &body)
       end
     end
@@ -36,7 +40,11 @@ module RGen::Builder
           @enabled_items  << item
         end
       when 1
+        return unless @list_item_entries.key?(list_name[0])
         @list_item_entries[list_name[0]].enable(item_or_items)
+      else
+        message = "wrong number of arguments (#{list_name.size + 1} for 1..2)"
+        fail ArgumentError, message
       end
     end
 

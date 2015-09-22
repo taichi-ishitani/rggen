@@ -2,6 +2,9 @@ module RGen
   class RGenError < StandardError
   end
 
+  class BuilderError < RGenError
+  end
+
   class LoadError < RGenError
   end
 

@@ -144,6 +144,22 @@ module RGen::Builder
           expect(list_item_entries[:foo]).to receive(:register_list_item).with(item_name).and_call_original
           item_registry.register_list_item(:foo, item_name, &body)
         end
+
+        context "登録されていないリスト名を指定したとき" do
+          let(:list_name) do
+            :bar
+          end
+
+          let(:message) do
+            "undefined list item entry: #{list_name}"
+          end
+
+          it "RGen::Builderエラーを発生させる" do
+            expect {
+              item_registry.register_list_item(list_name, :foo) {}
+            }.to raise_error RGen::BuilderError, message
+          end
+        end
       end
     end
 
@@ -183,6 +199,19 @@ module RGen::Builder
           expect(list_item_entries[:baz]).to receive(:enable).with([:bar, :baz])
           item_registry.enable(:baz, :foo)
           item_registry.enable(:baz, [:bar, :baz])
+        end
+
+        context "登録されていないリスト名を与えた場合" do
+          it "それを無視し、何も起こらない" do
+            expect {item_registry.enable(:foo, :foo)}.to_not raise_error
+          end
+        end
+      end
+
+      context "引数が3個以上のとき" do
+        it "ArgumentErrorを発生させる" do
+          message = "wrong number of arguments (3 for 1..2)"
+          expect {item_registry.enable(:foo, :bar, :baz)}.to raise_error ArgumentError, message
         end
       end
     end
