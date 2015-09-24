@@ -56,6 +56,26 @@ module RGen::Builder
           end
         end
       end
+
+      context "#shared_contextで共有コンテキストオブジェクトを生成した場合" do
+        specify "アイテムの定義内でコンテキストオブジェクトを参照できる" do
+          contexts  = []
+          category.register_value_item(:foo) do
+            shared_context do
+            end
+            contexts[0] = @shared_context
+            configuration do |context|
+              contexts[1] = context
+            end
+            register_map do |context|
+              contexts[2] = context
+            end
+          end
+
+          expect(contexts[1]).to eql contexts[0]
+          expect(contexts[2]).to eql contexts[0]
+        end
+      end
     end
 
     describe "#register_list_item" do
@@ -66,10 +86,10 @@ module RGen::Builder
       end
 
       it "引数で与えた名前で、ブロック内で指定した対象リスト型アイテムの定義を行う" do
-        expect(item_registries[:configuration]).to receive(:register_list_item).with(:foo, nil)
-        expect(item_registries[:configuration]).to receive(:register_list_item).with(:bar, nil)
+        expect(item_registries[:configuration]).to receive(:register_list_item).with(:foo)
+        expect(item_registries[:configuration]).to receive(:register_list_item).with(:bar)
         expect(item_registries[:configuration]).to receive(:register_list_item).with(:foo, :baz)
-        expect(item_registries[:register_map ]).to receive(:register_list_item).with(:foo, nil)
+        expect(item_registries[:register_map ]).to receive(:register_list_item).with(:foo)
         expect(item_registries[:register_map ]).to receive(:register_list_item).with(:foo, :baz)
 
         category.register_list_item(:foo) do
@@ -89,6 +109,41 @@ module RGen::Builder
           end
           register_map do
           end
+        end
+      end
+
+      context "#shared_contextで共有コンテキストオブジェクトを生成した場合" do
+        specify "アイテムの定義内で共有コンテキストオブジェクトを参照できる" do
+          contexts  = []
+
+          category.register_list_item(:foo) do
+            shared_context do
+            end
+            contexts[0] = @shared_context
+            configuration do |context|
+              contexts[1] = context
+            end
+            register_map do |context|
+              contexts[2] = context
+            end
+          end
+
+          category.register_list_item(:foo, :bar) do
+            shared_context do
+            end
+            contexts[3] = @shared_context
+            configuration do |context|
+              contexts[4] = context
+            end
+            register_map do |context|
+              contexts[5] = context
+            end
+          end
+
+          expect(contexts[1]).to eql contexts[0]
+          expect(contexts[2]).to eql contexts[0]
+          expect(contexts[4]).to eql contexts[3]
+          expect(contexts[5]).to eql contexts[3]
         end
       end
     end

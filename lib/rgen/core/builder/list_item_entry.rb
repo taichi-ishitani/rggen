@@ -1,24 +1,26 @@
 module RGen::Builder
   class ListItemEntry
-    def initialize(item_base, factory_base)
+    def initialize(item_base, factory_base, *contexts, &body)
       @item_base      = Class.new(item_base)
       @factory        = Class.new(factory_base)
       @items          = {}
       @enabled_items  = []
+      instance_exec(*contexts, &body) if block_given?
     end
 
     def item_base(&body)
-      @item_base.class_eval(&body)  if block_given?
+      @item_base.class_exec(&body)  if block_given?
       @item_base
     end
 
     def factory(&body)
-      @factory.class_eval(&body)  if block_given?
+      @factory.class_exec(&body)  if block_given?
       @factory
     end
 
-    def register_list_item(item_name, &body)
-      @items[item_name] = Class.new(item_base, &body)
+    def register_list_item(item_name, *contexts, &body)
+      @items[item_name] = Class.new(item_base)
+      @items[item_name].class_exec(*contexts, &body)
     end
 
     def enable(item_or_items)

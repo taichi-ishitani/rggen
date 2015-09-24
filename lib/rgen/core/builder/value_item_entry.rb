@@ -1,8 +1,9 @@
 module RGen::Builder
   class ValueItemEntry
-    def initialize(base, body, factory)
-      @item_class = Class.new(base, &body)
-      @factory    = factory
+    def initialize(base, factory, *contexts, &body)
+      @item_class = Class.new(base)
+      @factory  = factory
+      @item_class.class_exec(*contexts, &body)  if block_given?
     end
 
     attr_reader :item_class

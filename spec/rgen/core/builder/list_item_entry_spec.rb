@@ -18,6 +18,34 @@ module RGen::Builder
       list_item_entry.instance_variable_get(:@items)
     end
 
+    let(:shared_context) do
+      Object.new
+    end
+
+    describe "#initialize" do
+      context "ブロックが与えられた場合" do
+        specify "ブロックを自身のコンテキストで実行する" do
+          entry1  = nil
+          entry2  = ListItemEntry.new(item_base, factory_base) do
+            entry1  = self
+          end
+
+          expect(entry1).to eql entry2
+        end
+      end
+
+      context "コンテキストオブジェクトが与えられたとき" do
+        specify "与えられたコンテキストオブジェクトをブロック内で参照できる" do
+          actual_context = nil
+          ListItemEntry.new(item_base, factory_base, shared_context) do |context|
+            actual_context  = context
+          end
+
+          expect(actual_context).to eql shared_context
+        end
+      end
+    end
+
     describe "#item_base" do
       it "生成時に与えたitem_baseを親クラスとするベースアイテムクラスを返す" do
         expect(list_item_entry.item_base.superclass).to be item_base
@@ -57,17 +85,26 @@ module RGen::Builder
     end
 
     describe "#register_list_item" do
-      before do
+      it "#item_baseを親クラスとしてアイテムクラスを定義し、与えたアイテム名で登録する" do
         list_item_entry.register_list_item(:foo) do
           field :foo
         end
-      end
 
-      it "#item_baseを親クラスとしてアイテムクラスを定義し、与えたアイテム名で登録する" do
         expect(items[:foo]).to have_attributes(
           superclass: list_item_entry.item_base,
           fields:     match([:foo])
         )
+      end
+
+      context "コンテキストオブジェクトが与えられたとき" do
+        specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
+          actual_context  = nil
+          list_item_entry.register_list_item(:foo, shared_context) do |context|
+            actual_context  = context
+          end
+
+          expect(actual_context).to be shared_context
+        end
       end
     end
 

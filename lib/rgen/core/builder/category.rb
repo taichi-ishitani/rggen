@@ -18,6 +18,14 @@ module RGen::Builder
       do_registration(:register_list_item, list_name, item_name, &body)
     end
 
+    def shared_context(&body)
+      unless instance_variable_defined?(:@shared_context)
+        @shared_context = Object.new
+        @arguments.push(@shared_context)
+      end
+      @shared_context.singleton_class.class_exec(&body) if block_given?
+    end
+
     def enable(*list_name, item_or_items)
       @item_registries.each_value do |item_registry|
         item_registry.enable(*list_name, item_or_items)
@@ -34,10 +42,11 @@ module RGen::Builder
 
     def do_registration(register_method, *arguments, &body)
       @register_method  = register_method
-      @arguments        = arguments
+      @arguments        = arguments.compact
       instance_exec(&body)
       remove_instance_variable(:@register_method)
       remove_instance_variable(:@arguments)
+      remove_instance_variable(:@shared_context)  if @shared_context
     end
   end
 end

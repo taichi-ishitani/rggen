@@ -11,22 +11,27 @@ module RGen::Builder
     attr_reader :base
     attr_reader :factory
 
-    def register_value_item(item_name, &body)
-      @list_item_entries.delete(item_name)
-      @value_item_entries[item_name]  = ValueItemEntry.new(base, body, factory)
+    def register_value_item(item_name, *contexts, &body)
+      entry = ValueItemEntry.new(base, factory, *contexts, &body)
+      update_entries(:value, item_name, entry)
     end
 
-    def register_list_item(list_name, item_name = nil, &body)
-      if item_name.nil?
-        @value_item_entries.delete(list_name)
-        @list_item_entries[list_name] = ListItemEntry.new(base, factory)
-        @list_item_entries[list_name].instance_exec(&body)
-      else
+    def register_list_item(list_name, *args, &body)
+      case args.first
+      when Symbol
         unless @list_item_entries.key?(list_name)
           message = "undefined list item entry: #{list_name}"
           fail RGen::BuilderError, message
         end
-        @list_item_entries[list_name].register_list_item(item_name, &body)
+
+        item_name = args.shift
+        contexts  = args
+        entry     = @list_item_entries[list_name]
+        entry.register_list_item(item_name, *contexts, &body)
+      else
+        contexts  = args
+        entry     = ListItemEntry.new(base, factory, *contexts, &body)
+        update_entries(:list, list_name, entry)
       end
     end
 
@@ -52,6 +57,18 @@ module RGen::Builder
       @enabled_items.each_with_object({}) do |name, factories|
         entry           = @value_item_entries[name] || @list_item_entries[name]
         factories[name] = entry.build_factory
+      end
+    end
+
+    private
+
+    def update_entries(entry_type, entry_name, entry)
+      if entry_type == :value
+        @list_item_entries.delete(entry_name)
+        @value_item_entries[entry_name] = entry
+      else
+        @value_item_entries.delete(entry_name)
+        @list_item_entries[entry_name]  = entry
       end
     end
   end

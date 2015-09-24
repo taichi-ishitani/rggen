@@ -26,6 +26,10 @@ module RGen::Builder
       item_registry.instance_variable_get(:@enabled_items)
     end
 
+    let(:shared_context) do
+      Object.new
+    end
+
     describe "#register_value_item" do
       before do
         item_registry.register_value_item(:foo) do
@@ -46,6 +50,17 @@ module RGen::Builder
 
       it "#factoryを対応するファクトリとして登録する" do
         expect(entry.factory).to eql item_registry.factory
+      end
+
+      context "コンテキストオブジェクトが与えられたとき" do
+        specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
+          actual_context  = nil
+          item_registry.register_value_item(:bar, shared_context) do |context|
+            actual_context  = context
+          end
+
+          expect(actual_context).to eql shared_context
+        end
       end
 
       context "同名の値型アイテムエントリがすでに登録されている場合" do
@@ -96,6 +111,17 @@ module RGen::Builder
           expect(entry).to be e
         end
 
+        context "コンテキストオブジェクトが与えられたとき" do
+          specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
+            actual_context  = nil
+            item_registry.register_list_item(:foo, shared_context) do |context|
+              actual_context  = context
+            end
+
+            expect(actual_context).to eql shared_context
+          end
+        end
+
         context "同名のリスト型アイテムエントリがすでに登録されている場合" do
           before do
             item_registry.register_list_item(:foo) do
@@ -143,6 +169,17 @@ module RGen::Builder
         it "エントリオブジェクトの#register_list_itemを呼び出して、アイテムの追加を行う" do
           expect(list_item_entries[:foo]).to receive(:register_list_item).with(item_name).and_call_original
           item_registry.register_list_item(:foo, item_name, &body)
+        end
+
+        context "コンテキストオブジェクトが与えられたとき" do
+          specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
+            actual_context  = nil
+            item_registry.register_list_item(:foo, item_name, shared_context) do |context|
+              actual_context  = context
+            end
+
+            expect(actual_context).to eql shared_context
+          end
         end
 
         context "登録されていないリスト名を指定したとき" do
