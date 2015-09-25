@@ -1,13 +1,12 @@
 module RGen::InputBase
   class Loader
-    def self.support_types(type_or_types = nil)
-      @support_types  ||= []
-      @support_types.concat(Array(type_or_types)) unless type_or_types.nil?
-      @support_types
-    end
+    class << self
+      attr_writer :supported_types
 
-    def self.acceptable?(file_name)
-      support_types.include?(File.ext(file_name).to_sym)
+      def acceptable?(file_name)
+        ext = File.ext(file_name).to_sym
+        @supported_types.any? {|type| type.casecmp(ext) == 0}
+      end
     end
   end
 end

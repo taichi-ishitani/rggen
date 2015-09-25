@@ -10,7 +10,7 @@ module RGen::InputBase
 
         let(:foo_loader) do
           Class.new(Loader) do
-            support_types :foo
+            self.supported_types  = [:foo]
             def load_file(file)
             end
           end
@@ -18,7 +18,7 @@ module RGen::InputBase
 
         let(:bar_loader) do
           Class.new(Loader) do
-            support_types :bar
+            self.supported_types  = [:bar]
           end
         end
 

@@ -30,7 +30,7 @@ module RGen::Configuration
 
     let(:loader) do
       Class.new(RGen::InputBase::Loader) do
-        support_types :txt
+        self.supported_types  = [:txt]
       end
     end
 

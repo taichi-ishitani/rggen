@@ -6,39 +6,26 @@ module RGen::InputBase
       Class.new(Loader)
     end
 
-    describe ".support_types" do
-      context "引数が0個のとき" do
-        it "登録されているタイプ一覧を返す" do
-          # 初期状態なので、空を返す
-          expect(loader.support_types).to be_empty
-        end
-      end
-
-      context "タイプが与えられとき" do
-        it "与えられたタイプをsupport_typesに追加する" do
-          loader.support_types(:foo)
-          loader.support_types([:bar, :baz])
-          expect(loader.support_types).to match [:foo, :bar, :baz]
-        end
-      end
-    end
-
     describe ".acceptable?" do
-      let(:file_name) do
-        "test.foo"
+      let(:file_names) do
+        %w(test.foo test.bar test.FOO test.BaR)
       end
 
       context "入力ファイルの拡張子が、登録したタイプに含まれる場合" do
         it "真を返す" do
-          loader.support_types([:foo, :bar])
-          expect(loader.acceptable?(file_name)).to be_truthy
+          loader.supported_types  = [:foo, :bar]
+          file_names.each do |file_name|
+            expect(loader.acceptable?(file_name)).to be_truthy
+          end
         end
       end
 
       context "入力ファイルの拡張子が、登録したタイプに含まれない場合" do
         it "偽を返す" do
-          loader.support_types([:bar, :baz])
-          expect(loader.acceptable?(file_name)).to be_falsy
+          loader.supported_types  = [:baz, :qux]
+          file_names.each do |file_name|
+            expect(loader.acceptable?(file_name)).to be_falsy
+          end
         end
       end
     end

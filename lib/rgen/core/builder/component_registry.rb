@@ -24,9 +24,9 @@ module RGen::Builder
 
     def register_loader(type_or_types, &body)
       return unless loader_base
-      loader  = Class.new(loader_base, &body)
-      loader.support_types(type_or_types)
-      @loaders  << loader
+      l                 = Class.new(loader_base, &body)
+      l.supported_types = Array(type_or_types)
+      @loaders  << l
     end
 
     def build_factory

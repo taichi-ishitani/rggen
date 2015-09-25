@@ -1,6 +1,6 @@
 shared_context 'configuration common' do
   class ConfigurationDummyLoader < RGen::InputBase::Loader
-    support_types :txt
+    self.supported_types  = [:txt]
 
     def self.load_data(data = nil)
       @load_data  = data  if data
@@ -33,7 +33,7 @@ end
 
 shared_context 'register_map common' do
   class RegisterMapDummyLoader < RGen::InputBase::Loader
-    support_types :txt
+    self.supported_types  = [:txt]
 
     def self.load_data(data = nil)
       @load_data  = data  if data

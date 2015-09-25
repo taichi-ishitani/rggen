@@ -30,10 +30,6 @@ module RGen::Builder
       component_registry.instance_variable_get(:@loaders)
     end
 
-    def match_loader(base, support_types)
-      have_attributes(superclass: base, support_types: support_types)
-    end
-
     describe "#register_component" do
       it "コンポーネントの登録を行う" do
         component_registry.register_component(:register_block) do
@@ -121,7 +117,7 @@ module RGen::Builder
         end
       end
 
-      let(:support_types) do
+      let(:supported_types) do
         [:yml, :yaml]
       end
 
@@ -131,19 +127,20 @@ module RGen::Builder
         end
 
         it "引数で与えられたファイルタイプをサポートするローダを定義し、登録する" do
-          component_registry.register_loader(support_types) do
+          component_registry.register_loader(supported_types) do
             def loader(file)
             end
           end
 
-          expect(loaders.last).to match_loader(loader_base, support_types)
+          expect(loaders.last).to be < loader_base
+          expect(loaders.last.instance_variable_get(:@supported_types)).to match supported_types
         end
       end
 
       context "#loader_baseでローダのベースクラスが登録されていない場合" do
         it "ローダの登録は行わない" do
           expect{
-            component_registry.register_loader(support_types) do
+            component_registry.register_loader(supported_types) do
               def loader(file)
               end
             end

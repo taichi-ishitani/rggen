@@ -14,7 +14,7 @@ module RGen::RegisterMap
     let(:valid_loader) do
       m = map
       Class.new(RGen::InputBase::Loader) do
-        support_types :csv
+        self.supported_types  = [:csv]
         define_method(:load_file) do |file|
           m
         end
@@ -24,7 +24,7 @@ module RGen::RegisterMap
     let(:invalid_loader) do
       d = invalid_data
       Class.new(RGen::InputBase::Loader) do
-        support_types :txt
+        self.supported_types  = [:txt]
         define_method(:load_file) do |file|
           d
         end
