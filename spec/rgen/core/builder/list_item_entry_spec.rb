@@ -138,10 +138,6 @@ module RGen::Builder
         expect(factory).to be_kind_of list_item_entry.factory
       end
 
-      specify "ファクトリオブジェクトはリストアイテム型" do
-        expect(factory.instance_variable_get(:@factory_type)).to eq :list_item_factory
-      end
-
       specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成できる" do
         expect(factory.create(nil, :foo)).to be_kind_of items[:foo]
         expect(factory.create(nil, :baz)).to be_kind_of items[:baz]

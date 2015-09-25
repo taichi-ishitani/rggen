@@ -8,8 +8,8 @@ module RGen::RegisterMap::Base
     end
 
     let(:factory) do
-      f = ItemFactory.new
-      f.register(FooItem)
+      f             = ItemFactory.new
+      f.target_item = FooItem
       f
     end
 
@@ -53,7 +53,7 @@ module RGen::RegisterMap::Base
             error m, cell
           end
         }
-        f.new(:list_item_factory)
+        f.new
       end
 
       it "入力されたメッセージとセルの位置情報で、RGen::RegisterMapErrorを発生させる" do

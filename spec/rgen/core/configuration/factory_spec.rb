@@ -22,8 +22,8 @@ module RGen::Configuration
       end
 
       let("#{item_name}_factory") do
-        f = ItemFactory.new
-        f.register(send("#{item_name}_item"))
+        f             = ItemFactory.new
+        f.target_item = send("#{item_name}_item")
         f
       end
     end

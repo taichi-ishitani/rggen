@@ -15,33 +15,32 @@ module RGen::Base
     end
 
     describe "#create" do
-      context "value_item_factoryのとき" do
+      context "#target_item=で対象アイテムクラスが登録された場合" do
         let(:test_factory) do
-          ItemFactory.new(:value_item_factory)
+          ItemFactory.new
         end
 
         let(:item) do
-          item  = test_factory.create(owner)
+          test_factory.create(owner)
         end
 
         before do
-          test_factory.register(item_a)
-          test_factory.register(item_b)
+          test_factory.target_item  = item_a
         end
 
-        it "#registerで一番に登録されたItemオブジェクトを生成する" do
+        it "登録されたItemオブジェクトを生成する" do
           expect(item).to be_kind_of(item_a)
         end
       end
 
-      context "list_item_factoryのとき" do
+      context "target_items=で対象アイテムクラス群が登録された場合" do
         let(:test_factory) do
           f = Class.new(ItemFactory) do
             def select_target_item(arg)
               @target_items[arg]
             end
           end
-          f.new(:list_item_factory)
+          f.new
         end
 
         let(:item) do
@@ -49,11 +48,10 @@ module RGen::Base
         end
 
         before do
-          test_factory.register(item_a, :item_a)
-          test_factory.register(item_b, :item_b)
+          test_factory.target_items = {item_a: item_a, item_b: item_b}
         end
 
-        it "#select_target_itemで選択されたItemオブジェクトを生成する" do
+        it "#select_target_itemで選択されたアイテムオブジェクトを生成する" do
           expect(item).to be_kind_of(item_b)
         end
       end

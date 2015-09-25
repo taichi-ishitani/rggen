@@ -17,8 +17,8 @@ shared_context 'bit_field sample factories' do
     end
 
     let("bit_field_#{item_name}_factory") do
-      f = RGen::RegisterMap::BitField::ItemFactory.new
-      f.register(send("bit_field_#{item_name}_item"))
+      f             = RGen::RegisterMap::BitField::ItemFactory.new
+      f.target_item = send("bit_field_#{item_name}_item")
       f
     end
   end
@@ -44,8 +44,8 @@ shared_context 'register sample factories' do
     end
 
     let("register_#{item_name}_factory") do
-      f = RGen::RegisterMap::Register::ItemFactory.new
-      f.register(send("register_#{item_name}_item"))
+      f             = RGen::RegisterMap::Register::ItemFactory.new
+      f.target_item = send("register_#{item_name}_item")
       f
     end
   end
@@ -71,8 +71,8 @@ shared_context 'register_block sample factories' do
     end
 
     let("register_block_#{item_name}_factory") do
-      f = RGen::RegisterMap::RegisterBlock::ItemFactory.new
-      f.register(send("register_block_#{item_name}_item"))
+      f             = RGen::RegisterMap::RegisterBlock::ItemFactory.new
+      f.target_item = send("register_block_#{item_name}_item")
       f
     end
   end

@@ -25,17 +25,24 @@ module RGen::Builder
 
     def enable(item_or_items)
       Array(item_or_items).each do |item|
-        next unless @items.key?(item) && @enabled_items.not.include?(item)
+        next unless @items.key?(item)
+        next if @enabled_items.include?(item)
         @enabled_items  << item
       end
     end
 
     def build_factory
-      f = @factory.new(:list_item_factory)
-      @enabled_items.each do |item_name|
-        f.register(@items[item_name], item_name)
-      end
+      f               = @factory.new
+      f.target_items  = target_items
       f
+    end
+
+    private
+
+    def target_items
+      @enabled_items.each_with_object({}) do |item_name, items|
+        items[item_name]  = @items[item_name]
+      end
     end
   end
 end

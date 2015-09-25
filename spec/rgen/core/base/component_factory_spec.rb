@@ -74,8 +74,8 @@ module RGen::Base
         end
 
         it "アイテムを含むコンポーネントオブジェクトを生成する" do
-          item_factory  = ItemFactory.new
-          item_factory.register(item_class)
+          item_factory              = ItemFactory.new
+          item_factory.target_item  = item_class
 
           factory = create_factory do
             def create_items(component, *args)

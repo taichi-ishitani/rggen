@@ -12,8 +12,8 @@ module RGen::Configuration
     end
 
     let(:factory) do
-      f = ItemFactory.new
-      f.register(FooItem)
+      f             = ItemFactory.new
+      f.target_item = FooItem
       f
     end
 
