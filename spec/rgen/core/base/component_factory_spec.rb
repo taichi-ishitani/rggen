@@ -12,7 +12,7 @@ module RGen::Base
 
     def create_factory(&body)
       f = Class.new(ComponentFactory, &body).new
-      f.register_component(component_class)
+      f.target_component  = component_class
       f
     end
 
@@ -57,7 +57,7 @@ module RGen::Base
               create_child(component, *args)
             end
           end
-          factory.register_child_factory(child_factory)
+          factory.child_factory = child_factory
 
           component = factory.create(parent)
           expect(component.children).to match [kind_of(component_class)]
@@ -84,7 +84,7 @@ module RGen::Base
               end
             end
           end
-          factory.register_item_factory(item_name, item_factory)
+          factory.item_factories  = {item_name => item_factory}
 
           component = factory.create(parent)
           expect(component.items).to match [kind_of(item_class)]
@@ -110,7 +110,7 @@ module RGen::Base
               end
             end
           end
-          factory.register_item_factory(item_name, item_factory)
+          factory.item_factories  = {item_name => item_factory}
 
           expect(component).to receive(:append_item).with(item)
           factory.create(parent)

@@ -1,5 +1,7 @@
 module RGen::InputBase
   class ComponentFactory < RGen::Base::ComponentFactory
+    attr_writer :loaders
+
     def create(*args)
       if @root_factory
         file    = args.pop
@@ -14,15 +16,7 @@ module RGen::InputBase
       component
     end
 
-    def register_loader(loader)
-      loaders << loader
-    end
-
     private
-
-    def loaders
-      @loaders  ||= []
-    end
 
     def load(file)
       load_file(file)
@@ -34,7 +28,7 @@ module RGen::InputBase
     end
 
     def find_loader(file)
-      loader  = loaders.find {|l| l.acceptable?(file)}
+      loader  = @loaders && @loaders.find {|l| l.acceptable?(file)}
       if loader
         loader.new
       else

@@ -17,8 +17,8 @@ shared_context 'configuration common' do
   end
 
   def build_configuration_factory
-    f = RGen.generator.builder.build_factory(:configuration)
-    f.register_loader(ConfigurationDummyLoader)
+    f         = RGen.generator.builder.build_factory(:configuration)
+    f.loaders = [ConfigurationDummyLoader]
     f
   end
 
@@ -50,8 +50,8 @@ shared_context 'register_map common' do
   end
 
   def build_register_map_factory
-    f = RGen.generator.builder.build_factory(:register_map)
-    f.register_loader(RegisterMapDummyLoader)
+    f         = RGen.generator.builder.build_factory(:register_map)
+    f.loaders = [RegisterMapDummyLoader]
     f
   end
 

@@ -1,5 +1,9 @@
 module RGen::Base
   class ComponentFactory
+    attr_writer :target_component
+    attr_writer :item_factories
+    attr_writer :child_factory
+
     def create(*args)
       parent  = (@root_factory) ? nil : args.shift
       sources = args
@@ -10,19 +14,6 @@ module RGen::Base
       create_children(component, *sources) if @child_factory
 
       component
-    end
-
-    def register_component(component)
-      @target_component = component
-    end
-
-    def register_item_factory(name, item_factory)
-      @item_factories ||= {}
-      @item_factories[name] = item_factory
-    end
-
-    def register_child_factory(child_factory)
-      @child_factory  = child_factory
     end
 
     def root_factory

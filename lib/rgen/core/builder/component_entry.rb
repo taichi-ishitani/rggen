@@ -11,14 +11,10 @@ module RGen::Builder
     end
 
     def build_factory
-      factory = component_factory.new
-      factory.register_component(component_class)
-
-      item_registry.build_factories.each do |name, item_factory|
-        factory.register_item_factory(name, item_factory)
-      end if item_registry
-
-      factory
+      f                   = component_factory.new
+      f.target_component  = component_class
+      f.item_factories    = item_registry.build_factories if item_registry
+      f
     end
   end
 end

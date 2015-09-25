@@ -57,8 +57,7 @@ module RGen::RegisterMap
     end
 
     before do
-      register_map_factory.register_loader(valid_loader)
-      register_map_factory.register_loader(invalid_loader)
+      register_map_factory.loaders  = [valid_loader, invalid_loader]
     end
 
     describe "#create" do

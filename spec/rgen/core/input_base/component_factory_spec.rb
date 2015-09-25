@@ -25,8 +25,8 @@ module RGen::InputBase
         context "入力ファイルに対応するローダが登録されている場合" do
           let(:factory) do
             f = ComponentFactory.new
-            f.register_component(Component)
-            f.register_loader(foo_loader)
+            f.target_component  = Component
+            f.loaders           = [foo_loader]
             f.root_factory
             f
           end
@@ -55,8 +55,8 @@ module RGen::InputBase
         context "入力ファイルに対応するローダが登録されていない場合" do
           it "LoadErrorを発生させる" do
             f = ComponentFactory.new
-            f.register_component(Component)
-            f.register_loader(bar_loader)
+            f.target_component  = Component
+            f.loaders           = [bar_loader]
             f.root_factory
 
             expect {f.create(file_name)}.to raise_load_error "unsupported file type: foo"

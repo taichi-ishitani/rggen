@@ -30,26 +30,15 @@ module RGen::Builder
     end
 
     def build_factory
-      @entries.each_with_object([]) do |entry, factories|
-        if factories.empty?
-          factory = build_root_factory(entry)
-        else
-          factory = entry.build_factory
-          factories.last.register_child_factory(factory)
-        end
-        factories << factory
-      end.first
-    end
-
-    private
-
-    def build_root_factory(entry)
-      factory = entry.build_factory
-      factory.root_factory
-      @loaders.each do |loader|
-        factory.register_loader(loader)
+      factories = @entries.map(&:build_factory)
+      factories.each_cons(2) do |factory_pair|
+        factory_pair[0].child_factory = factory_pair[1]
       end
-      factory
+
+      factories.first.loaders = @loaders
+      factories.first.root_factory
+
+      factories.first
     end
   end
 end
