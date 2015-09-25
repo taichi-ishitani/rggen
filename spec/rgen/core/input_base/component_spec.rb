@@ -2,7 +2,7 @@ require_relative  '../../../spec_helper'
 
 module RGen::InputBase
   describe Component do
-    describe "#append_item" do
+    describe "#add_item" do
       let(:owner) do
         Component.new
       end
@@ -15,7 +15,7 @@ module RGen::InputBase
           end
         }.new(owner)
 
-        owner.append_item(item)
+        owner.add_item(item)
         fields.keys.each do |name|
           expect(owner.send(name)).to eq item.send(name)
         end
@@ -37,7 +37,7 @@ module RGen::InputBase
             field field_slice[0]
             field field_slice[1]
           }.new(owner)
-          owner.append_item(item)
+          owner.add_item(item)
         end
         expect(owner.fields).to match fields
       end
@@ -63,11 +63,11 @@ module RGen::InputBase
           2.times do
             item  = item_class.new(c)
             expect(item).to receive(:validate).with(no_args)
-            c.append_item(item)
+            c.add_item(item)
           end
         end
         children.each do |c|
-          root.append_child(c)
+          root.add_child(c)
         end
         root.validate
       end

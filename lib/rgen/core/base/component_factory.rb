@@ -10,7 +10,7 @@ module RGen::Base
 
       component = create_component(parent, *sources)
       create_items(component, *sources) if @item_factories
-      parent.append_child(component) unless @root_factory
+      parent.add_child(component) unless @root_factory
       create_children(component, *sources) if @child_factory
 
       component
@@ -28,7 +28,7 @@ module RGen::Base
 
     def create_item(item_factory, component, *sources)
       item  = item_factory.create(component, *sources)
-      component.append_item(item)
+      component.add_item(item)
     end
 
     def create_child(component, *sources)

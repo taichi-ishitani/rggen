@@ -2,9 +2,9 @@ module RGen::InputBase
   class Component < RGen::Base::Component
     include SingleForwardable
 
-    def append_item(item)
+    def add_item(item)
       super(item)
-      def_object_delegators(item, *item.fields)
+      def_object_delegators(@items.last, *item.fields)
     end
 
     def fields

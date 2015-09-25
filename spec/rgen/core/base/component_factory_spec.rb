@@ -43,9 +43,9 @@ module RGen::Base
         end
 
         it "#append_childを呼び出して、親コンポーネントに生成したコンポーネントを登録する" do
-          allow(parent).to receive(:append_child).and_call_original
+          allow(parent).to receive(:add_child).and_call_original
           component = factory.create(parent)
-          expect(parent).to have_received(:append_child).with(component)
+          expect(parent).to have_received(:add_child).with(component)
         end
       end
 
@@ -112,7 +112,7 @@ module RGen::Base
           end
           factory.item_factories  = {item_name => item_factory}
 
-          expect(component).to receive(:append_item).with(item)
+          expect(component).to receive(:add_item).with(item)
           factory.create(parent)
         end
       end

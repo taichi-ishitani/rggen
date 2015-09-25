@@ -10,11 +10,11 @@ module RGen::Base
     attr_reader :items
     attr_reader :children
 
-    def append_item(item)
+    def add_item(item)
       items << item
     end
 
-    def append_child(child)
+    def add_child(child)
       children  << child
     end
   end

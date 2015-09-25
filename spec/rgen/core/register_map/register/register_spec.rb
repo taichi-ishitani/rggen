@@ -19,7 +19,7 @@ module RGen::RegisterMap::Register
     end
 
     before do
-      bit_fields.each {|bit_field| register.append_child(bit_field)}
+      bit_fields.each {|bit_field| register.add_child(bit_field)}
     end
 
     describe "#register_map" do

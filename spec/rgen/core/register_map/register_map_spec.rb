@@ -23,9 +23,9 @@ module RGen::RegisterMap
     end
 
     before do
-      register_blocks.each {|block| register_map.append_child(block)}
-      registers.each_with_index {|register, i| register_blocks[i/2].append_child(register)}
-      bit_fields.each_with_index {|bit_field, i| registers[i/2].append_child(bit_field)}
+      register_blocks.each {|block| register_map.add_child(block)}
+      registers.each_with_index {|register, i| register_blocks[i/2].add_child(register)}
+      bit_fields.each_with_index {|bit_field, i| registers[i/2].add_child(bit_field)}
     end
 
     describe "#register_blocks" do
