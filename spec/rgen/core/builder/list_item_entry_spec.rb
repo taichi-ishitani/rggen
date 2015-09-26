@@ -84,9 +84,9 @@ module RGen::Builder
       end
     end
 
-    describe "#register_list_item" do
+    describe "#define_list_item" do
       it "#item_baseを親クラスとしてアイテムクラスを定義し、与えたアイテム名で登録する" do
-        list_item_entry.register_list_item(:foo) do
+        list_item_entry.define_list_item(:foo) do
           field :foo
         end
 
@@ -99,7 +99,7 @@ module RGen::Builder
       context "コンテキストオブジェクトが与えられたとき" do
         specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
           actual_context  = nil
-          list_item_entry.register_list_item(:foo, shared_context) do |context|
+          list_item_entry.define_list_item(:foo, shared_context) do |context|
             actual_context  = context
           end
 
@@ -117,13 +117,13 @@ module RGen::Builder
           end
         end
 
-        list_item_entry.register_list_item(:foo) do
+        list_item_entry.define_list_item(:foo) do
         end
-        list_item_entry.register_list_item(:bar) do
+        list_item_entry.define_list_item(:bar) do
         end
-        list_item_entry.register_list_item(:baz) do
+        list_item_entry.define_list_item(:baz) do
         end
-        list_item_entry.register_list_item(:qux) do
+        list_item_entry.define_list_item(:qux) do
         end
 
         list_item_entry.enable([:qux, :baz])

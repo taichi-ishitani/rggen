@@ -167,7 +167,7 @@ module RGen::Builder
         end
 
         it "エントリオブジェクトの#define_list_itemを呼び出して、アイテムの追加を行う" do
-          expect(list_item_entries[:foo]).to receive(:register_list_item).with(item_name).and_call_original
+          expect(list_item_entries[:foo]).to receive(:define_list_item).with(item_name).and_call_original
           item_store.define_list_item(:foo, item_name, &body)
         end
 

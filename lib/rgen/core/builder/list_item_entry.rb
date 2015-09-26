@@ -18,7 +18,7 @@ module RGen::Builder
       @factory
     end
 
-    def register_list_item(item_name, *contexts, &body)
+    def define_list_item(item_name, *contexts, &body)
       @items[item_name] = Class.new(item_base)
       @items[item_name].class_exec(*contexts, &body)
     end

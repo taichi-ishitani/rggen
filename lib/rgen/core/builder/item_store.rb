@@ -27,7 +27,7 @@ module RGen::Builder
         item_name = args.shift
         contexts  = args
         entry     = @list_item_entries[list_name]
-        entry.register_list_item(item_name, *contexts, &body)
+        entry.define_list_item(item_name, *contexts, &body)
       else
         contexts  = args
         entry     = ListItemEntry.new(base, factory, *contexts, &body)
