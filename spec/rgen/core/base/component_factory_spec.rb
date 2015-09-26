@@ -42,7 +42,7 @@ module RGen::Base
           expect(component.parent).to be parent
         end
 
-        it "#append_childを呼び出して、親コンポーネントに生成したコンポーネントを登録する" do
+        it "#add_childを呼び出して、親コンポーネントに生成したコンポーネントを登録する" do
           allow(parent).to receive(:add_child).and_call_original
           component = factory.create(parent)
           expect(parent).to have_received(:add_child).with(component)
@@ -90,7 +90,7 @@ module RGen::Base
           expect(component.items).to match [kind_of(item_class)]
         end
 
-        it "Component#append_itemを呼び出して、アイテムオブジェクトを登録する" do
+        it "Component#add_itemを呼び出して、アイテムオブジェクトを登録する" do
           component     = component_class.new(parent)
           item          = item_class.new(component)
 
