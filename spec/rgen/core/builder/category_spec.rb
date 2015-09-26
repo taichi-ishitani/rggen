@@ -19,10 +19,10 @@ module RGen::Builder
       }
     end
 
-    describe "#append_item_store" do
+    describe "#add_item_store" do
       it "引数で与えられた名前で、アイテム登録用のメソッドと定義する" do
         expect{
-          category.append_item_store(:configuration, item_stores[:configuration])
+          category.add_item_store(:configuration, item_stores[:configuration])
         }.to change {
           category.respond_to?(:configuration)
         }.from(false).to(true)
@@ -32,7 +32,7 @@ module RGen::Builder
     describe "#define_value_item" do
       before do
         item_stores.each do |name, registry|
-          category.append_item_store(name, registry)
+          category.add_item_store(name, registry)
         end
       end
 
@@ -81,7 +81,7 @@ module RGen::Builder
     describe "#define_list_item" do
       before do
         item_stores.each do |name, registry|
-          category.append_item_store(name, registry)
+          category.add_item_store(name, registry)
         end
       end
 
@@ -151,7 +151,7 @@ module RGen::Builder
     describe "#enable" do
       before do
         item_stores.each do |name, registry|
-          category.append_item_store(name, registry)
+          category.add_item_store(name, registry)
         end
         [:foo, :bar].each do |item_name|
           category.define_value_item(item_name) do

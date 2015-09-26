@@ -4,7 +4,7 @@ module RGen::Builder
       @item_stores  = {}
     end
 
-    def append_item_store(component_name, item_store)
+    def add_item_store(component_name, item_store)
       return if @item_stores.key?(component_name)
       @item_stores[component_name]  = item_store
       define_definition_method(component_name, item_store)

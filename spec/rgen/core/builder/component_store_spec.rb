@@ -50,7 +50,7 @@ module RGen::Builder
       context "アイテムの設定が行われた場合" do
         it "生成されたエントリのカテゴリへの登録は行わない" do
           categories.each_value do |category|
-            expect(category).not_to receive(:append_item_store)
+            expect(category).not_to receive(:add_item_store)
           end
 
           component_store.entry do
@@ -65,9 +65,9 @@ module RGen::Builder
           it "指定されたカテゴリに、生成したエントリのアイテムレジストリを追加する" do
             categories.each do |name, category|
               if name == :register_block
-                allow(category).to receive(:append_item_store)
+                allow(category).to receive(:add_item_store)
               else
-                expect(category).not_to receive(:append_item_store)
+                expect(category).not_to receive(:add_item_store)
               end
             end
 
@@ -80,14 +80,14 @@ module RGen::Builder
               item_store = self.item_store
             end
 
-            expect(categories[:register_block]).to have_received(:append_item_store).with(registry_name, item_store)
+            expect(categories[:register_block]).to have_received(:add_item_store).with(registry_name, item_store)
           end
         end
 
         context "引数で所属するカテゴリの指定がない場合" do
           it "指定されたカテゴリに、生成したエントリのアイテムレジストリを追加する" do
             categories.each_value do |category|
-              allow(category).to receive(:append_item_store)
+              allow(category).to receive(:add_item_store)
             end
 
             item_store = nil
@@ -100,7 +100,7 @@ module RGen::Builder
             end
 
             categories.each_value do |category|
-              expect(category).to have_received(:append_item_store).with(registry_name, item_store)
+              expect(category).to have_received(:add_item_store).with(registry_name, item_store)
             end
           end
         end
