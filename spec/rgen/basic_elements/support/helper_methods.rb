@@ -31,8 +31,12 @@ end
 
 def clear_enabled_items
   RGen.generator.builder.categories.each_value do |category|
-    category.instance_variable_get(:@item_stores).each_value do |item_registry|
-      item_registry.instance_variable_get(:@enabled_items).clear
+    category.instance_variable_get(:@item_stores).each_value do |item_store|
+      item_store.instance_variable_get(:@enabled_items).clear
+      list_item_entries = item_store.instance_variable_get(:@list_item_entries)
+      list_item_entries.each_value do |entry|
+        entry.instance_variable_get(:@enabled_items).clear
+      end
     end
   end
 end

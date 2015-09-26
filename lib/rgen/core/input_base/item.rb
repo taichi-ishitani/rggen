@@ -29,6 +29,16 @@ module RGen::InputBase
       @validator  ||= body
     end
 
+    def self.inherited(subclass)
+      [:@fields, :@builder, :@validator].each do |variable|
+        if instance_variable_defined?(variable)
+          value = instance_variable_get(variable)
+          value = Array.new(value) if variable == :@fields
+          subclass.instance_variable_set(variable, value)
+        end
+      end
+    end
+
     def_class_delegator :fields
     attr_class_reader   :builder
     attr_class_reader   :validator
