@@ -88,7 +88,7 @@ module RGen::Builder
       end
     end
 
-    describe "#register_value_item" do
+    describe "#define_value_item" do
       before do
         builder.component_registry(:configuration) do
           register_component do
@@ -104,16 +104,16 @@ module RGen::Builder
         :foo
       end
 
-      it "引数で与えられた名前のカテゴリの#register_value_itemを呼び出して、アイテムの登録を行う" do
-        expect(categories[:global]).to receive(:register_value_item).with(item_name).and_call_original
-        builder.register_value_item(:global, item_name) do
+      it "引数で与えられた名前のカテゴリの#define_value_itemを呼び出して、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:define_value_item).with(item_name).and_call_original
+        builder.define_value_item(:global, item_name) do
           configuration do
           end
         end
       end
     end
 
-    describe "#register_list_item" do
+    describe "#define_list_item" do
       before do
         builder.component_registry(:configuration) do
           register_component do
@@ -133,14 +133,14 @@ module RGen::Builder
         :bar
       end
 
-      it "引数で与えられた名前のカテゴリの#register_list_itemを呼び出して、アイテムの登録を行う" do
-        expect(categories[:global]).to receive(:register_list_item).with(list_name, nil      ).and_call_original
-        expect(categories[:global]).to receive(:register_list_item).with(list_name, item_name).and_call_original
-        builder.register_list_item(:global, list_name) do
+      it "引数で与えられた名前のカテゴリの#define_list_itemを呼び出して、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:define_list_item).with(list_name, nil      ).and_call_original
+        expect(categories[:global]).to receive(:define_list_item).with(list_name, item_name).and_call_original
+        builder.define_list_item(:global, list_name) do
           configuration do
           end
         end
-        builder.register_list_item(:global, list_name, item_name) do
+        builder.define_list_item(:global, list_name, item_name) do
           configuration do
           end
         end
@@ -160,14 +160,14 @@ module RGen::Builder
         end
 
         [:baz, :qux].each do |item_name|
-          builder.register_value_item(:global, item_name) do
+          builder.define_value_item(:global, item_name) do
             configuration do
             end
           end
         end
 
         [:baz, :qux].each do |item_name|
-          builder.register_list_item(:global, item_name) do
+          builder.define_list_item(:global, item_name) do
             configuration do
             end
           end

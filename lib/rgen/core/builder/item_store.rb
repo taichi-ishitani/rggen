@@ -1,5 +1,5 @@
 module RGen::Builder
-  class ItemRegistry
+  class ItemStore
     def initialize(base, factory)
       @base               = base
       @factory            = factory
@@ -11,12 +11,12 @@ module RGen::Builder
     attr_reader :base
     attr_reader :factory
 
-    def register_value_item(item_name, *contexts, &body)
+    def define_value_item(item_name, *contexts, &body)
       entry = ValueItemEntry.new(base, factory, *contexts, &body)
       update_entries(:value, item_name, entry)
     end
 
-    def register_list_item(list_name, *args, &body)
+    def define_list_item(list_name, *args, &body)
       case args.first
       when Symbol
         unless @list_item_entries.key?(list_name)
@@ -55,8 +55,9 @@ module RGen::Builder
 
     def build_factories
       @enabled_items.each_with_object({}) do |name, factories|
-        entry           = @value_item_entries[name] || @list_item_entries[name]
-        factories[name] = entry.build_factory
+        factories[name] = (
+          @value_item_entries[name] || @list_item_entries[name]
+        ).build_factory
       end
     end
 

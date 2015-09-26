@@ -29,12 +29,12 @@ module RGen::Builder
       @registries[component_name].build_factory
     end
 
-    def register_value_item(category_name, item_name, &body)
-      @categories[category_name].register_value_item(item_name, &body)
+    def define_value_item(category_name, item_name, &body)
+      @categories[category_name].define_value_item(item_name, &body)
     end
 
-    def register_list_item(category_name, list_name, item_name = nil, &body)
-      @categories[category_name].register_list_item(list_name, item_name, &body)
+    def define_list_item(category_name, list_name, item_name = nil, &body)
+      @categories[category_name].define_list_item(list_name, item_name, &body)
     end
 
     def enable(category_name, *list_name, item_or_itmes)

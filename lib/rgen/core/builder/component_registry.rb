@@ -15,9 +15,9 @@ module RGen::Builder
 
       @builder.categories.each do |name, category|
         if associated_category.nil? || name == associated_category
-          category.append_item_registry(@component_name, entry.item_registry)
+          category.append_item_store(@component_name, entry.item_store)
         end
-      end if entry.item_registry
+      end if entry.item_store
 
       @entries  << entry
     end

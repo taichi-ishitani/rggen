@@ -5,15 +5,15 @@ module RGen::Builder
     attr_setter :item_base
     attr_setter :item_factory
 
-    def item_registry
+    def item_store
       return nil unless item_base && item_factory
-      @item_registry  ||= ItemRegistry.new(item_base, item_factory)
+      @item_Store ||= ItemStore.new(item_base, item_factory)
     end
 
     def build_factory
       f                   = component_factory.new
       f.target_component  = component_class
-      f.item_factories    = item_registry.build_factories if item_registry
+      f.item_factories    = item_store.build_factories if item_store
       f
     end
   end

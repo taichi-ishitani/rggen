@@ -1,21 +1,21 @@
 module RGen::Builder
   class Category
     def initialize
-      @item_registries  = {}
+      @item_stores  = {}
     end
 
-    def append_item_registry(component_name, item_registry)
-      return if @item_registries.key?(component_name)
-      @item_registries[component_name]  = item_registry
-      define_registry_method(component_name, item_registry)
+    def append_item_store(component_name, item_store)
+      return if @item_stores.key?(component_name)
+      @item_stores[component_name]  = item_store
+      define_definition_method(component_name, item_store)
     end
 
-    def register_value_item(item_name, &body)
-      do_registration(:register_value_item, item_name, &body)
+    def define_value_item(item_name, &body)
+      do_definition(:define_value_item, item_name, &body)
     end
 
-    def register_list_item(list_name, item_name = nil, &body)
-      do_registration(:register_list_item, list_name, item_name, &body)
+    def define_list_item(list_name, item_name = nil, &body)
+      do_definition(:define_list_item, list_name, item_name, &body)
     end
 
     def shared_context(&body)
@@ -27,24 +27,24 @@ module RGen::Builder
     end
 
     def enable(*list_name, item_or_items)
-      @item_registries.each_value do |item_registry|
+      @item_stores.each_value do |item_registry|
         item_registry.enable(*list_name, item_or_items)
       end
     end
 
     private
 
-    def define_registry_method(component_name, item_registry)
+    def define_definition_method(component_name, item_store)
       define_singleton_method(component_name) do |&body|
-        item_registry.__send__(@register_method, *@arguments, &body)
+        item_store.__send__(@definition_method, *@arguments, &body)
       end
     end
 
-    def do_registration(register_method, *arguments, &body)
-      @register_method  = register_method
-      @arguments        = arguments.compact
+    def do_definition(register_method, *arguments, &body)
+      @definition_method  = register_method
+      @arguments          = arguments.compact
       instance_exec(&body)
-      remove_instance_variable(:@register_method)
+      remove_instance_variable(:@definition_method)
       remove_instance_variable(:@arguments)
       remove_instance_variable(:@shared_context)  if @shared_context
     end

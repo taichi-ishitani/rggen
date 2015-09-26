@@ -48,10 +48,10 @@ module RGen::Builder
           component_entry.item_base(item_base)
           component_entry.item_factory(item_factory)
           [:foo, :bar].each do |item_name|
-            component_entry.item_registry.register_value_item(item_name) do
+            component_entry.item_store.define_value_item(item_name) do
               field item_name, default: item_name
             end
-            component_entry.item_registry.enable(item_name)
+            component_entry.item_store.enable(item_name)
           end
         end
 

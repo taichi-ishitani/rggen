@@ -50,7 +50,7 @@ module RGen::Builder
       context "アイテムの設定が行われた場合" do
         it "生成されたエントリのカテゴリへの登録は行わない" do
           categories.each_value do |category|
-            expect(category).not_to receive(:append_item_registry)
+            expect(category).not_to receive(:append_item_store)
           end
 
           component_registry.register_component do
@@ -65,42 +65,42 @@ module RGen::Builder
           it "指定されたカテゴリに、生成したエントリのアイテムレジストリを追加する" do
             categories.each do |name, category|
               if name == :register_block
-                allow(category).to receive(:append_item_registry)
+                allow(category).to receive(:append_item_store)
               else
-                expect(category).not_to receive(:append_item_registry)
+                expect(category).not_to receive(:append_item_store)
               end
             end
 
-            item_registry = nil
+            item_store = nil
             component_registry.register_component(:register_block) do
               component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
               component_factory RGen::RegisterMap::RegisterBlock::Factory
               item_base         RGen::RegisterMap::RegisterBlock::Item
               item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
-              item_registry = self.item_registry
+              item_store = self.item_store
             end
 
-            expect(categories[:register_block]).to have_received(:append_item_registry).with(registry_name, item_registry)
+            expect(categories[:register_block]).to have_received(:append_item_store).with(registry_name, item_store)
           end
         end
 
         context "引数で所属するカテゴリの指定がない場合" do
           it "指定されたカテゴリに、生成したエントリのアイテムレジストリを追加する" do
             categories.each_value do |category|
-              allow(category).to receive(:append_item_registry)
+              allow(category).to receive(:append_item_store)
             end
 
-            item_registry = nil
+            item_store = nil
             component_registry.register_component do
               component_class   RGen::Configuration::Configuration
               component_factory RGen::Configuration::Factory
               item_base         RGen::Configuration::Item
               item_factory      RGen::Configuration::ItemFactory
-              item_registry = self.item_registry
+              item_store  = self.item_store
             end
 
             categories.each_value do |category|
-              expect(category).to have_received(:append_item_registry).with(registry_name, item_registry)
+              expect(category).to have_received(:append_item_store).with(registry_name, item_store)
             end
           end
         end
@@ -168,11 +168,11 @@ module RGen::Builder
           item_base         RGen::RegisterMap::Register::Item
           item_factory      RGen::RegisterMap::Register::ItemFactory
         end
-        categories[:register_block].register_value_item(:bar) do
+        categories[:register_block].define_value_item(:bar) do
           foo do
           end
         end
-        categories[:register].register_value_item(:bar) do
+        categories[:register].define_value_item(:bar) do
           foo do
           end
         end
