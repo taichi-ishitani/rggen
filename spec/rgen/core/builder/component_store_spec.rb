@@ -1,7 +1,7 @@
 require_relative  '../../../spec_helper'
 
 module RGen::Builder
-  describe ComponentRegistry do
+  describe ComponentStore do
     let(:builder) do
       Builder.new
     end
@@ -10,12 +10,12 @@ module RGen::Builder
       :foo
     end
 
-    let(:component_registry) do
-      ComponentRegistry.new(builder, registry_name)
+    let(:component_store) do
+      ComponentStore.new(builder, registry_name)
     end
 
     let(:component_entries) do
-      component_registry.instance_variable_get(:@entries)
+      component_store.instance_variable_get(:@entries)
     end
 
     let(:categories) do
@@ -27,12 +27,12 @@ module RGen::Builder
     end
 
     let(:loaders) do
-      component_registry.instance_variable_get(:@loaders)
+      component_store.instance_variable_get(:@loaders)
     end
 
-    describe "#register_component" do
+    describe "#entry" do
       it "コンポーネントの登録を行う" do
-        component_registry.register_component(:register_block) do
+        component_store.entry(:register_block) do
           component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
           component_factory RGen::RegisterMap::RegisterBlock::Factory
           item_base         RGen::RegisterMap::RegisterBlock::Item
@@ -53,7 +53,7 @@ module RGen::Builder
             expect(category).not_to receive(:append_item_store)
           end
 
-          component_registry.register_component do
+          component_store.entry do
             component_class   RGen::RegisterMap::RegisterMap
             component_factory RGen::RegisterMap::Factory
           end
@@ -72,7 +72,7 @@ module RGen::Builder
             end
 
             item_store = nil
-            component_registry.register_component(:register_block) do
+            component_store.entry(:register_block) do
               component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
               component_factory RGen::RegisterMap::RegisterBlock::Factory
               item_base         RGen::RegisterMap::RegisterBlock::Item
@@ -91,7 +91,7 @@ module RGen::Builder
             end
 
             item_store = nil
-            component_registry.register_component do
+            component_store.entry do
               component_class   RGen::Configuration::Configuration
               component_factory RGen::Configuration::Factory
               item_base         RGen::Configuration::Item
@@ -107,9 +107,9 @@ module RGen::Builder
       end
     end
 
-    describe "#register_loader" do
+    describe "#define_loader" do
       before do
-        component_registry.register_component do
+        component_store.entry do
           component_class   RGen::Configuration::Configuration
           component_factory RGen::Configuration::Factory
           item_base         RGen::Configuration::Item
@@ -123,11 +123,11 @@ module RGen::Builder
 
       context "#loader_baseでローダのベースクラスが登録されている場合" do
         before do
-          component_registry.loader_base(loader_base)
+          component_store.loader_base(loader_base)
         end
 
         it "引数で与えられたファイルタイプをサポートするローダを定義し、登録する" do
-          component_registry.register_loader(supported_types) do
+          component_store.define_loader(supported_types) do
             def loader(file)
             end
           end
@@ -140,7 +140,7 @@ module RGen::Builder
       context "#loader_baseでローダのベースクラスが登録されていない場合" do
         it "ローダの登録は行わない" do
           expect{
-            component_registry.register_loader(supported_types) do
+            component_store.define_loader(supported_types) do
               def loader(file)
               end
             end
@@ -151,18 +151,18 @@ module RGen::Builder
 
     describe "#build_factory" do
       before do
-        component_registry.loader_base(loader_base)
-        component_registry.register_component do
+        component_store.loader_base(loader_base)
+        component_store.entry do
           component_class   RGen::RegisterMap::RegisterMap
           component_factory RGen::RegisterMap::Factory
         end
-        component_registry.register_component(:register_block) do
+        component_store.entry(:register_block) do
           component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
           component_factory RGen::RegisterMap::RegisterBlock::Factory
           item_base         RGen::RegisterMap::RegisterBlock::Item
           item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
         end
-        component_registry.register_component(:register) do
+        component_store.entry(:register) do
           component_class   RGen::RegisterMap::Register::Register
           component_factory RGen::RegisterMap::Register::Factory
           item_base         RGen::RegisterMap::Register::Item
@@ -181,7 +181,7 @@ module RGen::Builder
       end
 
       let(:built_factories) do
-        factory   = component_registry.build_factory
+        factory   = component_store.build_factory
         factories = [factory]
         loop do
           factory = factory.instance_variable_get(:@child_factory)
@@ -195,7 +195,7 @@ module RGen::Builder
         component_entries.each do |entry|
           expect(entry).to receive(:build_factory).and_call_original.ordered
         end
-        component_registry.build_factory
+        component_store.build_factory
       end
 
       specify "生成されたファクトリは登録順に親子関係をもつ" do
@@ -221,7 +221,7 @@ module RGen::Builder
       context "ローダが登録されているとき" do
         before do
           [:xls, :csv].each do |type|
-            component_registry.register_loader(type) do
+            component_store.define_loader(type) do
               def loader(file)
               end
             end

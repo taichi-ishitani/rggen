@@ -10,8 +10,8 @@ module RGen::Builder
       builder.categories
     end
 
-    let(:registries) do
-      builder.instance_variable_get(:@registries)
+    let(:stores) do
+      builder.instance_variable_get(:@stores)
     end
 
     it "4種類のカテゴリを持つ" do
@@ -23,15 +23,15 @@ module RGen::Builder
       )
     end
 
-    describe "#component_registry" do
+    describe "#component_store" do
       it "コンポーネントエントリを生成し、引数で与えられた名前で登録する" do
         registry  = nil
-        builder.component_registry(:register_map) do
-          register_component do
+        builder.component_store(:register_map) do
+          entry do
             component_class   RGen::RegisterMap::RegisterMap
             component_factory RGen::RegisterMap::Factory
           end
-          register_component(:register_block) do
+          entry(:register_block) do
             component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
             component_factory RGen::RegisterMap::RegisterBlock::Factory
             item_base         RGen::RegisterMap::RegisterBlock::Item
@@ -40,15 +40,15 @@ module RGen::Builder
           registry  = self
         end
 
-        expect(registries[:register_map]).to eql registry
+        expect(stores[:register_map]).to eql registry
       end
     end
 
-    describe "#register_loader" do
+    describe "#define_loader" do
       before do
-        builder.component_registry(:register_map) do
+        builder.component_store(:register_map) do
           loader_base RGen::InputBase::Loader
-          register_component do
+          entry do
             component_class   RGen::RegisterMap::RegisterMap
             component_factory RGen::RegisterMap::Factory
           end
@@ -59,21 +59,21 @@ module RGen::Builder
         [:xls, :xlsx]
       end
 
-      it "引数で与えられた名前のコンポーネントレジストリの#register_loader、ローダの登録を行う" do
-        expect(registries[:register_map]).to receive(:register_loader).with(support_types).and_call_original
-        builder.register_loader(:register_map, support_types) do
+      it "引数で与えられた名前のコンポーネントレジストリの#define_loader、ローダの登録を行う" do
+        expect(stores[:register_map]).to receive(:define_loader).with(support_types).and_call_original
+        builder.define_loader(:register_map, support_types) do
         end
       end
     end
 
     describe "#build_factory" do
       before do
-        builder.component_registry(:register_map) do
-          register_component do
+        builder.component_store(:register_map) do
+          entry do
             component_class   RGen::RegisterMap::RegisterMap
             component_factory RGen::RegisterMap::Factory
           end
-          register_component(:register_block) do
+          entry(:register_block) do
             component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
             component_factory RGen::RegisterMap::RegisterBlock::Factory
             item_base         RGen::RegisterMap::RegisterBlock::Item
@@ -83,15 +83,15 @@ module RGen::Builder
       end
 
       it "引数で与えられた名前のコンポーネントレジストリの#build_factoryを呼び出して、ファクトリの生成を行う" do
-        expect(registries[:register_map]).to receive(:build_factory).and_call_original
+        expect(stores[:register_map]).to receive(:build_factory).and_call_original
         builder.build_factory(:register_map)
       end
     end
 
     describe "#define_value_item" do
       before do
-        builder.component_registry(:configuration) do
-          register_component do
+        builder.component_store(:configuration) do
+          entry do
             component_class   RGen::Configuration::Configuration
             component_factory RGen::Configuration::Factory
             item_base         RGen::Configuration::Item
@@ -115,8 +115,8 @@ module RGen::Builder
 
     describe "#define_list_item" do
       before do
-        builder.component_registry(:configuration) do
-          register_component do
+        builder.component_store(:configuration) do
+          entry do
             component_class   RGen::Configuration::Configuration
             component_factory RGen::Configuration::Factory
             item_base         RGen::Configuration::Item
@@ -150,8 +150,8 @@ module RGen::Builder
 
     describe "#enable" do
       before do
-        builder.component_registry(:configuration) do
-          register_component do
+        builder.component_store(:configuration) do
+          entry do
             component_class   RGen::Configuration::Configuration
             component_factory RGen::Configuration::Factory
             item_base         RGen::Configuration::Item

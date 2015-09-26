@@ -9,27 +9,27 @@ module RGen
     require_relative 'register_map/loader'
     require_relative 'register_map/factory'
 
-    RGen.component_registry(:register_map) do
-      register_component do
+    RGen.component_store(:register_map) do
+      entry do
         component_class   RegisterMap
         component_factory Factory
       end
 
-      register_component(:register_block) do
+      entry(:register_block) do
         component_class   RegisterBlock::RegisterBlock
         component_factory RegisterBlock::Factory
         item_base         RegisterBlock::Item
         item_factory      RegisterBlock::ItemFactory
       end
 
-      register_component(:register) do
+      entry(:register) do
         component_class   Register::Register
         component_factory Register::Factory
         item_base         Register::Item
         item_factory      Register::ItemFactory
       end
 
-      register_component(:bit_field) do
+      entry(:bit_field) do
         component_class   BitField::BitField
         component_factory BitField::Factory
         item_base         BitField::Item

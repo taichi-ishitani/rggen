@@ -1,5 +1,5 @@
 module RGen::Builder
-  class ComponentRegistry
+  class ComponentStore
     def initialize(builder, component_name)
       @builder        = builder
       @component_name = component_name
@@ -9,20 +9,20 @@ module RGen::Builder
 
     attr_setter :loader_base
 
-    def register_component(associated_category = nil, &body)
-      entry = ComponentEntry.new
-      entry.instance_exec(&body)
+    def entry(associated_category = nil, &body)
+      new_entry = ComponentEntry.new
+      new_entry.instance_exec(&body)
 
       @builder.categories.each do |name, category|
         if associated_category.nil? || name == associated_category
-          category.append_item_store(@component_name, entry.item_store)
+          category.append_item_store(@component_name, new_entry.item_store)
         end
-      end if entry.item_store
+      end if new_entry.item_store
 
-      @entries  << entry
+      @entries  << new_entry
     end
 
-    def register_loader(type_or_types, &body)
+    def define_loader(type_or_types, &body)
       return unless loader_base
       l                 = Class.new(loader_base, &body)
       l.supported_types = Array(type_or_types)

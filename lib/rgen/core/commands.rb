@@ -7,11 +7,11 @@ module RGen
     end
 
     [
-      [:component_registry, :component_registry],
-      [:define_value_item , :value_item        ],
-      [:define_list_item  , :list_item         ],
-      [:enable            , :enable            ],
-      [:register_loader   , :loader            ]
+      [:component_store  , :component_store],
+      [:define_value_item, :value_item     ],
+      [:define_list_item , :list_item      ],
+      [:enable           , :enable         ],
+      [:define_loader    , :loader         ]
     ].each do |method_name, alias_name|
       def_delegator('generator.builder', method_name, alias_name)
     end

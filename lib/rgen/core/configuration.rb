@@ -5,8 +5,8 @@ module RGen
     require_relative 'configuration/factory'
     require_relative 'configuration/item_factory'
 
-    RGen.component_registry(:configuration) do
-      register_component do
+    RGen.component_store(:configuration) do
+      entry do
         component_class   Configuration
         component_factory Factory
         item_base         Item
