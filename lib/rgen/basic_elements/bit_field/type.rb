@@ -1,10 +1,7 @@
 RGen.list_item(:bit_field, :type) do
   register_map do
     item_base do
-      class << self
-        attr_reader :readable
-        attr_reader :writable
-
+      define_helpers do
         def read_write
           @readable = true
           @writable = true
@@ -23,6 +20,14 @@ RGen.list_item(:bit_field, :type) do
         def reserved
           @readable = false
           @writable = false
+        end
+
+        def readable
+          @readable.nil? || @readable
+        end
+
+        def writable
+          @writable.nil? || @writable
         end
       end
 
@@ -50,8 +55,8 @@ RGen.list_item(:bit_field, :type) do
 
       build do |cell|
         @type     = cell.to_sym.downcase
-        @readable = object_class.readable.nil? || object_class.readable
-        @writable = object_class.writable.nil? || object_class.writable
+        @readable = object_class.readable
+        @writable = object_class.writable
       end
     end
 
