@@ -105,6 +105,23 @@ module RGen::InputBase
 
         expect(i.fields).to match fields
       end
+
+      context "継承されたとき" do
+        specify "メソッド一覧は継承先に引き継がれる" do
+          k0  = Class.new(Item) do
+            field :foo
+            field :bar
+          end
+          k1  = Class.new(k0) do
+            field :baz
+          end
+
+          i0      = k0.new(owner)
+          i1      = k1.new(owner)
+          fields  = i0.fields.concat([:baz])
+          expect(i1.fields).to match fields
+        end
+      end
     end
 
     describe "#build" do
@@ -123,6 +140,29 @@ module RGen::InputBase
 
           i.build(source)
           expect(i.field).to eq source
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたブロックが継承先に引き継がれる" do
+          k0  = Class.new(Item) do
+            field :foo
+            build {@foo = "foo"}
+          end
+          k1  = Class.new(k0) do
+            field :bar
+            build {@bar = "#{@foo}_bar"}
+          end
+          k2  = Class.new(k1) do
+            field :baz
+            build {@baz = "#{@bar}_baz"}
+          end
+
+          i = k2.new(owner)
+          i.build(source)
+          expect(i.foo).to eq "foo"
+          expect(i.bar).to eq "foo_bar"
+          expect(i.baz).to eq "foo_bar_baz"
         end
       end
 
@@ -145,7 +185,26 @@ module RGen::InputBase
           }.new(owner)
 
           i.validate
-          expect(v).to eq i
+          expect(v).to eql i
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたブロックは継承先に引き継がれる" do
+          v   = nil
+          k0  = Class.new(Item) do
+            validate {v = 0}
+          end
+          k1  = Class.new(k0) do
+            validate {v += 1}
+          end
+          k2  = Class.new(k1) do
+            validate {v += 2}
+          end
+
+          i = k2.new(owner)
+          i.validate
+          expect(v).to eq 3
         end
       end
 
