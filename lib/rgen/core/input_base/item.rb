@@ -1,7 +1,5 @@
 module RGen::InputBase
   class Item < RGen::Base::Item
-    extend Forwardable
-
     define_helpers do
       attr_reader :builders
       attr_reader :validators
@@ -45,7 +43,9 @@ module RGen::InputBase
       end
     end
 
-    def_class_delegator :fields
+    def fields
+      object_class.fields
+    end
 
     def build(*sources)
       return unless object_class.builders
