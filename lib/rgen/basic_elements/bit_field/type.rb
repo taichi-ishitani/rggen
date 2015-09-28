@@ -32,31 +32,19 @@ RGen.list_item(:bit_field, :type) do
       end
 
       field :type
-
-      field :readable? do
-        @readable
-      end
-
-      field :writable? do
-        @writable
-      end
-
-      field :read_only? do
-        @readable && !@writable
-      end
-
-      field :write_only? do
-        !@readable && @writable
-      end
-
-      field :reserved? do
-        !(@readable || @writable)
-      end
+      field :readable?
+      field :writable?
+      field :read_only?
+      field :write_only?
+      field :reserved?
 
       build do |cell|
-        @type     = cell.to_sym.downcase
-        @readable = object_class.readable
-        @writable = object_class.writable
+        @type       = cell.to_sym.downcase
+        @readable   = object_class.readable
+        @writable   = object_class.writable
+        @read_only  =  @readable && !@writable
+        @write_only = !@readable &&  @writable
+        @reserved   = !@readable && !@writable
       end
     end
 

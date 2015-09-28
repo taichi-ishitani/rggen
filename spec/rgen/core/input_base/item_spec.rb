@@ -42,6 +42,20 @@ module RGen::InputBase
 
           expect(i.send(field_name)).to eq field_value
         end
+
+        context "フィールド名の末尾が'?'のとき" do
+          it "フィールド名から'?'を除いたインスタンス変数を返すメソッドを定義する" do
+            i = Class.new(Item) {
+              field :foo?
+              define_method(:initialize) do |owner|
+                super(owner)
+                @foo  = true
+              end
+            }.new(owner)
+
+            expect(i).to be_foo
+          end
+        end
       end
 
       context "フィールド名とブロックが与えられた場合" do

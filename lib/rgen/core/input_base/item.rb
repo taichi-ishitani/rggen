@@ -7,15 +7,14 @@ module RGen::InputBase
       def field(field_name, args = {}, &body)
         return if fields.include?(field_name)
 
-        body  ||= lambda do
-          if instance_variable_defined?(field_name.variablize)
-            instance_variable_get(field_name.variablize)
-          else
-            args[:default]
+        if block_given?
+          define_method(field_name, body)
+        else
+          define_method(field_name) do
+            default_field_method(field_name, args[:default])
           end
         end
 
-        define_method(field_name, body)
         fields  << field_name
       end
 
@@ -58,6 +57,22 @@ module RGen::InputBase
       return unless object_class.validators
       object_class.validators.each do |validator|
         instance_exec(&validator)
+      end
+    end
+
+    private
+
+    def default_field_method(field_name, default_value)
+      if field_name =~ /\A([a-zA-Z0-9]\w*)\?\z/
+        variable_name = Regexp.last_match[1].variablize
+      else
+        variable_name = field_name.variablize
+      end
+
+      if instance_variable_defined?(variable_name)
+        instance_variable_get(variable_name)
+      else
+        default_value
       end
     end
   end
