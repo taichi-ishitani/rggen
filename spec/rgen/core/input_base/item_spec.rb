@@ -105,6 +105,48 @@ module RGen::InputBase
           end
         end
       end
+
+      context "バリデーションが不必要なフィールドの場合" do
+        specify "フィールド呼び出し時に#validateを呼び出さない" do
+          i0  = Class.new(Item) {
+            field :foo
+            build {@foo = :foo}
+          }.new(owner)
+          i1  = Class.new(Item) {
+            field :bar, need_validation:false do
+              :bar
+            end
+          }.new(owner)
+          i0.build
+          i1.build
+
+          expect(i0).not_to receive(:validate).with(no_args)
+          expect(i1).not_to receive(:validate).with(no_args)
+          expect(i0.foo).to eq :foo
+          expect(i1.bar).to eq :bar
+        end
+      end
+
+      context "バリデーションが必要なフィールドの場合" do
+        specify "フィールド呼び出し時に#validateを呼び出す" do
+          i0  = Class.new(Item) {
+            field :foo, need_validation:true
+            build {@foo = :foo}
+          }.new(owner)
+          i1  = Class.new(Item) {
+            field :bar, need_validation:true do
+              :bar
+            end
+          }.new(owner)
+          i0.build
+          i1.build
+
+          expect(i0).to receive(:validate).with(no_args)
+          expect(i1).to receive(:validate).with(no_args)
+          expect(i0.foo).to eq :foo
+          expect(i1.bar).to eq :bar
+        end
+      end
     end
 
     describe "#fields" do
@@ -203,29 +245,41 @@ module RGen::InputBase
         end
       end
 
-      context "継承されたとき" do
-        specify "登録されたブロックは継承先に引き継がれる" do
-          v   = nil
-          k0  = Class.new(Item) do
-            validate {v = 0}
-          end
-          k1  = Class.new(k0) do
-            validate {v += 1}
-          end
-          k2  = Class.new(k1) do
-            validate {v += 2}
-          end
-
-          i = k2.new(owner)
-          i.validate
-          expect(v).to eq 3
-        end
-      end
-
       context "バリデートブロックが登録されていないとき" do
         it "エラー無く実行できる" do
           i = Class.new(Item).new(owner)
           expect{i.validate}.to_not raise_error
+        end
+      end
+
+      context "すでに一度#validateが呼び出されている場合" do
+        specify "バリデートブロックは実行されない" do
+          v = 0
+          i = Class.new(Item) {
+            validate {v += 1}
+          }.new(owner)
+          i.validate
+          i.validate
+          expect(v).to eq 1
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたブロックは継承先に引き継がれる" do
+          v   = nil
+          k0  = Class.new(Item) do
+            validate {v = "foo"}
+          end
+          k1  = Class.new(k0) do
+            validate {v = "#{v}_bar"}
+          end
+          k2  = Class.new(k1) do
+            validate {v = "#{v}_baz"}
+          end
+
+          i = k2.new(owner)
+          i.validate
+          expect(v).to eq "foo_bar_baz"
         end
       end
     end

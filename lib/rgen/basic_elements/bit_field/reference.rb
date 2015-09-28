@@ -1,22 +1,22 @@
 RGen.value_item(:bit_field, :reference) do
   register_map do
-    field(:has_reference?) do
+    field :has_reference? do
       @reference.not.empty?
     end
 
-    field(:has_no_reference?) do
+    field :has_no_reference? do
       @reference.empty?
     end
 
-    field(:has_external_reference?) do
+    field :has_external_reference? do
       @reference.downcase == "external"
     end
 
-    field(:has_no_external_reference?) do
+    field :has_no_external_reference? do
       @reference.downcase != "external"
     end
 
-    field(:reference) do
+    field :reference, need_validation:true do
       if has_reference? && has_no_external_reference?
         register_block.bit_fields.find do |bit_field|
           @reference == bit_field.name

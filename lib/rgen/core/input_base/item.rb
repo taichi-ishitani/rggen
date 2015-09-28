@@ -4,15 +4,11 @@ module RGen::InputBase
       attr_reader :builders
       attr_reader :validators
 
-      def field(field_name, args = {}, &body)
+      def field(field_name, options = {}, &body)
         return if fields.include?(field_name)
 
-        if block_given?
-          define_method(field_name, body)
-        else
-          define_method(field_name) do
-            default_field_method(field_name, args[:default])
-          end
+        define_method(field_name) do
+          field_method(field_name, options, body)
         end
 
         fields  << field_name
@@ -54,13 +50,24 @@ module RGen::InputBase
     end
 
     def validate
+      return if @validated
       return unless object_class.validators
       object_class.validators.each do |validator|
-        instance_exec(&validator)
+        instance_eval(&validator)
       end
+      @validated  = true
     end
 
     private
+
+    def field_method(field_name, options, body)
+      validate if options[:need_validation]
+      if body
+        instance_exec(&body)
+      else
+        default_field_method(field_name, options[:default])
+      end
+    end
 
     def default_field_method(field_name, default_value)
       if field_name =~ /\A([a-zA-Z0-9]\w*)\?\z/

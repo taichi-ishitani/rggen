@@ -247,4 +247,17 @@ describe 'reference/bit_field' do
       }.to raise_register_map_error(message, position("block_0", 3, 3))
     end
   end
+
+  specify "#reference呼び出し時に#validateが呼び出される" do
+    RegisterMapDummyLoader.load_data("block_0" => [
+      [nil, nil         , "block_0"        ],
+      [nil, nil         , nil              ],
+      [nil, nil         , nil              ],
+      [nil, "register_0", "bit_field_0", ""]
+    ])
+    register_map  = @factory.create(configuration, register_map_file)
+
+    expect(register_map.bit_fields[0].items[1]).to receive(:validate).with(no_args)
+    register_map.bit_fields[0].reference
+  end
 end
