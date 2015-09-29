@@ -5,15 +5,14 @@ module RGen::Builder
       @factory            = factory
       @value_item_entries = {}
       @list_item_entries  = {}
-      @enabled_items      = []
+      @enabled_entries    = []
     end
 
     attr_reader :base
     attr_reader :factory
 
     def define_value_item(item_name, *contexts, &body)
-      entry = ValueItemEntry.new(base, factory, *contexts, &body)
-      update_entries(:value, item_name, entry)
+      create_item_entry(:value, item_name, contexts, body)
     end
 
     def define_list_item(list_name, *args, &body)
@@ -23,45 +22,39 @@ module RGen::Builder
           message = "undefined list item entry: #{list_name}"
           fail RGen::BuilderError, message
         end
-
-        item_name = args.shift
-        contexts  = args
-        entry     = @list_item_entries[list_name]
-        entry.define_list_item(item_name, *contexts, &body)
+        define_list_item_class(list_name, args[0], args[1..-1], body)
       else
-        contexts  = args
-        entry     = ListItemEntry.new(base, factory, *contexts, &body)
-        update_entries(:list, list_name, entry)
+        create_item_entry(:list, list_name, args, body)
       end
     end
 
-    def enable(*list_name, item_or_items)
-      case list_name.size
-      when 0
-        Array(item_or_items).each do |item|
-          next if @enabled_items.include?(item)
-          next unless @value_item_entries.key?(item) ||
-                      @list_item_entries.key?(item)
-          @enabled_items  << item
-        end
+    def enable(*args)
+      case args.size
       when 1
-        return unless @list_item_entries.key?(list_name[0])
-        @list_item_entries[list_name[0]].enable(item_or_items)
+        enable_item_entries(args[0])
+      when 2
+        enable_list_item(args[0], args[1])
       else
-        message = "wrong number of arguments (#{list_name.size + 1} for 1..2)"
+        message = "wrong number of arguments (#{args.size} for 1..2)"
         fail ArgumentError, message
       end
     end
 
     def build_factories
-      @enabled_items.each_with_object({}) do |name, factories|
-        factories[name] = (
-          @value_item_entries[name] || @list_item_entries[name]
+      @enabled_entries.each_with_object({}) do |entry_name, factories|
+        factories[entry_name] = (
+          @value_item_entries[entry_name] || @list_item_entries[entry_name]
         ).build_factory
       end
     end
 
     private
+
+    def create_item_entry(entry_type, entry_name, contexts, body)
+      klass = {value: ValueItemEntry, list: ListItemEntry}.fetch(entry_type)
+      entry = klass.new(base, factory, *contexts, &body)
+      update_entries(entry_type, entry_name, entry)
+    end
 
     def update_entries(entry_type, entry_name, entry)
       if entry_type == :value
@@ -71,6 +64,25 @@ module RGen::Builder
         @value_item_entries.delete(entry_name)
         @list_item_entries[entry_name]  = entry
       end
+    end
+
+    def define_list_item_class(list_name, item_name, contexts, body)
+      entry = @list_item_entries[list_name]
+      entry.define_list_item(item_name, *contexts, &body)
+    end
+
+    def enable_item_entries(entry_name_or_names)
+      Array(entry_name_or_names).each do |entry_name|
+        next if @enabled_entries.include?(entry_name)
+        next unless @value_item_entries.key?(entry_name) ||
+                    @list_item_entries.key?(entry_name)
+        @enabled_entries  << entry_name
+      end
+    end
+
+    def enable_list_item(list_name, item_name_or_names)
+      return unless @list_item_entries.key?(list_name)
+      @list_item_entries[list_name].enable(item_name_or_names)
     end
   end
 end

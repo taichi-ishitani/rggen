@@ -22,8 +22,8 @@ module RGen::Builder
       item_store.instance_variable_get(:@list_item_entries)
     end
 
-    let(:enabled_items) do
-      item_store.instance_variable_get(:@enabled_items)
+    let(:enabled_entries) do
+      item_store.instance_variable_get(:@enabled_entries)
     end
 
     let(:shared_context) do
@@ -209,24 +209,24 @@ module RGen::Builder
       end
 
       context "引数がアイテム名またはアイテム名の配列のとき" do
-        it "enabled_itemsに与えられたアイテム名を与え順番で追加する" do
+        it "enabled_entriesに与えられたアイテム名を与え順番で追加する" do
           item_store.enable(:bar)
           item_store.enable([:qux, :foo])
-          expect(enabled_items).to match [:bar, :qux, :foo]
+          expect(enabled_entries).to match [:bar, :qux, :foo]
         end
 
         it "すでに有効にされたアイテムは無視する" do
           item_store.enable(:bar)
           item_store.enable([:qux, :bar])
           item_store.enable(:qux)
-          expect(enabled_items).to match [:bar, :qux]
+          expect(enabled_entries).to match [:bar, :qux]
         end
 
         it "登録されていないアイテムは無視する" do
           item_store.enable(:bar)
           item_store.enable([:qux, :foobar])
           item_store.enable(:quux)
-          expect(enabled_items).to match [:bar, :qux]
+          expect(enabled_entries).to match [:bar, :qux]
         end
       end
 
