@@ -51,7 +51,9 @@ RGen.list_item(:bit_field, :type) do
     factory do
       def select_target_item(cell)
         type  = cell.value.to_sym.downcase
-        @target_items[type]
+        @target_items.fetch(type) do
+          error "unknown bit field type: #{type}", cell
+        end
       end
     end
   end

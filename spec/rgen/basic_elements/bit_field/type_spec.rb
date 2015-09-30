@@ -50,9 +50,9 @@ describe 'type/bit_field' do
 
   def register_map_data(data)
     all_data  = [
-      [nil, nil         , "block_0"      , nil  , nil  ],
-      [nil, nil         , nil            , nil  , nil  ],
-      [nil, nil         , nil            , nil  , nil  ]
+      [nil, nil, "block_0", nil, nil],
+      [nil, nil, nil      , nil, nil],
+      [nil, nil, nil      , nil, nil]
     ]
     all_data.concat(data)
     all_data
@@ -123,6 +123,18 @@ describe 'type/bit_field' do
 
     it "アクセス属性をreservedに設定する" do
       expect(bit_fields[0]).to match_access(:reserved)
+    end
+  end
+
+  context "Rgen.enableで有効にされたタイプ以外が入力された場合" do
+    it "RegisterMapErrorを発生させる" do
+      ["foobar", "quux"].each do |type|
+        data  = [[nil, "register_0", "bit_field_0_0", "[0]", type]]
+        RegisterMapDummyLoader.load_data("block_0" => register_map_data(data))
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error("unknown bit field type: #{type}", position("block_0", 3, 4))
+      end
     end
   end
 end
