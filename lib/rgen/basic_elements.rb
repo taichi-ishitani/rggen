@@ -1,5 +1,0 @@
-require_relative 'basic_elements/loaders'
-require_relative 'basic_elements/global'
-require_relative 'basic_elements/register_block'
-require_relative 'basic_elements/register'
-require_relative 'basic_elements/bit_field'
