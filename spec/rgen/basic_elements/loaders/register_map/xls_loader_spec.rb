@@ -5,7 +5,7 @@ describe 'xls_loader' do
     RGen.enable(:register_block, :name)
     RGen.enable(:register      , :name)
     RGen.enable(:bit_field     , :name)
-    @factory  = RGen.generator.builder.build_factory(:register_map)
+    @factory  = RGen.builder.build_factory(:register_map)
   end
 
   after(:all) do

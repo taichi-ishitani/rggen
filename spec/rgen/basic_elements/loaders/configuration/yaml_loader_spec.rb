@@ -5,7 +5,7 @@ describe "yaml_loader" do
 
   before(:all) do
     RGen.enable(:global, [:address_width, :data_width])
-    @factory  = RGen.generator.builder.build_factory(:configuration)
+    @factory  = RGen.builder.build_factory(:configuration)
   end
 
   after(:all) do

@@ -59,7 +59,7 @@ describe 'type/bit_field' do
   end
 
   def clear_dummy_types
-    RGen.generator.builder.categories.each_value do |category|
+    RGen.builder.categories.each_value do |category|
       category.instance_variable_get(:@item_stores).each_value do |item_store|
         entry = item_store.instance_variable_get(:@list_item_entries)[:type]
         next if entry.nil?
