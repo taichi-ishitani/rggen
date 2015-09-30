@@ -58,6 +58,19 @@ module RGen::InputBase
         end
       end
 
+      context "フィールド名と委譲先のメソッド名が与えられた場合" do
+        it "与えたメソッドに委譲するメソッドを定義する" do
+          f = field_name
+          i = Class.new(Item) {
+            field :foo, forward_to: :bar
+            def bar;end
+          }.new(owner)
+
+          expect(i).to receive(:bar).with(no_args)
+          i.foo
+        end
+      end
+
       context "フィールド名とブロックが与えられた場合" do
         it "ブロックの実行結果を返すメソッドを定義する" do
           f = field_name
