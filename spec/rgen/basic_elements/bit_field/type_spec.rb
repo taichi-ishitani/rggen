@@ -17,16 +17,19 @@ describe 'type/bit_field' do
     RGen.list_item(:bit_field, :type, :qux) do
       register_map {reserved}
     end
+    RGen.list_item(:bit_field, :type, :foobar) do
+      register_map {reserved}
+    end
 
-    RGen.enable(:register_block , :name)
-    RGen.enable(:register       , :name)
-    RGen.enable(:bit_field      , :type)
-    RGen.enable(:bit_field      , :type, [:foo, :bar, :baz, :qux])
+    RGen.enable(:global, :data_width)
+    RGen.enable(:register_block, :name)
+    RGen.enable(:register, :name)
+    RGen.enable(:bit_field, [:name, :bit_assignment, :type])
+    RGen.enable(:bit_field, :type, [:foo, :bar, :baz, :qux])
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    ConfigurationDummyLoader.load_data({})
     @configuration_factory  = build_configuration_factory
   end
 
@@ -36,7 +39,23 @@ describe 'type/bit_field' do
   end
 
   let(:configuration) do
+    ConfigurationDummyLoader.load_data({})
     @configuration_factory.create(configuration_file)
+  end
+
+  let(:bit_fields) do
+    RegisterMapDummyLoader.load_data("block_0" => register_map_data(load_data))
+    @factory.create(configuration, register_map_file).bit_fields
+  end
+
+  def register_map_data(data)
+    all_data  = [
+      [nil, nil         , "block_0"      , nil  , nil  ],
+      [nil, nil         , nil            , nil  , nil  ],
+      [nil, nil         , nil            , nil  , nil  ]
+    ]
+    all_data.concat(data)
+    all_data
   end
 
   def clear_dummy_types
@@ -52,56 +71,58 @@ describe 'type/bit_field' do
     end
   end
 
-  def type_attributes(cell_value)
-    case cell_value.downcase
-    when 'foo'
-      {type: :foo, readable: true, writable: true}
-    when 'bar'
-      {type: :bar, readable: true, writable: false}
-    when 'baz'
-      {type: :baz, readable: false, writable: true}
-    when 'qux'
-      {type: :qux, readable: false, writable: false}
-    end
-  end
-
-  context "有効にされたタイプが与えられた場合" do
-    let(:types) do
-      %w(foo bar baz qux QUX BAZ BAR FOO bAr BaZ Foo quX)
-    end
-
+  describe "#type" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"],
-        [nil, nil         , nil      ],
-        [nil, nil         , nil      ],
-        [nil, "register_0", types[0 ]],
-        [nil, nil         , types[1 ]],
-        [nil, nil         , types[2 ]],
-        [nil, nil         , types[3 ]],
-        [nil, "register_1", types[4 ]],
-        [nil, nil         , types[5 ]],
-        [nil, nil         , types[6 ]],
-        [nil, nil         , types[7 ]],
-        [nil, "register_2", types[8 ]],
-        [nil, nil         , types[9 ]],
-        [nil, "register_3", types[10]],
-        [nil, nil         , types[11]]
+        [nil, "register_0", "bit_field_0_0", "[1]", "BAR"],
+        [nil, nil         , "bit_field_0_1", "[0]", "foo"],
+        [nil, "register_1", "bit_field_1_0", "[1]", "qUx"],
+        [nil, nil         , "bit_field_1_1", "[0]", "BaZ"]
       ]
     end
 
-    let(:register_map) do
-      @factory.create(configuration, register_map_file)
+    it "小文字化されたタイプ名を返す" do
+      expect(bit_fields.map(&:type)).to match [:bar, :foo, :qux, :baz]
+    end
+  end
+
+  describe ".read_write" do
+    let(:load_data) do
+      [[nil, "register_0", "bit_field_0_0", "[0]", "foo"]]
     end
 
-    before do
-      RegisterMapDummyLoader.load_data("block_0" => load_data)
+    it "アクセス属性をread-writeに設定する" do
+      expect(bit_fields[0]).to match_access(:read_write)
+    end
+  end
+
+  describe ".read_only" do
+    let(:load_data) do
+      [[nil, "register_0", "bit_field_0_0", "[0]", "bar"]]
     end
 
-    specify "生成されたビットフィールドは入力されたタイプの属性を持つ" do
-      types.each_with_index do |type, i|
-        expect(register_map.bit_fields[i]).to match_type(type_attributes(type))
-      end
+    it "アクセス属性をread-onlyに設定する" do
+      expect(bit_fields[0]).to match_access(:read_only)
+    end
+  end
+
+  describe ".write_only" do
+    let(:load_data) do
+      [[nil, "register_0", "bit_field_0_0", "[0]", "baz"]]
+    end
+
+    it "アクセス属性をwrite-onlyに設定する" do
+      expect(bit_fields[0]).to match_access(:write_only)
+    end
+  end
+
+  describe ".reserved" do
+    let(:load_data) do
+      [[nil, "register_0", "bit_field_0_0", "[0]", "qux"]]
+    end
+
+    it "アクセス属性をreservedに設定する" do
+      expect(bit_fields[0]).to match_access(:reserved)
     end
   end
 end

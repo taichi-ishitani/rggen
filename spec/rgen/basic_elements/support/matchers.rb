@@ -1,10 +1,20 @@
-RSpec::Matchers.define :match_type do |expected_attributes|
+RSpec::Matchers.define :match_access do |expected_access|
   match do |bit_field|
-    type      = expected_attributes[:type]
-    readable  = (expected_attributes.key?(:readable)) ? expected_attributes[:readable] : true
-    writable  = (expected_attributes.key?(:writable)) ? expected_attributes[:writable] : true
+    case expected_access
+    when :read_write
+      readable  = true
+      writable  = true
+    when :read_only
+      readable  = true
+      writable  = false
+    when :write_only
+      readable  = false
+      writable  = true
+    when :reserved
+      readable  = false
+      writable  = false
+    end
 
-    return false if bit_field.type        != type
     return false if bit_field.readable?   != readable
     return false if bit_field.writable?   != writable
     return false if bit_field.read_only?  != ( readable && !writable)
