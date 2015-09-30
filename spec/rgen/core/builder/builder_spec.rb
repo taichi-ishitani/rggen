@@ -64,6 +64,14 @@ module RGen::Builder
         builder.define_loader(:register_map, support_types) do
         end
       end
+
+      context "指定したコンポーネントが存在しない場合" do
+        it "RGen::Builderエラーを発生させる" do
+          expect {
+            builder.define_loader(:foo, support_types) {}
+          }.to raise_error RGen::BuilderError, "unknown component: foo"
+        end
+      end
     end
 
     describe "#build_factory" do
@@ -85,6 +93,14 @@ module RGen::Builder
       it "引数で与えられた名前のコンポーネントレジストリの#build_factoryを呼び出して、ファクトリの生成を行う" do
         expect(stores[:register_map]).to receive(:build_factory).and_call_original
         builder.build_factory(:register_map)
+      end
+
+      context "指定したコンポーネントが存在しない場合" do
+        it "RGen::Builderエラーを発生させる" do
+          expect {
+            builder.build_factory(:foo)
+          }.to raise_error RGen::BuilderError, "unknown component: foo"
+        end
       end
     end
 
@@ -109,6 +125,14 @@ module RGen::Builder
         builder.define_value_item(:global, item_name) do
           configuration do
           end
+        end
+      end
+
+      context "指定したカテゴリが存在しない場合" do
+        it "RGen::Builderエラーを発生させる" do
+          expect {
+            builder.define_value_item(:foo, item_name) {}
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
         end
       end
     end
@@ -143,6 +167,17 @@ module RGen::Builder
         builder.define_list_item(:global, list_name, item_name) do
           configuration do
           end
+        end
+      end
+
+      context "指定したカテゴリが存在しない場合" do
+        it "RGen::Builderエラーを発生させる" do
+          expect {
+            builder.define_list_item(:foo, list_name) {}
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          expect {
+            builder.define_list_item(:foo, list_name, item_name) {}
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
         end
       end
     end
@@ -183,6 +218,23 @@ module RGen::Builder
         builder.enable(:global, :qux)
         builder.enable(:global, :qux, :foo)
         builder.enable(:global, :qux, [:bar, :baz])
+      end
+
+      context "指定したカテゴリが存在しない場合" do
+        it "RGen::Builderエラーを発生させる" do
+          expect {
+            builder.enable(:foo, [:foo, :bar])
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          expect {
+            builder.enable(:foo, :qux)
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          expect {
+            builder.enable(:foo, :qux, :foo)
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          expect {
+            builder.enable(:foo, :qux, [:bar, :baz])
+          }.to raise_error RGen::BuilderError, "unknown category: foo"
+        end
       end
     end
   end

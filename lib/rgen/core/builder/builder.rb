@@ -8,16 +8,23 @@ module RGen::Builder
     ].freeze
 
     def initialize
-      @stores     = {}
-      @categories = INITIAL_CATEGORIES.each_with_object({}) do |category, hash|
-        hash[category]  = Category.new
+      @stores = Hash.new do |_, component_name|
+        fail RGen::BuilderError, "unknown component: #{component_name}"
+      end
+      @categories = Hash.new do |_, category_name|
+        fail RGen::BuilderError, "unknown category: #{category_name}"
+      end
+      INITIAL_CATEGORIES.each do |category_name|
+        @categories[category_name]  = Category.new
       end
     end
 
     attr_reader :categories
 
     def component_store(component_name, &body)
-      @stores[component_name] ||= ComponentStore.new(self, component_name)
+      unless @stores.key?(component_name)
+        @stores[component_name] = ComponentStore.new(self, component_name)
+      end
       @stores[component_name].instance_exec(&body)
     end
 
