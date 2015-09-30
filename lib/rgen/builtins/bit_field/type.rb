@@ -29,6 +29,8 @@ RGen.list_item(:bit_field, :type) do
         def writable
           @writable.nil? || @writable
         end
+
+        attr_setter :required_width
       end
 
       field :type
@@ -45,6 +47,20 @@ RGen.list_item(:bit_field, :type) do
         @read_only  =  @readable && !@writable
         @write_only = !@readable &&  @writable
         @reserved   = !@readable && !@writable
+      end
+
+      validate do
+        case
+        when mismatch_width?
+          error "#{object_class.required_width} bit(s) width required:" \
+                " #{bit_field.width} bit(s)"
+        end
+      end
+
+      def mismatch_width?
+        return false if object_class.required_width.nil?
+        return false if bit_field.width == object_class.required_width
+        true
       end
     end
 

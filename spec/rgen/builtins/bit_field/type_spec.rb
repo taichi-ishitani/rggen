@@ -17,6 +17,9 @@ describe 'type/bit_field' do
     RGen.list_item(:bit_field, :type, :qux) do
       register_map {reserved}
     end
+    RGen.list_item(:bit_field, :type, :quux) do
+      register_map {required_width 2}
+    end
     RGen.list_item(:bit_field, :type, :foobar) do
       register_map {reserved}
     end
@@ -25,7 +28,7 @@ describe 'type/bit_field' do
     RGen.enable(:register_block, :name)
     RGen.enable(:register, :name)
     RGen.enable(:bit_field, [:name, :bit_assignment, :type])
-    RGen.enable(:bit_field, :type, [:foo, :bar, :baz, :qux])
+    RGen.enable(:bit_field, :type, [:foo, :bar, :baz, :qux, :quux])
     @factory  = build_register_map_factory
   end
 
@@ -44,7 +47,7 @@ describe 'type/bit_field' do
   end
 
   let(:bit_fields) do
-    RegisterMapDummyLoader.load_data("block_0" => register_map_data(load_data))
+    set_load_data(load_data)
     @factory.create(configuration, register_map_file).bit_fields
   end
 
@@ -56,6 +59,16 @@ describe 'type/bit_field' do
     ]
     all_data.concat(data)
     all_data
+  end
+
+  def set_load_data(data)
+    all_data  = [
+      [nil, nil, "block_0", nil, nil],
+      [nil, nil, nil      , nil, nil],
+      [nil, nil, nil      , nil, nil]
+    ]
+    all_data.concat(data)
+    RegisterMapDummyLoader.load_data("block_0" => all_data)
   end
 
   def clear_dummy_types
@@ -126,11 +139,55 @@ describe 'type/bit_field' do
     end
   end
 
+  describe ".required_width" do
+    context ".required_widthで必要なビット幅が設定されていない場合" do
+      before do
+        RegisterMapDummyLoader.load_data("block_0" => register_map_data(load_data))
+      end
+
+      let(:load_data) do
+        [
+          [nil, "register_0", "bit_field_0_0", "[15:8]", "foo"],
+          [nil, nil         , "bit_field_0_1", "[0]"   , "foo"],
+          [nil, "register_1", "bit_field_1_0", "[31:0]", "foo"]
+        ]
+      end
+
+      it "任意の幅のビットフィールドで使用できる" do
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
+    end
+
+    context "必要なビット幅が設定されている場合" do
+      it "設定したビット幅を持つビットフィールドで使用できる" do
+        set_load_data([
+          [nil, "register_0", "bit_field_0_0", "[17:16]", "quux"],
+          [nil, nil         , "bit_field_0_1", "[1:0]"  , "quux"]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
+
+      context "設定した幅以外のビットフィールドで使用した場合" do
+        it "RegisterMapErrorを発生させる" do
+          {1 => "[0]", 3 => "[2:0]", 32 => "[31:0]"}.each do |width, assignment|
+            set_load_data([[nil, "register_0", "bit_field_0_0", assignment, "quux"]])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("2 bit(s) width required: #{width} bit(s)", position("block_0", 3, 4))
+          end
+        end
+      end
+    end
+  end
+
   context "Rgen.enableで有効にされたタイプ以外が入力された場合" do
     it "RegisterMapErrorを発生させる" do
-      ["foobar", "quux"].each do |type|
-        data  = [[nil, "register_0", "bit_field_0_0", "[0]", type]]
-        RegisterMapDummyLoader.load_data("block_0" => register_map_data(data))
+      ["foobar", "abc"].each do |type|
+        set_load_data([[nil, "register_0", "bit_field_0_0", "[0]", type]])
         expect {
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error("unknown bit field type: #{type}", position("block_0", 3, 4))
