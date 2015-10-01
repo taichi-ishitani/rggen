@@ -53,7 +53,7 @@ module RGen::InputBase
       return if @validated
       return unless validators
       validators.each do |validator|
-        instance_eval(&validator)
+        instance_exec(&validator)
       end
       @validated  = true
     end
@@ -65,7 +65,7 @@ module RGen::InputBase
       if body
         instance_exec(&body)
       elsif options[:forward_to_helper]
-        self.class.send(field_name)
+        self.class.__send__(field_name)
       elsif options.key?(:forward_to)
         __send__(options[:forward_to])
       else
