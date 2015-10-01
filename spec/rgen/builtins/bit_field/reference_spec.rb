@@ -46,30 +46,6 @@ describe 'reference/bit_field' do
       end
     end
 
-    describe "#has_no_reference?" do
-      it "真を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to have_no_reference
-        end
-      end
-    end
-
-    describe "#has_external_reference?" do
-      it "偽を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to_not have_external_reference
-        end
-      end
-    end
-
-    describe "#has_no_external_reference?" do
-      it "真を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to have_no_external_reference
-        end
-      end
-    end
-
     describe "#reference" do
       it "nilを返す" do
         register_map.bit_fields.each do |bit_field|
@@ -79,68 +55,7 @@ describe 'reference/bit_field' do
     end
   end
 
-  context "入力が'external'のとき" do
-    let(:load_data) do
-      [
-        [nil, nil         , "block_0"                ],
-        [nil, nil         , nil                      ],
-        [nil, nil         , nil                      ],
-        [nil, "register_0", "bit_field_0", "external"],
-        [nil, nil         , "bit_field_1", "EXTERNAL"],
-        [nil, nil         , "bit_field_2", "eXtErNaL"]
-      ]
-    end
-
-    let(:register_map) do
-      @factory.create(configuration, register_map_file)
-    end
-
-    before do
-      RegisterMapDummyLoader.load_data("block_0" => load_data)
-    end
-
-    describe "#has_reference?" do
-      it "真を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to have_reference
-        end
-      end
-    end
-
-    describe "#has_no_reference?" do
-      it "偽を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).not_to have_no_reference
-        end
-      end
-    end
-
-    describe "#has_external_reference?" do
-      it "真を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to have_external_reference
-        end
-      end
-    end
-
-    describe "#has_no_external_reference?" do
-      it "偽を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).not_to have_no_external_reference
-        end
-      end
-    end
-
-    describe "#reference" do
-      it "nilを返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field.reference).to be_nil
-        end
-      end
-    end
-  end
-
-  context "入力がビットフィールド名のとき" do
+  context "参照ビットフィールドの指定があるとき" do
     let(:load_data) do
       [
         [nil, nil         , "block_0"                   ],
@@ -165,30 +80,6 @@ describe 'reference/bit_field' do
       it "真を返す" do
         register_map.bit_fields.each do |bit_field|
           expect(bit_field).to have_reference
-        end
-      end
-    end
-
-    describe "#has_no_reference?" do
-      it "偽を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).not_to have_no_reference
-        end
-      end
-    end
-
-    describe "#has_external_reference?" do
-      it "偽を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).not_to have_external_reference
-        end
-      end
-    end
-
-    describe "#has_no_external_reference?" do
-      it "真を返す" do
-        register_map.bit_fields.each do |bit_field|
-          expect(bit_field).to have_no_external_reference
         end
       end
     end

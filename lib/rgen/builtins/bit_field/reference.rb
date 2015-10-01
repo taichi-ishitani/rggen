@@ -4,24 +4,10 @@ RGen.value_item(:bit_field, :reference) do
       @reference.not.empty?
     end
 
-    field :has_no_reference? do
-      @reference.empty?
-    end
-
-    field :has_external_reference? do
-      @reference.downcase == "external"
-    end
-
-    field :has_no_external_reference? do
-      @reference.downcase != "external"
-    end
-
     field :reference, need_validation:true do
-      if has_reference? && has_no_external_reference?
-        register_block.bit_fields.find do |bit_field|
-          @reference == bit_field.name
-        end
-      end
+      register_block.bit_fields.find do |bit_field|
+        @reference == bit_field.name
+      end if has_reference?
     end
 
     build do |cell|
@@ -32,7 +18,7 @@ RGen.value_item(:bit_field, :reference) do
       case
       when @reference == bit_field.name
         error "self reference: #{@reference}"
-      when has_reference? && has_no_external_reference? && no_reference?
+      when has_reference? && no_reference?
         error "no such reference bit field: #{@reference}"
       end
     end
