@@ -43,6 +43,21 @@ RGen.list_item(:bit_field, :type) do
         end
 
         attr_setter :required_width
+
+        def use_reference(options = {})
+          @use_reference      = true
+          @reference_options  = options
+        end
+
+        attr_reader :reference_options
+
+        def use_reference?
+          @use_reference || false
+        end
+
+        def same_width
+          :same_width
+        end
       end
 
       field :type
@@ -53,9 +68,12 @@ RGen.list_item(:bit_field, :type) do
       field :reserved?  , forward_to_helper:true
 
       class_delegator :required_width
+      class_delegator :use_reference?
+      class_delegator :reference_options
+      class_delegator :same_width
 
       build do |cell|
-        @type       = cell.to_sym.downcase
+        @type = cell.to_sym.downcase
       end
 
       validate do
@@ -63,6 +81,11 @@ RGen.list_item(:bit_field, :type) do
         when mismatch_width?
           error "#{required_width} bit(s) width required:" \
                 " #{bit_field.width} bit(s)"
+        when required_refercne_not_exist?
+          error "reference bit field required"
+        when reference_width_mismatch?
+          error "#{required_reference_width} bit(s) reference bit field" \
+                " required: #{bit_field.reference.width}"
         end
       end
 
@@ -70,6 +93,25 @@ RGen.list_item(:bit_field, :type) do
         return false if required_width.nil?
         return false if bit_field.width == required_width
         true
+      end
+
+      def required_refercne_not_exist?
+        return false unless use_reference?
+        return false unless reference_options[:required]
+        return false if bit_field.has_reference?
+        true
+      end
+
+      def reference_width_mismatch?
+        return false unless use_reference?
+        return false unless bit_field.has_reference?
+        bit_field.reference.width != required_reference_width
+      end
+
+      def required_reference_width
+        return 1 unless reference_options[:width]
+        return bit_field.width if reference_options[:width] == same_width
+        reference_options[:width]
       end
     end
 
