@@ -46,17 +46,12 @@ RGen.list_item(:bit_field, :type) do
       end
 
       field :type
-      field :readable?  , :forward_to => :__readable?
-      field :writable?  , :forward_to => :__writable?
-      field :read_only? , :forward_to => :__read_only?
-      field :write_only?, :forward_to => :__write_only?
-      field :reserved?  , :forward_to => :__reserved?
+      field :readable?  , forward_to_helper:true
+      field :writable?  , forward_to_helper:true
+      field :read_only? , forward_to_helper:true
+      field :write_only?, forward_to_helper:true
+      field :reserved?  , forward_to_helper:true
 
-      class_delegator :readable?  , :__readable?
-      class_delegator :writable?  , :__writable?
-      class_delegator :read_only? , :__read_only?
-      class_delegator :write_only?, :__write_only?
-      class_delegator :reserved?  , :__reserved?
       class_delegator :required_width
 
       build do |cell|

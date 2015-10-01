@@ -58,9 +58,21 @@ module RGen::InputBase
         end
       end
 
+      context "フィールド名とヘルパーメソッドへの委譲設定が与えられた場合" do
+        it "同名のヘルパーメソッドへ委譲するメソッドを定義する" do
+          k = Class.new(Item) {
+            define_helpers {def foo;end}
+            field :foo, forward_to_helper:true
+          }
+          i = k.new(owner)
+
+          expect(k).to receive(:foo).with(no_args)
+          i.foo
+        end
+      end
+
       context "フィールド名と委譲先のメソッド名が与えられた場合" do
         it "与えたメソッドに委譲するメソッドを定義する" do
-          f = field_name
           i = Class.new(Item) {
             field :foo, forward_to: :bar
             def bar;end

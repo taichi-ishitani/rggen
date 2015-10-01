@@ -64,6 +64,8 @@ module RGen::InputBase
       validate if options[:need_validation]
       if body
         instance_exec(&body)
+      elsif options[:forward_to_helper]
+        self.class.send(field_name)
       elsif options.key?(:forward_to)
         __send__(options[:forward_to])
       else
