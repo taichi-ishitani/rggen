@@ -1,5 +1,7 @@
 module RGen::Base
   class Item
+    extend Forwardable
+
     def initialize(owner)
       @owner  = owner
     end

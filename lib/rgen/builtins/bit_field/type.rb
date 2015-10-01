@@ -22,44 +22,58 @@ RGen.list_item(:bit_field, :type) do
           @writable = false
         end
 
-        def readable
+        def readable?
           @readable.nil? || @readable
         end
 
-        def writable
+        def writable?
           @writable.nil? || @writable
+        end
+
+        def read_only?
+          readable? && !writable?
+        end
+
+        def write_only?
+          writable? && !readable?
+        end
+
+        def reserved?
+          !(readable? || writable?)
         end
 
         attr_setter :required_width
       end
 
       field :type
-      field :readable?
-      field :writable?
-      field :read_only?
-      field :write_only?
-      field :reserved?
+      field :readable?  , :forward_to => :__readable?
+      field :writable?  , :forward_to => :__writable?
+      field :read_only? , :forward_to => :__read_only?
+      field :write_only?, :forward_to => :__write_only?
+      field :reserved?  , :forward_to => :__reserved?
+
+      class_delegator :readable?  , :__readable?
+      class_delegator :writable?  , :__writable?
+      class_delegator :read_only? , :__read_only?
+      class_delegator :write_only?, :__write_only?
+      class_delegator :reserved?  , :__reserved?
+      class_delegator :required_width
 
       build do |cell|
         @type       = cell.to_sym.downcase
-        @readable   = object_class.readable
-        @writable   = object_class.writable
-        @read_only  =  @readable && !@writable
-        @write_only = !@readable &&  @writable
-        @reserved   = !@readable && !@writable
       end
 
       validate do
         case
         when mismatch_width?
-          error "#{object_class.required_width} bit(s) width required:" \
+          error "#{required_width} bit(s) width required:" \
                 " #{bit_field.width} bit(s)"
         end
       end
 
       def mismatch_width?
-        return false if object_class.required_width.nil?
-        return false if bit_field.width == object_class.required_width
+        return false if required_width.nil?
+        return false if bit_field.width == required_width
         true
       end
     end

@@ -38,21 +38,21 @@ module RGen::InputBase
       end
     end
 
-    def fields
-      object_class.fields
-    end
+    class_delegator :fields
+    class_delegator :builders
+    class_delegator :validators
 
     def build(*sources)
-      return unless object_class.builders
-      object_class.builders.each do |builder|
+      return unless builders
+      builders.each do |builder|
         instance_exec(*sources, &builder)
       end
     end
 
     def validate
       return if @validated
-      return unless object_class.validators
-      object_class.validators.each do |validator|
+      return unless validators
+      validators.each do |validator|
         instance_eval(&validator)
       end
       @validated  = true
