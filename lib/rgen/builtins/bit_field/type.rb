@@ -78,7 +78,7 @@ RGen.list_item(:bit_field, :type) do
 
       validate do
         case
-        when mismatch_width?
+        when width_mismatch?
           error "#{required_width} bit(s) width required:" \
                 " #{bit_field.width} bit(s)"
         when required_refercne_not_exist?
@@ -89,7 +89,7 @@ RGen.list_item(:bit_field, :type) do
         end
       end
 
-      def mismatch_width?
+      def width_mismatch?
         return false if required_width.nil?
         return false if bit_field.width == required_width
         true
