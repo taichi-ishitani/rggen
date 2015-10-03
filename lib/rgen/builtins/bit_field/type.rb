@@ -94,7 +94,7 @@ RGen.list_item(:bit_field, :type) do
       end
 
       def width_mismatch?
-        return false if self.class.required_width.nil?
+        return false if required_width.nil?
         if required_width.respond_to?(:include?)
           required_width.not.include?(bit_field.width)
         else
@@ -104,6 +104,7 @@ RGen.list_item(:bit_field, :type) do
 
       def required_width
         width = self.class.required_width
+        return nil if width.nil?
         return configuration.data_width if width == full_width
         width
       end
