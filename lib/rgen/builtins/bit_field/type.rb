@@ -44,6 +44,10 @@ RGen.list_item(:bit_field, :type) do
 
         attr_setter :required_width
 
+        def full_width
+          :full_width
+        end
+
         def use_reference(options = {})
           @use_reference      = true
           @reference_options  = options
@@ -67,7 +71,7 @@ RGen.list_item(:bit_field, :type) do
       field :write_only?, forward_to_helper:true
       field :reserved?  , forward_to_helper:true
 
-      class_delegator :required_width
+      class_delegator :full_width
       class_delegator :use_reference?
       class_delegator :reference_options
       class_delegator :same_width
@@ -90,9 +94,18 @@ RGen.list_item(:bit_field, :type) do
       end
 
       def width_mismatch?
-        return false if required_width.nil?
-        return false if bit_field.width == required_width
-        true
+        return false if self.class.required_width.nil?
+        if required_width.respond_to?(:include?)
+          required_width.not.include?(bit_field.width)
+        else
+          bit_field.width != required_width
+        end
+      end
+
+      def required_width
+        width = self.class.required_width
+        return configuration.data_width if width == full_width
+        width
       end
 
       def required_refercne_not_exist?

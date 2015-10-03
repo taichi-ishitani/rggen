@@ -162,7 +162,7 @@ describe 'type/bit_field' do
       end
     end
 
-    context "必要なビット幅が設定されている場合" do
+    context "必要なビット幅が値で設定されている場合" do
       before do
         define_item(:foo) {required_width 2}
       end
@@ -184,6 +184,87 @@ describe 'type/bit_field' do
             expect {
               @factory.create(configuration, register_map_file)
             }.to raise_register_map_error("2 bit(s) width required: #{width} bit(s)", position("block_0", 3, 4))
+          end
+        end
+      end
+    end
+
+    context "必要なビット幅が配列で複数指定されている場合" do
+      before do
+        define_item(:foo) {required_width [1, 3]}
+      end
+
+      it "指定した幅のどれかを持つビットフィールドで使用できる" do
+        set_load_data([
+          [nil, "register_0", "bit_field0_0", "[6:4]", "foo", nil],
+          [nil, nil         , "bit_field0_1", "[0]"  , "foo", nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
+
+      context "指定された以外の幅を持つビットフィールドで使用した場合" do
+        it "RGen::RegisterMapErrorを発生させる" do
+          {2 => "[1:0]", 4 => "[3:0]"}.each do |width, assignment|
+            set_load_data([[nil, "register_0", "bit_field_0_0", assignment, "foo", nil]])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("#{[1, 3]} bit(s) width required: #{width} bit(s)", position("block_0", 3, 4))
+          end
+        end
+      end
+    end
+
+    context "必要なビット幅が範囲で指定されている場合" do
+      before do
+        define_item(:foo) {required_width 2..4}
+      end
+
+      it "指定した幅のどれかを持つビットフィールドで使用できる" do
+        set_load_data([
+          [nil, "register_0", "bit_field0_0", "[11:8]", "foo", nil],
+          [nil, nil         , "bit_field0_1", "[6:4]" , "foo", nil],
+          [nil, nil         , "bit_field0_2", "[1:0]" , "foo", nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
+
+      context "指定された以外の幅を持つビットフィールドで使用した場合" do
+        it "RGen::RegisterMapErrorを発生させる" do
+          {1 => "[0]", 5 => "[4:0]"}.each do |width, assignment|
+            set_load_data([[nil, "register_0", "bit_field_0_0", assignment, "foo", nil]])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("#{2..4} bit(s) width required: #{width} bit(s)", position("block_0", 3, 4))
+          end
+        end
+      end
+    end
+
+    context "必要なビット幅が:full_widthで設定されている場合" do
+      before do
+        define_item(:foo) {required_width full_width}
+      end
+
+      it "コンフィグレーションで指定したデータ幅を持つビットフィールドで使用できる" do
+        set_load_data([
+          [nil, "register_0", "bit_field0_0", "[31:0]", "foo", nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
+
+      context "データ幅以外のビットフィールド使用した場合" do
+        it "RGen::RegisterMapErrorを発生させる" do
+          {1 => "[0]", 31 => "[30:0]"}.each do |width, assignment|
+            set_load_data([[nil, "register_0", "bit_field_0_0", assignment, "foo", nil]])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("#{configuration.data_width} bit(s) width required: #{width} bit(s)", position("block_0", 3, 4))
           end
         end
       end
