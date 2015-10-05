@@ -85,8 +85,12 @@ shared_context 'bit field type common' do
     RegisterMapDummyLoader.load_data("block_0" => all_data)
   end
 
-  let(:bit_fields) do
-    set_load_data(load_data)
+  def build_bit_fields(data)
+    set_load_data(data)
     @factory.create(configuration, register_map_file).bit_fields
+  end
+
+  let(:bit_fields) do
+    build_bit_fields(load_data)
   end
 end
