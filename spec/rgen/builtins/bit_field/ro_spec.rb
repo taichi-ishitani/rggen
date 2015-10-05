@@ -33,7 +33,7 @@ describe 'bit_fields/type/ro' do
     end
   end
 
-  it "アクセス属性はread-write" do
+  it "アクセス属性はread-only" do
     bit_fields  = build_bit_fields([
       [nil, "register_0", "bit_field_0_0", "[0]", "ro", nil]
     ])
