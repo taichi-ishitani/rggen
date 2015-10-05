@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'base address/register_map' do
+describe 'register_map/offset_address' do
   include_context 'register_map common'
   include_context 'configuration common'
 

@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe "data_width/configuration" do
+describe "global/data_width" do
   include_context 'configuration common'
 
   before(:all) do

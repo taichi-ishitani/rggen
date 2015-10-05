@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'name/register' do
+describe 'register/name' do
   include_context 'register_map common'
 
   before(:all) do

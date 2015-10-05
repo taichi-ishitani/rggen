@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'address_width/configuration' do
+describe 'global/address_width' do
   include_context 'configuration common'
 
   before(:all) do

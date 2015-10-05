@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'type/bit_field' do
+describe 'bit_field/type' do
   include_context 'register_map common'
   include_context 'configuration common'
 

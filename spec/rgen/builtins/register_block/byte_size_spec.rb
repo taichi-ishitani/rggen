@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'byte size/register_map' do
+describe 'register_map/byte_size' do
   include_context 'register_map common'
   include_context 'configuration common'
 
