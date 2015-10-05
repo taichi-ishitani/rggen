@@ -13,6 +13,7 @@ require_relative 'builtins/bit_field/name'
 require_relative 'builtins/bit_field/reference'
 require_relative 'builtins/bit_field/type'
 require_relative 'builtins/bit_field/rw'
+require_relative 'builtins/bit_field/ro'
 
 require_relative 'builtins/register/offset_address'
 require_relative 'builtins/register/name'
