@@ -174,6 +174,50 @@ module RGen::InputBase
       end
     end
 
+    describe ".active_item?" do
+      context ".buildでブロックが登録されている場合" do
+        it "真を返す" do
+          i0  = Class.new(Item) { build {} }
+          i1  = Class.new(i0)
+          i2  = Class.new(i1) { build {} }
+          expect(i0).to be_active_item
+          expect(i1).to be_active_item
+          expect(i2).to be_active_item
+        end
+      end
+
+      context ".buildでブロックが登録されていない場合" do
+        it "偽を返す" do
+          i0  = Class.new(Item)
+          i1  = Class.new(i0)
+          expect(i0).not_to be_active_item
+          expect(i1).not_to be_active_item
+        end
+      end
+    end
+
+    describe ".passive_item?" do
+      context ".buildでブロックが登録されている場合" do
+        it "偽を返す" do
+          i0  = Class.new(Item) { build {} }
+          i1  = Class.new(i0)
+          i2  = Class.new(i1) { build {} }
+          expect(i0).not_to be_passive_item
+          expect(i1).not_to be_passive_item
+          expect(i2).not_to be_passive_item
+        end
+      end
+
+      context ".buildでブロックが登録されていない場合" do
+        it "偽を返す" do
+          i0  = Class.new(Item)
+          i1  = Class.new(i0)
+          expect(i0).to be_passive_item
+          expect(i1).to be_passive_item
+        end
+      end
+    end
+
     describe "#fields" do
       it ".fieldで定義されたメソッド一覧を返す" do
         fields  = [:foo, :bar]

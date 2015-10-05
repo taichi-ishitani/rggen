@@ -27,6 +27,14 @@ module RGen::InputBase
         @validators ||= []
         @validators << body
       end
+
+      def active_item?
+        !passive_item?
+      end
+
+      def passive_item?
+        @builders.nil? || @builders.empty?
+      end
     end
 
     def self.inherited(subclass)
