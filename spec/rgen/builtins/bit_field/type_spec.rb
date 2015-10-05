@@ -258,7 +258,7 @@ describe 'bit_field/type' do
 
   describe ".use_reference" do
     context ".use_referenceで参照信号設定がない場合" do
-      it "任意の幅のビットフィールドで使用できる" do
+      it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
         set_load_data([
           [nil, "register_0", "bit_field_0_0", "[15:8]", "foo", nil            ],
           [nil, nil         , "bit_field_0_1", "[0]"   , "foo", nil            ],
