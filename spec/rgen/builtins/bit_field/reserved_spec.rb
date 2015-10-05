@@ -9,7 +9,7 @@ describe 'bit_fields/type/reserved' do
     RGen.enable(:register_block, :name)
     RGen.enable(:register, :name)
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
-    RGen.enable(:bit_field, :type, :reserved)
+    RGen.enable(:bit_field, :type, [:reserved, :rw])
 
     @configuration_factory  = build_configuration_factory
     @factory                = build_register_map_factory
@@ -56,8 +56,9 @@ describe 'bit_fields/type/reserved' do
   it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
     expect {
       build_bit_fields([
-        [nil, "register_0", "bit_field_0_0", "[0]"   , "reserved", nil            ],
-        [nil, "register_1", "bit_field_1_0", "[1:0]" , "reserved", "bit_field_0_0"]
+        [nil, "register_0", "bit_field_0_0", "[0]" , "rw"      , nil            ],
+        [nil, "register_1", "bit_field_1_0", "[0]" , "reserved", nil            ],
+        [nil, "register_2", "bit_field_2_0", "[0]" , "reserved", "bit_field_0_0"]
       ])
     }.not_to raise_error
   end
