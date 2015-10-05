@@ -71,3 +71,22 @@ shared_context 'register_map common' do
     RegisterMapDummyLoader.clear
   end
 end
+
+shared_context 'bit field type common' do
+  include_context 'register_map common'
+
+  def set_load_data(data)
+    all_data  = [
+      [nil, nil, "block_0"],
+      [nil, nil, nil      ],
+      [nil, nil, nil      ]
+    ]
+    all_data.concat(data)
+    RegisterMapDummyLoader.load_data("block_0" => all_data)
+  end
+
+  let(:bit_fields) do
+    set_load_data(load_data)
+    @factory.create(configuration, register_map_file).bit_fields
+  end
+end

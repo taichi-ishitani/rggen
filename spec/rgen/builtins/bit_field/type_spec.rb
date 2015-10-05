@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 
 describe 'bit_field/type' do
-  include_context 'register_map common'
+  include_context 'bit field type common'
   include_context 'configuration common'
 
   before(:all) do
@@ -46,23 +46,8 @@ describe 'bit_field/type' do
     @configuration_factory.create(configuration_file)
   end
 
-  let(:bit_fields) do
-    set_load_data(load_data)
-    @factory.create(configuration, register_map_file).bit_fields
-  end
-
   def define_item(item_name, &body)
     @items[item_name].class_eval(&body)
-  end
-
-  def set_load_data(data)
-    all_data  = [
-      [nil, nil, "block_0"],
-      [nil, nil, nil      ],
-      [nil, nil, nil      ]
-    ]
-    all_data.concat(data)
-    RegisterMapDummyLoader.load_data("block_0" => all_data)
   end
 
   def clear_dummy_types
