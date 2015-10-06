@@ -1,7 +1,7 @@
 module RGen::Configuration
   class Factory < RGen::InputBase::ComponentFactory
-    def create_items(configuration, hash)
-      @item_factories.each do |name, factory|
+    def create_active_items(configuration, hash)
+      active_item_factories.each do |name, factory|
         create_item(factory, configuration, hash[name])
       end
     end

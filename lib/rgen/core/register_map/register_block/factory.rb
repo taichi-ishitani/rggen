@@ -2,8 +2,8 @@ module RGen::RegisterMap::RegisterBlock
   class Factory < RGen::InputBase::ComponentFactory
     private
 
-    def create_items(register_block, configuration, sheet)
-      @item_factories.each_value.with_index do |factory, index|
+    def create_active_items(register_block, configuration, sheet)
+      active_item_factories.each_value.with_index do |factory, index|
         create_item(factory, register_block, configuration, sheet[index, 2])
       end
     end
