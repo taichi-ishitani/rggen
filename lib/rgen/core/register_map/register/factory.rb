@@ -7,8 +7,9 @@ module RGen::RegisterMap::Register
     end
 
     def create_children(register, configuration, rows)
+      drop_size = active_item_factories.size
       rows.each do |row|
-        create_child(register, configuration, row.drop(@item_factories.size))
+        create_child(register, configuration, row.drop(drop_size))
       end
     end
   end

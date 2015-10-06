@@ -19,6 +19,7 @@ require_relative 'builtins/bit_field/reserved'
 
 require_relative 'builtins/register/offset_address'
 require_relative 'builtins/register/name'
+require_relative 'builtins/register/accessibility'
 
 require_relative 'builtins/register_block/base_address'
 require_relative 'builtins/register_block/byte_size'

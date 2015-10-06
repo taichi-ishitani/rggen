@@ -15,7 +15,7 @@ module RGen::RegisterMap::RegisterBlock
     end
 
     def cell_blocks(sheet)
-      drop_row_size     = @item_factories.size + 2
+      drop_row_size     = active_item_factories.size + 2
       drop_column_size  = 1
 
       sheet.rows.drop(drop_row_size).each_with_object([]) do |row, blocks|
