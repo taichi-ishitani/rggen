@@ -1,4 +1,4 @@
-RGen.value_item(:bit_field, :bit_assignment) do
+RGen.simple_item(:bit_field, :bit_assignment) do
   register_map do
     field :msb
     field :lsb

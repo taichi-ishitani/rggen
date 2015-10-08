@@ -104,7 +104,7 @@ module RGen::Builder
       end
     end
 
-    describe "#define_value_item" do
+    describe "#define_simple_item" do
       before do
         builder.component_store(:configuration) do
           entry do
@@ -120,9 +120,9 @@ module RGen::Builder
         :foo
       end
 
-      it "引数で与えられた名前のカテゴリの#define_value_itemを呼び出して、アイテムの登録を行う" do
-        expect(categories[:global]).to receive(:define_value_item).with(item_name).and_call_original
-        builder.define_value_item(:global, item_name) do
+      it "引数で与えられた名前のカテゴリの#define_simple_item、アイテムの登録を行う" do
+        expect(categories[:global]).to receive(:define_simple_item).with(item_name).and_call_original
+        builder.define_simple_item(:global, item_name) do
           configuration do
           end
         end
@@ -131,7 +131,7 @@ module RGen::Builder
       context "指定したカテゴリが存在しない場合" do
         it "RGen::Builderエラーを発生させる" do
           expect {
-            builder.define_value_item(:foo, item_name) {}
+            builder.define_simple_item(:foo, item_name) {}
           }.to raise_error RGen::BuilderError, "unknown category: foo"
         end
       end
@@ -195,7 +195,7 @@ module RGen::Builder
         end
 
         [:baz, :qux].each do |item_name|
-          builder.define_value_item(:global, item_name) do
+          builder.define_simple_item(:global, item_name) do
             configuration do
             end
           end

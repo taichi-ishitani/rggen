@@ -14,8 +14,8 @@ module RGen::Builder
       ItemStore.new(item_base, item_factory)
     end
 
-    let(:value_item_entries) do
-      item_store.instance_variable_get(:@value_item_entries)
+    let(:simple_item_entries) do
+      item_store.instance_variable_get(:@simple_item_entries)
     end
 
     let(:list_item_entries) do
@@ -30,15 +30,15 @@ module RGen::Builder
       Object.new
     end
 
-    describe "#define_value_item" do
+    describe "#define_simple_item" do
       before do
-        item_store.define_value_item(:foo) do
+        item_store.define_simple_item(:foo) do
           field :foo
         end
       end
 
       let(:entry) do
-        value_item_entries[:foo]
+        simple_item_entries[:foo]
       end
 
       it "#baseを親クラスとしてアイテムクラスを定義し、アイテム名で登録する" do
@@ -55,7 +55,7 @@ module RGen::Builder
       context "コンテキストオブジェクトが与えられたとき" do
         specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
           actual_context  = nil
-          item_store.define_value_item(:bar, shared_context) do |context|
+          item_store.define_simple_item(:bar, shared_context) do |context|
             actual_context  = context
           end
 
@@ -63,10 +63,10 @@ module RGen::Builder
         end
       end
 
-      context "同名の値型アイテムエントリがすでに登録されている場合" do
-        it "新しい値型アイテムエントリに差し替える" do
+      context "同名のシンプルアイテムエントリがすでに登録されている場合" do
+        it "新しいシンプルアイテムエントリに差し替える" do
           new_item_class  = nil
-          item_store.define_value_item(:foo) do
+          item_store.define_simple_item(:foo) do
             new_item_class  = self
           end
 
@@ -74,15 +74,15 @@ module RGen::Builder
         end
       end
 
-      context "同名のリスト型アイテムエントリがすでに登録されている場合" do
+      context "同名のリストアイテムエントリがすでに登録されている場合" do
         before do
           item_store.define_list_item(:bar) do
           end
         end
 
-        it "既存のリスト型アイテムエントリを削除する" do
+        it "既存のリストアイテムエントリを削除する" do
           expect {
-            item_store.define_value_item(:bar) {}
+            item_store.define_simple_item(:bar) {}
           }.to change {list_item_entries.key?(:bar)}.from(true).to(false)
         end
       end
@@ -122,13 +122,13 @@ module RGen::Builder
           end
         end
 
-        context "同名のリスト型アイテムエントリがすでに登録されている場合" do
+        context "同名のリストアイテムエントリがすでに登録されている場合" do
           before do
             item_store.define_list_item(:foo) do
             end
           end
 
-          it "新しいリスト型アイテムエントリに差し替える" do
+          it "新しいリストアイテムエントリに差し替える" do
             new_entry = nil
             item_store.define_list_item(:foo) do
               new_entry = self
@@ -138,16 +138,16 @@ module RGen::Builder
           end
         end
 
-        context "同名の値型アイテムエントリがすでに登録されている場合" do
+        context "同名のシンプルアイテムエントリがすでに登録されている場合" do
           before do
-            item_store.define_value_item(:foo) do
+            item_store.define_simple_item(:foo) do
             end
           end
 
-          it "既存の値型アイテムエントリを削除する" do
+          it "既存のシンプルアイテムエントリを削除する" do
             expect{
               item_store.define_list_item(:foo) {}
-            }.to change {value_item_entries.key?(:foo)}.from(true).to(false)
+            }.to change {simple_item_entries.key?(:foo)}.from(true).to(false)
           end
         end
       end
@@ -202,8 +202,8 @@ module RGen::Builder
 
     describe "#enable" do
       before do
-        item_store.define_value_item(:foo) {}
-        item_store.define_value_item(:bar) {}
+        item_store.define_simple_item(:foo) {}
+        item_store.define_simple_item(:bar) {}
         item_store.define_list_item(:baz) {}
         item_store.define_list_item(:qux) {}
       end
@@ -231,7 +231,7 @@ module RGen::Builder
       end
 
       context "引数がリスト名と、アイテム名またはアイテム名の配列のとき" do
-        it "リスト名で指定されているリスト型アイテムエントリオブジェクトの#enableを呼び出し、リストアイテムの有効化を行う" do
+        it "リスト名で指定されているリストアイテムエントリオブジェクトの#enableを呼び出し、リストアイテムの有効化を行う" do
           expect(list_item_entries[:baz]).to receive(:enable).with(:foo)
           expect(list_item_entries[:baz]).to receive(:enable).with([:bar, :baz])
           item_store.enable(:baz, :foo)
@@ -256,7 +256,7 @@ module RGen::Builder
     describe "#build_factories" do
       before do
         [:foo, :bar].each do |name|
-          item_store.define_value_item(name) do
+          item_store.define_simple_item(name) do
           end
         end
         [:baz, :qux].each do |name|
@@ -269,7 +269,7 @@ module RGen::Builder
 
       it "#enableで有効にされたアイテムエントリの#build_factoryを有効にされて順で呼び出し、アイテムファクトリオブジェクトを生成する" do
         [:foo, :baz, :qux].each do |item_name|
-          entry = value_item_entries[item_name] || list_item_entries[item_name]
+          entry = simple_item_entries[item_name] || list_item_entries[item_name]
           expect(entry).to receive(:build_factory).ordered.and_call_original
         end
         item_store.build_factories
@@ -278,7 +278,7 @@ module RGen::Builder
       it "アイテム名をキーとする、アイテムファクトリオブジェクトハッシュを返す" do
         factories = {}
         [:foo, :baz, :qux].each do |item_name|
-          entry = value_item_entries[item_name] || list_item_entries[item_name]
+          entry = simple_item_entries[item_name] || list_item_entries[item_name]
           allow(entry).to receive(:build_factory).and_wrap_original do |m, *args|
             factories[item_name]  = m.call(*args)
             factories[item_name]

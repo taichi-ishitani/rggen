@@ -1,4 +1,4 @@
-RGen.value_item(:register_block, :name) do
+RGen.simple_item(:register_block, :name) do
   register_map do
     field :name
 

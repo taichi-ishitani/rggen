@@ -1,6 +1,6 @@
 module RGen
   module Builder
-    require_relative 'builder/value_item_entry'
+    require_relative 'builder/simple_item_entry'
     require_relative 'builder/list_item_entry'
     require_relative 'builder/item_store'
     require_relative 'builder/component_entry'

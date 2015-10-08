@@ -29,19 +29,19 @@ module RGen::Builder
       end
     end
 
-    describe "#define_value_item" do
+    describe "#define_simple_item" do
       before do
         item_stores.each do |name, registry|
           category.add_item_store(name, registry)
         end
       end
 
-      it "引数で与えた名前で、ブロック内で指定した対象値型アイテムの定義を行う" do
-        expect(item_stores[:configuration]).to receive(:define_value_item).with(:foo)
-        expect(item_stores[:configuration]).to receive(:define_value_item).with(:bar)
-        expect(item_stores[:register_map ]).to receive(:define_value_item).with(:foo)
+      it "引数で与えた名前で、ブロック内で指定した対象シンプルアイテムの定義を行う" do
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(:foo)
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(:bar)
+        expect(item_stores[:register_map ]).to receive(:define_simple_item).with(:foo)
 
-        category.define_value_item(:foo) do
+        category.define_simple_item(:foo) do
           configuration do
             field :foo
           end
@@ -50,7 +50,7 @@ module RGen::Builder
           end
         end
 
-        category.define_value_item(:bar) do
+        category.define_simple_item(:bar) do
           configuration do
             field :bar
           end
@@ -60,7 +60,7 @@ module RGen::Builder
       context "#shared_contextで共有コンテキストオブジェクトを生成した場合" do
         specify "アイテムの定義内でコンテキストオブジェクトを参照できる" do
           contexts  = []
-          category.define_value_item(:foo) do
+          category.define_simple_item(:foo) do
             shared_context do
             end
             contexts[0] = @shared_context
@@ -85,7 +85,7 @@ module RGen::Builder
         end
       end
 
-      it "引数で与えた名前で、ブロック内で指定した対象リスト型アイテムの定義を行う" do
+      it "引数で与えた名前で、ブロック内で指定した対象リストアイテムの定義を行う" do
         expect(item_stores[:configuration]).to receive(:define_list_item).with(:foo)
         expect(item_stores[:configuration]).to receive(:define_list_item).with(:bar)
         expect(item_stores[:configuration]).to receive(:define_list_item).with(:foo, :baz)
@@ -154,7 +154,7 @@ module RGen::Builder
           category.add_item_store(name, registry)
         end
         [:foo, :bar].each do |item_name|
-          category.define_value_item(item_name) do
+          category.define_simple_item(item_name) do
             configuration do
             end
             register_map do

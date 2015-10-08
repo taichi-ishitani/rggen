@@ -1,4 +1,4 @@
-RGen.value_item(:register, :accessibility) do
+RGen.simple_item(:register, :accessibility) do
   register_map do
     field :readable? do
       register.bit_fields.any?(&:readable?)

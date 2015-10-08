@@ -1,5 +1,5 @@
 module RGen::Builder
-  class ValueItemEntry
+  class SimpleItemEntry
     def initialize(base, factory, *contexts, &body)
       @item_class = Class.new(base)
       @factory    = factory

@@ -168,11 +168,11 @@ module RGen::Builder
           item_base         RGen::RegisterMap::Register::Item
           item_factory      RGen::RegisterMap::Register::ItemFactory
         end
-        categories[:register_block].define_value_item(:bar) do
+        categories[:register_block].define_simple_item(:bar) do
           foo do
           end
         end
-        categories[:register].define_value_item(:bar) do
+        categories[:register].define_simple_item(:bar) do
           foo do
           end
         end

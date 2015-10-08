@@ -1,4 +1,4 @@
-RGen.value_item(:global, :data_width) do
+RGen.simple_item(:global, :data_width) do
   configuration do
     field :data_width, default: 32
     field :byte_width do

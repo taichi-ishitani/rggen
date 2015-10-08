@@ -10,8 +10,8 @@ module RGen::Builder
       define_definition_method(component_name, item_store)
     end
 
-    def define_value_item(item_name, &body)
-      do_definition(:define_value_item, item_name, &body)
+    def define_simple_item(item_name, &body)
+      do_definition(:define_simple_item, item_name, &body)
     end
 
     def define_list_item(list_name, item_name = nil, &body)

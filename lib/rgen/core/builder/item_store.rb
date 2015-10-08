@@ -1,18 +1,18 @@
 module RGen::Builder
   class ItemStore
     def initialize(base, factory)
-      @base               = base
-      @factory            = factory
-      @value_item_entries = {}
-      @list_item_entries  = {}
-      @enabled_entries    = []
+      @base                 = base
+      @factory              = factory
+      @simple_item_entries  = {}
+      @list_item_entries    = {}
+      @enabled_entries      = []
     end
 
     attr_reader :base
     attr_reader :factory
 
-    def define_value_item(item_name, *contexts, &body)
-      create_item_entry(:value, item_name, contexts, body)
+    def define_simple_item(item_name, *contexts, &body)
+      create_item_entry(:simple, item_name, contexts, body)
     end
 
     def define_list_item(list_name, *args, &body)
@@ -43,7 +43,7 @@ module RGen::Builder
     def build_factories
       @enabled_entries.each_with_object({}) do |entry_name, factories|
         factories[entry_name] = (
-          @value_item_entries[entry_name] || @list_item_entries[entry_name]
+          @simple_item_entries[entry_name] || @list_item_entries[entry_name]
         ).build_factory
       end
     end
@@ -51,17 +51,17 @@ module RGen::Builder
     private
 
     def create_item_entry(entry_type, entry_name, contexts, body)
-      klass = {value: ValueItemEntry, list: ListItemEntry}.fetch(entry_type)
+      klass = {simple: SimpleItemEntry, list: ListItemEntry}.fetch(entry_type)
       entry = klass.new(base, factory, *contexts, &body)
       update_entries(entry_type, entry_name, entry)
     end
 
     def update_entries(entry_type, entry_name, entry)
-      if entry_type == :value
+      if entry_type == :simple
         @list_item_entries.delete(entry_name)
-        @value_item_entries[entry_name] = entry
+        @simple_item_entries[entry_name] = entry
       else
-        @value_item_entries.delete(entry_name)
+        @simple_item_entries.delete(entry_name)
         @list_item_entries[entry_name]  = entry
       end
     end
@@ -74,7 +74,7 @@ module RGen::Builder
     def enable_item_entries(entry_name_or_names)
       Array(entry_name_or_names).each do |entry_name|
         next if @enabled_entries.include?(entry_name)
-        next unless @value_item_entries.key?(entry_name) ||
+        next unless @simple_item_entries.key?(entry_name) ||
                     @list_item_entries.key?(entry_name)
         @enabled_entries  << entry_name
       end

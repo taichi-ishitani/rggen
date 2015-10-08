@@ -36,8 +36,8 @@ module RGen::Builder
       @stores[component_name].build_factory
     end
 
-    def define_value_item(category_name, item_name, &body)
-      @categories[category_name].define_value_item(item_name, &body)
+    def define_simple_item(category_name, item_name, &body)
+      @categories[category_name].define_simple_item(item_name, &body)
     end
 
     def define_list_item(category_name, list_name, item_name = nil, &body)
