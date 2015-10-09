@@ -1,24 +1,22 @@
-require_relative  'spec_helper'
+require_relative  '../spec_helper'
 
-module RGen::RegisterMap
-  describe RegisterMap do
-    let(:register_map) do
-      RegisterMap.new
-    end
+module RGen::Structure::RegisterMap
+  describe Component do
+    include_context 'structured components'
 
     let(:register_blocks) do
-      2.times.map {RGen::RegisterMap::RegisterBlock::RegisterBlock.new(register_map)}
+      2.times.map {DummyRegisterBlock.new(register_map)}
     end
 
     let(:registers) do
       2.times.flat_map do |i|
-        2.times.map {RGen::RegisterMap::Register::Register.new(register_blocks[i])}
+        2.times.map {DummyRegister.new(register_blocks[i])}
       end
     end
 
     let(:bit_fields) do
       4.times.flat_map do |i|
-        2.times.map {RGen::RegisterMap::BitField::BitField.new(registers[i])}
+        2.times.map {DummyBitField.new(registers[i])}
       end
     end
 

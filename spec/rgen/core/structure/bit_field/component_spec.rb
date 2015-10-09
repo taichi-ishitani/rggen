@@ -1,22 +1,8 @@
 require_relative  '../spec_helper'
 
-module RGen::RegisterMap::BitField
-  describe BitField do
-    let(:register_map) do
-      RGen::RegisterMap::RegisterMap.new
-    end
-
-    let(:register_block) do
-      RGen::RegisterMap::RegisterBlock::RegisterBlock.new(register_map)
-    end
-
-    let(:register) do
-      RGen::RegisterMap::Register::Register.new(register_block)
-    end
-
-    let(:bit_field) do
-      BitField.new(register)
-    end
+module RGen::Structure::BitField
+  describe Component do
+    include_context 'structured components'
 
     describe "#register_map" do
       it "属するレジスタマップオブジェクトを返す" do

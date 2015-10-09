@@ -1,17 +1,13 @@
 require_relative  '../spec_helper'
 
-module RGen::RegisterMap::RegisterBlock
+module RGen::Structure::RegisterBlock
   describe Item do
-    let(:register_map) do
-      RGen::RegisterMap::RegisterMap.new
-    end
-
-    let(:register_block) do
-      RegisterBlock.new(register_map)
-    end
+    include_context 'structured components'
 
     let(:item) do
-      Item.new(register_block)
+      Class.new(RGen::Base::Item) {
+        include Item
+      }.new(register_block)
     end
 
     describe "#register_map" do
