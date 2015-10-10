@@ -1,5 +1,7 @@
 module RGen::GeneratorBase
   class Item < RGen::Base::Item
+    include TemplateUtility
+
     define_helpers do
       attr_reader :code_generator
 
