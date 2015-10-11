@@ -1,7 +1,5 @@
 module RGen::GeneratorBase
   module TemplateUtility
-    require 'baby_erubis'
-
     module Extensions
       def template_engines
         @template_engines ||= Hash.new do |engines, path|
