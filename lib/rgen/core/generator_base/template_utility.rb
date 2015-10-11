@@ -3,9 +3,10 @@ module RGen::GeneratorBase
     require 'baby_erubis'
 
     module Extensions
-      def template_engine(path)
-        @template_engines       ||= {}
-        @template_engines[path] ||= create_engine(path)
+      def template_engines
+        @template_engines ||= Hash.new do |engines, path|
+          engines[path] = create_engine(path)
+        end
       end
 
       private
@@ -22,13 +23,7 @@ module RGen::GeneratorBase
 
     def process_template(path = nil)
       path  ||= File.ext(caller.first[/^(.+?):\d/, 1], 'erb')
-      template_engine(path).render(self)
-    end
-
-    private
-
-    def template_engine(path)
-      self.class.template_engine(path)
+      self.class.template_engines[path].render(self)
     end
   end
 end
