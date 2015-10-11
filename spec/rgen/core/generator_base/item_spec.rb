@@ -20,30 +20,10 @@ module RGen::GeneratorBase
       Generator.new
     end
 
-    let(:configuration) do
-      RGen::InputBase::Component.new
-    end
-
-    let(:source) do
-      RGen::InputBase::Component.new
-    end
-
     let(:item) do
-      item  = TestItem.new(generator, configuration, source)
+      item  = TestItem.new(generator)
       generator.add_item(item)
       item
-    end
-
-    describe "#configuration" do
-      it "与えられたコンフィグレーションオブジェクトを返す" do
-        expect(item.configuration).to eql configuration
-      end
-    end
-
-    describe "#source" do
-      it "与えられたソースオブジェクトを返す" do
-        expect(item.source).to eql source
-      end
     end
 
     describe "#generate_code" do
@@ -97,7 +77,7 @@ module RGen::GeneratorBase
 
       context ".write_fileで生成ブロックが登録されていない場合" do
         let(:item) do
-          Class.new(Item).new(generator, configuration, source)
+          Class.new(Item).new(generator)
         end
 
         it "何も起こらない" do

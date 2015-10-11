@@ -46,19 +46,13 @@ module RGen::GeneratorBase
       end
     end
 
-    def initialize(owner, configuration, source)
-      super(owner)
-      @generator      = owner
-      @configuration  = configuration
-      @source         = source
-    end
-
-    attr_reader :generator
-    attr_reader :configuration
-    attr_reader :source
+    attr_accessor :configuration
+    attr_accessor :source
 
     class_delegator :code_generators
     class_delegator :file_writer
+
+    alias_method  :generator, :owner
 
     def generate_code(kind, buffer)
       return if code_generators.nil?

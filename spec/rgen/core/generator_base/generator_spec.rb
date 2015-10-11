@@ -17,7 +17,7 @@ module RGen::GeneratorBase
     def create_generator(parent = nil)
       generator = Generator.new
       [FooItem, BarItem].each do |klass|
-        item  = klass.new(generator, nil, nil)
+        item  = klass.new(generator)
         generator.add_item(item)
       end
       parent.add_child(generator) unless parent.nil?
