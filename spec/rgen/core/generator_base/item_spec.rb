@@ -28,24 +28,10 @@ module RGen::GeneratorBase
       RGen::InputBase::Component.new
     end
 
-    let(:context) do
-      Object.new
-    end
-
-    let(:item_without_context) do
+    let(:item) do
       item  = TestItem.new(generator, configuration, source)
       generator.add_item(item)
       item
-    end
-
-    let(:item_with_context) do
-      item  = TestItem.new(generator, configuration, source, context)
-      generator.add_item(item)
-      item
-    end
-
-    let(:item) do
-      item_without_context
     end
 
     describe "#configuration" do
@@ -57,14 +43,6 @@ module RGen::GeneratorBase
     describe "#source" do
       it "与えられたソースオブジェクトを返す" do
         expect(item.source).to eql source
-      end
-    end
-
-    describe "#context" do
-      context "コンテキストオブジェクトが与えられた場合" do
-        it "与えられたコンテキストオブジェクトを返す" do
-          expect(item_with_context.context).to eql context
-        end
       end
     end
 
