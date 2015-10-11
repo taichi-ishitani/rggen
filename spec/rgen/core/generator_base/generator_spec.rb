@@ -24,7 +24,7 @@ module RGen::GeneratorBase
       generator
     end
 
-    before(:all) do
+    before do
       @generator        = create_generator
       @child_generators = 2.times.map do
         create_generator(@generator)
@@ -91,6 +91,40 @@ module RGen::GeneratorBase
             "#{child_generators[1].object_id}_foo",
             "#{generator.object_id}_foo"
           ]
+        end
+      end
+    end
+
+    describe "#write_file" do
+      before do
+        generator.items.each do |item|
+          expect(item).to receive(:write_file).with(output_directory)
+        end
+        child_generators.map(&:items).flatten.each do |item|
+          expect(item).to receive(:write_file).with(output_directory)
+        end
+        grandchild_generators.map(&:items).flatten.each do |item|
+          expect(item).to receive(:write_file).with(output_directory)
+        end
+      end
+
+      context "出力ディレクトリが指定されていない場合" do
+        let(:output_directory) do
+          ''
+        end
+
+        it "空文字列を引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
+          generator.write_file
+        end
+      end
+
+      context "出力ディレクトリが指定された場合" do
+        let(:output_directory) do
+          '/foo/bar'
+        end
+
+        it "与えられた出力ディレクトリを引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
+          generator.write_file(output_directory)
         end
       end
     end

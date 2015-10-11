@@ -11,6 +11,15 @@ module RGen::GeneratorBase
       end
     end
 
+    def write_file(output_directory = '')
+      items.each do |item|
+        item.write_file(output_directory)
+      end
+      children.each do |child|
+        child.write_file(output_directory)
+      end
+    end
+
     private
 
     def generate_child_code(kind, mode, buffer)
