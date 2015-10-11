@@ -22,6 +22,8 @@ module RGen::GeneratorBase
     attr_reader :source
     attr_reader :context
 
+    alias_method  :generator, :owner
+
     class_delegator :code_generator
 
     def generate_code(kind, buffer)
