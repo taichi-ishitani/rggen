@@ -39,12 +39,13 @@ module RGen::Builder
           item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
         end
 
-        expect(component_entries.last).to have_attributes(
-          component_class:   RGen::RegisterMap::RegisterBlock::RegisterBlock,
-          component_factory: RGen::RegisterMap::RegisterBlock::Factory,
-          item_base:         RGen::RegisterMap::RegisterBlock::Item,
-          item_factory:      RGen::RegisterMap::RegisterBlock::ItemFactory
-        )
+        entry = component_entries.last
+        aggregate_failures do
+          expect(entry.component_class.superclass  ).to be RGen::RegisterMap::RegisterBlock::RegisterBlock
+          expect(entry.component_factory.superclass).to be RGen::RegisterMap::RegisterBlock::Factory
+          expect(entry.item_base.superclass        ).to be RGen::RegisterMap::RegisterBlock::Item
+          expect(entry.item_factory.superclass     ).to be RGen::RegisterMap::RegisterBlock::ItemFactory
+        end
       end
 
       context "アイテムの設定が行われた場合" do

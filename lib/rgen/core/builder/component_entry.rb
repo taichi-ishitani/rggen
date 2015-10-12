@@ -1,9 +1,24 @@
 module RGen::Builder
   class ComponentEntry
-    attr_setter :component_class
-    attr_setter :component_factory
-    attr_setter :item_base
-    attr_setter :item_factory
+    class << self
+      private
+
+      def rgen_class_setter(class_type)
+        variable_name = class_type.variablize
+        define_method(class_type) do |base_class = nil, &body|
+          unless base_class.nil? || instance_variable_defined?(variable_name)
+            klass = Class.new(base_class, &body)
+            instance_variable_set(variable_name, klass)
+          end
+          instance_variable_get(variable_name)
+        end
+      end
+    end
+
+    rgen_class_setter :component_class
+    rgen_class_setter :component_factory
+    rgen_class_setter :item_base
+    rgen_class_setter :item_factory
 
     def item_store
       return nil unless item_base && item_factory
