@@ -7,7 +7,7 @@ module RGen::Builder
         variable_name = class_type.variablize
         define_method(class_type) do |base_class = nil, &body|
           unless base_class.nil? || instance_variable_defined?(variable_name)
-            klass = Class.new(base_class, &body)
+            klass = (body && Class.new(base_class, &body)) || base_class
             instance_variable_set(variable_name, klass)
           end
           instance_variable_get(variable_name)

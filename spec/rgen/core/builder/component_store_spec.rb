@@ -41,10 +41,10 @@ module RGen::Builder
 
         entry = component_entries.last
         aggregate_failures do
-          expect(entry.component_class.superclass  ).to be RGen::InputBase::Component
-          expect(entry.component_factory.superclass).to be RGen::InputBase::ComponentFactory
-          expect(entry.item_base.superclass        ).to be RGen::InputBase::Item
-          expect(entry.item_factory.superclass     ).to be RGen::InputBase::ItemFactory
+          expect(entry.component_class  ).to be RGen::InputBase::Component
+          expect(entry.component_factory).to be RGen::InputBase::ComponentFactory
+          expect(entry.item_base        ).to be RGen::InputBase::Item
+          expect(entry.item_factory     ).to be RGen::InputBase::ItemFactory
         end
       end
 

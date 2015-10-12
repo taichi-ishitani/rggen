@@ -23,105 +23,85 @@ module RGen::Builder
     end
 
     describe "#component_class" do
-      context "ベースクラスが与えられた場合" do
-        it "与えられたクラスを親クラスとしてコンポーネントクラスを定義する" do
+      context "クラスが与えられた場合" do
+        it "与えられたクラスをコンポーネントクラスとして登録する" do
           entry.component_class(component_base)
-          expect(entry.component_class.superclass).to be component_base
-        end
-
-        context "ブロックも与えられた場合" do
-          it "ブロックを定義したクラスのコンテキストで実行する" do
-            entry.component_class(component_base) do
-              def foo ; end
-            end
-            expect(entry.component_class.public_instance_methods(false)).to match [:foo]
-          end
+          expect(entry.component_class).to be component_base
         end
       end
 
-      context "無引数の場合" do
-        it "定義したコンポーネントクラスを返す" do
-          klass = nil
-          entry.component_class(component_base) {klass = self}
-          expect(entry.component_class).to be klass
+      context "ベースクラスとブロックが与えられた場合" do
+        it "与えられたクラスを親クラスとしてコンポーネントクラスを定義する" do
+          entry.component_class(component_base) do
+            def foo ; end
+          end
+          aggregate_failures do
+            expect(entry.component_class.superclass                    ).to be component_base
+            expect(entry.component_class.public_instance_methods(false)).to match [:foo]
+          end
         end
       end
     end
 
     describe "#component_factory" do
-      context "ベースクラスが与えられた場合" do
-        it "与えられたクラスを親クラスとしてコンポーネントファクトリクラスを定義する" do
+      context "クラスが与えられた場合" do
+        it "与えられたクラスをコンポーネントファクトリクラスとして登録する" do
           entry.component_factory(component_base_factory)
-          expect(entry.component_factory.superclass).to be component_base_factory
-        end
-
-        context "ブロックも与えられた場合" do
-          it "ブロックを定義したクラスのコンテキストで実行する" do
-            entry.component_factory(component_base_factory) do
-              def foo ; end
-            end
-            expect(entry.component_factory.public_instance_methods(false)).to match [:foo]
-          end
+          expect(entry.component_factory).to be component_base_factory
         end
       end
 
-      context "無引数の場合" do
-        it "定義したコンポーネントファクトリクラスを返す" do
-          klass = nil
-          entry.component_factory(component_base_factory) {klass = self}
-          expect(entry.component_factory).to be klass
+      context "ベースクラスとブロックが与えられた場合" do
+        it "与えられたクラスを親クラスとしてコンポーネントファクトリクラスを定義する" do
+          entry.component_factory(component_base_factory) do
+            def foo ; end
+          end
+          aggregate_failures do
+            expect(entry.component_factory.superclass                    ).to be component_base_factory
+            expect(entry.component_factory.public_instance_methods(false)).to match [:foo]
+          end
         end
       end
     end
 
     describe "#item_base" do
-      context "ベースクラスが与えられた場合" do
-        it "与えられたクラスを親クラスとしてアイテムベースクラスを定義する" do
+      context "クラスが与えられた場合" do
+        it "与えられたクラスをアイテムベースクラスとして登録する" do
           entry.item_base(item_base_base)
-          expect(entry.item_base.superclass).to be item_base_base
-        end
-
-        context "ブロックも与えられた場合" do
-          it "ブロックを定義したクラスのコンテキストで実行する" do
-            entry.item_base(item_base_base) do
-              def foo ; end
-            end
-            expect(entry.item_base.public_instance_methods(false)).to match [:foo]
-          end
+          expect(entry.item_base).to be item_base_base
         end
       end
 
-      context "無引数の場合" do
-        it "定義したアイテムベースクラスクラスを返す" do
-          klass = nil
-          entry.item_base(item_base_base) {klass = self}
-          expect(entry.item_base).to be klass
+      context "ベースクラスとブロックが与えられた場合" do
+        it "与えられたクラスを親クラスとしてアイテムベースクラスを定義する" do
+          entry.item_base(item_base_base) do
+            def foo ; end
+          end
+          aggregate_failures do
+            expect(entry.item_base.superclass                    ).to be item_base_base
+            expect(entry.item_base.public_instance_methods(false)).to match [:foo]
+          end
         end
       end
     end
 
     describe "#item_factory" do
-      context "ベースクラスが与えられた場合" do
-        it "与えられたクラスを親クラスとしてアイテムファクトリクラスを定義する" do
+      context "クラスが与えられた場合" do
+        it "与えられたクラスをアイテムファクトリとして登録する" do
           entry.item_factory(item_base_factory)
-          expect(entry.item_factory.superclass).to be item_base_factory
-        end
-
-        context "ブロックも与えられた場合" do
-          it "ブロックを定義したクラスのコンテキストで実行する" do
-            entry.item_factory(item_base_factory) do
-              def foo ; end
-            end
-            expect(entry.item_factory.public_instance_methods(false)).to match [:foo]
-          end
+          expect(entry.item_factory).to be item_base_factory
         end
       end
 
-      context "無引数の場合" do
-        it "定義したアイテムファクトリクラスを返す" do
-          klass = nil
-          entry.item_factory(item_base_factory) {klass = self}
-          expect(entry.item_factory).to be klass
+      context "ベースクラスとブロックが与えられた場合" do
+        it "与えられたクラスを親クラスとしてアイテムファクトリクラスを定義する" do
+          entry.item_factory(item_base_factory) do
+            def foo ; end
+          end
+          aggregate_failures do
+            expect(entry.item_factory.superclass                    ).to be item_base_factory
+            expect(entry.item_factory.public_instance_methods(false)).to match [:foo]
+          end
         end
       end
     end
