@@ -2,10 +2,6 @@ require_relative  '../../../spec_helper'
 
 module RGen::Builder
   describe ComponentEntry do
-    let(:component_class) do
-      Class.new(RGen::InputBase::Component)
-    end
-
     let(:component_base) do
       RGen::InputBase::Component
     end
