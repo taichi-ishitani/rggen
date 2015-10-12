@@ -9,12 +9,12 @@ module RGen::Builder
     let(:item_stores) do
       {
         configuration: ItemStore.new(
-          RGen::Configuration::Item,
-          RGen::Configuration::ItemFactory
+          RGen::InputBase::Item,
+          RGen::InputBase::ItemFactory
         ),
         register_map: ItemStore.new(
-          RGen::RegisterMap::BitField::Item,
-          RGen::RegisterMap::BitField::ItemFactory
+          RGen::InputBase::Item,
+          RGen::InputBase::ItemFactory
         )
       }
     end

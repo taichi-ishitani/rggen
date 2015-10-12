@@ -28,19 +28,19 @@ module RGen::Builder
         registry  = nil
         builder.component_store(:register_map) do
           entry do
-            component_class   RGen::RegisterMap::RegisterMap
-            component_factory RGen::RegisterMap::Factory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
           end
           entry(:register_block) do
-            component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
-            component_factory RGen::RegisterMap::RegisterBlock::Factory
-            item_base         RGen::RegisterMap::RegisterBlock::Item
-            item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
+            item_base         RGen::InputBase::Item
+            item_factory      RGen::InputBase::ItemFactory
           end
           registry  = self
         end
 
-        expect(stores[:register_map]).to eql registry
+        expect(stores[:register_map]).to be registry
       end
     end
 
@@ -49,8 +49,8 @@ module RGen::Builder
         builder.component_store(:register_map) do
           loader_base RGen::InputBase::Loader
           entry do
-            component_class   RGen::RegisterMap::RegisterMap
-            component_factory RGen::RegisterMap::Factory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
           end
         end
       end
@@ -78,14 +78,14 @@ module RGen::Builder
       before do
         builder.component_store(:register_map) do
           entry do
-            component_class   RGen::RegisterMap::RegisterMap
-            component_factory RGen::RegisterMap::Factory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
           end
           entry(:register_block) do
-            component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
-            component_factory RGen::RegisterMap::RegisterBlock::Factory
-            item_base         RGen::RegisterMap::RegisterBlock::Item
-            item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
+            item_base         RGen::InputBase::Item
+            item_factory      RGen::InputBase::ItemFactory
           end
         end
       end
@@ -108,10 +108,10 @@ module RGen::Builder
       before do
         builder.component_store(:configuration) do
           entry do
-            component_class   RGen::Configuration::Configuration
-            component_factory RGen::Configuration::Factory
-            item_base         RGen::Configuration::Item
-            item_factory      RGen::Configuration::ItemFactory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
+            item_base         RGen::InputBase::Item
+            item_factory      RGen::InputBase::ItemFactory
           end
         end
       end
@@ -141,10 +141,10 @@ module RGen::Builder
       before do
         builder.component_store(:configuration) do
           entry do
-            component_class   RGen::Configuration::Configuration
-            component_factory RGen::Configuration::Factory
-            item_base         RGen::Configuration::Item
-            item_factory      RGen::Configuration::ItemFactory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
+            item_base         RGen::InputBase::Item
+            item_factory      RGen::InputBase::ItemFactory
           end
         end
       end
@@ -187,10 +187,10 @@ module RGen::Builder
       before do
         builder.component_store(:configuration) do
           entry do
-            component_class   RGen::Configuration::Configuration
-            component_factory RGen::Configuration::Factory
-            item_base         RGen::Configuration::Item
-            item_factory      RGen::Configuration::ItemFactory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
+            item_base         RGen::InputBase::Item
+            item_factory      RGen::InputBase::ItemFactory
           end
         end
 

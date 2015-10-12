@@ -33,30 +33,30 @@ module RGen::Builder
     describe "#entry" do
       it "コンポーネントの登録を行う" do
         component_store.entry(:register_block) do
-          component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
-          component_factory RGen::RegisterMap::RegisterBlock::Factory
-          item_base         RGen::RegisterMap::RegisterBlock::Item
-          item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+          component_class   RGen::InputBase::Component
+          component_factory RGen::InputBase::ComponentFactory
+          item_base         RGen::InputBase::Item
+          item_factory      RGen::InputBase::ItemFactory
         end
 
         entry = component_entries.last
         aggregate_failures do
-          expect(entry.component_class.superclass  ).to be RGen::RegisterMap::RegisterBlock::RegisterBlock
-          expect(entry.component_factory.superclass).to be RGen::RegisterMap::RegisterBlock::Factory
-          expect(entry.item_base.superclass        ).to be RGen::RegisterMap::RegisterBlock::Item
-          expect(entry.item_factory.superclass     ).to be RGen::RegisterMap::RegisterBlock::ItemFactory
+          expect(entry.component_class.superclass  ).to be RGen::InputBase::Component
+          expect(entry.component_factory.superclass).to be RGen::InputBase::ComponentFactory
+          expect(entry.item_base.superclass        ).to be RGen::InputBase::Item
+          expect(entry.item_factory.superclass     ).to be RGen::InputBase::ItemFactory
         end
       end
 
-      context "アイテムの設定が行われた場合" do
+      context "アイテムの設定が行われなかった場合" do
         it "生成されたエントリのカテゴリへの登録は行わない" do
           categories.each_value do |category|
             expect(category).not_to receive(:add_item_store)
           end
 
           component_store.entry do
-            component_class   RGen::RegisterMap::RegisterMap
-            component_factory RGen::RegisterMap::Factory
+            component_class   RGen::InputBase::Component
+            component_factory RGen::InputBase::ComponentFactory
           end
         end
       end
@@ -74,10 +74,10 @@ module RGen::Builder
 
             item_store = nil
             component_store.entry(:register_block) do
-              component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
-              component_factory RGen::RegisterMap::RegisterBlock::Factory
-              item_base         RGen::RegisterMap::RegisterBlock::Item
-              item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+              component_class   RGen::InputBase::Component
+              component_factory RGen::InputBase::ComponentFactory
+              item_base         RGen::InputBase::Item
+              item_factory      RGen::InputBase::ItemFactory
               item_store = self.item_store
             end
 
@@ -93,9 +93,9 @@ module RGen::Builder
 
             item_store = nil
             component_store.entry do
-              component_class   RGen::Configuration::Configuration
-              component_factory RGen::Configuration::Factory
-              item_base         RGen::Configuration::Item
+              component_class   RGen::InputBase::Component
+              component_factory RGen::InputBase::ComponentFactory
+              item_base         RGen::InputBase::Item
               item_factory      RGen::Configuration::ItemFactory
               item_store  = self.item_store
             end
@@ -111,9 +111,9 @@ module RGen::Builder
     describe "#define_loader" do
       before do
         component_store.entry do
-          component_class   RGen::Configuration::Configuration
-          component_factory RGen::Configuration::Factory
-          item_base         RGen::Configuration::Item
+          component_class   RGen::InputBase::Component
+          component_factory RGen::InputBase::ComponentFactory
+          item_base         RGen::InputBase::Item
           item_factory      RGen::Configuration::ItemFactory
         end
       end
@@ -152,33 +152,32 @@ module RGen::Builder
 
     describe "#build_factory" do
       before do
+        classes = factory_classes
+
         component_store.loader_base(loader_base)
         component_store.entry do
-          component_class   RGen::RegisterMap::RegisterMap
-          component_factory RGen::RegisterMap::Factory
+          component_class   RGen::InputBase::Component
+
+          component_factory RGen::InputBase::ComponentFactory do
+            classes << self
+          end
         end
         component_store.entry(:register_block) do
-          component_class   RGen::RegisterMap::RegisterBlock::RegisterBlock
-          component_factory RGen::RegisterMap::RegisterBlock::Factory
-          item_base         RGen::RegisterMap::RegisterBlock::Item
-          item_factory      RGen::RegisterMap::RegisterBlock::ItemFactory
+          component_class   RGen::InputBase::Component
+          component_factory RGen::InputBase::ComponentFactory do
+            classes << self
+          end
         end
         component_store.entry(:register) do
-          component_class   RGen::RegisterMap::Register::Register
-          component_factory RGen::RegisterMap::Register::Factory
-          item_base         RGen::RegisterMap::Register::Item
-          item_factory      RGen::RegisterMap::Register::ItemFactory
-        end
-        categories[:register_block].define_simple_item(:bar) do
-          foo do
+          component_class   RGen::InputBase::Component
+          component_factory RGen::InputBase::ComponentFactory do
+            classes << self
           end
         end
-        categories[:register].define_simple_item(:bar) do
-          foo do
-          end
-        end
-        categories[:register_block].enable(:bar)
-        categories[:register].enable(:bar)
+      end
+
+      let(:factory_classes) do
+        []
       end
 
       let(:built_factories) do
@@ -200,11 +199,7 @@ module RGen::Builder
       end
 
       specify "生成されたファクトリは登録順に親子関係をもつ" do
-        [
-          RGen::RegisterMap::Factory,
-          RGen::RegisterMap::RegisterBlock::Factory,
-          RGen::RegisterMap::Register::Factory
-        ].each_with_index do |f, i|
+        factory_classes.each_with_index do |f, i|
           expect(built_factories[i]).to be_kind_of(f)
         end
       end
