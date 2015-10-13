@@ -3,7 +3,7 @@ require_relative  '../spec_helper'
 module RGen::RegisterMap::Base
   describe Item do
     let(:configuration) do
-      RGen::Configuration::Configuration.new
+      get_component_class(:configuration, 0).new
     end
 
     let(:component) do

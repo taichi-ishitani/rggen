@@ -1,3 +1,35 @@
+def get_component_class(store_name, index)
+  component_class = nil
+  RGen.builder.component_store(store_name) do
+    component_class = @entries[index].component_class
+  end
+  component_class
+end
+
+def get_component_factory(store_name, index)
+  component_factory = nil
+  RGen.builder.component_store(store_name) do
+    component_factory = @entries[index].component_factory
+  end
+  component_factory
+end
+
+def get_item_base(store_name, index)
+  item_base = nil
+  RGen.builder.component_store(store_name) do
+    item_base = @entries[index].item_base
+  end
+  item_base
+end
+
+def get_item_factory(store_name, index)
+  item_factory  = nil
+  RGen.builder.component_store(store_name) do
+    item_factory  = @entries[index].item_factory
+  end
+  item_factory
+end
+
 def create_cell(value, options = {})
   file    = options[:file]   || "foo.csv"
   sheet   = options[:sheet]  || "foo"

@@ -3,8 +3,8 @@ require_relative  '../../../spec_helper'
 module RGen::Configuration
   describe Factory do
     let(:factory) do
-      f                   = Factory.new
-      f.target_component  = Configuration
+      f                   = get_component_factory(:configuration, 0).new
+      f.target_component  = get_component_class(:configuration, 0)
       f.item_factories    = {foo: foo_factory, bar: bar_factory, baz: baz_factory}
       f.loaders           = [loader]
       f.root_factory

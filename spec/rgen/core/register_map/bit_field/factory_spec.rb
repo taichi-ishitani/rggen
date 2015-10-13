@@ -5,11 +5,11 @@ module RGen::RegisterMap::BitField
     include_context 'bit_field sample factories'
 
     let(:configuration) do
-      RGen::Configuration::Configuration.new
+      get_component_class(:configuration, 0).new
     end
 
     let(:register) do
-      RGen::RegisterMap::Register::Register.new
+      get_component_class(:register_map, 2).new
     end
 
     let(:cells) do

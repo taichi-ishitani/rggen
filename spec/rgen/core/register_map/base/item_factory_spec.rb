@@ -14,7 +14,7 @@ module RGen::RegisterMap::Base
     end
 
     let(:configuration) do
-      RGen::Configuration::Configuration.new
+      get_component_class(:configuration, 0).new
     end
 
     let(:component) do

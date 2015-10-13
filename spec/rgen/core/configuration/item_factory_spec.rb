@@ -2,17 +2,17 @@ require_relative  '../../../spec_helper'
 
 module RGen::Configuration
   describe ItemFactory do
-    class FooItem < RGen::Configuration::Item
+    class FooItem < get_item_base(:configuration, 0)
       field :foo, default: :foo
       build {|data| @foo = data}
     end
 
     let(:configuration) do
-      Configuration.new
+      get_component_class(:configuration, 0).new
     end
 
     let(:factory) do
-      f             = ItemFactory.new
+      f             = get_item_factory(:configuration, 0).new
       f.target_item = FooItem
       f
     end

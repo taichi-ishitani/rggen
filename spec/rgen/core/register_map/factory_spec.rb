@@ -8,7 +8,11 @@ module RGen::RegisterMap
     include_context 'register_map sample factory'
 
     let(:configuration) do
-      RGen::Configuration::Configuration.new
+      get_component_class(:configuration, 0).new
+    end
+
+    let(:register_map_class) do
+      get_component_class(:register_map, 0)
     end
 
     let(:valid_loader) do
@@ -71,7 +75,7 @@ module RGen::RegisterMap
         end
 
         it "レジスタマップオブジェクトを生成する" do
-          expect(register_map).to be_kind_of(RGen::RegisterMap::RegisterMap)
+          expect(register_map).to be_kind_of register_map_class
         end
 
         specify "生成されたレジスタマップオブジェクトは適切な値を持つレジスタブロックを持つ" do

@@ -7,11 +7,11 @@ module RGen::RegisterMap::RegisterBlock
     include_context 'register_block sample factories'
 
     let(:configuration) do
-      RGen::Configuration::Configuration.new
+      get_component_class(:configuration, 0).new
     end
 
     let(:register_map) do
-      RGen::RegisterMap::RegisterMap.new
+      get_component_class(:register_map, 0).new
     end
 
     let(:sheet) do
