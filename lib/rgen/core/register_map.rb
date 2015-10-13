@@ -35,7 +35,9 @@ module RGen
       end
 
       entry(:bit_field) do
-        component_class   BitField::BitField
+        component_class(InputBase::Component) do
+          include Structure::BitField::Component
+        end
         component_factory BitField::Factory
         item_base(Item) do
           include Structure::BitField::Item
