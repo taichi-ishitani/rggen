@@ -10,6 +10,7 @@ module RGen
         component_class(InputBase::Component) do
           include Structure::RegisterMap::Component
         end
+
         component_factory(InputBase::ComponentFactory) do
           def create_children(register_map, configuration, map)
             map.sheets.each do |sheet|
