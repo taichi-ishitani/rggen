@@ -13,7 +13,7 @@ module RGen::Configuration
 
     [:foo, :bar, :baz].each do |item_name|
       let("#{item_name}_item") do
-        Class.new(Item) do
+        Class.new(get_item_base(:configuration, 0)) do
           field item_name, default: item_name
           build do |data|
             instance_variable_set("@#{item_name}", data)
