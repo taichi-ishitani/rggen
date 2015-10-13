@@ -25,12 +25,17 @@ module RGen
       end
 
       entry(:register) do
-        component_class   Register::Register
+        component_class(InputBase::Component) do
+          include Structure::Register::Component
+        end
+
         component_factory Register::Factory
+
         item_base(Item) do
           include Structure::Register::Item
         end
-        item_factory      ItemFactory
+
+        item_factory(ItemFactory)
       end
 
       entry(:bit_field) do
