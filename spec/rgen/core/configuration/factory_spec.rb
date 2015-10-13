@@ -1,7 +1,7 @@
 require_relative  '../../../spec_helper'
 
 module RGen::Configuration
-  describe Factory do
+  describe "component_factory" do
     let(:factory) do
       f                   = get_component_factory(:configuration, 0).new
       f.target_component  = get_component_class(:configuration, 0)
