@@ -1,8 +1,8 @@
-require_relative  '../spec_helper'
+require_relative  'spec_helper'
 
-module RGen::RegisterMap::Base
+module RGen::RegisterMap
   describe ItemFactory do
-    class FooItem < RGen::RegisterMap::Base::Item
+    class FooItem < RGen::RegisterMap::Item
       field :foo
       build {|cell| @foo = cell}
     end

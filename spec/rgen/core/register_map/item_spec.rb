@@ -1,6 +1,6 @@
-require_relative  '../spec_helper'
+require_relative  'spec_helper'
 
-module RGen::RegisterMap::Base
+module RGen::RegisterMap
   describe Item do
     let(:configuration) do
       get_component_class(:configuration, 0).new

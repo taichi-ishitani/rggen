@@ -1,4 +1,4 @@
-module RGen::RegisterMap::Base
+module RGen::RegisterMap
   class ItemFactory < RGen::InputBase::ItemFactory
     def create(component, configuration, cell = nil)
       item  = create_item(component, cell)

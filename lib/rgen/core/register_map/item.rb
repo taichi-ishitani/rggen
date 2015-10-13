@@ -1,4 +1,4 @@
-module RGen::RegisterMap::Base
+module RGen::RegisterMap
   class Item < RGen::InputBase::Item
     attr_reader :configuration
 
