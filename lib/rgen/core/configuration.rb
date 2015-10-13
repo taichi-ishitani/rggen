@@ -2,7 +2,6 @@ module RGen
   module Configuration
     require_relative 'configuration/raise_error'
     require_relative 'configuration/factory'
-    require_relative 'configuration/item_factory'
 
     RGen.component_store(:configuration) do
       entry do
@@ -13,7 +12,15 @@ module RGen
           include RaiseError
         end
 
-        item_factory      ItemFactory
+        item_factory(InputBase::ItemFactory) do
+          include RaiseError
+
+          def create(configuration, data = nil)
+            item  = create_item(configuration, data)
+            item.build(data) unless data.nil?
+            item
+          end
+        end
       end
 
       loader_base InputBase::Loader

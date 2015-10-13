@@ -22,7 +22,7 @@ module RGen::Configuration
       end
 
       let("#{item_name}_factory") do
-        f             = ItemFactory.new
+        f             = get_item_factory(:configuration, 0).new
         f.target_item = send("#{item_name}_item")
         f
       end

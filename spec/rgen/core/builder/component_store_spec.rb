@@ -96,7 +96,7 @@ module RGen::Builder
               component_class   RGen::InputBase::Component
               component_factory RGen::InputBase::ComponentFactory
               item_base         RGen::InputBase::Item
-              item_factory      RGen::Configuration::ItemFactory
+              item_factory      RGen::InputBase::ItemFactory
               item_store  = self.item_store
             end
 
@@ -114,7 +114,7 @@ module RGen::Builder
           component_class   RGen::InputBase::Component
           component_factory RGen::InputBase::ComponentFactory
           item_base         RGen::InputBase::Item
-          item_factory      RGen::Configuration::ItemFactory
+          item_factory      RGen::InputBase::ItemFactory
         end
       end
 
