@@ -1,7 +1,6 @@
 module RGen
   module RegisterMap
     require_relative 'register_map/generic_map'
-    require_relative 'register_map/bit_field'
     require_relative 'register_map/register'
     require_relative 'register_map/register_block'
     require_relative 'register_map/register_map'
@@ -38,11 +37,20 @@ module RGen
         component_class(InputBase::Component) do
           include Structure::BitField::Component
         end
-        component_factory BitField::Factory
+
+        component_factory(RGen::InputBase::ComponentFactory) do
+          def create_active_items(bit_field, configuration, cells)
+            active_item_factories.each_value.with_index do |factory, index|
+              create_item(factory, bit_field, configuration, cells[index])
+            end
+          end
+        end
+
         item_base(Item) do
           include Structure::BitField::Item
         end
-        item_factory      ItemFactory
+
+        item_factory(ItemFactory)
       end
 
       loader_base Loader
