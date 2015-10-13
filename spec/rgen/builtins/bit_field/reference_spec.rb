@@ -18,7 +18,7 @@ describe 'bit_field/reference' do
   end
 
   let(:configuration) do
-    RGen::Configuration::Configuration.new
+    RGen::InputBase::Component.new
   end
 
   context "入力が空のとき" do

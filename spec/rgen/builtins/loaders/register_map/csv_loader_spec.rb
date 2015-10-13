@@ -21,7 +21,7 @@ describe 'csv_loader' do
   end
 
   let(:configuration) do
-    RGen::Configuration::Configuration.new
+    RGen::InputBase::Component.new
   end
 
   shared_examples_for "loader" do |file_format|

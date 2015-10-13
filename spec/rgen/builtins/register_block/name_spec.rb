@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'register_map/name' do
+describe 'register_block/name' do
   include_context 'register_map common'
 
   before(:all) do
@@ -13,9 +13,8 @@ describe 'register_map/name' do
   end
 
   let(:configuration) do
-    RGen::Configuration::Configuration.new
+    RGen::InputBase::Component.new
   end
-
 
   context "適切な入力が与えられたとき" do
     describe "#name" do

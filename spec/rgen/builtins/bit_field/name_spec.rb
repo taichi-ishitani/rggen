@@ -15,7 +15,7 @@ describe 'bit_field/name' do
   end
 
   let(:configuration) do
-    RGen::Configuration::Configuration.new
+    RGen::InputBase::Component.new
   end
 
   context "適切な入力が与えられた場合" do
