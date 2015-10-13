@@ -15,12 +15,17 @@ module RGen
       end
 
       entry(:register_block) do
-        component_class   RegisterBlock::RegisterBlock
+        component_class(InputBase::Component) do
+          include Structure::RegisterBlock::Component
+        end
+
         component_factory RegisterBlock::Factory
+
         item_base(Item) do
           include Structure::RegisterBlock::Item
         end
-        item_factory      ItemFactory
+
+        item_factory(ItemFactory)
       end
 
       entry(:register) do
