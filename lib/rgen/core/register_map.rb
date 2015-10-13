@@ -2,7 +2,6 @@ module RGen
   module RegisterMap
     require_relative 'register_map/generic_map'
     require_relative 'register_map/loader'
-    require_relative 'register_map/factory'
     require_relative 'register_map/item'
     require_relative 'register_map/item_factory'
 
@@ -11,7 +10,24 @@ module RGen
         component_class(InputBase::Component) do
           include Structure::RegisterMap::Component
         end
-        component_factory Factory
+        component_factory(InputBase::ComponentFactory) do
+          def create_children(register_map, configuration, map)
+            map.sheets.each do |sheet|
+              create_child(register_map, configuration, sheet)
+            end
+          end
+
+          def load(file)
+            map = load_file(file)
+            if map.kind_of?(GenericMap)
+              map
+            else
+              message = "GenericMap type required for register map: " \
+                        "#{map.class}"
+              fail RGen::LoadError, message
+            end
+          end
+        end
       end
 
       entry(:register_block) do
@@ -36,8 +52,7 @@ module RGen
           def cell_blocks(sheet)
             drop_row_size     = active_item_factories.size + 2
             drop_column_size  = 1
-
-            valid_rows  =sheet.rows.drop(drop_row_size)
+            valid_rows        =sheet.rows.drop(drop_row_size)
             valid_rows.each_with_object([]) do |row, blocks|
               valid_cells = row.drop(drop_column_size)
               next if valid_cells.all?(&:empty?)
