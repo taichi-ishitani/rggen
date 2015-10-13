@@ -1,15 +1,7 @@
 require_relative  '../../../spec_helper'
 
 module RGen::Configuration
-  describe Item do
-    let(:configuration) do
-      get_component_class(:configuration, 0).new
-    end
-
-    let(:item_base) do
-      get_item_base(:configuration, 0)
-    end
-
+  describe RaiseError do
     describe "#error" do
       let(:message) do
         "some configuration error"
@@ -17,13 +9,14 @@ module RGen::Configuration
 
       it "入力されたメッセージで、RGen::ConfigurationErrorを発生さえる" do
         m = message
-        i = Class.new(item_base) {
-          validate do
+        i = Class.new {
+          include RaiseError
+          define_method(:test) do
             error m
           end
-        }.new(configuration)
+        }.new
 
-        expect{i.validate}.to raise_configuration_error message
+        expect{i.test}.to raise_configuration_error message
       end
     end
   end

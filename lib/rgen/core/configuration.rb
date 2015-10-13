@@ -1,5 +1,6 @@
 module RGen
   module Configuration
+    require_relative 'configuration/raise_error'
     require_relative 'configuration/item'
     require_relative 'configuration/factory'
     require_relative 'configuration/item_factory'
