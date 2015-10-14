@@ -9,7 +9,9 @@ module RGen::RegisterMap
     end
 
     let(:register) do
-      get_component_class(:register_map, 2).new
+      r = get_component_class(:register_map, 2).new
+      r.instance_variable_set(:@level, 2)
+      r
     end
 
     let(:cells) do
