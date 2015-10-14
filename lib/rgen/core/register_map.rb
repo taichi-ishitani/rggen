@@ -24,9 +24,7 @@ module RGen
         component_factory(InputBase::ComponentFactory) do
           include RegisterBlockFactory
         end
-        item_base(Item) do
-          include Structure::RegisterBlock::Item
-        end
+        item_base(Item)
         item_factory(ItemFactory)
       end
 
@@ -35,9 +33,7 @@ module RGen
         component_factory(InputBase::ComponentFactory) do
           include RegisterFactory
         end
-        item_base(Item) do
-          include Structure::Register::Item
-        end
+        item_base(Item)
         item_factory(ItemFactory)
       end
 
@@ -46,9 +42,7 @@ module RGen
         component_factory(InputBase::ComponentFactory) do
           include BitFieldFactory
         end
-        item_base(Item) do
-          include Structure::BitField::Item
-        end
+        item_base(Item)
         item_factory(ItemFactory)
       end
 

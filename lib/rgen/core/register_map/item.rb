@@ -1,17 +1,30 @@
-module RGen::RegisterMap
-  class Item < RGen::InputBase::Item
-    attr_reader :configuration
+module RGen
+  module RegisterMap
+    class Item < InputBase::Item
+      include Base::HierarchicalItemAccessor
 
-    def build(configuration, cell)
-      @configuration  = configuration
-      @position       = cell.position
-      super(cell.value)
-    end
+      attr_reader :configuration
 
-    private
+      def initialize(owner)
+        super(owner)
+        define_hierarchical_item_accessor
+      end
 
-    def error(message)
-      fail RGen::RegisterMapError.new(message, @position)
+      def build(configuration, cell)
+        @configuration  = configuration
+        @position       = cell.position
+        super(cell.value)
+      end
+
+      private
+
+      def error(message)
+        fail RGen::RegisterMapError.new(message, @position)
+      end
+
+      def __start_position
+        @owner
+      end
     end
   end
 end
