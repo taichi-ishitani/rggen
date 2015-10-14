@@ -1,6 +1,6 @@
 module RGen
   module RegisterMap
-    module RegisterBlockFactory
+    class RegisterBlockFactory < InputBase::ComponentFactory
       def create_active_items(register_block, configuration, sheet)
         active_item_factories.each_value.with_index do |factory, index|
           cell  = sheet[index, 2]

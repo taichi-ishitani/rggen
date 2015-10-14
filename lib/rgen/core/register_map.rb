@@ -8,46 +8,36 @@ module RGen
     require_relative 'register_map/register_block_factory'
     require_relative 'register_map/register_factory'
     require_relative 'register_map/bit_field_factory'
-
     require_relative 'register_map/item_factory'
 
     RGen.component_store(:register_map) do
       entry do
-        component_class(Component)
-        component_factory(InputBase::ComponentFactory) do
-          include RegisterMapFactory
-        end
+        component_class   Component
+        component_factory RegisterMapFactory
       end
 
       entry(:register_block) do
-        component_class(Component)
-        component_factory(InputBase::ComponentFactory) do
-          include RegisterBlockFactory
-        end
-        item_base(Item)
-        item_factory(ItemFactory)
+        component_class   Component
+        component_factory RegisterBlockFactory
+        item_base         Item
+        item_factory      ItemFactory
       end
 
       entry(:register) do
-        component_class(Component)
-        component_factory(InputBase::ComponentFactory) do
-          include RegisterFactory
-        end
-        item_base(Item)
-        item_factory(ItemFactory)
+        component_class   Component
+        component_factory RegisterFactory
+        item_base         Item
+        item_factory      ItemFactory
       end
 
       entry(:bit_field) do
-        component_class(Component)
-        component_factory(InputBase::ComponentFactory) do
-          include BitFieldFactory
-        end
-        item_base(Item)
-        item_factory(ItemFactory)
+        component_class   Component
+        component_factory BitFieldFactory
+        item_base         Item
+        item_factory      ItemFactory
       end
 
       loader_base Loader
     end
   end
 end
-
