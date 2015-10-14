@@ -7,15 +7,12 @@ module RGen
     RGen.component_store(:configuration) do
       entry do
         component_class(InputBase::Component)
-
         component_factory(InputBase::ComponentFactory) do
           include ConfigurationFactory
         end
-
         item_base(InputBase::Item) do
           include RaiseError
         end
-
         item_factory(InputBase::ItemFactory) do
           include RaiseError
           include ItemFactory
