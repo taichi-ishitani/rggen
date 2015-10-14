@@ -75,17 +75,12 @@ module RGen
 
       private
 
+      EXTENSIONS  = [
+        RegisterMap, RegisterBlock, Register, BitField
+      ].freeze
+
       def define_hierarchical_accessor
-        case @level
-        when 0
-          extend RegisterMap
-        when 1
-          extend RegisterBlock
-        when 2
-          extend Register
-        when 3
-          extend BitField
-        end
+        extend EXTENSIONS[level]
       end
     end
   end
