@@ -1,21 +1,18 @@
-module RGen::Base
-  class Component
-    def initialize(parent = nil)
-      @parent   = parent
-      @items    = []
-      @children = []
-    end
+module RGen
+  module Base
+    class Component
+      include HierarchicalStructure
 
-    attr_reader :parent
-    attr_reader :items
-    attr_reader :children
+      def initialize(parent = nil)
+        super(parent)
+        @items  = []
+      end
 
-    def add_item(item)
-      items << item
-    end
+      attr_reader :items
 
-    def add_child(child)
-      children  << child
+      def add_item(item)
+        items << item
+      end
     end
   end
 end
