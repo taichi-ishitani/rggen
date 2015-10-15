@@ -1,11 +1,13 @@
+require_relative  '../../../spec_helper'
+
 module RGen::Base
-  describe HierarchicalItemAccessor do
+  describe HierarchicalItemAccessors do
     class TestItem < Item
-      include HierarchicalItemAccessor
+      include HierarchicalItemAccessors
 
       def initialize(owner)
         super(owner)
-        define_hierarchical_item_accessor
+        define_hierarchical_item_accessors
       end
 
       def __start_position

@@ -1,21 +1,13 @@
 module RGen
   module Base
-    module HierarchicalAccessor
+    module HierarchicalItemAccessors
       module RegisterMap
         def hierarchy
           :register_map
         end
 
-        def register_blocks
-          children
-        end
-
-        def registers
-          register_blocks.flat_map(&:children)
-        end
-
-        def bit_fields
-          registers.flat_map(&:children)
+        def register_map
+          __start_position
         end
       end
 
@@ -25,15 +17,11 @@ module RGen
         end
 
         def register_map
-          parent
+          register_block.parent
         end
 
-        def registers
-          children
-        end
-
-        def bit_fields
-          registers.flat_map(&:children)
+        def register_block
+          __start_position
         end
       end
 
@@ -47,11 +35,11 @@ module RGen
         end
 
         def register_block
-          parent
+          register.parent
         end
 
-        def bit_fields
-          children
+        def register
+          __start_position
         end
       end
 
@@ -69,7 +57,11 @@ module RGen
         end
 
         def register
-          parent
+          bit_field.parent
+        end
+
+        def bit_field
+          __start_position
         end
       end
 
@@ -79,8 +71,8 @@ module RGen
         RegisterMap, RegisterBlock, Register, BitField
       ].freeze
 
-      def define_hierarchical_accessor
-        extend EXTENSIONS[level]
+      def define_hierarchical_item_accessors
+        extend EXTENSIONS[@owner.level]
       end
     end
   end

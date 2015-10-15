@@ -1,23 +1,23 @@
 require_relative  '../../../spec_helper'
 
 module RGen::Base
-  describe HierarchicalAccessor do
-    class Test
+  describe HierarchicalAccessors do
+    class TestComponent
       include HierarchicalStructure
-      include HierarchicalAccessor
+      include HierarchicalAccessors
 
       def initialize(parent = nil)
         super(parent)
         parent.add_child(self) unless parent.nil?
-        define_hierarchical_accessor
+        define_hierarchical_accessors
       end
     end
 
     before(:all) do
-      @register_map     = Test.new
-      @register_blocks  = 2.times.map {Test.new(@register_map)}
-      @registers        = 2.times.flat_map {|i| 2.times.map {Test.new(@register_blocks[i])}}
-      @bit_fields       = 4.times.flat_map {|i| 2.times.map {Test.new(@registers[i]      )}}
+      @register_map     = TestComponent.new
+      @register_blocks  = 2.times.map {TestComponent.new(@register_map)}
+      @registers        = 2.times.flat_map {|i| 2.times.map {TestComponent.new(@register_blocks[i])}}
+      @bit_fields       = 4.times.flat_map {|i| 2.times.map {TestComponent.new(@registers[i]      )}}
     end
 
     let(:register_map) do

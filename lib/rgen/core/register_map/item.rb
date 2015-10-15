@@ -1,13 +1,13 @@
 module RGen
   module RegisterMap
     class Item < InputBase::Item
-      include Base::HierarchicalItemAccessor
+      include Base::HierarchicalItemAccessors
 
       attr_reader :configuration
 
       def initialize(owner)
         super(owner)
-        define_hierarchical_item_accessor
+        define_hierarchical_item_accessors
       end
 
       def build(configuration, cell)
