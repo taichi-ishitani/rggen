@@ -2,13 +2,28 @@ require_relative '../../../spec_helper'
 
 module RGen::GeneratorBase
   describe Item do
-    class TestItem < Item
+    class FooItem < Item
       generate_code :foo do |buffer|
         buffer << 'foo'
       end
+    end
+
+    class BarItem < Item
       generate_code :bar do |buffer|
         buffer << 'bar'
       end
+      generate_code :barbar do |buffer|
+        buffer << 'barbar'
+      end
+    end
+
+    class BazItem < Item
+      generate_code :baz, create_context:true do |buffer|
+        buffer << 'baz'
+      end
+    end
+
+    class QuxItem < Item
       write_file "<%= generator.object_id %>.txt" do |buffer|
         generator.generate_code(:foo, :top_down, buffer)
         buffer << "\n"
@@ -16,14 +31,34 @@ module RGen::GeneratorBase
       end
     end
 
+    before do
+      @foo_item = FooItem.new(generator)
+      @bar_item = BarItem.new(generator)
+      @baz_item = BazItem.new(generator)
+      @qux_item = QuxItem.new(generator)
+      [@foo_item, @bar_item, @baz_item].each do |item|
+        generator.add_item(item)
+      end
+    end
+
     let(:generator) do
       Generator.new
     end
 
-    let(:item) do
-      item  = TestItem.new(generator)
-      generator.add_item(item)
-      item
+    let(:foo_item) do
+      @foo_item
+    end
+
+    let(:bar_item) do
+      @bar_item
+    end
+
+    let(:baz_item) do
+      @baz_item
+    end
+
+    let(:qux_item) do
+      @qux_item
     end
 
     describe "#generate_code" do
@@ -33,8 +68,29 @@ module RGen::GeneratorBase
 
       context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
         it "指定された種類のコード生成ブロックを実行する" do
-          item.generate_code(:foo, buffer)
+          foo_item.generate_code(:foo, buffer)
           expect(buffer).to match ['foo']
+        end
+      end
+
+      context ".generate_codeで複数回コード生成が登録された場合" do
+        it "最初に登録したコード生成ブロックを実行する" do
+          bar_item.generate_code(:barbar, buffer)
+          expect(buffer).to be_empty
+          bar_item.generate_code(:bar, buffer)
+          expect(buffer).to match ['bar']
+        end
+      end
+
+      context ".generate_codeのオプションで'create_context:true'が指定された場合" do
+        it "#generatorの#create_contextを呼び出してコンテキストオブジェクトを生成させる" do
+          expect(generator).to receive(:create_context).with(no_args).and_call_original
+          baz_item.generate_code(:baz, buffer)
+        end
+
+        specify "生成されたコンテキストオブジェクトは階層アイテムアクセッサ経由で取得できる" do
+          baz_item.generate_code(:baz, buffer)
+          expect(baz_item.register_map).to eql generator.context
         end
       end
 
@@ -42,7 +98,7 @@ module RGen::GeneratorBase
         it "何も起こらない" do
           aggregate_failures do
             expect {
-              item.generate_code(:baz, buffer)
+              foo_item.generate_code(:bar, buffer)
             }.not_to raise_error
             expect(buffer).to be_empty
           end
@@ -65,13 +121,13 @@ module RGen::GeneratorBase
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
         expect(File).to receive(:write).with(file_name, contents)
-        item.write_file
+        qux_item.write_file
       end
 
       context "出力ディレクトリの指定がある場合" do
         it "指定されたディレクトリにファイルを書き出す" do
           expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents)
-          item.write_file(output_directory)
+          qux_item.write_file(output_directory)
         end
       end
 

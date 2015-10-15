@@ -2,22 +2,14 @@ require_relative '../../../spec_helper'
 
 module RGen::GeneratorBase
   describe Generator do
-    class FooItem < Item
-      generate_code :foo do |buffer|
-        buffer  << "#{generator.object_id}_foo"
-      end
-    end
-
-    class BarItem < Item
-      generate_code :bar do |buffer|
-        buffer  << "#{generator.object_id}_bar"
-      end
-    end
-
     def create_generator(parent = nil)
       generator = Generator.new
-      [FooItem, BarItem].each do |klass|
-        item  = klass.new(generator)
+      [:foo, :bar].each do |kind|
+        item  = Class.new(Item) {
+          generate_code kind do |buffer|
+            buffer  << "#{generator.object_id}_#{kind}"
+          end
+        }.new(generator)
         generator.add_item(item)
       end
       parent.add_child(generator) unless parent.nil?
