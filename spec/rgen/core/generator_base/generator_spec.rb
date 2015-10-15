@@ -128,5 +128,29 @@ module RGen::GeneratorBase
         end
       end
     end
+
+    describe "#create_context" do
+      let(:child_contexts) do
+        child_generators.map {|child_generator| child_generator.context}
+      end
+
+      let(:grandchild_contexts) do
+        grandchild_generators.map {|grandchild_generator| grandchild_generator.context}
+      end
+
+      it "自身及び配下のジェネレータでコンテキストオブジェクトを作成する" do
+        generator.create_context
+        expect(generator.context  ).to be_kind_of(Context)
+        expect(child_contexts     ).to all(be_kind_of(Context))
+        expect(grandchild_contexts).to all(be_kind_of(Context))
+      end
+
+      specify "生成されたコンテキストの#levelは属するジェネレータの#levelと同じ値を取る" do
+        generator.create_context
+        expect(generator.context.level         ).to eq generator.level
+        expect(     child_contexts.map(&:level)).to all(eq      child_generators[0].level)
+        expect(grandchild_contexts.map(&:level)).to all(eq grandchild_generators[0].level)
+      end
+    end
   end
 end
