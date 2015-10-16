@@ -21,9 +21,16 @@ module RGen::Builder
 
     attr_reader :categories
 
-    def component_store(component_name, &body)
+    def input_component_store(component_name, &body)
       unless @stores.key?(component_name)
-        @stores[component_name] = ComponentStore.new(self, component_name)
+        create_component_store(InputComponentStore, component_name)
+      end
+      @stores[component_name].instance_exec(&body)
+    end
+
+    def generator_component_store(component_name, &body)
+      unless @stores.key?(component_name)
+        create_component_store(GeneratorComponentStore, component_name)
       end
       @stores[component_name].instance_exec(&body)
     end
@@ -46,6 +53,12 @@ module RGen::Builder
 
     def enable(category_name, *list_name, item_or_itmes)
       @categories[category_name].enable(*list_name, item_or_itmes)
+    end
+
+    private
+
+    def create_component_store(klass, component_name)
+      @stores[component_name] = klass.new(self, component_name)
     end
   end
 end

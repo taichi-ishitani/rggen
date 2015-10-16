@@ -23,10 +23,10 @@ module RGen::Builder
       )
     end
 
-    describe "#component_store" do
-      it "コンポーネントエントリを生成し、引数で与えられた名前で登録する" do
-        registry  = nil
-        builder.component_store(:register_map) do
+    describe "#input_component_store" do
+      it "入力コンポーネントエントリを生成し、引数で与えられた名前で登録する" do
+        store = nil
+        builder.input_component_store(:register_map) do
           entry do
             component_class   RGen::InputBase::Component
             component_factory RGen::InputBase::ComponentFactory
@@ -37,16 +37,35 @@ module RGen::Builder
             item_base         RGen::InputBase::Item
             item_factory      RGen::InputBase::ItemFactory
           end
-          registry  = self
+          store = self
         end
 
-        expect(stores[:register_map]).to be registry
+        expect(store                ).to be_kind_of(InputComponentStore)
+        expect(stores[:register_map]).to be store
+      end
+    end
+
+    describe "#generator_component_store" do
+      it "ジェネレータコンポーネントエントリを生成し、引数で与えられた名前で登録する" do
+        store = nil
+        builder.generator_component_store(:rtl) do
+          entry do
+            component_class   RGen::Base::Component
+            component_factory RGen::Base::ComponentFactory
+            item_base         RGen::Base::Item
+            item_factory      RGen::Base::ItemFactory
+          end
+          store = self
+        end
+
+        expect(store       ).to be_kind_of(GeneratorComponentStore)
+        expect(stores[:rtl]).to be store
       end
     end
 
     describe "#define_loader" do
       before do
-        builder.component_store(:register_map) do
+        builder.input_component_store(:register_map) do
           loader_base RGen::InputBase::Loader
           entry do
             component_class   RGen::InputBase::Component
@@ -76,7 +95,7 @@ module RGen::Builder
 
     describe "#build_factory" do
       before do
-        builder.component_store(:register_map) do
+        builder.input_component_store(:register_map) do
           entry do
             component_class   RGen::InputBase::Component
             component_factory RGen::InputBase::ComponentFactory
@@ -106,7 +125,7 @@ module RGen::Builder
 
     describe "#define_simple_item" do
       before do
-        builder.component_store(:configuration) do
+        builder.input_component_store(:configuration) do
           entry do
             component_class   RGen::InputBase::Component
             component_factory RGen::InputBase::ComponentFactory
@@ -139,7 +158,7 @@ module RGen::Builder
 
     describe "#define_list_item" do
       before do
-        builder.component_store(:configuration) do
+        builder.input_component_store(:configuration) do
           entry do
             component_class   RGen::InputBase::Component
             component_factory RGen::InputBase::ComponentFactory
@@ -185,7 +204,7 @@ module RGen::Builder
 
     describe "#enable" do
       before do
-        builder.component_store(:configuration) do
+        builder.input_component_store(:configuration) do
           entry do
             component_class   RGen::InputBase::Component
             component_factory RGen::InputBase::ComponentFactory

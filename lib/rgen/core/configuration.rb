@@ -4,7 +4,7 @@ module RGen
     require_relative 'configuration/configuration_factory'
     require_relative 'configuration/item_factory'
 
-    RGen.component_store(:configuration) do
+    RGen.input_component_store(:configuration) do
       entry do
         component_class(InputBase::Component)
         component_factory(InputBase::ComponentFactory) do

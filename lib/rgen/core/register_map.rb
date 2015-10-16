@@ -10,7 +10,7 @@ module RGen
     require_relative 'register_map/bit_field_factory'
     require_relative 'register_map/item_factory'
 
-    RGen.component_store(:register_map) do
+    RGen.input_component_store(:register_map) do
       entry do
         component_class   Component
         component_factory RegisterMapFactory
