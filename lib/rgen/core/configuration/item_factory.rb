@@ -1,6 +1,8 @@
 module RGen
   module Configuration
-    module ItemFactory
+    class ItemFactory < InputBase::ItemFactory
+      include RaiseError
+
       def create(configuration, data = nil)
         item  = create_item(configuration, data)
         item.build(data) unless data.nil?
