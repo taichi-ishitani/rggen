@@ -1,88 +1,90 @@
-module RGen::Builder
-  class ItemStore
-    def initialize(base, factory)
-      @base                 = base
-      @factory              = factory
-      @simple_item_entries  = {}
-      @list_item_entries    = {}
-      @enabled_entries      = []
-    end
+module RGen
+  module Builder
+    class ItemStore
+      def initialize(base, factory)
+        @base                 = base
+        @factory              = factory
+        @simple_item_entries  = {}
+        @list_item_entries    = {}
+        @enabled_entries      = []
+      end
 
-    attr_reader :base
-    attr_reader :factory
+      attr_reader :base
+      attr_reader :factory
 
-    def define_simple_item(item_name, *contexts, &body)
-      create_item_entry(:simple, item_name, contexts, body)
-    end
+      def define_simple_item(item_name, *contexts, &body)
+        create_item_entry(:simple, item_name, contexts, body)
+      end
 
-    def define_list_item(list_name, *args, &body)
-      case args.first
-      when Symbol
-        unless @list_item_entries.key?(list_name)
-          message = "undefined list item entry: #{list_name}"
-          fail RGen::BuilderError, message
+      def define_list_item(list_name, *args, &body)
+        case args.first
+        when Symbol
+          unless @list_item_entries.key?(list_name)
+            message = "undefined list item entry: #{list_name}"
+            fail RGen::BuilderError, message
+          end
+          define_list_item_class(list_name, args[0], args[1..-1], body)
+        else
+          create_item_entry(:list, list_name, args, body)
         end
-        define_list_item_class(list_name, args[0], args[1..-1], body)
-      else
-        create_item_entry(:list, list_name, args, body)
       end
-    end
 
-    def enable(*args)
-      case args.size
-      when 1
-        enable_item_entries(args[0])
-      when 2
-        enable_list_item(args[0], args[1])
-      else
-        message = "wrong number of arguments (#{args.size} for 1..2)"
-        fail ArgumentError, message
+      def enable(*args)
+        case args.size
+        when 1
+          enable_item_entries(args[0])
+        when 2
+          enable_list_item(args[0], args[1])
+        else
+          message = "wrong number of arguments (#{args.size} for 1..2)"
+          fail ArgumentError, message
+        end
       end
-    end
 
-    def build_factories
-      @enabled_entries.each_with_object({}) do |entry_name, factories|
-        factories[entry_name] = (
-          @simple_item_entries[entry_name] || @list_item_entries[entry_name]
-        ).build_factory
+      def build_factories
+        @enabled_entries.each_with_object({}) do |entry_name, factories|
+          factories[entry_name] = (
+            @simple_item_entries[entry_name] || @list_item_entries[entry_name]
+          ).build_factory
+        end
       end
-    end
 
-    private
+      private
 
-    def create_item_entry(entry_type, entry_name, contexts, body)
-      klass = {simple: SimpleItemEntry, list: ListItemEntry}.fetch(entry_type)
-      entry = klass.new(base, factory, *contexts, &body)
-      update_entries(entry_type, entry_name, entry)
-    end
-
-    def update_entries(entry_type, entry_name, entry)
-      if entry_type == :simple
-        @list_item_entries.delete(entry_name)
-        @simple_item_entries[entry_name] = entry
-      else
-        @simple_item_entries.delete(entry_name)
-        @list_item_entries[entry_name]  = entry
+      def create_item_entry(entry_type, entry_name, contexts, body)
+        klass = {simple: SimpleItemEntry, list: ListItemEntry}[entry_type]
+        entry = klass.new(base, factory, *contexts, &body)
+        update_entries(entry_type, entry_name, entry)
       end
-    end
 
-    def define_list_item_class(list_name, item_name, contexts, body)
-      entry = @list_item_entries[list_name]
-      entry.define_list_item(item_name, *contexts, &body)
-    end
-
-    def enable_item_entries(entry_name_or_names)
-      Array(entry_name_or_names).each do |entry_name|
-        next if @enabled_entries.include?(entry_name)
-        next unless @simple_item_entries.key?(entry_name) ||
-                    @list_item_entries.key?(entry_name)
-        @enabled_entries  << entry_name
+      def update_entries(entry_type, entry_name, entry)
+        if entry_type == :simple
+          @list_item_entries.delete(entry_name)
+          @simple_item_entries[entry_name] = entry
+        else
+          @simple_item_entries.delete(entry_name)
+          @list_item_entries[entry_name]  = entry
+        end
       end
-    end
 
-    def enable_list_item(list_name, item_name_or_names)
-      return unless @list_item_entries.key?(list_name)
-      @list_item_entries[list_name].enable(item_name_or_names)
+      def define_list_item_class(list_name, item_name, contexts, body)
+        entry = @list_item_entries[list_name]
+        entry.define_list_item(item_name, *contexts, &body)
+      end
+
+      def enable_item_entries(entry_name_or_names)
+        Array(entry_name_or_names).each do |entry_name|
+          next if @enabled_entries.include?(entry_name)
+          next unless @simple_item_entries.key?(entry_name) ||
+                      @list_item_entries.key?(entry_name)
+          @enabled_entries  << entry_name
+        end
+      end
+
+      def enable_list_item(list_name, item_name_or_names)
+        return unless @list_item_entries.key?(list_name)
+        @list_item_entries[list_name].enable(item_name_or_names)
+      end
     end
   end
 end

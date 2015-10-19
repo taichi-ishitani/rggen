@@ -1,5 +1,3 @@
-require 'forwardable'
-
 module Forwardable
   def def_class_delegator(method, ali = method)
     def_delegator('self.class', method, ali)

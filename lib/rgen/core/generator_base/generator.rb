@@ -1,51 +1,53 @@
-module RGen::GeneratorBase
-  class Generator < RGen::Base::Component
-    attr_reader :context
+module RGen
+  module GeneratorBase
+    class Generator < Base::Component
+      attr_reader :context
 
-    def generate_code(kind, mode, buffer)
-      case mode
-      when :top_down
-        generate_item_code(kind, buffer)
-        generate_child_code(kind, mode, buffer)
-      when :bottom_up
-        generate_child_code(kind, mode, buffer)
-        generate_item_code(kind, buffer)
+      def generate_code(kind, mode, buffer)
+        case mode
+        when :top_down
+          generate_item_code(kind, buffer)
+          generate_child_code(kind, mode, buffer)
+        when :bottom_up
+          generate_child_code(kind, mode, buffer)
+          generate_item_code(kind, buffer)
+        end
       end
-    end
 
-    def write_file(output_directory = '')
-      items.each do |item|
-        item.write_file(output_directory)
+      def write_file(output_directory = '')
+        items.each do |item|
+          item.write_file(output_directory)
+        end
+        children.each do |child|
+          child.write_file(output_directory)
+        end
       end
-      children.each do |child|
-        child.write_file(output_directory)
+
+      def create_context
+        __create_context(nil)
       end
-    end
 
-    def create_context
-      __create_context(nil)
-    end
+      private
 
-    private
-
-    def generate_child_code(kind, mode, buffer)
-      children.each do |child|
-        child.generate_code(kind, mode, buffer)
+      def generate_child_code(kind, mode, buffer)
+        children.each do |child|
+          child.generate_code(kind, mode, buffer)
+        end
       end
-    end
 
-    def generate_item_code(kind, buffer)
-      items.each do |item|
-        item.generate_code(kind, buffer)
+      def generate_item_code(kind, buffer)
+        items.each do |item|
+          item.generate_code(kind, buffer)
+        end
       end
-    end
 
-    protected
+      protected
 
-    def __create_context(parent_context)
-      @context  = Context.new(parent_context, level)
-      children.each do |child|
-        child.__create_context(context)
+      def __create_context(parent_context)
+        @context  = Context.new(parent_context, level)
+        children.each do |child|
+          child.__create_context(context)
+        end
       end
     end
   end
