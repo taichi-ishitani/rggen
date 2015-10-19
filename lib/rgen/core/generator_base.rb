@@ -6,6 +6,7 @@ module RGen
     require_relative 'generator_base/context'
     require_relative 'generator_base/generator'
     require_relative 'generator_base/item'
+    require_relative 'generator_base/generator_factory'
     require_relative 'generator_base/item_factory'
   end
 end
