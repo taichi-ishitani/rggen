@@ -5,14 +5,17 @@ module RGen
       include TemplateUtility
 
       class CodeGenerator
-        def initialize(kind, body)
-          @kind     = kind
-          @body     = body
+        def initialize
+          @bodies = {}
+        end
+
+        def []=(kind, body)
+          @bodies[kind] = body
         end
 
         def generate_code(item, kind, buffer)
-          return if kind != @kind
-          item.instance_exec(buffer, &@body)
+          return unless @bodies.key?(kind)
+          item.instance_exec(buffer, &@bodies[kind])
         end
       end
 
@@ -51,7 +54,8 @@ module RGen
         attr_reader :file_writer
 
         def generate_code(kind, &body)
-          @code_generator ||= CodeGenerator.new(kind, body)
+          @code_generator ||= CodeGenerator.new
+          @code_generator[kind] = body
         end
 
         def write_file(name_pattern, &body)

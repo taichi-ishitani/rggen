@@ -74,11 +74,11 @@ module RGen::OutputBase
       end
 
       context ".generate_codeで複数回コード生成が登録された場合" do
-        it "最初に登録したコード生成ブロックを実行する" do
+        it "指定された種類のコード生成ブロックを実行する" do
           bar_item.generate_code(:barbar, buffer)
-          expect(buffer).to be_empty
+          expect(buffer).to match ['barbar']
           bar_item.generate_code(:bar, buffer)
-          expect(buffer).to match ['bar']
+          expect(buffer).to match ['barbar', 'bar']
         end
       end
 
