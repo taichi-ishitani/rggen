@@ -1,15 +1,17 @@
-module RGen::RegisterMap
-  class ItemFactory < RGen::InputBase::ItemFactory
-    def create(component, configuration, cell = nil)
-      item  = create_item(component, cell)
-      item.build(configuration, cell) unless cell.nil?
-      item
-    end
+module RGen
+  module RegisterMap
+    class ItemFactory < InputBase::ItemFactory
+      def create(component, configuration, cell = nil)
+        item  = create_item(component, cell)
+        item.build(configuration, cell) unless cell.nil?
+        item
+      end
 
-    private
+      private
 
-    def error(message, cell)
-      fail RGen::RegisterMapError.new(message, cell.position)
+      def error(message, cell)
+        fail RGen::RegisterMapError.new(message, cell.position)
+      end
     end
   end
 end

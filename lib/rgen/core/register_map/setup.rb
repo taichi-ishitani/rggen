@@ -1,15 +1,5 @@
 module RGen
   module RegisterMap
-    require_relative 'register_map/generic_map'
-    require_relative 'register_map/loader'
-    require_relative 'register_map/component'
-    require_relative 'register_map/item'
-    require_relative 'register_map/register_map_factory'
-    require_relative 'register_map/register_block_factory'
-    require_relative 'register_map/register_factory'
-    require_relative 'register_map/bit_field_factory'
-    require_relative 'register_map/item_factory'
-
     RGen.input_component_store(:register_map) do
       entry do
         component_class   Component
