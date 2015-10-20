@@ -18,7 +18,7 @@ module RGen::OutputBase
     end
 
     class BazItem < Item
-      generate_code :baz, create_context:true do |buffer|
+      generate_code :baz do |buffer|
         buffer << 'baz'
       end
     end
@@ -79,18 +79,6 @@ module RGen::OutputBase
           expect(buffer).to be_empty
           bar_item.generate_code(:bar, buffer)
           expect(buffer).to match ['bar']
-        end
-      end
-
-      context ".generate_codeのオプションで'create_context:true'が指定された場合" do
-        it "#ownerの#create_contextを呼び出してコンテキストオブジェクトを生成させる" do
-          expect(component).to receive(:create_context).with(no_args).and_call_original
-          baz_item.generate_code(:baz, buffer)
-        end
-
-        specify "生成されたコンテキストオブジェクトは階層アイテムアクセッサ経由で取得できる" do
-          baz_item.generate_code(:baz, buffer)
-          expect(baz_item.register_map).to eql component.context
         end
       end
 

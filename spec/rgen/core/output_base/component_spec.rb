@@ -120,29 +120,5 @@ module RGen::OutputBase
         end
       end
     end
-
-    describe "#create_context" do
-      let(:child_contexts) do
-        child_components.map {|child_component| child_component.context}
-      end
-
-      let(:grandchild_contexts) do
-        grandchild_components.map {|grandchild_component| grandchild_component.context}
-      end
-
-      it "自身及び配下のジェネレータでコンテキストオブジェクトを作成する" do
-        component.create_context
-        expect(component.context  ).to be_kind_of(Context)
-        expect(child_contexts     ).to all(be_kind_of(Context))
-        expect(grandchild_contexts).to all(be_kind_of(Context))
-      end
-
-      specify "生成されたコンテキストの#levelは属するジェネレータの#levelと同じ値を取る" do
-        component.create_context
-        expect(component.context.level         ).to eq component.level
-        expect(     child_contexts.map(&:level)).to all(eq      child_components[0].level)
-        expect(grandchild_contexts.map(&:level)).to all(eq grandchild_components[0].level)
-      end
-    end
   end
 end

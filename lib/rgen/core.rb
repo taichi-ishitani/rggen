@@ -49,7 +49,6 @@ require_relative 'core/register_map/item_factory'
 require_relative 'core/register_map/setup'
 
 require_relative 'core/output_base/template_utility'
-require_relative 'core/output_base/context'
 require_relative 'core/output_base/component'
 require_relative 'core/output_base/item'
 require_relative 'core/output_base/component_factory'

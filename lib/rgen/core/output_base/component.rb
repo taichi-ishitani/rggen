@@ -1,7 +1,7 @@
 module RGen
   module OutputBase
     class Component < Base::Component
-      attr_reader :context
+      include Base::HierarchicalAccessors
 
       def generate_code(kind, mode, buffer)
         case mode
@@ -23,10 +23,6 @@ module RGen
         end
       end
 
-      def create_context
-        __create_context(nil)
-      end
-
       private
 
       def generate_child_code(kind, mode, buffer)
@@ -38,15 +34,6 @@ module RGen
       def generate_item_code(kind, buffer)
         items.each do |item|
           item.generate_code(kind, buffer)
-        end
-      end
-
-      protected
-
-      def __create_context(parent_context)
-        @context  = Context.new(parent_context, level)
-        children.each do |child|
-          child.__create_context(context)
         end
       end
     end

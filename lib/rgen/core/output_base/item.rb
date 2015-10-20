@@ -5,15 +5,13 @@ module RGen
       include TemplateUtility
 
       class CodeGenerator
-        def initialize(kind, options, body)
+        def initialize(kind, body)
           @kind     = kind
-          @options  = options
           @body     = body
         end
 
         def generate_code(item, kind, buffer)
           return if kind != @kind
-          item.owner.create_context if @options[:create_context]
           item.instance_exec(buffer, &@body)
         end
       end
@@ -52,8 +50,8 @@ module RGen
         attr_reader :code_generator
         attr_reader :file_writer
 
-        def generate_code(kind, options = {}, &body)
-          @code_generator ||= CodeGenerator.new(kind, options, body)
+        def generate_code(kind, &body)
+          @code_generator ||= CodeGenerator.new(kind, body)
         end
 
         def write_file(name_pattern, &body)
@@ -85,7 +83,7 @@ module RGen
       private
 
       def __start_position
-        owner.context
+        owner
       end
     end
   end
