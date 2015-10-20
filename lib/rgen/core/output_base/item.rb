@@ -83,12 +83,6 @@ module RGen
         return if file_writer.nil?
         file_writer.write_file(self, output_directory)
       end
-
-      private
-
-      def __start_position
-        owner
-      end
     end
   end
 end

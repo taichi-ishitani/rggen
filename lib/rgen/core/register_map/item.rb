@@ -21,10 +21,6 @@ module RGen
       def error(message)
         fail RGen::RegisterMapError.new(message, @position)
       end
-
-      def __start_position
-        @owner
-      end
     end
   end
 end

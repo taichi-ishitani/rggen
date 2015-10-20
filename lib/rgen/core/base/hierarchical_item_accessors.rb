@@ -7,7 +7,7 @@ module RGen
         end
 
         def register_map
-          __start_position
+          @owner
         end
       end
 
@@ -21,7 +21,7 @@ module RGen
         end
 
         def register_block
-          __start_position
+          @owner
         end
       end
 
@@ -39,7 +39,7 @@ module RGen
         end
 
         def register
-          __start_position
+          @owner
         end
       end
 
@@ -61,7 +61,7 @@ module RGen
         end
 
         def bit_field
-          __start_position
+          @owner
         end
       end
 
