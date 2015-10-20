@@ -1,7 +1,39 @@
 module RGen::RegisterMap
   class GenericMap
-    require_relative 'generic_map/sheet'
-    require_relative 'generic_map/cell'
+    class Cell
+      Position  = Struct.new(:file, :sheet, :row, :column)
+
+      def initialize(file, sheet, row, column)
+        @position = Position.new(file, sheet, row, column)
+      end
+
+      attr_accessor :value
+      attr_reader   :position
+
+      def empty?
+        value.to_s.empty?
+      end
+    end
+
+    class Sheet
+      def initialize(file, name)
+        @file = file
+        @name = name
+        @rows = []
+      end
+
+      attr_reader :name
+      attr_reader :rows
+
+      def [](row, column)
+        rows[row]         ||= []
+        rows[row][column] ||= Cell.new(@file, name, row, column)
+      end
+
+      def []=(row, column, value)
+        self[row, column].value = value
+      end
+    end
 
     def initialize(file)
       @file   = file
