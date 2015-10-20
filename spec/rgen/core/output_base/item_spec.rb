@@ -19,11 +19,23 @@ module RGen::OutputBase
 
     class BazItem < Item
       generate_code :baz do |buffer|
-        buffer << 'baz'
+        buffer << @baz
+      end
+      build do
+        @baz  = "#{object_id}_baz"
       end
     end
 
-    class QuxItem < Item
+    class QuxItem < BazItem
+      generate_code :qux do |buffer|
+        buffer << @qux
+      end
+      build do
+        @qux  = "#{object_id}_qux"
+      end
+    end
+
+    class FooBarItem < Item
       write_file "<%= owner.object_id %>.txt" do |buffer|
         owner.generate_code(:foo, :top_down, buffer)
         buffer << "\n"
@@ -32,11 +44,12 @@ module RGen::OutputBase
     end
 
     before do
-      @foo_item = FooItem.new(component)
-      @bar_item = BarItem.new(component)
-      @baz_item = BazItem.new(component)
-      @qux_item = QuxItem.new(component)
-      [@foo_item, @bar_item, @baz_item].each do |item|
+      @foo_item     = FooItem.new(component)
+      @bar_item     = BarItem.new(component)
+      @baz_item     = BazItem.new(component)
+      @qux_item     = QuxItem.new(component)
+      @foo_bar_item = FooBarItem.new(component)
+      [@foo_item, @bar_item, @baz_item, @qux_item, @foo_bar_item].each do |item|
         component.add_item(item)
       end
     end
@@ -61,11 +74,50 @@ module RGen::OutputBase
       @qux_item
     end
 
-    describe "#generate_code" do
-      let(:buffer) do
-        []
+    let(:foo_bar_item) do
+      @foo_bar_item
+    end
+
+    let(:configuration) do
+      RGen::Base::Component.new
+    end
+
+    let(:source) do
+      RGen::Base::Component.new
+    end
+
+    let(:buffer) do
+      []
+    end
+
+    describe "#build" do
+      it "与えられたコンフィグレーション、ソースオブジェクトを取り込む" do
+        foo_item.build(configuration, source)
+        expect(foo_item.configuration).to eql configuration
+        expect(foo_item.source       ).to eql source
       end
 
+      context ".buildでブロックが与えられた場合" do
+        it "登録されたブロックをアイテムのコンテキストで実行する" do
+          baz_item.build(configuration, source)
+          baz_item.generate_code(:baz, buffer)
+          expect(buffer).to match ["#{baz_item.object_id}_baz"]
+        end
+
+        context "継承されたとき" do
+          specify "登録されたブロックが継承先に引き継がれる" do
+            qux_item.build(configuration, source)
+            qux_item.generate_code(:baz, buffer)
+            qux_item.generate_code(:qux, buffer)
+            expect(buffer).to match [
+              "#{qux_item.object_id}_baz", "#{qux_item.object_id}_qux"
+            ]
+          end
+        end
+      end
+    end
+
+    describe "#generate_code" do
       context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
         it "指定された種類のコード生成ブロックを実行する" do
           foo_item.generate_code(:foo, buffer)
@@ -76,8 +128,7 @@ module RGen::OutputBase
       context ".generate_codeで複数回コード生成が登録された場合" do
         it "指定された種類のコード生成ブロックを実行する" do
           bar_item.generate_code(:barbar, buffer)
-          expect(buffer).to match ['barbar']
-          bar_item.generate_code(:bar, buffer)
+          bar_item.generate_code(:bar   , buffer)
           expect(buffer).to match ['barbar', 'bar']
         end
       end
@@ -90,6 +141,17 @@ module RGen::OutputBase
             }.not_to raise_error
             expect(buffer).to be_empty
           end
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたコード生成ブロックが継承先に引き継がれる" do
+          qux_item.build(configuration, source)
+          qux_item.generate_code(:baz, buffer)
+          qux_item.generate_code(:qux, buffer)
+          expect(buffer).to match [
+            "#{qux_item.object_id}_baz", "#{qux_item.object_id}_qux"
+          ]
         end
       end
     end
@@ -109,13 +171,13 @@ module RGen::OutputBase
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
         expect(File).to receive(:write).with(file_name, contents)
-        qux_item.write_file
+        foo_bar_item.write_file
       end
 
       context "出力ディレクトリの指定がある場合" do
         it "指定されたディレクトリにファイルを書き出す" do
           expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents)
-          qux_item.write_file(output_directory)
+          foo_bar_item.write_file(output_directory)
         end
       end
 

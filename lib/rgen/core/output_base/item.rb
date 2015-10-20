@@ -17,6 +17,14 @@ module RGen
           return unless @bodies.key?(kind)
           item.instance_exec(buffer, &@bodies[kind])
         end
+
+        def copy
+          new_generator = CodeGenerator.new
+          @bodies.each do |kind, body|
+            new_generator[kind] = body
+          end
+          new_generator
+        end
       end
 
       class FileWriter
@@ -50,8 +58,14 @@ module RGen
       end
 
       define_helpers do
+        attr_reader :builders
         attr_reader :code_generator
         attr_reader :file_writer
+
+        def build(&body)
+          @builders ||= []
+          @builders << body
+        end
 
         def generate_code(kind, &body)
           @code_generator ||= CodeGenerator.new
@@ -63,16 +77,34 @@ module RGen
         end
       end
 
+      def self.inherited(subclass)
+        {
+          :@builders       => builders       && Array.new(builders),
+          :@code_generator => code_generator && code_generator.copy
+        }.each do |k, v|
+          subclass.instance_variable_set(k, v) unless k.nil?
+        end
+      end
+
       def initialize(owner)
         super(owner)
         define_hierarchical_item_accessors
       end
 
-      attr_accessor :configuration
-      attr_accessor :source
+      attr_reader :configuration
+      attr_reader :source
 
+      class_delegator :builders
       class_delegator :code_generator
       class_delegator :file_writer
+
+      def build(configuration, source)
+        @configuration  = configuration
+        @source         = source
+        builders.each do |builder|
+          instance_exec(&builder)
+        end unless builders.nil?
+      end
 
       def generate_code(kind, buffer)
         return if code_generator.nil?
