@@ -23,17 +23,11 @@ module RGen
       attr_reader :categories
 
       def input_component_store(component_name, &body)
-        unless @stores.key?(component_name)
-          create_component_store(InputComponentStore, component_name)
-        end
-        @stores[component_name].instance_exec(&body)
+        component_store(InputComponentStore, component_name, body)
       end
 
       def generator_component_store(component_name, &body)
-        unless @stores.key?(component_name)
-          create_component_store(GeneratorComponentStore, component_name)
-        end
-        @stores[component_name].instance_exec(&body)
+        component_store(GeneratorComponentStore, component_name, body)
       end
 
       def define_loader(component_name, type_or_types, &body)
@@ -58,8 +52,11 @@ module RGen
 
       private
 
-      def create_component_store(klass, component_name)
-        @stores[component_name] = klass.new(self, component_name)
+      def component_store(klass, component_name, body)
+        unless @stores.key?(component_name)
+          @stores[component_name] = klass.new(self, component_name)
+        end
+        @stores[component_name].instance_exec(&body)
       end
     end
   end
