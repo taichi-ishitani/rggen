@@ -63,8 +63,8 @@ module RGen
         end
       end
 
-      def initialize(generator)
-        super(generator)
+      def initialize(owner)
+        super(owner)
         define_hierarchical_item_accessors
       end
 
