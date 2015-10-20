@@ -1,5 +1,5 @@
 module RGen
-  module GeneratorBase
+  module OutputBase
     class Context
       include Base::HierarchicalStructure
       include Base::HierarchicalAccessors

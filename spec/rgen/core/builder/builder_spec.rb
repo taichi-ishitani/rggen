@@ -45,10 +45,10 @@ module RGen::Builder
       end
     end
 
-    describe "#generator_component_store" do
-      it "ジェネレータコンポーネントエントリを生成し、引数で与えられた名前で登録する" do
+    describe "#output_component_store" do
+      it "出力コンポーネントエントリを生成し、引数で与えられた名前で登録する" do
         store = nil
-        builder.generator_component_store(:rtl) do
+        builder.output_component_store(:rtl) do
           entry do
             component_class   RGen::Base::Component
             component_factory RGen::Base::ComponentFactory
@@ -58,7 +58,7 @@ module RGen::Builder
           store = self
         end
 
-        expect(store       ).to be_kind_of(GeneratorComponentStore)
+        expect(store       ).to be_kind_of(OutputComponentStore)
         expect(stores[:rtl]).to be store
       end
     end

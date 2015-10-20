@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::GeneratorBase
+module RGen::OutputBase
   describe ItemFactory do
     let(:factory) do
       f = ItemFactory.new
@@ -8,8 +8,8 @@ module RGen::GeneratorBase
       f
     end
 
-    let(:generator) do
-      Generator.new
+    let(:component) do
+      Component.new
     end
 
     let(:configuration) do
@@ -21,7 +21,7 @@ module RGen::GeneratorBase
     end
 
     let(:item) do
-      factory.create(generator, configuration, source)
+      factory.create(component, configuration, source)
     end
 
     describe "#create" do
@@ -32,9 +32,9 @@ module RGen::GeneratorBase
         end
       end
 
-      it "与えられたgenerator, configuration, sourceを引数として#create_itemを呼び出す" do
-        expect(factory).to receive(:create_item).with(generator, configuration, source).and_call_original
-        factory.create(generator, configuration, source)
+      it "与えられたcomponent, configuration, sourceを引数として#create_itemを呼び出す" do
+        expect(factory).to receive(:create_item).with(component, configuration, source).and_call_original
+        factory.create(component, configuration, source)
       end
     end
   end

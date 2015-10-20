@@ -1,8 +1,8 @@
 module RGen
-  module GeneratorBase
+  module OutputBase
     class ItemFactory < Base::ItemFactory
-      def create(generator, configuration, source)
-        item                = create_item(generator, configuration, source)
+      def create(component, configuration, source)
+        item                = create_item(component, configuration, source)
         item.configuration  = configuration
         item.source         = source
         item

@@ -1,7 +1,7 @@
 require_relative '../../../spec_helper'
 
-module RGen::GeneratorBase
-  describe GeneratorFactory do
+module RGen::OutputBase
+  describe ComponentFactory do
     let(:configuration) do
       get_component_class(:configuration, 0).new
     end
@@ -24,8 +24,8 @@ module RGen::GeneratorBase
     end
 
     let(:factory) do
-      f                   = GeneratorFactory.new
-      f.target_component  = Generator
+      f                   = ComponentFactory.new
+      f.target_component  = Component
       f.item_factories    = item_factories
       f.child_factory     = child_factory
       f.root_factory
@@ -33,8 +33,8 @@ module RGen::GeneratorBase
     end
 
     let(:child_factory) do
-      f                   = GeneratorFactory.new
-      f.target_component  = Generator
+      f                   = ComponentFactory.new
+      f.target_component  = Component
       f
     end
 
@@ -44,20 +44,20 @@ module RGen::GeneratorBase
           allow(f).to receive(:create).and_call_original
         end
 
-        generator = factory.create(configuration, register_map)
+        component = factory.create(configuration, register_map)
 
         item_factories.each_value do |f|
-          expect(f).to have_received(:create).with(generator, configuration, register_map)
+          expect(f).to have_received(:create).with(component, configuration, register_map)
         end
       end
 
       it "与えられたコンフィグレーションオブジェクト、ソースオブジェクトの子オブジェクトを用いて、属する子ジェネレータを生成する" do
         allow(child_factory).to receive(:create).twice.and_call_original
 
-        generator = factory.create(configuration, register_map)
+        component = factory.create(configuration, register_map)
 
-        expect(child_factory).to have_received(:create).with(generator, configuration, register_map.register_blocks[0])
-        expect(child_factory).to have_received(:create).with(generator, configuration, register_map.register_blocks[1])
+        expect(child_factory).to have_received(:create).with(component, configuration, register_map.register_blocks[0])
+        expect(child_factory).to have_received(:create).with(component, configuration, register_map.register_blocks[1])
       end
     end
   end

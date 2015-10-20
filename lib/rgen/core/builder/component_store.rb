@@ -30,6 +30,6 @@ module RGen
       end
     end
 
-    GeneratorComponentStore = ComponentStore
+    OutputComponentStore  = ComponentStore
   end
 end

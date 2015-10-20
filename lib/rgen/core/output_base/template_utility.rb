@@ -1,5 +1,5 @@
 module RGen
-  module GeneratorBase
+  module OutputBase
     module TemplateUtility
       module Extensions
         def template_engines

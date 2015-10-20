@@ -1,6 +1,6 @@
 module RGen
-  module GeneratorBase
-    class Generator < Base::Component
+  module OutputBase
+    class Component < Base::Component
       attr_reader :context
 
       def generate_code(kind, mode, buffer)

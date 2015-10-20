@@ -26,8 +26,8 @@ module RGen
         component_store(InputComponentStore, component_name, body)
       end
 
-      def generator_component_store(component_name, &body)
-        component_store(GeneratorComponentStore, component_name, body)
+      def output_component_store(component_name, &body)
+        component_store(OutputComponentStore, component_name, body)
       end
 
       def define_loader(component_name, type_or_types, &body)

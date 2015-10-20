@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::GeneratorBase
+module RGen::OutputBase
   describe Item do
     class FooItem < Item
       generate_code :foo do |buffer|
@@ -24,25 +24,25 @@ module RGen::GeneratorBase
     end
 
     class QuxItem < Item
-      write_file "<%= generator.object_id %>.txt" do |buffer|
-        generator.generate_code(:foo, :top_down, buffer)
+      write_file "<%= owner.object_id %>.txt" do |buffer|
+        owner.generate_code(:foo, :top_down, buffer)
         buffer << "\n"
-        generator.generate_code(:bar, :top_down, buffer)
+        owner.generate_code(:bar, :top_down, buffer)
       end
     end
 
     before do
-      @foo_item = FooItem.new(generator)
-      @bar_item = BarItem.new(generator)
-      @baz_item = BazItem.new(generator)
-      @qux_item = QuxItem.new(generator)
+      @foo_item = FooItem.new(component)
+      @bar_item = BarItem.new(component)
+      @baz_item = BazItem.new(component)
+      @qux_item = QuxItem.new(component)
       [@foo_item, @bar_item, @baz_item].each do |item|
-        generator.add_item(item)
+        component.add_item(item)
       end
     end
 
-    let(:generator) do
-      Generator.new
+    let(:component) do
+      Component.new
     end
 
     let(:foo_item) do
@@ -83,14 +83,14 @@ module RGen::GeneratorBase
       end
 
       context ".generate_codeのオプションで'create_context:true'が指定された場合" do
-        it "#generatorの#create_contextを呼び出してコンテキストオブジェクトを生成させる" do
-          expect(generator).to receive(:create_context).with(no_args).and_call_original
+        it "#ownerの#create_contextを呼び出してコンテキストオブジェクトを生成させる" do
+          expect(component).to receive(:create_context).with(no_args).and_call_original
           baz_item.generate_code(:baz, buffer)
         end
 
         specify "生成されたコンテキストオブジェクトは階層アイテムアクセッサ経由で取得できる" do
           baz_item.generate_code(:baz, buffer)
-          expect(baz_item.register_map).to eql generator.context
+          expect(baz_item.register_map).to eql component.context
         end
       end
 
@@ -112,7 +112,7 @@ module RGen::GeneratorBase
       end
 
       let(:file_name) do
-        "#{generator.object_id}.txt"
+        "#{component.object_id}.txt"
       end
 
       let(:contents) do
@@ -133,7 +133,7 @@ module RGen::GeneratorBase
 
       context ".write_fileで生成ブロックが登録されていない場合" do
         let(:item) do
-          Class.new(Item).new(generator)
+          Class.new(Item).new(component)
         end
 
         it "何も起こらない" do

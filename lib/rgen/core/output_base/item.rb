@@ -1,5 +1,5 @@
 module RGen
-  module GeneratorBase
+  module OutputBase
     class Item < Base::Item
       include Base::HierarchicalItemAccessors
       include TemplateUtility
@@ -13,7 +13,7 @@ module RGen
 
         def generate_code(item, kind, buffer)
           return if kind != @kind
-          item.generator.create_context if @options[:create_context]
+          item.owner.create_context if @options[:create_context]
           item.instance_exec(buffer, &@body)
         end
       end
@@ -72,8 +72,6 @@ module RGen
       class_delegator :code_generator
       class_delegator :file_writer
 
-      alias_method  :generator, :owner
-
       def generate_code(kind, buffer)
         return if code_generator.nil?
         code_generator.generate_code(self, kind, buffer)
@@ -87,7 +85,7 @@ module RGen
       private
 
       def __start_position
-        generator.context
+        owner.context
       end
     end
   end

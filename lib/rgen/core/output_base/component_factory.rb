@@ -1,6 +1,6 @@
 module RGen
-  module GeneratorBase
-    class GeneratorFactory < Base::ComponentFactory
+  module OutputBase
+    class ComponentFactory < Base::ComponentFactory
       def create_items(generator, configuration, soruce)
         @item_factories.each_value do |item_factory|
           create_item(item_factory, generator, configuration, soruce)
