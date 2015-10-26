@@ -53,3 +53,6 @@ require_relative 'core/output_base/component'
 require_relative 'core/output_base/item'
 require_relative 'core/output_base/component_factory'
 require_relative 'core/output_base/item_factory'
+
+require_relative 'core/rtl/verilog/identifier'
+
