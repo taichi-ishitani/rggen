@@ -3,6 +3,11 @@ module RGen
     class Component < Base::Component
       include Base::HierarchicalAccessors
 
+      def initialize(parent = nil)
+        super(parent)
+        define_hierarchical_accessors
+      end
+
       def generate_code(kind, mode, buffer)
         case mode
         when :top_down

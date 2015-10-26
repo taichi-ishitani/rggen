@@ -3,7 +3,7 @@ require_relative '../../../spec_helper'
 module RGen::OutputBase
   describe Component do
     def create_component(parent = nil)
-      component = Component.new
+      component = Component.new(parent)
       [:foo, :bar].each do |kind|
         item  = Class.new(Item) {
           generate_code kind do |buffer|
@@ -36,6 +36,12 @@ module RGen::OutputBase
 
     let(:grandchild_components) do
       @grandchild_components
+    end
+
+    it "階層アクセッサを持つ" do
+      expect(component.hierarchy                   ).to     eq :register_map
+      expect(child_components.map(&:hierarchy)     ).to all(eq :register_block)
+      expect(grandchild_components.map(&:hierarchy)).to all(eq :register      )
     end
 
     describe "#generate_code" do
