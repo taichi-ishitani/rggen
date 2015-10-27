@@ -5,25 +5,20 @@ module RGen
       include TemplateUtility
 
       class CodeGenerator
-        def initialize
-          @bodies = {}
-        end
-
         def []=(kind, body)
+          @bodies ||= {}
           @bodies[kind] = body
         end
 
         def generate_code(item, kind, buffer)
-          return unless @bodies.key?(kind)
+          return unless @bodies && @bodies.key?(kind)
           item.instance_exec(buffer, &@bodies[kind])
         end
 
         def copy
-          new_generator = CodeGenerator.new
-          @bodies.each do |kind, body|
-            new_generator[kind] = body
-          end
-          new_generator
+          g = CodeGenerator.new
+          g.instance_variable_set(:@bodies, Hash[@bodies]) if @bodies
+          g
         end
       end
 
@@ -82,7 +77,7 @@ module RGen
           :@builders       => builders       && Array.new(builders),
           :@code_generator => code_generator && code_generator.copy
         }.each do |k, v|
-          subclass.instance_variable_set(k, v) unless k.nil?
+          subclass.instance_variable_set(k, v) if v
         end
       end
 
