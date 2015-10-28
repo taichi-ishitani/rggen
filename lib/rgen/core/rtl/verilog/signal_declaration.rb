@@ -2,15 +2,15 @@ module RGen
   module Rtl
     module Verilog
       class SignalDeclaration
-        def initialize(type, name, signal_attributes = {})
-          @type       = type.to_s
+        def initialize(name, signal_attributes = {})
           @name       = name
+          @type       = (signal_attributes[:type] || :wire).to_s
           @width      = width_code(signal_attributes)
           @dimension  = dimension_code(signal_attributes)
         end
 
-        attr_reader :type
         attr_reader :name
+        attr_reader :type
         attr_reader :width
         attr_reader :dimension
 
