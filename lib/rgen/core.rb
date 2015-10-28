@@ -55,4 +55,5 @@ require_relative 'core/output_base/component_factory'
 require_relative 'core/output_base/item_factory'
 
 require_relative 'core/rtl/verilog/identifier'
+require_relative 'core/rtl/verilog/signal_declaration'
 
