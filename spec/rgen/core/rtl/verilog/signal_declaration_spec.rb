@@ -14,8 +14,8 @@ module RGen::Rtl::Verilog
 
     describe "#type" do
       context "信号型属性の指定が無い場合" do
-        it "'wire'を返す" do
-          expect(SignalDeclaration.new(name).type).to eq "wire"
+        it "空文字を返す" do
+          expect(SignalDeclaration.new(name).type).to eq ""
         end
       end
 

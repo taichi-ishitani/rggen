@@ -4,7 +4,7 @@ module RGen
       class SignalDeclaration
         def initialize(name, signal_attributes = {})
           @name       = name
-          @type       = (signal_attributes[:type] || :wire).to_s
+          @type       = signal_attributes[:type].to_s
           @width      = width_code(signal_attributes)
           @dimension  = dimension_code(signal_attributes)
         end
