@@ -2,14 +2,8 @@ module RGen
   module Rtl
     module Verilog
       class Identifier
-        def initialize(name, msb = nil, lsb = msb)
-          if msb && (msb != lsb)
-            @name = "#{name}[#{msb}:#{lsb}]"
-          elsif msb
-            @name = "#{name}[#{msb}]"
-          else
-            @name = name
-          end
+        def initialize(name)
+          @name = name
         end
 
         def to_s
@@ -17,7 +11,11 @@ module RGen
         end
 
         def [](msb, lsb = msb)
-          Identifier.new(@name, msb, lsb)
+          if msb == lsb
+            Identifier.new("#{@name}[#{msb}]")
+          else
+            Identifier.new("#{@name}[#{msb}:#{lsb}]")
+          end
         end
       end
     end
