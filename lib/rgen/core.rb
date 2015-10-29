@@ -57,4 +57,4 @@ require_relative 'core/output_base/item_factory'
 require_relative 'core/rtl/verilog/identifier'
 require_relative 'core/rtl/verilog/signal_declaration'
 require_relative 'core/rtl/verilog/port_declaration'
-
+require_relative 'core/rtl/verilog/parameter_declaration'
