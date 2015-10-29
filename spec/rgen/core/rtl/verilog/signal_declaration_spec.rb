@@ -20,8 +20,8 @@ module RGen::Rtl::Verilog
       end
 
       context "信号型属性の指定がある場合" do
-        it "信号型を文字列で返す" do
-          expect(SignalDeclaration.new(name, type: :reg).type).to eq "reg"
+        it "信号型を返す" do
+          expect(SignalDeclaration.new(name, type: :reg).type).to eq :reg
         end
       end
     end

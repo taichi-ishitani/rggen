@@ -1,4 +1,4 @@
-require_relative '../../../../spec_helper'
+irrequire_relative '../../../../spec_helper'
 
 module RGen::Rtl::Verilog
   describe PortDeclaration do
@@ -14,8 +14,8 @@ module RGen::Rtl::Verilog
       end
 
       context "入出力属性の指定がある場合" do
-        it "入出力属性を文字列で返す" do
-          expect(PortDeclaration.new(name, direction: :output).direction).to eq "output"
+        it "入出力属性を返す" do
+          expect(PortDeclaration.new(name, direction: :output).direction).to eq :output
         end
       end
     end
