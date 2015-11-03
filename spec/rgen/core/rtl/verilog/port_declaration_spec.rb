@@ -1,4 +1,4 @@
-irrequire_relative '../../../../spec_helper'
+require_relative '../../../../spec_helper'
 
 module RGen::Rtl::Verilog
   describe PortDeclaration do
