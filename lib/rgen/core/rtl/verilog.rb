@@ -46,6 +46,10 @@ module RGen
         end
         private type
       end
+
+      def assign(lhs, rhs)
+        "assign #{lhs} = #{rhs};"
+      end
     end
   end
 end

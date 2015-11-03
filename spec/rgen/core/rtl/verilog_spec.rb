@@ -160,5 +160,20 @@ module RGen::Rtl
         expect(declaration.default_value).to eq 1
       end
     end
+
+    describe "#assign" do
+      let(:lhs) do
+        Verilog::Identifier.new(name)
+      end
+
+      let(:rhs_list) do
+        ["4'b0000", Verilog::Identifier.new('bar')]
+      end
+
+      it "継続代入のコード片を返す" do
+        expect(@verilog.send(:assign, lhs,      rhs_list[0])).to eq "assign foo = 4'b0000;"
+        expect(@verilog.send(:assign, lhs[1,0], rhs_list[1])).to eq "assign foo[1:0] = bar;"
+      end
+    end
   end
 end
