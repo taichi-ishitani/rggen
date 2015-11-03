@@ -30,6 +30,7 @@ module RGen
         define_method(direction) do |name, port_attributes = {}|
           declare_port(direction, name, port_attributes)
         end
+        private direction
       end
 
       def declare_parameter(type, name, default_value)
@@ -43,6 +44,7 @@ module RGen
         define_method(type) do |name, default_value|
           declare_parameter(type, name, default_value)
         end
+        private type
       end
     end
   end
