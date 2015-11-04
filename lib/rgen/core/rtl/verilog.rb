@@ -50,6 +50,11 @@ module RGen
       def assign(lhs, rhs)
         "assign #{lhs} = #{rhs};"
       end
+
+      def concat(expression, *other_expressions)
+        expressions = Array[expression, *other_expressions]
+        "{#{expressions.join(', ')}}"
+      end
     end
   end
 end

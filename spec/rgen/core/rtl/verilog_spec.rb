@@ -175,5 +175,16 @@ module RGen::Rtl
         expect(@verilog.send(:assign, lhs[1,0], rhs_list[1])).to eq "assign foo[1:0] = bar;"
       end
     end
+
+    describe "#concat" do
+      let(:expressions) do
+        ["4'b0000", Verilog::Identifier.new('foo'), Verilog::Identifier.new('bar')]
+      end
+
+      it "連接のコード片を返す" do
+        expect(@verilog.send(:concat, *expressions  )).to eq "{4'b0000, foo, bar}"
+        expect(@verilog.send(:concat, expressions[0])).to eq "{4'b0000}"
+      end
+    end
   end
 end
