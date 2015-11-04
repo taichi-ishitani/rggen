@@ -186,5 +186,26 @@ module RGen::Rtl
         expect(@verilog.send(:concat, expressions[0])).to eq "{4'b0000}"
       end
     end
+
+    describe "#bin" do
+      it "与えた値をVerilog形式の2進数表記に変換する" do
+        expect(@verilog.send(:bin, 2, 2)).to eq "2'b10"
+        expect(@verilog.send(:bin, 2, 3)).to eq "3'b010"
+      end
+    end
+
+    describe "#dec" do
+      it "与えた値をVerilog形式の10進数表記に変換する" do
+        expect(@verilog.send(:dec, 8, 4)).to eq "4'd8"
+      end
+    end
+
+    describe "#hex" do
+      it "与えた値をVerilog形式の16進数表記に変換する" do
+        expect(@verilog.send(:hex, 0x1f, 7)).to eq "7'h1f"
+        expect(@verilog.send(:hex, 0x1f, 8)).to eq "8'h1f"
+        expect(@verilog.send(:hex, 0x1f, 9)).to eq "9'h01f"
+      end
+    end
   end
 end
