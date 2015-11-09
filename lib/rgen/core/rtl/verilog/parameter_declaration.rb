@@ -2,10 +2,10 @@ module RGen
   module Rtl
     module Verilog
       class ParameterDeclaration
-        def initialize(name, type, default_value)
+        def initialize(name, attributes = {})
           @name           = name
-          @type           = type
-          @default_value  = default_value
+          @type           = attributes[:type]
+          @default_value  = (attributes[:default_value] || 0)
         end
 
         attr_reader :name
