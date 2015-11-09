@@ -1,38 +1,69 @@
 module RGen
   module Rtl
     module Verilog
+      def identifiers
+        @identifiers  ||= []
+      end
+
+      def signal_declarations
+        @signal_declarations  ||= []
+      end
+
+      def port_declarations
+        @port_declarations  ||= []
+      end
+
+      def parameter_declarations
+        @parameter_declarations ||= []
+      end
+
+      def localparam_declarations
+        @localparam_declarations  ||= []
+      end
+
       private
 
       [:wire, :reg, :logic].each do |type|
-        define_method(type) do |name, signal_attributes = {}|
-          signal_attributes[:type]  = type
-          [
-            Identifier.new(name),
-            SignalDeclaration.new(name, signal_attributes)
-          ]
+        define_method(type) do |handle_name, attributes = {}|
+          attributes[:type] = type
+          declarations      = signal_declarations
+          declare(SignalDeclaration, declarations, handle_name, attributes)
         end
         private type
       end
 
       [:input, :output].each do |direction|
-        define_method(direction) do |name, port_attributes = {}|
-          port_attributes[:direction] = direction
-          [
-            Identifier.new(name),
-            PortDeclaration.new(name, port_attributes)
-          ]
+        define_method(direction) do |handle_name, attributes = {}|
+          attributes[:direction]  = direction
+          declarations            = port_declarations
+          declare(PortDeclaration, declarations, handle_name, attributes)
         end
         private direction
       end
 
       [:parameter, :localparam].each do |type|
-        define_method(type) do |name, default_value|
-          [
-            Identifier.new(name),
-            ParameterDeclaration.new(name, type, default_value)
-          ]
+        define_method(type) do |handle_name, attributes = {}|
+          attributes[:type] = type
+          declarations      =
+            case type
+            when :parameter  then parameter_declarations
+            when :localparam then localparam_declarations
+            end
+          declare(ParameterDeclaration, declarations, handle_name, attributes)
         end
         private type
+      end
+
+      def declare(klass, declarations, handle_name, attributes)
+        name  = (attributes[:name] || handle_name).to_s
+        create_identifier(handle_name, name)
+        declarations  << klass.new(name, attributes)
+      end
+
+      def create_identifier(handle_name, name)
+        instance_variable_set(handle_name.variablize, Identifier.new(name))
+        attr_singleton_reader(handle_name)
+        identifiers << handle_name
       end
 
       def assign(lhs, rhs)

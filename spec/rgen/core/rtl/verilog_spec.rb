@@ -2,168 +2,253 @@ require_relative '../../../spec_helper'
 
 module RGen::Rtl
   describe Verilog do
-    before(:all) do
-      @verilog  = Class.new {
+    let(:verilog) do
+      Class.new {
         include Verilog
       }.new
     end
 
-    let(:name) do
-      'foo'
-    end
-
     describe "#wire" do
-      it "引数で与えた変数名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:wire, name)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {wire :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#typeが:wireのSignalDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:wire, name)[1]
-        expect(declaration     ).to be_instance_of Verilog::SignalDeclaration
-        expect(declaration.name).to eq name
-        expect(declaration.type).to eq :wire
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {wire :foo}
+        expect(verilog.identifiers.last).to eq :foo
       end
 
-      context "属性を与えた場合" do
-        it "与えた属性を持つSignalDeclarationオブジェクトを返す" do
-          declaration = @verilog.send(:wire, name, width: 2, dimension: 4, sv_enable: false)[1]
-          expect(declaration.width    ).to eq "[1:0]"
-          expect(declaration.dimension).to eq "[0:3]"
+      it "#typeが:wireのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        verilog.instance_eval {wire :foo}
+        expect(verilog.signal_declarations.last     ).to be_instance_of Verilog::SignalDeclaration
+        expect(verilog.signal_declarations.last.type).to eq :wire
+        expect(verilog.signal_declarations.last.name).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {wire :foo, width:2, dimension:4}
+        expect(verilog.signal_declarations.last.width    ).to eq '[1:0]'
+        expect(verilog.signal_declarations.last.dimension).to eq '[4]'
+      end
+
+      context "属性で信号名を与えた場合" do
+        specify "与えた信号名が反映される" do
+          verilog.instance_eval {wire :foo, name:"w_foo"}
+          expect(verilog.foo.to_s                     ).to eq "w_foo"
+          expect(verilog.signal_declarations.last.name).to eq "w_foo"
         end
       end
     end
 
     describe "#reg" do
-      it "引数で与えた変数名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:reg, name)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {reg :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#typeが:regのSignalDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:reg, name)[1]
-        expect(declaration     ).to be_instance_of Verilog::SignalDeclaration
-        expect(declaration.name).to eq name
-        expect(declaration.type).to eq :reg
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {reg :foo}
+        expect(verilog.identifiers.last).to eq :foo
       end
 
-      context "属性を与えた場合" do
-        it "与えた属性を持つSignalDeclarationオブジェクトを返す" do
-          declaration = @verilog.send(:reg, name, width: 2, dimension: 4, sv_enable: false)[1]
-          expect(declaration.width    ).to eq "[1:0]"
-          expect(declaration.dimension).to eq "[0:3]"
+      it "#typeが:regのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        verilog.instance_eval {reg :foo}
+        expect(verilog.signal_declarations.last     ).to be_instance_of Verilog::SignalDeclaration
+        expect(verilog.signal_declarations.last.type).to eq :reg
+        expect(verilog.signal_declarations.last.name).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {reg :foo, width:2, dimension:4}
+        expect(verilog.signal_declarations.last.width    ).to eq '[1:0]'
+        expect(verilog.signal_declarations.last.dimension).to eq '[4]'
+      end
+
+      context "属性で信号名を与えた場合" do
+        specify "与えた信号名が反映される" do
+          verilog.instance_eval {reg :foo, name:"r_foo"}
+          expect(verilog.foo.to_s                     ).to eq "r_foo"
+          expect(verilog.signal_declarations.last.name).to eq "r_foo"
         end
       end
     end
 
     describe "#logic" do
-      it "引数で与えた変数名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:logic, name)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {logic :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#typeが:logicのSignalDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:logic, name)[1]
-        expect(declaration     ).to be_instance_of Verilog::SignalDeclaration
-        expect(declaration.name).to eq name
-        expect(declaration.type).to eq :logic
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {logic :foo}
+        expect(verilog.identifiers.last).to eq :foo
       end
 
-      context "属性を与えた場合" do
-        it "与えた属性を持つSignalDeclarationオブジェクトを返す" do
-          declaration = @verilog.send(:logic, name, width: 2, dimension: 4, sv_enable: false)[1]
-          expect(declaration.width    ).to eq "[1:0]"
-          expect(declaration.dimension).to eq "[0:3]"
+      it "#typeが:logicのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        verilog.instance_eval {logic :foo}
+        expect(verilog.signal_declarations.last     ).to be_instance_of Verilog::SignalDeclaration
+        expect(verilog.signal_declarations.last.type).to eq :logic
+        expect(verilog.signal_declarations.last.name).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {logic :foo, width:2, dimension:4}
+        expect(verilog.signal_declarations.last.width    ).to eq '[1:0]'
+        expect(verilog.signal_declarations.last.dimension).to eq '[4]'
+      end
+
+      context "属性で信号名を与えた場合" do
+        specify "与えた信号名が反映される" do
+          verilog.instance_eval {logic :foo, name:"l_foo"}
+          expect(verilog.foo.to_s                     ).to eq "l_foo"
+          expect(verilog.signal_declarations.last.name).to eq "l_foo"
         end
       end
     end
 
     describe "#input" do
-      it "引数で与えたポート名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:input, name)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {input :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#directionが:inputのPortDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:input, name)[1]
-        expect(declaration          ).to be_instance_of Verilog::PortDeclaration
-        expect(declaration.name     ).to eq name
-        expect(declaration.direction).to eq :input
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {input :foo}
+        expect(verilog.identifiers.last).to eq :foo
       end
 
-      context "属性を与えた場合" do
-        it "与えた属性を持つPortDeclarationオブジェクトを返す" do
-          declaration = @verilog.send(:input, name, width: 2, type: :logic, dimension: 4)[1]
-          expect(declaration.width    ).to eq "[1:0]"
-          expect(declaration.type     ).to eq :logic
-          expect(declaration.dimension).to eq "[4]"
+      it "#directionが:inputのPortDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
+        verilog.instance_eval {input :foo}
+        expect(verilog.port_declarations.last          ).to be_instance_of Verilog::PortDeclaration
+        expect(verilog.port_declarations.last.direction).to eq :input
+        expect(verilog.port_declarations.last.name     ).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {input :foo, type: :logic, width:2, dimension:4}
+        expect(verilog.port_declarations.last.type     ).to eq :logic
+        expect(verilog.port_declarations.last.width    ).to eq '[1:0]'
+        expect(verilog.port_declarations.last.dimension).to eq '[4]'
+      end
+
+      context "属性でポート名を与えた場合" do
+        specify "与えたポート名が反映される" do
+          verilog.instance_eval {input :foo, name:"i_foo"}
+          expect(verilog.foo.to_s                   ).to eq "i_foo"
+          expect(verilog.port_declarations.last.name).to eq "i_foo"
         end
       end
     end
 
     describe "#output" do
-      it "引数で与えたポート名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:output, name)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {output :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#directionが:outputのPortDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:output, name)[1]
-        expect(declaration          ).to be_instance_of Verilog::PortDeclaration
-        expect(declaration.name     ).to eq name
-        expect(declaration.direction).to eq :output
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {output :foo}
+        expect(verilog.identifiers.last).to eq :foo
       end
 
-      context "属性を与えた場合" do
-        it "与えた属性を持つPortDeclarationオブジェクトを返す" do
-          declaration = @verilog.send(:output, name, width: 2, type: :logic, dimension: 4)[1]
-          expect(declaration.width    ).to eq "[1:0]"
-          expect(declaration.type     ).to eq :logic
-          expect(declaration.dimension).to eq "[4]"
+      it "#directionが:outputのPortDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
+        verilog.instance_eval {output :foo}
+        expect(verilog.port_declarations.last          ).to be_instance_of Verilog::PortDeclaration
+        expect(verilog.port_declarations.last.direction).to eq :output
+        expect(verilog.port_declarations.last.name     ).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {output :foo, type: :logic, width:2, dimension:4}
+        expect(verilog.port_declarations.last.type     ).to eq :logic
+        expect(verilog.port_declarations.last.width    ).to eq '[1:0]'
+        expect(verilog.port_declarations.last.dimension).to eq '[4]'
+      end
+
+      context "属性でポート名を与えた場合" do
+        specify "与えたポート名が反映される" do
+          verilog.instance_eval {output :foo, name:"o_foo"}
+          expect(verilog.foo.to_s                   ).to eq "o_foo"
+          expect(verilog.port_declarations.last.name).to eq "o_foo"
         end
       end
     end
 
     describe "#parameter" do
-      it "引数で与えたポート名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:parameter, name, 1)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {parameter :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#typeに:parameterと引数で与えた属性持つParameterDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:parameter, name, 1)[1]
-        expect(declaration              ).to be_instance_of Verilog::ParameterDeclaration
-        expect(declaration.name         ).to eq name
-        expect(declaration.type         ).to eq :parameter
-        expect(declaration.default_value).to eq 1
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {parameter :foo}
+        expect(verilog.identifiers.last).to eq :foo
+      end
+
+      it "#typeが:parameterのParameterDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
+        verilog.instance_eval {parameter :foo}
+        expect(verilog.parameter_declarations.last     ).to be_instance_of Verilog::ParameterDeclaration
+        expect(verilog.parameter_declarations.last.type).to eq :parameter
+        expect(verilog.parameter_declarations.last.name).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するParameterDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {parameter :foo, default_value: 1}
+        expect(verilog.parameter_declarations.last.default_value).to eq 1
+      end
+
+      context "属性でパラメータ名を与えた場合" do
+        specify "与えたパラメータ名が反映される" do
+          verilog.instance_eval {parameter :foo, name:"FOO"}
+          expect(verilog.foo.to_s                        ).to eq "FOO"
+          expect(verilog.parameter_declarations.last.name).to eq "FOO"
+        end
       end
     end
 
     describe "#localparam" do
-      it "引数で与えたポート名のIdentifierオブジェクトを返す" do
-        identifier  = @verilog.send(:localparam, name, 1)[0]
-        expect(identifier     ).to be_instance_of Verilog::Identifier
-        expect(identifier.to_s).to eq name
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        verilog.instance_eval {localparam :foo}
+        expect(verilog.foo     ).to be_instance_of Verilog::Identifier
+        expect(verilog.foo.to_s).to eq 'foo'
       end
 
-      it "#typeに:localparamと引数で与えた属性持つParameterDeclarationオブジェクトを返す" do
-        declaration = @verilog.send(:localparam, name, 1)[1]
-        expect(declaration              ).to be_instance_of Verilog::ParameterDeclaration
-        expect(declaration.name         ).to eq name
-        expect(declaration.type         ).to eq :localparam
-        expect(declaration.default_value).to eq 1
+      it "#identifiersに与えたハンドル名を追加する" do
+        verilog.instance_eval {localparam :foo}
+        expect(verilog.identifiers.last).to eq :foo
+      end
+
+      it "#typeが:localparamのParameterDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
+        verilog.instance_eval {localparam :foo}
+        expect(verilog.localparam_declarations.last     ).to be_instance_of Verilog::ParameterDeclaration
+        expect(verilog.localparam_declarations.last.type).to eq :localparam
+        expect(verilog.localparam_declarations.last.name).to eq 'foo'
+      end
+
+      specify "与えた属性は生成するParameterDeclarationオブジェクトに反映される" do
+        verilog.instance_eval {localparam :foo, default_value: 1}
+        expect(verilog.localparam_declarations.last.default_value).to eq 1
+      end
+
+      context "属性でパラメータ名を与えた場合" do
+        specify "与えたパラメータ名が反映される" do
+          verilog.instance_eval {localparam :foo, name:"FOO"}
+          expect(verilog.foo.to_s                         ).to eq "FOO"
+          expect(verilog.localparam_declarations.last.name).to eq "FOO"
+        end
       end
     end
 
     describe "#assign" do
       let(:lhs) do
-        Verilog::Identifier.new(name)
+        Verilog::Identifier.new('foo')
       end
 
       let(:rhs_list) do
@@ -171,8 +256,8 @@ module RGen::Rtl
       end
 
       it "継続代入のコード片を返す" do
-        expect(@verilog.send(:assign, lhs,      rhs_list[0])).to eq "assign foo = 4'b0000;"
-        expect(@verilog.send(:assign, lhs[1,0], rhs_list[1])).to eq "assign foo[1:0] = bar;"
+        expect(verilog.send(:assign, lhs,      rhs_list[0])).to eq "assign foo = 4'b0000;"
+        expect(verilog.send(:assign, lhs[1,0], rhs_list[1])).to eq "assign foo[1:0] = bar;"
       end
     end
 
@@ -182,29 +267,29 @@ module RGen::Rtl
       end
 
       it "連接のコード片を返す" do
-        expect(@verilog.send(:concat, *expressions  )).to eq "{4'b0000, foo, bar}"
-        expect(@verilog.send(:concat, expressions[0])).to eq "{4'b0000}"
+        expect(verilog.send(:concat, *expressions  )).to eq "{4'b0000, foo, bar}"
+        expect(verilog.send(:concat, expressions[0])).to eq "{4'b0000}"
       end
     end
 
     describe "#bin" do
       it "与えた値をVerilog形式の2進数表記に変換する" do
-        expect(@verilog.send(:bin, 2, 2)).to eq "2'b10"
-        expect(@verilog.send(:bin, 2, 3)).to eq "3'b010"
+        expect(verilog.send(:bin, 2, 2)).to eq "2'b10"
+        expect(verilog.send(:bin, 2, 3)).to eq "3'b010"
       end
     end
 
     describe "#dec" do
       it "与えた値をVerilog形式の10進数表記に変換する" do
-        expect(@verilog.send(:dec, 8, 4)).to eq "4'd8"
+        expect(verilog.send(:dec, 8, 4)).to eq "4'd8"
       end
     end
 
     describe "#hex" do
       it "与えた値をVerilog形式の16進数表記に変換する" do
-        expect(@verilog.send(:hex, 0x1f, 7)).to eq "7'h1f"
-        expect(@verilog.send(:hex, 0x1f, 8)).to eq "8'h1f"
-        expect(@verilog.send(:hex, 0x1f, 9)).to eq "9'h01f"
+        expect(verilog.send(:hex, 0x1f, 7)).to eq "7'h1f"
+        expect(verilog.send(:hex, 0x1f, 8)).to eq "8'h1f"
+        expect(verilog.send(:hex, 0x1f, 9)).to eq "9'h01f"
       end
     end
   end
