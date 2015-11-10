@@ -54,6 +54,12 @@ module RGen
         private type
       end
 
+      def group(group_name, &body)
+        create_group(group_name)
+        instance_exec(&body)
+        @group  = nil
+      end
+
       def declare(klass, declarations, handle_name, attributes)
         name  = (attributes[:name] || handle_name).to_s
         create_identifier(handle_name, name)
@@ -61,9 +67,17 @@ module RGen
       end
 
       def create_identifier(handle_name, name)
-        instance_variable_set(handle_name.variablize, Identifier.new(name))
-        attr_singleton_reader(handle_name)
-        identifiers << handle_name
+        context = @group || self
+        context.instance_variable_set(handle_name.variablize, Identifier.new(name))
+        context.attr_singleton_reader(handle_name)
+        identifiers << handle_name if @group.nil?
+      end
+
+      def create_group(group_name)
+        instance_variable_set(group_name.variablize, Object.new)
+        attr_singleton_reader(group_name)
+        identifiers << group_name
+        @group      = __send__(group_name)
       end
 
       def assign(lhs, rhs)

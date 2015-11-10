@@ -246,6 +246,65 @@ module RGen::Rtl
       end
     end
 
+    describe "#group" do
+      before do
+        verilog.instance_eval do
+          group(:foo_bar_baz) do
+            wire  :foo
+            reg   :bar
+            logic :baz
+          end
+          group(:qux_quux) do
+            input  :qux
+            output :quux
+          end
+          group(:FOO_BAR) do
+            parameter :FOO
+            parameter :BAR
+          end
+          group(:BAZ_QUX) do
+            localparam :BAZ
+            localparam :QUX
+          end
+        end
+      end
+
+      it "ブロック内で定義した信号、ポート、パラメータをまとめるグループオブジェクトを生成する" do
+        expect(verilog.foo_bar_baz.foo.to_s).to eq "foo"
+        expect(verilog.foo_bar_baz.bar.to_s).to eq "bar"
+        expect(verilog.foo_bar_baz.baz.to_s).to eq "baz"
+        expect(verilog.qux_quux.qux.to_s   ).to eq "qux"
+        expect(verilog.qux_quux.quux.to_s  ).to eq "quux"
+        expect(verilog.FOO_BAR.FOO.to_s    ).to eq "FOO"
+        expect(verilog.FOO_BAR.BAR.to_s    ).to eq "BAR"
+        expect(verilog.BAZ_QUX.BAZ.to_s    ).to eq "BAZ"
+        expect(verilog.BAZ_QUX.QUX.to_s    ).to eq "QUX"
+      end
+
+      it "与えたグループ名を#identifiersに追加する" do
+        expect(verilog.identifiers).to match [:foo_bar_baz, :qux_quux, :FOO_BAR, :BAZ_QUX]
+      end
+
+      specify "group内で定義された識別子名は#identifiresに追加されない" do
+        expect(verilog.identifiers).not_to include(:foo, :bar, :baz, :qux, :quux, :FOO, :BAR, :BAZ, :QUX)
+      end
+
+      specify "#groupを抜けた後は、それぞれの定義メソッドは通常の動作をする" do
+        verilog.instance_eval do
+          wire       :foo
+          reg        :bar
+          logic      :baz
+          input      :qux
+          output     :quux
+          parameter  :FOO
+          parameter  :BAR
+          localparam :BAZ
+          localparam :QUX
+        end
+        expect(verilog.identifiers).to match [:foo_bar_baz, :qux_quux, :FOO_BAR, :BAZ_QUX, :foo, :bar, :baz, :qux, :quux, :FOO, :BAR, :BAZ, :QUX]
+      end
+    end
+
     describe "#assign" do
       let(:lhs) do
         Verilog::Identifier.new('foo')
