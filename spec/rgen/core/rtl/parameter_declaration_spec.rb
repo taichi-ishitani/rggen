@@ -1,6 +1,6 @@
-require_relative '../../../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RGen::Rtl::Verilog
+module RGen::Rtl
   describe ParameterDeclaration do
     let(:name) do
       "FOO"

@@ -1,6 +1,6 @@
-require_relative '../../../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RGen::Rtl::Verilog
+module RGen::Rtl
   describe SignalDeclaration do
     let(:name) do
       "foo"

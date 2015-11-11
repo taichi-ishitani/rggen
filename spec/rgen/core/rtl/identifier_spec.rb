@@ -1,6 +1,6 @@
-require_relative '../../../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RGen::Rtl::Verilog
+module RGen::Rtl
   describe Identifier do
     let(:name) do
       "foo"
