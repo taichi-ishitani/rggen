@@ -1,25 +1,20 @@
 module RGen
   module Rtl
     class Item < OutputBase::Item
-      def identifiers
-        @identifiers  ||= []
+      def initialize(owner)
+        super(owner)
+        @identifiers              = []
+        @signal_declarations      = []
+        @port_declarations        = []
+        @parameter_declarations   = []
+        @localparam_declarations  = []
       end
 
-      def signal_declarations
-        @signal_declarations  ||= []
-      end
-
-      def port_declarations
-        @port_declarations  ||= []
-      end
-
-      def parameter_declarations
-        @parameter_declarations ||= []
-      end
-
-      def localparam_declarations
-        @localparam_declarations  ||= []
-      end
+      attr_reader :identifiers
+      attr_reader :signal_declarations
+      attr_reader :port_declarations
+      attr_reader :parameter_declarations
+      attr_reader :localparam_declarations
 
       private
 
