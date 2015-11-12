@@ -23,4 +23,5 @@ require_relative 'builtins/register/accessibility'
 
 require_relative 'builtins/register_block/base_address'
 require_relative 'builtins/register_block/byte_size'
+require_relative 'builtins/register_block/clock_reset'
 require_relative 'builtins/register_block/name'

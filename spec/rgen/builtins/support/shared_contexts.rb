@@ -22,8 +22,12 @@ shared_context 'configuration common' do
     f
   end
 
-  let(:configuration_file) do
+  def configuration_file
     'configuration.txt'
+  end
+
+  def dummy_configuration
+    RGen::InputBase::Component.new
   end
 
   after do
@@ -63,8 +67,13 @@ shared_context 'register_map common' do
     RGen::RegisterMap::GenericMap::Cell::Position.new(register_map_file, sheet_name, row, column)
   end
 
-  let(:register_map_file) do
+  def register_map_file
     'register_map.txt'
+  end
+
+  def create_register_map(configuration, data)
+    RegisterMapDummyLoader.load_data(data)
+    build_register_map_factory.create(configuration, register_map_file)
   end
 
   after do
@@ -92,5 +101,18 @@ shared_context 'bit field type common' do
 
   let(:bit_fields) do
     build_bit_fields(load_data)
+  end
+end
+
+shared_context 'rtl common' do
+  def build_rtl_factory
+    RGen.builder.build_factory(:rtl)
+  end
+
+  def have_input(*expectation)
+    handle_name, attributes = expectation.last(2)
+    attributes[:name     ]  ||= handle_name.to_s
+    attributes[:direction]  = :input
+    have_identifier(*expectation).and have_port_declaration(attributes)
   end
 end
