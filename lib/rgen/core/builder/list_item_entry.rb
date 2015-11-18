@@ -1,12 +1,17 @@
 module RGen
   module Builder
     class ListItemEntry
-      def initialize(item_base, factory_base, *contexts, &body)
+      def initialize(item_base, factory_base, context = nil, &body)
         @item_base      = Class.new(item_base)
         @factory        = Class.new(factory_base)
         @items          = {}
         @enabled_items  = []
-        instance_exec(*contexts, &body) if block_given?
+        unless context.nil?
+          set_context(@item_base     , context)
+          set_context(@factory       , context)
+          set_context(singleton_class, context)
+        end
+        instance_exec(&body) if block_given?
       end
 
       def item_base(&body)
@@ -19,9 +24,16 @@ module RGen
         @factory
       end
 
-      def define_list_item(item_name, *contexts, &body)
-        @items[item_name] = Class.new(item_base)
-        @items[item_name].class_exec(*contexts, &body)
+      def define_list_item(item_name, context = nil, &body)
+        klass = Class.new(item_base)
+        unless context.nil?
+          if item_base.private_method_defined?(:shared_context)
+            fail BuilderError, 'base class already has #shared_context'
+          end
+          set_context(klass, context)
+        end
+        klass.class_exec(&body)
+        @items[item_name] = klass
       end
 
       def enable(item_or_items)
@@ -43,6 +55,15 @@ module RGen
       def target_items
         @enabled_items.each_with_object({}) do |item_name, items|
           items[item_name]  = @items[item_name]
+        end
+      end
+
+      def set_context(klass, context)
+        klass.class_exec do
+          define_method(:shared_context) do
+            context
+          end
+          private :shared_context
         end
       end
     end

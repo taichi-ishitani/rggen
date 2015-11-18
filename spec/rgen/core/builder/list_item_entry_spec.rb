@@ -14,12 +14,20 @@ module RGen::Builder
       ListItemEntry.new(item_base, factory_base)
     end
 
+    let(:list_item_entry_with_shared_context) do
+      ListItemEntry.new(item_base, factory_base, shared_context)
+    end
+
     let(:items) do
       list_item_entry.instance_variable_get(:@items)
     end
 
     let(:shared_context) do
       Object.new
+    end
+
+    let(:component) do
+      RGen::InputBase::Component.new
     end
 
     describe "#initialize" do
@@ -35,13 +43,8 @@ module RGen::Builder
       end
 
       context "コンテキストオブジェクトが与えられたとき" do
-        specify "与えられたコンテキストオブジェクトをブロック内で参照できる" do
-          actual_context = nil
-          ListItemEntry.new(item_base, factory_base, shared_context) do |context|
-            actual_context  = context
-          end
-
-          expect(actual_context).to eql shared_context
+        it "共有コンテキストを返す#shared_contextを定義する" do
+          expect(list_item_entry_with_shared_context.send(:shared_context)).to eql shared_context
         end
       end
     end
@@ -63,6 +66,13 @@ module RGen::Builder
           expect(list_item_entry.item_base).to be_method_defined(:foo)
         end
       end
+
+      context "属するエントリが共有コンテキストを持つ場合" do
+        specify "ベースアイテムクラスは#shared_contextを持ち、共有コンテキストオブジェクトを返す" do
+          item  = list_item_entry_with_shared_context.item_base.new(component)
+          expect(item.send(:shared_context)).to eql shared_context
+        end
+      end
     end
 
     describe "#factory" do
@@ -82,6 +92,13 @@ module RGen::Builder
           expect(list_item_entry.factory).to be_method_defined(:foo)
         end
       end
+
+      context "属するエントリが共有コンテキストを持つ場合" do
+        specify "アイテムファクトリクラスは#shared_contextを持ち、共有コンテキストオブジェクトを返す" do
+          factory = list_item_entry_with_shared_context.factory.new
+          expect(factory.send(:shared_context)).to eql shared_context
+        end
+      end
     end
 
     describe "#define_list_item" do
@@ -97,13 +114,21 @@ module RGen::Builder
       end
 
       context "コンテキストオブジェクトが与えられたとき" do
-        specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
-          actual_context  = nil
-          list_item_entry.define_list_item(:foo, shared_context) do |context|
-            actual_context  = context
-          end
+        let(:item) do
+          list_item_entry.define_list_item(:foo, shared_context) {}
+          items[:foo].new(component)
+        end
 
-          expect(actual_context).to be shared_context
+        it "共有コンテキストを返す#shared_contextを定義する" do
+          expect(item.send(:shared_context)).to eql shared_context
+        end
+
+        context "ベースクラスが既に共有コンテキストを持つ場合" do
+          it "RGen::BuilderErrorを発生させる" do
+            expect {
+              list_item_entry_with_shared_context.define_list_item(:foo, shared_context) {}
+            }.to raise_error RGen::BuilderError, "base class already has #shared_context"
+          end
         end
       end
     end
