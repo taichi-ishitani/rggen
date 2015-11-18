@@ -12,20 +12,21 @@ module RGen
       attr_reader :base
       attr_reader :factory
 
-      def define_simple_item(item_name, *contexts, &body)
-        create_item_entry(:simple, item_name, contexts, body)
+      def define_simple_item(item_name, context = nil, &body)
+        create_item_entry(:simple, item_name, context, body)
       end
 
       def define_list_item(list_name, *args, &body)
+        if args.size > 2
+          message = "wrong number of arguments (#{args.size + 1} for 1..3)"
+          fail ArgumentError, message
+        end
+
         case args.first
         when Symbol
-          unless @list_item_entries.key?(list_name)
-            message = "undefined list item entry: #{list_name}"
-            fail RGen::BuilderError, message
-          end
-          define_list_item_class(list_name, args[0], args[1..-1], body)
+          define_list_item_class(list_name, args[0], args[1], body)
         else
-          create_item_entry(:list, list_name, args, body)
+          create_item_entry(:list, list_name, args[0], body)
         end
       end
 
@@ -51,9 +52,9 @@ module RGen
 
       private
 
-      def create_item_entry(entry_type, entry_name, contexts, body)
+      def create_item_entry(entry_type, entry_name, context, body)
         klass = {simple: SimpleItemEntry, list: ListItemEntry}[entry_type]
-        entry = klass.new(base, factory, *contexts, &body)
+        entry = klass.new(base, factory, context, &body)
         update_entries(entry_type, entry_name, entry)
       end
 
@@ -67,9 +68,13 @@ module RGen
         end
       end
 
-      def define_list_item_class(list_name, item_name, contexts, body)
+      def define_list_item_class(list_name, item_name, context, body)
+        unless @list_item_entries.key?(list_name)
+          message = "undefined list item entry: #{list_name}"
+          fail RGen::BuilderError, message
+        end
         entry = @list_item_entries[list_name]
-        entry.define_list_item(item_name, *contexts, &body)
+        entry.define_list_item(item_name, context, &body)
       end
 
       def enable_item_entries(entry_name_or_names)

@@ -31,117 +31,111 @@ module RGen::Builder
     end
 
     describe "#define_simple_item" do
-      before do
+      it "自身の#base, #factoryを用いて、SimpleItemEntryオブジェクトを生成する" do
+        expect(SimpleItemEntry).to receive(:new).with(item_base, item_factory, nil)
+        item_store.define_simple_item(:foo)
+      end
+
+      context "共有コンテキストを与えた場合" do
+        it "与えた共有コンテキスト込みで、SimpleItemEntryオブジェクトを生成する" do
+          expect(SimpleItemEntry).to receive(:new).with(item_base, item_factory, shared_context)
+          item_store.define_simple_item(:foo, shared_context)
+        end
+      end
+
+      it "生成したエントリーオブジェクトを自身に登録する" do
+        entry = Object.new
+        allow(SimpleItemEntry).to receive(:new).and_return(entry)
+        expect {
+          item_store.define_simple_item(:foo)
+        }.to change {simple_item_entries}.from(be_empty).to(match(foo: eql(entry)))
+      end
+
+      specify "与えたブロックは定義するアイテムクラスで実行される" do
+        klass = nil
         item_store.define_simple_item(:foo) do
-          field :foo
+          klass = self
         end
-      end
-
-      let(:entry) do
-        simple_item_entries[:foo]
-      end
-
-      it "#baseを親クラスとしてアイテムクラスを定義し、アイテム名で登録する" do
-        expect(entry.item_class).to have_attributes(
-          superclass: item_store.base,
-          fields:     match([:foo])
-        )
-      end
-
-      it "#factoryを対応するファクトリとして登録する" do
-        expect(entry.factory).to eql item_store.factory
-      end
-
-      context "コンテキストオブジェクトが与えられたとき" do
-        specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
-          actual_context  = nil
-          item_store.define_simple_item(:bar, shared_context) do |context|
-            actual_context  = context
-          end
-
-          expect(actual_context).to eql shared_context
-        end
+        expect(simple_item_entries[:foo].item_class).to eql klass
       end
 
       context "同名のシンプルアイテムエントリがすでに登録されている場合" do
-        it "新しいシンプルアイテムエントリに差し替える" do
-          new_item_class  = nil
-          item_store.define_simple_item(:foo) do
-            new_item_class  = self
-          end
+        before do
+          item_store.define_simple_item(:foo)
+        end
 
-          expect(entry.item_class).to eql new_item_class
+        it "新しいシンプルアイテムエントリに差し替える" do
+          old_entry = simple_item_entries[:foo]
+          new_entry = Object.new
+          allow(SimpleItemEntry).to receive(:new).and_return(new_entry)
+          expect {
+            item_store.define_simple_item(:foo)
+          }.to change {simple_item_entries[:foo]}.from(eql(old_entry)).to(eql(new_entry))
         end
       end
 
       context "同名のリストアイテムエントリがすでに登録されている場合" do
         before do
-          item_store.define_list_item(:bar) do
+          item_store.define_list_item(:foo) do
           end
         end
 
         it "既存のリストアイテムエントリを削除する" do
           expect {
-            item_store.define_simple_item(:bar) {}
-          }.to change {list_item_entries.key?(:bar)}.from(true).to(false)
+            item_store.define_simple_item(:foo)
+          }.to change {list_item_entries.key?(:foo)}.from(true).to(false)
         end
       end
     end
 
     describe "#define_list_item" do
       context "引数がリスト名とブロックのとき" do
-        let(:entry) do
-          list_item_entries[:foo]
+        it "自身の#base, #factoryを用いて、ListItemEntryオブジェクトを生成する" do
+          expect(ListItemEntry).to receive(:new).with(item_base, item_factory, nil)
+          item_store.define_list_item(:foo) {}
         end
 
-        it "リストアイテムエントリを生成し、与えたリスト名で登録する" do
+        context "共有コンテキストが与えられた場合" do
+          it "与えた共有コンテキスト込みで、SimpleItemEntryオブジェクトを生成する" do
+            expect(ListItemEntry).to receive(:new).with(item_base, item_factory, shared_context)
+            item_store.define_list_item(:foo, shared_context) {}
+          end
+        end
+
+        it "生成したエントリオブジェクトを自身に登録する" do
+          entry = Object.new
+          allow(ListItemEntry).to receive(:new).and_return(entry)
+          expect {
+            item_store.define_list_item(:foo) {}
+          }.to change {list_item_entries}.from(be_empty).to(match(foo: eql(entry)))
+        end
+
+        specify "与えたブロックはエントリ内で実行される" do
+          entry = self
           item_store.define_list_item(:foo) do
+            entry = self
           end
-          expect(entry).to be_kind_of RGen::Builder::ListItemEntry
-          expect(entry.item_base).to be < item_store.base
-          expect(entry.factory  ).to be < item_store.factory
-        end
-
-        specify "与えたブロックはリストアイテムエントリ内で実行される" do
-          e = nil
-          item_store.define_list_item(:foo) do
-            e = self
-          end
-
-          expect(entry).to be e
-        end
-
-        context "コンテキストオブジェクトが与えられたとき" do
-          specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
-            actual_context  = nil
-            item_store.define_list_item(:foo, shared_context) do |context|
-              actual_context  = context
-            end
-
-            expect(actual_context).to eql shared_context
-          end
+          expect(list_item_entries[:foo]).to eql entry
         end
 
         context "同名のリストアイテムエントリがすでに登録されている場合" do
           before do
-            item_store.define_list_item(:foo) do
-            end
+            item_store.define_list_item(:foo) {}
           end
 
           it "新しいリストアイテムエントリに差し替える" do
-            new_entry = nil
-            item_store.define_list_item(:foo) do
-              new_entry = self
-            end
-
-            expect(entry).to eql new_entry
+            old_entry = list_item_entries[:foo]
+            new_entry = Object.new
+            allow(ListItemEntry).to receive(:new).and_return(new_entry)
+            expect {
+              item_store.define_list_item(:foo) {}
+            }.to change {list_item_entries[:foo]}.from(eql(old_entry)).to(eql(new_entry))
           end
         end
 
         context "同名のシンプルアイテムエントリがすでに登録されている場合" do
           before do
-            item_store.define_simple_item(:foo) do
-            end
+            item_store.define_simple_item(:foo) {}
           end
 
           it "既存のシンプルアイテムエントリを削除する" do
@@ -162,23 +156,15 @@ module RGen::Builder
           :bar
         end
 
-        let(:body) do
-          proc {}
-        end
-
         it "エントリオブジェクトの#define_list_itemを呼び出して、アイテムの追加を行う" do
-          expect(list_item_entries[:foo]).to receive(:define_list_item).with(item_name).and_call_original
-          item_store.define_list_item(:foo, item_name, &body)
+          expect(list_item_entries[:foo]).to receive(:define_list_item).with(item_name, nil).and_call_original
+          item_store.define_list_item(:foo, item_name) {}
         end
 
-        context "コンテキストオブジェクトが与えられたとき" do
-          specify "与えられたコンテキストオブジェクトはブロック内で参照できる" do
-            actual_context  = nil
-            item_store.define_list_item(:foo, item_name, shared_context) do |context|
-              actual_context  = context
-            end
-
-            expect(actual_context).to eql shared_context
+        context "共有コンテキストが与えられたとき" do
+          it "与えた共有コンテキスト込みでアイテムの追加を行う" do
+            expect(list_item_entries[:foo]).to receive(:define_list_item).with(item_name, shared_context).and_call_original
+            item_store.define_list_item(:foo, item_name, shared_context) {}
           end
         end
 
@@ -196,6 +182,13 @@ module RGen::Builder
               item_store.define_list_item(list_name, :foo) {}
             }.to raise_error RGen::BuilderError, message
           end
+        end
+      end
+
+      context "引数の数が4つ以上のとき" do
+        it "ArgumentErrorを発生させる" do
+          message = "wrong number of arguments (4 for 1..3)"
+          expect {item_store.define_list_item(:foo, :bar, :baz, :qux) {}}.to raise_error ArgumentError, message
         end
       end
     end
