@@ -62,3 +62,16 @@ RSpec::Matchers.define :have_port_declaration do |attributes|
     end
   end
 end
+
+RSpec::Matchers.define :have_signal_declaration do |attributes|
+  match do |component|
+    expectation = RGen::Rtl::SignalDeclaration.new(attributes[:name], attributes)
+    component.signal_declarations.any? do |declaration|
+      declaration.name      == expectation.name      &&
+      declaration.type      == expectation.type      &&
+      declaration.width     == expectation.width     &&
+      declaration.dimension == expectation.dimension
+    end
+  end
+end
+
