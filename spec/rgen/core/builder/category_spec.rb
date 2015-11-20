@@ -58,22 +58,24 @@ module RGen::Builder
       end
 
       context "#shared_contextで共有コンテキストオブジェクトを生成した場合" do
-        specify "アイテムの定義内でコンテキストオブジェクトを参照できる" do
-          contexts  = []
+        it "共有コンテキスト込みで、対象シンプルアイテムの定義を行う" do
+          allow(item_stores[:configuration]).to receive(:define_simple_item).and_call_original
+          allow(item_stores[:register_map ]).to receive(:define_simple_item).and_call_original
+
+
+          context = nil
           category.define_simple_item(:foo) do
             shared_context do
             end
-            contexts[0] = @shared_context
-            configuration do |context|
-              contexts[1] = context
+            configuration do
             end
-            register_map do |context|
-              contexts[2] = context
+            register_map do
             end
+            context = @shared_context
           end
 
-          expect(contexts[1]).to eql contexts[0]
-          expect(contexts[2]).to eql contexts[0]
+          expect(item_stores[:configuration]).to have_received(:define_simple_item).with(:foo, context)
+          expect(item_stores[:register_map ]).to have_received(:define_simple_item).with(:foo, context)
         end
       end
     end
@@ -112,38 +114,45 @@ module RGen::Builder
         end
       end
 
-      context "#shared_contextで共有コンテキストオブジェクトを生成した場合" do
-        specify "アイテムの定義内で共有コンテキストオブジェクトを参照できる" do
-          contexts  = []
+      context "#shared_contextで共有コンテキストを生成した場合" do
+        it "共有コンテキスト込みで対象リストアイテムの定義を行う" do
+          allow(item_stores[:configuration]).to receive(:define_list_item).and_call_original
+          allow(item_stores[:register_map ]).to receive(:define_list_item).and_call_original
 
+          contexts  = []
           category.define_list_item(:foo) do
             shared_context do
             end
-            contexts[0] = @shared_context
-            configuration do |context|
-              contexts[1] = context
+            configuration do
             end
-            register_map do |context|
-              contexts[2] = context
+            register_map do
+            end
+            contexts[0] = @shared_context
+          end
+
+          category.define_list_item(:bar) do
+            configuration do
+            end
+            register_map do
             end
           end
 
-          category.define_list_item(:foo, :bar) do
+          category.define_list_item(:bar, :baz) do
             shared_context do
             end
-            contexts[3] = @shared_context
-            configuration do |context|
-              contexts[4] = context
+            configuration do
             end
-            register_map do |context|
-              contexts[5] = context
+            register_map do
             end
+            contexts[1] = @shared_context
           end
 
-          expect(contexts[1]).to eql contexts[0]
-          expect(contexts[2]).to eql contexts[0]
-          expect(contexts[4]).to eql contexts[3]
-          expect(contexts[5]).to eql contexts[3]
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:foo, contexts[0])
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:foo, contexts[0])
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:bar)
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:bar)
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:bar, :baz, contexts[1])
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:bar, :baz, contexts[1])
         end
       end
     end
