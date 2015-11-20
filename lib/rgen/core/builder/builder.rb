@@ -46,8 +46,8 @@ module RGen
         @categories[category_name].define_list_item(list_name, item_name, &body)
       end
 
-      def enable(category_name, *list_name, item_or_itmes)
-        @categories[category_name].enable(*list_name, item_or_itmes)
+      def enable(category_name, *args)
+        @categories[category_name].enable(*args)
       end
 
       private

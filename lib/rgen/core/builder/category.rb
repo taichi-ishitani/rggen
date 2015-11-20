@@ -27,9 +27,9 @@ module RGen
         @shared_context.singleton_class.class_exec(&body) if block_given?
       end
 
-      def enable(*list_name, item_or_items)
+      def enable(*args)
         @item_stores.each_value do |item_registry|
-          item_registry.enable(*list_name, item_or_items)
+          item_registry.enable(*args)
         end
       end
 
