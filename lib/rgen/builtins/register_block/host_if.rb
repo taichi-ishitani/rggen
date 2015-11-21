@@ -38,7 +38,7 @@ RGen.list_item(:register_block, :host_if) do
           logic :address       , width: address_width
           logic :write_data    , width: configuration.data_width
           logic :write_mask    , width: configuration.data_width
-          logic :response_valid, width: 1
+          logic :response_ready, width: 1
           logic :read_data     , width: configuration.data_width
           logic :status        , width: 3
         end

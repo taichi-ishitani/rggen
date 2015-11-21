@@ -100,7 +100,7 @@ describe "register_block/host_if" do
       expect(host_if_rtl).to have_logic(:host_if, :address       , width: address_width)
       expect(host_if_rtl).to have_logic(:host_if, :write_data    , width: data_width   )
       expect(host_if_rtl).to have_logic(:host_if, :write_mask    , width: data_width   )
-      expect(host_if_rtl).to have_logic(:host_if, :response_valid, width: 1            )
+      expect(host_if_rtl).to have_logic(:host_if, :response_ready, width: 1            )
       expect(host_if_rtl).to have_logic(:host_if, :read_data     , width: data_width   )
       expect(host_if_rtl).to have_logic(:host_if, :status        , width: 3            )
     end
