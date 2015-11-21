@@ -30,6 +30,11 @@ shared_context 'configuration common' do
     RGen::InputBase::Component.new
   end
 
+  def create_configuration(load_data = {})
+    ConfigurationDummyLoader.load_data(load_data)
+    build_configuration_factory.create(configuration_file)
+  end
+
   after do
     ConfigurationDummyLoader.clear
   end
@@ -115,6 +120,14 @@ shared_context 'rtl common' do
     attributes[:direction]  = :input
     have_identifier(*expectation).and have_port_declaration(attributes)
   end
+
+  def have_output(*expectation)
+    handle_name, attributes = expectation.last(2)
+    attributes[:name     ]  ||= handle_name.to_s
+    attributes[:direction]  = :output
+    have_identifier(*expectation).and have_port_declaration(attributes)
+  end
+
 
   def have_logic(*expectation)
     handle_name, attributes = expectation.last(2)

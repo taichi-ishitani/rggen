@@ -75,3 +75,24 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
   end
 end
 
+RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
+  diffable
+
+  match do |component|
+    @expected = expected_code
+    generate_code(component, kind, mode)
+    actual == expected
+  end
+
+  failure_message do |component|
+    "#{component} does not generate expected code."
+  end
+
+  attr_reader :expected
+
+  def generate_code(component, kind, mode)
+    buffer  = []
+    component.generate_code(kind, mode, buffer)
+    @actual = buffer.join
+  end
+end
