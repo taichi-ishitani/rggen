@@ -81,7 +81,7 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
   match do |component|
     @expected = expected_code
     generate_code(component, kind, mode)
-    actual == expected
+    actual.include?(expected)
   end
 
   failure_message do |component|
