@@ -35,6 +35,15 @@ module RGen::OutputBase
       end
     end
 
+    class QuuxItem < Item
+      generate_code_from_template :quux_0
+      generate_code_from_template :quux_1, 'quux/template.erb'
+
+      def quux
+        :quux
+      end
+    end
+
     class FooBarItem < Item
       write_file "<%= owner.object_id %>.txt" do |buffer|
         owner.generate_code(:foo, :top_down, buffer)
@@ -48,8 +57,9 @@ module RGen::OutputBase
       @bar_item     = BarItem.new(component)
       @baz_item     = BazItem.new(component)
       @qux_item     = QuxItem.new(component)
+      @quux_item    = QuuxItem.new(component)
       @foo_bar_item = FooBarItem.new(component)
-      [@foo_item, @bar_item, @baz_item, @qux_item, @foo_bar_item].each do |item|
+      [@foo_item, @bar_item, @baz_item, @qux_item, @quux_item, @foo_bar_item].each do |item|
         component.add_item(item)
       end
     end
@@ -72,6 +82,10 @@ module RGen::OutputBase
 
     let(:qux_item) do
       @qux_item
+    end
+
+    let(:quux_item) do
+      @quux_item
     end
 
     let(:foo_bar_item) do
@@ -122,6 +136,30 @@ module RGen::OutputBase
         it "指定された種類のコード生成ブロックを実行する" do
           foo_item.generate_code(:foo, buffer)
           expect(buffer).to match ['foo']
+        end
+      end
+
+      context ".generate_code_from_tempalateでテンプレートからのコード生成が指定され、" do
+        context "テンプレートのパスが指定されていない場合" do
+          before do
+            expect(File).to receive(:read).with(File.ext(File.expand_path(__FILE__), '.erb')).and_return('<%= quux %>')
+          end
+
+          it "[呼び出しもとのファイル名].erbをテンプレートとしてコードを生成する" do
+            quux_item.generate_code(:quux_0, buffer)
+            expect(buffer).to match ['quux']
+          end
+        end
+
+        context "テンプレートのパスが指定されている場合" do
+          before do
+            expect(File).to receive(:read).with('quux/template.erb').and_return('<%= quux %>_<%= quux %>')
+          end
+
+          it "指定されたテンプレートからコードを生成する" do
+            quux_item.generate_code(:quux_1, buffer)
+            expect(buffer).to match ['quux_quux']
+          end
         end
       end
 

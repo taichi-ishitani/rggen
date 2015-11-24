@@ -67,6 +67,13 @@ module RGen
           @code_generator[kind] = body
         end
 
+        def generate_code_from_template(kind, path = nil)
+          path  ||= File.ext(caller.first[/^(.+?):\d/, 1], 'erb')
+          generate_code(kind) do |buffer|
+            buffer  << process_template(path)
+          end
+        end
+
         def write_file(name_pattern, &body)
           @file_writer  ||= FileWriter.new(name_pattern, body)
         end

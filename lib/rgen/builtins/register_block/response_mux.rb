@@ -5,9 +5,7 @@ RGen.simple_item(:register_block, :response_mux) do
       logic :register_read_data, width: data_width, dimension: total_registers
     end
 
-    generate_code(:module_item) do |buffer|
-      buffer  << process_template
-    end
+    generate_code_from_template(:module_item)
 
     def data_width
       configuration.data_width
