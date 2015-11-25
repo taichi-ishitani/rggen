@@ -56,7 +56,7 @@ describe 'register_map/byte_size' do
     describe "#byte_size" do
       it "入力されたバイトサイズを返す" do
         valid_values.each_with_index do |value, i|
-          expect(register_map.register_blocks[i]).to match_byte_size(Integer(value))
+          expect(register_map.register_blocks[i].byte_size).to eq Integer(value)
         end
       end
     end
