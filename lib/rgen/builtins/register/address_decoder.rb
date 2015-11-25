@@ -3,7 +3,7 @@ RGen.simple_item(:register, :address_decoder) do
     generate_code_from_template(:module_item)
 
     def address_width
-      @address_width  ||= Math.log2(source.register_block.byte_size).ceil
+      Math.clog2(source.register_block.byte_size)
     end
 
     def readable

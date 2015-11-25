@@ -45,7 +45,7 @@ RGen.list_item(:register_block, :host_if) do
       end
 
       def local_address_width
-        Math.log2(source.byte_size).ceil
+        Math.clog2(source.byte_size)
       end
     end
 

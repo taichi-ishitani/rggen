@@ -4,6 +4,7 @@ require 'baby_erubis'
 require_relative 'core/core_extensions/facets'
 require_relative 'core/core_extensions/forwardable'
 require_relative 'core/core_extensions/integer'
+require_relative 'core/core_extensions/math'
 
 require_relative 'core/exceptions'
 
