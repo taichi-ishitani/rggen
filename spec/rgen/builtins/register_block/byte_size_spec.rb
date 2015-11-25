@@ -33,30 +33,42 @@ describe 'register_map/byte_size' do
   end
 
   context "適切な入力が与えられた場合" do
+    let(:valid_values) do
+      [4, "8", 16.0, 0xFFE4]
+    end
+
+    let(:load_data) do
+      valid_values.size.times.each_with_object({}) do |i, hash|
+        hash["block_#{i}"]  = [
+          [nil, nil, valid_values[i]]
+        ]
+      end
+    end
+
+    let(:register_map) do
+      @factory.create(configuration, register_map_file)
+    end
+
+    before do
+      RegisterMapDummyLoader.load_data(load_data)
+    end
+
     describe "#byte_size" do
-      let(:valid_values) do
-        [4, "8", 16.0, 0xFFE4]
-      end
-
-      let(:load_data) do
-        valid_values.size.times.each_with_object({}) do |i, hash|
-          hash["block_#{i}"]  = [
-            [nil, nil, valid_values[i]]
-          ]
-        end
-      end
-
-      let(:register_map) do
-        @factory.create(configuration, register_map_file)
-      end
-
-      before do
-        RegisterMapDummyLoader.load_data(load_data)
-      end
-
       it "入力されたバイトサイズを返す" do
         valid_values.each_with_index do |value, i|
           expect(register_map.register_blocks[i]).to match_byte_size(Integer(value))
+        end
+      end
+    end
+
+    describe "#local_address_width" do
+      let(:expected_widths) do
+        [2, 3, 4, 16]
+      end
+
+      it "内部で必要なアドレス幅を返す" do
+        valid_values.each_with_index do |value, i|
+          expect(register_map.register_blocks[i].local_address_width).to eq expected_widths[i]
         end
       end
     end

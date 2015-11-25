@@ -1,6 +1,7 @@
 RGen.simple_item(:register_block, :byte_size) do
   register_map do
     field :byte_size
+    field :local_address_width
 
     build do |cell|
       begin
@@ -19,6 +20,8 @@ RGen.simple_item(:register_block, :byte_size) do
         error "exceeds upper bound of total byte size" \
               "(#{upper_bound}): #{total_byte_size}"
       end
+
+      @local_address_width  = Math.clog2(@byte_size)
     end
 
     def upper_bound
