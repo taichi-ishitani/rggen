@@ -77,7 +77,7 @@ describe 'register/offset_address' do
 
       it "入力されたスタートアドレス/エンドアドレス/バイトサイズを返す" do
         valid_values.values.each_with_index do |(start_address, end_address), i|
-          expect(register_map.registers[i]).to match_address(start_address, end_address)
+          expect(register_map.registers[i]).to match_offset_address(start_address, end_address)
         end
       end
     end

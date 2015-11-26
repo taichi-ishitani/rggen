@@ -33,14 +33,14 @@ describe 'register_map/offset_address' do
   end
 
   context "適切な入力が与えられた場合" do
-    describe "#start_address/#end_address/#byte_size" do
+    describe "#start_address/#end_address/#byte_size/#local_address_width" do
       let(:valid_values) do
         [
           ["0x0000-0x0FFF"  , 0x0000, 0x0FFF],
-          ["0x1000 -0x2fff" , 0x1000, 0x2FFF],
+          ["0x1000 -0x1fff" , 0x1000, 0x1FFF],
           ["0x3000- 0x3fFB" , 0x3000, 0x3FFB],
           ["0x5000 - 0x5FFF", 0x5000, 0x5FFF],
-          ["0X40_0C-0x4FFF_", 0x400C, 0x4FFF],
+          ["0X40_00-0x4FFB_", 0x4000, 0x4FFB],
           ["0xFFFC - 0xFFFF", 0xFFFC, 0xFFFF]
         ]
       end
@@ -61,9 +61,9 @@ describe 'register_map/offset_address' do
         RegisterMapDummyLoader.load_data(load_data)
       end
 
-      it "入力されたスタートアドレス/エンドアドレス/バイトサイズを返す" do
+      it "入力されたスタートアドレス/エンドアドレス/バイトサイズ/ローカルアドレス幅を返す" do
         valid_values.each_with_index do |(_, start_address, end_address), i|
-          expect(register_map.register_blocks[i]).to match_address(start_address, end_address)
+          expect(register_map.register_blocks[i]).to match_base_address(start_address, end_address)
         end
       end
     end
@@ -151,19 +151,32 @@ describe 'register_map/offset_address' do
     end
   end
 
-  context "最大アドレスを超えるとき" do
-    let(:load_data) do
-      {"block_0" => [
-        [nil, nil, "0x0_fffc - 0x1_0003"]
-      ]}
+  context "スタートアドレスがアドレス幅に揃っていないとき" do
+    let(:invalid_value) do
+      "0x0004-0x0013"
     end
 
-    before do
-      RegisterMapDummyLoader.load_data(load_data)
+    let(:local_address_width) do
+      4
     end
 
     it "RegisterMapErrorを発生させる" do
-      message = "exceeds the maximum base address(0xffff): 0x0_fffc - 0x1_0003"
+      RegisterMapDummyLoader.load_data("block_0" => [[nil, nil, invalid_value]])
+      message = "not aligned with local address width(#{local_address_width}): #{invalid_value}"
+      expect{
+        @factory.create(configuration, register_map_file)
+      }.to raise_register_map_error(message, position("block_0", 0, 2))
+    end
+  end
+
+  context "最大アドレスを超えるとき" do
+    let(:invalid_value) do
+      "0x0_0000 - 0x1_0003"
+    end
+
+    it "RegisterMapErrorを発生させる" do
+      RegisterMapDummyLoader.load_data("block_0" => [[nil, nil, "0x0_0000 - 0x1_0003"]])
+      message = "exceeds the maximum base address(0xffff): #{invalid_value}"
       expect{
         @factory.create(configuration, register_map_file)
       }.to raise_register_map_error(message, position("block_0", 0, 2))
@@ -172,7 +185,7 @@ describe 'register_map/offset_address' do
 
   context "入力アドレスが重複するとき" do
     let(:invalid_values) do
-      ["0x0FFC-0x1003", "0x1FFC-0x2003", "0x1000-0x1FFF", "0x1004-0x1FFB", "0x0FFC-0x2003"]
+      ["0x1010-0x101F", "0x1000-0x1FFF", "0x0000-0x2FFF", "0x0000-0x1FFF"]
     end
 
     it "RegisterMapErrorを発生させる" do
