@@ -2,8 +2,8 @@ RGen.simple_item(:register, :address_decoder) do
   rtl do
     generate_code_from_template(:module_item)
 
-    def address_width
-      Math.clog2(source.register_block.byte_size)
+    def local_address_width
+      source.register_block.local_address_width
     end
 
     def readable
@@ -15,11 +15,11 @@ RGen.simple_item(:register, :address_decoder) do
     end
 
     def start_address
-      hex(source.start_address, address_width)
+      hex(source.start_address, local_address_width)
     end
 
     def end_address
-      hex(source.end_address, address_width)
+      hex(source.end_address, local_address_width)
     end
 
     def index

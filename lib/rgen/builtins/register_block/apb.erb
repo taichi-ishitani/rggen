@@ -1,7 +1,7 @@
 rgen_host_if_apb #(
   .DATA_WIDTH           (<%= configuration.data_width %>),
   .HOST_ADDRESS_WIDTH   (<%= configuration.address_width %>),
-  .LOCAL_ADDRESS_WIDTH  (<%= local_address_width %>)
+  .LOCAL_ADDRESS_WIDTH  (<%= source.local_address_width %>)
 ) u_host_if (
   .clk              (<%= register_block.clock %>),
   .rst_n            (<%= register_block.reset %>),

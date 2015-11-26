@@ -35,17 +35,13 @@ RGen.list_item(:register_block, :host_if) do
           logic :command_valid , width: 1
           logic :write         , width: 1
           logic :read          , width: 1
-          logic :address       , width: local_address_width
+          logic :address       , width: source.local_address_width
           logic :write_data    , width: configuration.data_width
           logic :write_mask    , width: configuration.data_width
           logic :response_ready, width: 1
           logic :read_data     , width: configuration.data_width
           logic :status        , width: 3
         end
-      end
-
-      def local_address_width
-        Math.clog2(source.byte_size)
       end
     end
 
