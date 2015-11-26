@@ -92,6 +92,7 @@ shared_context 'bit field type common' do
   def set_load_data(data)
     all_data  = [
       [nil, nil, "block_0"],
+      [nil, nil, 256      ],
       [nil, nil, nil      ],
       [nil, nil, nil      ]
     ]

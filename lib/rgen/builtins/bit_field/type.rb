@@ -138,4 +138,26 @@ RGen.list_item(:bit_field, :type) do
       end
     end
   end
+
+  rtl do
+    item_base do
+      build do
+        logic :value, name: value_name, width: value_width unless source.reserved?
+      end
+
+      def value_name
+        "#{source.name}_value"
+      end
+
+      def value_width
+        source.width
+      end
+    end
+
+    factory do
+      def select_target_item(_, bit_field)
+        @target_items[bit_field.type]
+      end
+    end
+  end
 end
