@@ -4,7 +4,7 @@ RGen.list_item(:register_block, :host_if) do
   end
 
   configuration do
-    item_base do
+    item_class do
       field :host_if do
         @host_if || shared_context.enabled_host_ifs.first
       end
@@ -17,12 +17,6 @@ RGen.list_item(:register_block, :host_if) do
           error "unknown host interface: #{value}"
         end
       end
-    end
-
-    def build_factory
-      f             = @factory.new
-      f.target_item = item_base
-      f
     end
   end
 

@@ -154,6 +154,9 @@ RGen.list_item(:bit_field, :type) do
       end
     end
 
+    default_item do
+    end
+
     factory do
       def select_target_item(_, bit_field)
         @target_items[bit_field.type]
