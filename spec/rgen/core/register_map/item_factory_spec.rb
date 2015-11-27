@@ -52,8 +52,9 @@ module RGen::RegisterMap
           define_method(:select_target_item) do |cell|
             error m, cell
           end
-        }
-        f.new
+        }.new
+        f.target_items  = {}
+        f
       end
 
       it "入力されたメッセージとセルの位置情報で、RGen::RegisterMapErrorを発生させる" do
