@@ -168,9 +168,6 @@ module RGen::Builder
         end
         list_item_entry.define_list_item(:qux) do
         end
-
-        list_item_entry.enable([:qux, :baz])
-        list_item_entry.enable(:foo)
       end
 
       let(:factory) do
@@ -181,19 +178,38 @@ module RGen::Builder
         expect(factory).to be_kind_of list_item_entry.factory
       end
 
-      specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成する" do
-        expect(factory.create(nil, :foo)).to be_kind_of items[:foo]
-        expect(factory.create(nil, :baz)).to be_kind_of items[:baz]
-        expect(factory.create(nil, :qux)).to be_kind_of items[:qux]
+      context "#enableでアイテムの有効化を行った場合" do
+        before do
+          list_item_entry.enable([:qux, :baz])
+          list_item_entry.enable(:foo)
+        end
+
+        specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成する" do
+          expect(factory.create(nil, :foo)).to be_kind_of items[:foo]
+          expect(factory.create(nil, :baz)).to be_kind_of items[:baz]
+          expect(factory.create(nil, :qux)).to be_kind_of items[:qux]
+        end
+
+        specify "ファクトリオブジェクトは#enableで有効にされなかったアイテムは生成できない" do
+          expect {factory.create(nil, :bar)}.to raise_error NoMethodError
+        end
       end
 
-      specify "ファクトリオブジェクトは#enableで有効にされなかったアイテムは生成できない" do
-        expect {factory.create(nil, :bar)}.to raise_error NoMethodError
+      context "#enableアイテムの有効化を行えなかった場合" do
+        before do
+          list_item_entry.enable(:quux)
+        end
+
+        specify "ファクトリオブジェクトはリスト型アイテムファクトリとして振舞わない" do
+          expect(factory).to_not receive :select_target_item
+          expect {factory.create(nil, :foo)}.to raise_error NoMethodError
+        end
       end
 
       context "#item_classでアイテムクラスが定義されている場合" do
         before do
           list_item_entry.item_class {}
+          list_item_entry.enable(:foo)
         end
 
         specify "ファクトリオブジェクトは#item_classで定義されたクラスをデフォルトのアイテムとして生成する" do

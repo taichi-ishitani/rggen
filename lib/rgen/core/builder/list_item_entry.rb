@@ -62,6 +62,7 @@ module RGen
       private
 
       def target_items
+        return nil if @enabled_items.empty?
         @enabled_items.each_with_object({}) do |item_name, items|
           items[item_name]  = @items[item_name]
         end
