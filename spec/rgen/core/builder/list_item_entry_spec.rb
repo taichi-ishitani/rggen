@@ -75,6 +75,25 @@ module RGen::Builder
       end
     end
 
+    describe "#item_class" do
+      it "#item_baseを親クラスとするアイテムクラスを返す" do
+        expect(list_item_entry.item_class.superclass).to be list_item_entry.item_base
+      end
+
+      context "ブロックを与えたとき" do
+        before do
+          list_item_entry.item_class do
+            def foo
+            end
+          end
+        end
+
+        it "ブロックをベースアイテムクラスのコンテキストで実行する" do
+          expect(list_item_entry.item_class).to be_method_defined(:foo)
+        end
+      end
+    end
+
     describe "#factory" do
       it "生成時に与えたfactory_baseを親クラスとするアイテムファクトリクラスを返す" do
         expect(list_item_entry.factory.superclass).to be factory_base
@@ -137,7 +156,6 @@ module RGen::Builder
       before do
         list_item_entry.factory do
           def select_target_item(arg)
-            fail unless @target_items.key?(arg)
             @target_items[arg]
           end
         end
@@ -163,14 +181,24 @@ module RGen::Builder
         expect(factory).to be_kind_of list_item_entry.factory
       end
 
-      specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成できる" do
+      specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成する" do
         expect(factory.create(nil, :foo)).to be_kind_of items[:foo]
         expect(factory.create(nil, :baz)).to be_kind_of items[:baz]
         expect(factory.create(nil, :qux)).to be_kind_of items[:qux]
       end
 
       specify "ファクトリオブジェクトは#enableで有効にされなかったアイテムは生成できない" do
-        expect {factory.create(nil, :bar)}.to raise_error RuntimeError
+        expect {factory.create(nil, :bar)}.to raise_error NoMethodError
+      end
+
+      context "#item_classでアイテムクラスが定義されている場合" do
+        before do
+          list_item_entry.item_class {}
+        end
+
+        specify "ファクトリオブジェクトは#item_classで定義されたクラスをデフォルトのアイテムとして生成する" do
+          expect(factory.create(nil, :bar)).to be_kind_of list_item_entry.item_class
+        end
       end
     end
   end

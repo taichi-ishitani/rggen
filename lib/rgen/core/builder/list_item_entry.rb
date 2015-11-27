@@ -19,6 +19,14 @@ module RGen
         @item_base
       end
 
+      def item_class(&body)
+        @item_class ||= Class.new(@item_base)
+        @item_class.class_exec(&body) if block_given?
+        @item_class
+      end
+
+      alias_method :default_item, :item_class
+
       def factory(&body)
         @factory.class_exec(&body)  if block_given?
         @factory
@@ -47,6 +55,7 @@ module RGen
       def build_factory
         f               = @factory.new
         f.target_items  = target_items
+        f.target_item   = @item_class unless @item_class.nil?
         f
       end
 
