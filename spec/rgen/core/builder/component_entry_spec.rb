@@ -18,8 +18,16 @@ module RGen::Builder
       RGen::InputBase::ItemFactory
     end
 
+    let(:modules) do
+      [Module.new, Module.new]
+    end
+
     let(:entry) do
       ComponentEntry.new
+    end
+
+    let(:entries) do
+      [ComponentEntry.new, ComponentEntry.new]
     end
 
     describe "#component_class" do
@@ -39,6 +47,21 @@ module RGen::Builder
             expect(entry.component_class.superclass                    ).to be component_base
             expect(entry.component_class.public_instance_methods(false)).to match [:foo]
           end
+        end
+      end
+
+      context "ベースクラスとオプションとしてインクルードするモジュールが与えられた場合" do
+        it "与えられたクラスを親クラスとしてコンポーネントクラスを定義する" do
+          entry.component_class(component_base, include: modules[0])
+          expect(entry.component_class.superclass).to be component_base
+        end
+
+        it "与えたモジュールをコンポーネントクラスにMix-inする" do
+          entries[0].component_class(component_base, include: modules[0])
+          entries[1].component_class(component_base, include: [modules[0], modules[1]])
+          expect(entries[0].component_class.included_modules).to include(modules[0])
+          expect(entries[1].component_class.included_modules).to include(modules[0])
+          expect(entries[1].component_class.included_modules).to include(modules[1])
         end
       end
     end
@@ -62,6 +85,21 @@ module RGen::Builder
           end
         end
       end
+
+      context "ベースクラスとオプションとしてインクルードするモジュールが与えられた場合" do
+        it "与えられたクラスを親クラスとしてコンポーネントファクトリクラスを定義する" do
+          entry.component_factory(component_base_factory, include: modules[0])
+          expect(entry.component_factory.superclass).to be component_base_factory
+        end
+
+        it "与えたモジュールをコンポーネントファクトリクラスにMix-inする" do
+          entries[0].component_factory(component_base_factory, include: modules[0])
+          entries[1].component_factory(component_base_factory, include: [modules[0], modules[1]])
+          expect(entries[0].component_factory.included_modules).to include(modules[0])
+          expect(entries[1].component_factory.included_modules).to include(modules[0])
+          expect(entries[1].component_factory.included_modules).to include(modules[1])
+        end
+      end
     end
 
     describe "#item_base" do
@@ -83,6 +121,21 @@ module RGen::Builder
           end
         end
       end
+
+      context "ベースクラスとオプションとしてインクルードするモジュールが与えられた場合" do
+        it "与えられたクラスを親クラスとしてアイテムベースクラスを定義する" do
+          entry.item_base(item_base_base, include: modules[0])
+          expect(entry.item_base.superclass).to be item_base_base
+        end
+
+        it "与えたモジュールをアイテムベースクラスにMix-inする" do
+          entries[0].item_base(item_base_base, include: modules[0])
+          entries[1].item_base(item_base_base, include: [modules[0], modules[1]])
+          expect(entries[0].item_base.included_modules).to include(modules[0])
+          expect(entries[1].item_base.included_modules).to include(modules[0])
+          expect(entries[1].item_base.included_modules).to include(modules[1])
+        end
+      end
     end
 
     describe "#item_factory" do
@@ -102,6 +155,21 @@ module RGen::Builder
             expect(entry.item_factory.superclass                    ).to be item_base_factory
             expect(entry.item_factory.public_instance_methods(false)).to match [:foo]
           end
+        end
+      end
+
+      context "ベースクラスとオプションとしてインクルードするモジュールが与えられた場合" do
+        it "与えられたクラスを親クラスとしてアイテムベースクラスを定義する" do
+          entry.item_factory(item_base_factory, include: modules[0])
+          expect(entry.item_factory.superclass).to be item_base_factory
+        end
+
+        it "与えたモジュールをアイテムベースクラスにMix-inする" do
+          entries[0].item_factory(item_base_factory, include: modules[0])
+          entries[1].item_factory(item_base_factory, include: [modules[0], modules[1]])
+          expect(entries[0].item_factory.included_modules).to include(modules[0])
+          expect(entries[1].item_factory.included_modules).to include(modules[0])
+          expect(entries[1].item_factory.included_modules).to include(modules[1])
         end
       end
     end

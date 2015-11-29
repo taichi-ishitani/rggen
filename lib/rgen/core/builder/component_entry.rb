@@ -6,9 +6,9 @@ module RGen
 
         def rgen_class_setter(class_type)
           variable_name = class_type.variablize
-          define_method(class_type) do |base_class = nil, &body|
+          define_method(class_type) do |base_class = nil, options = {}, &body|
             if base_class && !instance_variable_defined?(variable_name)
-              klass = (body && Class.new(base_class, &body)) || base_class
+              klass = define_rgen_class(base_class, options, body)
               instance_variable_set(variable_name, klass)
             end
             instance_variable_get(variable_name)
@@ -31,6 +31,19 @@ module RGen
         f.target_component  = component_class
         f.item_factories    = item_store.build_factories if item_store
         f
+      end
+
+      private
+
+      def define_rgen_class(base_class, options, body)
+        if options.key?(:include) || body
+          Class.new(base_class) do
+            include(*Array(options[:include])) if options.key?(:include)
+            class_exec(&body) if body
+          end
+        else
+          base_class
+        end
       end
     end
   end
