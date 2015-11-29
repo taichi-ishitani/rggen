@@ -21,11 +21,5 @@ RGen.simple_item(:register, :address_decoder) do
     def end_address
       hex(source.end_address, local_address_width)
     end
-
-    def index
-      register_block.registers.find_index do |r|
-        r.equal?(register)
-      end
-    end
   end
 end
