@@ -14,8 +14,7 @@ describe 'bit_field/type' do
       end
     end
 
-    RGen.enable(:global, [:data_width, :address_width, :host_if])
-    RGen.enable(:global, :host_if, :apb)
+    RGen.enable(:global, [:data_width, :address_width])
     RGen.enable(:register_block, [:name, :byte_size])
     RGen.enable(:register, :name)
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
