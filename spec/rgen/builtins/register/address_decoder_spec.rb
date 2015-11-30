@@ -12,7 +12,7 @@ describe "register/address_decoder" do
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
     RGen.enable(:register, [:name, :offset_address, :accessibility, :address_decoder])
-    RGen.enable(:bit_field, [:name, :bit_assignment, :type])
+    RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value])
     RGen.enable(:bit_field, :type, [:rw, :ro, :wo])
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
@@ -23,10 +23,10 @@ describe "register/address_decoder" do
         [nil, nil         , 256                                               ],
         [nil, nil         , nil                                               ],
         [nil, nil         , nil                                               ],
-        [nil, "register_0", "0x10"      , "bit_field_0_0", "[31:0]", "rw", nil],
-        [nil, "register_1", "0x14"      , "bit_field_1_0", "[31:0]", "ro", nil],
-        [nil, "register_2", "0x18"      , "bit_field_2_0", "[31:0]", "wo", nil],
-        [nil, "register_3", "0x20-0x02F", "bit_field_3_0", "[31:0]", "rw", nil]
+        [nil, "register_0", "0x10"      , "bit_field_0_0", "[31:0]", "rw", '0'],
+        [nil, "register_1", "0x14"      , "bit_field_1_0", "[31:0]", "ro", '0'],
+        [nil, "register_2", "0x18"      , "bit_field_2_0", "[31:0]", "wo", '0'],
+        [nil, "register_3", "0x20-0x02F", "bit_field_3_0", "[31:0]", "rw", '0']
       ]
     )
 
