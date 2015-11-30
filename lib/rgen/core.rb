@@ -33,7 +33,6 @@ require_relative 'core/input_base/component_factory'
 require_relative 'core/input_base/item_factory'
 
 require_relative 'core/configuration/raise_error'
-require_relative 'core/configuration/item'
 require_relative 'core/configuration/configuration_factory'
 require_relative 'core/configuration/item_factory'
 require_relative 'core/configuration/setup'
