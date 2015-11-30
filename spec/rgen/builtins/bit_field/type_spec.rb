@@ -489,7 +489,7 @@ describe 'bit_field/type' do
         define_item(:foo) {reserved}
       end
 
-      it "value信号を持つ" do
+      it "value信号を持たない" do
         expect(rtl[0]).not_to have_identifier(:value, name: 'bit_field_0_0_value')
         expect(rtl[0]).not_to have_signal_declaration(name: 'bit_field_0_0_value', type: :logic, width: 32)
         expect(rtl[1]).not_to have_identifier(:value, name: 'bit_field_1_0_value')
