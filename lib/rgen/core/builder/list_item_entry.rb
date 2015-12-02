@@ -1,7 +1,7 @@
 module RGen
   module Builder
     class ListItemEntry
-      def initialize(item_base, factory_base, context = nil, &body)
+      def initialize(item_base, factory_base, context, &body)
         @item_base      = Class.new(item_base)
         @factory        = Class.new(factory_base)
         @items          = {}
@@ -32,7 +32,7 @@ module RGen
         @factory
       end
 
-      def define_list_item(item_name, context = nil, &body)
+      def define_list_item(item_name, context, &body)
         klass = Class.new(item_base)
         unless context.nil?
           if item_base.private_method_defined?(:shared_context)

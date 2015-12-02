@@ -211,7 +211,7 @@ module RGen::Builder
           entry.item_base(item_base_base)
           entry.item_factory(item_base_factory)
           [:foo, :bar].each do |item_name|
-            entry.item_store.define_simple_item(item_name) do
+            entry.item_store.define_simple_item(nil, item_name) do
               field item_name, default: item_name
             end
             entry.item_store.enable(item_name)

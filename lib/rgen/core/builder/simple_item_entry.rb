@@ -1,7 +1,7 @@
 module RGen
   module Builder
     class SimpleItemEntry
-      def initialize(base, factory, context = nil, &body)
+      def initialize(base, factory, context, &body)
         @item_class = define_item_class(base, context, body)
         @factory    = factory
       end

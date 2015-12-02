@@ -18,18 +18,18 @@ module RGen::Builder
       RGen::InputBase::Component.new
     end
 
-    def item_entry(context = nil, &body)
+    def item_entry(context, &body)
       SimpleItemEntry.new(item_base, factory, context, &body)
     end
 
     describe "#initialize" do
       it "与えたベースアイテムクラスを親クラスとして、アイテムクラスを定義する" do
-        expect(item_entry.item_class.superclass).to be item_base
+        expect(item_entry(nil).item_class.superclass).to be item_base
       end
 
       context "ブロックが与えられた場合" do
         it "ブロックをアイテムクラスのコンテキストで実行する" do
-          entry = item_entry do
+          entry = item_entry(nil) do
             def foo; end
           end
           expect(entry.item_class).to be_method_defined(:foo)
@@ -46,7 +46,7 @@ module RGen::Builder
 
     describe "#build_factory" do
       let(:entry) do
-        item_entry
+        item_entry(nil)
       end
 
       let(:item) do

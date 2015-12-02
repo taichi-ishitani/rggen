@@ -11,7 +11,7 @@ module RGen::Builder
     end
 
     let(:list_item_entry) do
-      ListItemEntry.new(item_base, factory_base)
+      ListItemEntry.new(item_base, factory_base, nil)
     end
 
     let(:list_item_entry_with_shared_context) do
@@ -34,7 +34,7 @@ module RGen::Builder
       context "ブロックが与えられた場合" do
         specify "ブロックを自身のコンテキストで実行する" do
           entry1  = nil
-          entry2  = ListItemEntry.new(item_base, factory_base) do
+          entry2  = ListItemEntry.new(item_base, factory_base, nil) do
             entry1  = self
           end
 
@@ -122,7 +122,7 @@ module RGen::Builder
 
     describe "#define_list_item" do
       it "#item_baseを親クラスとしてアイテムクラスを定義し、与えたアイテム名で登録する" do
-        list_item_entry.define_list_item(:foo) do
+        list_item_entry.define_list_item(:foo, nil) do
           field :foo
         end
 
@@ -160,13 +160,13 @@ module RGen::Builder
           end
         end
 
-        list_item_entry.define_list_item(:foo) do
+        list_item_entry.define_list_item(:foo, nil) do
         end
-        list_item_entry.define_list_item(:bar) do
+        list_item_entry.define_list_item(:bar, nil) do
         end
-        list_item_entry.define_list_item(:baz) do
+        list_item_entry.define_list_item(:baz, nil) do
         end
-        list_item_entry.define_list_item(:qux) do
+        list_item_entry.define_list_item(:qux, nil) do
         end
       end
 

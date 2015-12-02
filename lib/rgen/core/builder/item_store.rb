@@ -12,21 +12,15 @@ module RGen
       attr_reader :base
       attr_reader :factory
 
-      def define_simple_item(item_name, context = nil, &body)
+      def define_simple_item(context, item_name, &body)
         create_item_entry(:simple, item_name, context, body)
       end
 
-      def define_list_item(list_name, *args, &body)
-        if args.size > 2
-          message = "wrong number of arguments (#{args.size + 1} for 1..3)"
-          fail ArgumentError, message
-        end
-
-        case args.first
-        when Symbol
-          define_list_item_class(list_name, args[0], args[1], body)
+      def define_list_item(context, list_name, item_name = nil, &body)
+        if item_name.nil?
+          create_item_entry(:list, list_name, context, body)
         else
-          create_item_entry(:list, list_name, args[0], body)
+          define_list_item_class(list_name, item_name, context, body)
         end
       end
 

@@ -37,9 +37,9 @@ module RGen::Builder
       end
 
       it "引数で与えた名前で、ブロック内で指定した対象シンプルアイテムの定義を行う" do
-        expect(item_stores[:configuration]).to receive(:define_simple_item).with(:foo)
-        expect(item_stores[:configuration]).to receive(:define_simple_item).with(:bar)
-        expect(item_stores[:register_map ]).to receive(:define_simple_item).with(:foo)
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :foo)
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :bar)
+        expect(item_stores[:register_map ]).to receive(:define_simple_item).with(nil, :foo)
 
         category.define_simple_item(:foo) do
           configuration do
@@ -74,8 +74,8 @@ module RGen::Builder
             context = @shared_context
           end
 
-          expect(item_stores[:configuration]).to have_received(:define_simple_item).with(:foo, context)
-          expect(item_stores[:register_map ]).to have_received(:define_simple_item).with(:foo, context)
+          expect(item_stores[:configuration]).to have_received(:define_simple_item).with(context, :foo)
+          expect(item_stores[:register_map ]).to have_received(:define_simple_item).with(context, :foo)
         end
       end
     end
@@ -88,11 +88,11 @@ module RGen::Builder
       end
 
       it "引数で与えた名前で、ブロック内で指定した対象リストアイテムの定義を行う" do
-        expect(item_stores[:configuration]).to receive(:define_list_item).with(:foo)
-        expect(item_stores[:configuration]).to receive(:define_list_item).with(:bar)
-        expect(item_stores[:configuration]).to receive(:define_list_item).with(:foo, :baz)
-        expect(item_stores[:register_map ]).to receive(:define_list_item).with(:foo)
-        expect(item_stores[:register_map ]).to receive(:define_list_item).with(:foo, :baz)
+        expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :foo, nil )
+        expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :bar, nil )
+        expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :foo, :baz)
+        expect(item_stores[:register_map ]).to receive(:define_list_item).with(nil, :foo, nil )
+        expect(item_stores[:register_map ]).to receive(:define_list_item).with(nil, :foo, :baz)
 
         category.define_list_item(:foo) do
           configuration do
@@ -147,12 +147,12 @@ module RGen::Builder
             contexts[1] = @shared_context
           end
 
-          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:foo, contexts[0])
-          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:foo, contexts[0])
-          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:bar)
-          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:bar)
-          expect(item_stores[:configuration]).to have_received(:define_list_item).with(:bar, :baz, contexts[1])
-          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(:bar, :baz, contexts[1])
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(contexts[0], :foo, nil )
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(contexts[0], :foo, nil )
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(nil        , :bar, nil )
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(nil        , :bar, nil )
+          expect(item_stores[:configuration]).to have_received(:define_list_item).with(contexts[1], :bar, :baz)
+          expect(item_stores[:register_map ]).to have_received(:define_list_item).with(contexts[1], :bar, :baz)
         end
       end
     end
