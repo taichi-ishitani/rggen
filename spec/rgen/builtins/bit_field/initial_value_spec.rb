@@ -30,10 +30,43 @@ describe 'bit_field/initial_value' do
     32
   end
 
-  context "適切な入力が与えられた場合" do
-    describe "#initial_value" do
+  describe "#initial_value" do
+    before do
+      RegisterMapDummyLoader.load_data("block_0" => load_data)
+    end
+
+    let(:register_map) do
+      @factory.create(configuration, register_map_file)
+    end
+
+    context "空セルが与えられた場合" do
+      let(:values) do
+        [nil, "", "  "]
+      end
+
+      let(:load_data) do
+        [
+          [nil, nil         , "block_0", nil      ],
+          [nil, nil         , nil      , nil      ],
+          [nil, nil         , nil      , nil      ],
+          [nil, "register_0", "[3:0]"  , values[0]],
+          [nil, "register_1", "[3:0]"  , values[1]],
+          [nil, "register_2", "[3:0]"  , values[2]]
+        ]
+      end
+
+      it "0を返す" do
+        expect(register_map.bit_fields.map(&:initial_value)).to all(eq 0)
+      end
+    end
+
+    context "適切な入力が与えられた場合" do
       let(:valid_values) do
         [-8, "-7", -2.0, "-0x1", 0, "0x1", 2.0, "14", 15]
+      end
+
+      let(:expected_values) do
+        valid_values.map(&method(:Integer))
       end
 
       let(:load_data) do
@@ -53,25 +86,15 @@ describe 'bit_field/initial_value' do
         ]
       end
 
-      let(:register_map) do
-        @factory.create(configuration, register_map_file)
-      end
-
-      before do
-        RegisterMapDummyLoader.load_data("block_0" => load_data)
-      end
-
       it "入力された初期値を返す" do
-        valid_values.each_with_index do |value, i|
-          expect(register_map.bit_fields[i]).to match_initial_value(Integer(value))
-        end
+        expect(register_map.bit_fields.map(&:initial_value)).to match expected_values
       end
     end
   end
 
   context "入力が整数に変換できなかったとき" do
     let(:invalid_values) do
-      ["1.0", "foo", "0x-1", "0xGH", nil]
+      ["1.0", "foo", "0x-1", "0xGH"]
     end
 
     it "RegisterMapErrorを発生させる" do
