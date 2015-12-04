@@ -105,13 +105,14 @@ rgen_bit_field_rw #(
   .WIDTH          (16),
   .INITIAL_VALUE  (16'habcd)
 ) u_bit_field_0_0 (
-  .clk          (clk),
-  .rst_n        (rst_n),
-  .i_select     (register_select[0]),
-  .i_write      (write),
-  .i_write_data (write_data[31:16]),
-  .i_write_mask (write_mask[31:16]),
-  .o_value      (bit_field_0_0_value)
+  .clk              (clk),
+  .rst_n            (rst_n),
+  .i_command_valid  (command_valid),
+  .i_select         (register_select[0]),
+  .i_write          (write),
+  .i_write_data     (write_data[31:16]),
+  .i_write_mask     (write_mask[31:16]),
+  .o_value          (bit_field_0_0_value)
 );
 CODE
       end
@@ -123,13 +124,14 @@ rgen_bit_field_rw #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h1)
 ) u_bit_field_0_1 (
-  .clk          (clk),
-  .rst_n        (rst_n),
-  .i_select     (register_select[0]),
-  .i_write      (write),
-  .i_write_data (write_data[0]),
-  .i_write_mask (write_mask[0]),
-  .o_value      (bit_field_0_1_value)
+  .clk              (clk),
+  .rst_n            (rst_n),
+  .i_command_valid  (command_valid),
+  .i_select         (register_select[0]),
+  .i_write          (write),
+  .i_write_data     (write_data[0]),
+  .i_write_mask     (write_mask[0]),
+  .o_value          (bit_field_0_1_value)
 );
 CODE
       end
@@ -141,13 +143,14 @@ rgen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
 ) u_bit_field_1_0 (
-  .clk          (clk),
-  .rst_n        (rst_n),
-  .i_select     (register_select[1]),
-  .i_write      (write),
-  .i_write_data (write_data[31:0]),
-  .i_write_mask (write_mask[31:0]),
-  .o_value      (bit_field_1_0_value)
+  .clk              (clk),
+  .rst_n            (rst_n),
+  .i_command_valid  (command_valid),
+  .i_select         (register_select[1]),
+  .i_write          (write),
+  .i_write_data     (write_data[31:0]),
+  .i_write_mask     (write_mask[31:0]),
+  .o_value          (bit_field_1_0_value)
 );
 CODE
       end

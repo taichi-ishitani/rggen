@@ -2,11 +2,12 @@ rgen_bit_field_rw #(
   .WIDTH          (<%= source.width %>),
   .INITIAL_VALUE  (<%= initial_value %>)
 ) u_<%= source.name %> (
-  .clk          (<%= register_block.clock %>),
-  .rst_n        (<%= register_block.reset %>),
-  .i_select     (<%= register_block.register_select[register_index] %>),
-  .i_write      (<%= register_block.host_if.write %>),
-  .i_write_data (<%= register_block.host_if.write_data[msb, lsb] %>),
-  .i_write_mask (<%= register_block.host_if.write_mask[msb, lsb] %>),
-  .o_value      (<%= value %>)
+  .clk              (<%= register_block.clock %>),
+  .rst_n            (<%= register_block.reset %>),
+  .i_command_valid  (<%= register_block.host_if.command_valid %>),
+  .i_select         (<%= register_block.register_select[register_index] %>),
+  .i_write          (<%= register_block.host_if.write %>),
+  .i_write_data     (<%= register_block.host_if.write_data[msb, lsb] %>),
+  .i_write_mask     (<%= register_block.host_if.write_mask[msb, lsb] %>),
+  .o_value          (<%= value %>)
 );
