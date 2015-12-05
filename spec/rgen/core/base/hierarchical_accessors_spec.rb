@@ -6,7 +6,7 @@ module RGen::Base
       include HierarchicalStructure
       include HierarchicalAccessors
 
-      def initialize(parent = nil)
+      def initialize(parent)
         super(parent)
         parent.add_child(self) unless parent.nil?
         define_hierarchical_accessors
@@ -14,7 +14,7 @@ module RGen::Base
     end
 
     before(:all) do
-      @register_map     = TestComponent.new
+      @register_map     = TestComponent.new(nil)
       @register_blocks  = 2.times.map {TestComponent.new(@register_map)}
       @registers        = 2.times.flat_map {|i| 2.times.map {TestComponent.new(@register_blocks[i])}}
       @bit_fields       = 4.times.flat_map {|i| 2.times.map {TestComponent.new(@registers[i]      )}}

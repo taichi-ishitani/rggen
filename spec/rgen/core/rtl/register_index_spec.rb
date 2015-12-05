@@ -4,7 +4,7 @@ module RGen::Rtl
   describe RegisterIndex do
     describe "#register_index" do
       let(:register_map) do
-        Component.new
+        Component.new(nil)
       end
 
       let(:register_blocks) do

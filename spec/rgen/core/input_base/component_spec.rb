@@ -4,7 +4,7 @@ module RGen::InputBase
   describe Component do
     describe "#add_item" do
       let(:owner) do
-        Component.new
+        Component.new(nil)
       end
 
       it "自身をレシーバとして、アイテムオブジェクトのフィールドにアクセスできるようにする" do
@@ -24,7 +24,7 @@ module RGen::InputBase
 
     describe "#fields" do
       let(:owner) do
-        Component.new
+        Component.new(nil)
       end
 
       let(:fields) do
@@ -45,7 +45,7 @@ module RGen::InputBase
 
     describe "#validate" do
       let(:root) do
-        Component.new
+        Component.new(nil)
       end
 
       let(:children) do

@@ -4,7 +4,7 @@ module RGen::Base
   describe Item do
     describe "#owner" do
       it "オーナーコンポーネントを返す" do
-        owner = Component.new
+        owner = Component.new(nil)
         item  = Item.new(owner)
         expect(item.owner).to eq owner
       end

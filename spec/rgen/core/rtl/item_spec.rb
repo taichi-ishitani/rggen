@@ -3,7 +3,7 @@ require_relative '../../../spec_helper'
 module RGen::Rtl
   describe Item do
     let(:owner) do
-      Component.new
+      Component.new(nil)
     end
 
     let(:item) do

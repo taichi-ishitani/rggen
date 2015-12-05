@@ -17,7 +17,7 @@ describe 'xls_loader' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new
+    RGen::InputBase::Component.new(nil)
   end
 
   let(:register_map) do

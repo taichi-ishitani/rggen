@@ -3,11 +3,11 @@ require_relative '../../../spec_helper'
 module RGen::OutputBase
   describe ComponentFactory do
     let(:configuration) do
-      get_component_class(:configuration, 0).new
+      get_component_class(:configuration, 0).new(nil)
     end
 
     let(:register_map) do
-      m = get_component_class(:register_map, 0).new
+      m = get_component_class(:register_map, 0).new(nil)
       2.times do
         b = get_component_class(:register_map, 1).new(m)
         m.add_child(b)

@@ -8,7 +8,7 @@ module RGen::RegisterMap
     include_context 'register_map sample factory'
 
     let(:configuration) do
-      get_component_class(:configuration, 0).new
+      get_component_class(:configuration, 0).new(nil)
     end
 
     let(:register_map_class) do

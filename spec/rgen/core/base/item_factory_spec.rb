@@ -11,7 +11,7 @@ module RGen::Base
     end
 
     let(:owner) do
-      Component.new
+      Component.new(nil)
     end
 
     describe "#create" do

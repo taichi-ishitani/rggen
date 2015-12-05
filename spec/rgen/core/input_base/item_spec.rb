@@ -3,7 +3,7 @@ require_relative  '../../../spec_helper'
 module RGen::InputBase
   describe Item do
     let(:owner) do
-      Component.new
+      Component.new(nil)
     end
 
     describe ".field" do

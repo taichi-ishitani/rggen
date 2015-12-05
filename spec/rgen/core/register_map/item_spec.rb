@@ -3,11 +3,11 @@ require_relative  'spec_helper'
 module RGen::RegisterMap
   describe Item do
     let(:configuration) do
-      get_component_class(:configuration, 0).new
+      get_component_class(:configuration, 0).new(nil)
     end
 
     let(:component) do
-      RGen::InputBase::Component.new
+      RGen::InputBase::Component.new(nil)
     end
 
     let(:value) do

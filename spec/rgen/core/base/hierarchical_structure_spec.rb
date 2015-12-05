@@ -7,7 +7,7 @@ module RGen::Base
     end
 
     let(:parent) do
-      Test.new
+      Test.new(nil)
     end
 
     let(:child) do

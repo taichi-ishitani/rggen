@@ -27,7 +27,7 @@ shared_context 'configuration common' do
   end
 
   def dummy_configuration
-    RGen::InputBase::Component.new
+    RGen::InputBase::Component.new(nil)
   end
 
   def create_configuration(load_data = {})

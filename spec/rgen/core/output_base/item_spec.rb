@@ -65,7 +65,7 @@ module RGen::OutputBase
     end
 
     let(:component) do
-      Component.new
+      Component.new(nil)
     end
 
     let(:foo_item) do
@@ -93,11 +93,11 @@ module RGen::OutputBase
     end
 
     let(:configuration) do
-      RGen::Base::Component.new
+      RGen::Base::Component.new(nil)
     end
 
     let(:source) do
-      RGen::Base::Component.new
+      RGen::Base::Component.new(nil)
     end
 
     let(:buffer) do

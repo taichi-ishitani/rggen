@@ -11,7 +11,7 @@ module RGen::Base
     end
 
     before(:all) do
-      @register_map   = Component.new
+      @register_map   = Component.new(nil)
       @register_block = Component.new(@register_map)
       @register       = Component.new(@register_block)
       @bit_field      = Component.new(@register)

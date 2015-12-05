@@ -1,7 +1,7 @@
 module RGen
   module Base
     module HierarchicalStructure
-      def initialize(parent = nil)
+      def initialize(parent)
         @parent   = parent
         @children = []
         @level    = (parent && parent.level + 1) || 0

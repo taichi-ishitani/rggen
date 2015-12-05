@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 module RGen::OutputBase
   describe Component do
-    def create_component(parent = nil)
+    def create_component(parent)
       component = Component.new(parent)
       [:foo, :bar].each do |kind|
         item  = Class.new(Item) {
@@ -17,7 +17,7 @@ module RGen::OutputBase
     end
 
     before do
-      @component        = create_component
+      @component        = create_component(nil)
       @child_components = 2.times.map do
         create_component(@component)
       end

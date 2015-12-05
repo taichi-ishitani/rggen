@@ -7,7 +7,7 @@ module RGen::Base
     end
 
     let(:parent) do
-      Component.new
+      Component.new(nil)
     end
 
     def create_factory(&body)

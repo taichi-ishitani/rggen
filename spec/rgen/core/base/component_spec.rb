@@ -4,7 +4,7 @@ module RGen::Base
   describe Component do
     describe "#add_item" do
       it "アイテムコンポーネントを、#itemsの末尾に追加する" do
-        component = Component.new
+        component = Component.new(nil)
         item      = Object.new
         component.add_item(item)
         expect(component.items.last).to eql item

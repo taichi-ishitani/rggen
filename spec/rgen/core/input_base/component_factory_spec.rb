@@ -5,11 +5,11 @@ module RGen::InputBase
     describe "#create" do
       describe "アイテムオブジェクトの生成" do
         let(:parent) do
-          Component.new
+          Component.new(nil)
         end
 
         let(:component) do
-          Component.new
+          Component.new(parent)
         end
 
         let(:active_item) do
@@ -121,7 +121,7 @@ module RGen::InputBase
           end
 
           it "生成したコンポーネントオブジェクトの#validateを呼び出す" do
-            component = Component.new
+            component = Component.new(nil)
             factory.define_singleton_method(:create_component) do |*args|
               component
             end
@@ -145,7 +145,7 @@ module RGen::InputBase
 
       context "ルートファクトリではないとき" do
         let(:parent) do
-          Component.new
+          Component.new(nil)
         end
 
         it "生成したコンポーネントオブジェクトの#validateを呼び出さない" do

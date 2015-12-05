@@ -3,7 +3,7 @@ module RGen
     class Component < Base::Component
       include Base::HierarchicalAccessors
 
-      def initialize(parent = nil)
+      def initialize(parent)
         super(parent)
         define_hierarchical_accessors
       end

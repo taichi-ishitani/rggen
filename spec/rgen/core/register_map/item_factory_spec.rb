@@ -14,11 +14,11 @@ module RGen::RegisterMap
     end
 
     let(:configuration) do
-      get_component_class(:configuration, 0).new
+      get_component_class(:configuration, 0).new(nil)
     end
 
     let(:component) do
-      RGen::InputBase::Component.new
+      RGen::InputBase::Component.new(nil)
     end
 
     let(:value) do

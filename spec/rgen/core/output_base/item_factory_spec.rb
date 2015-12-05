@@ -9,15 +9,15 @@ module RGen::OutputBase
     end
 
     let(:component) do
-      Component.new
+      Component.new(nil)
     end
 
     let(:configuration) do
-      RGen::InputBase::Component.new
+      RGen::InputBase::Component.new(nil)
     end
 
     let(:source) do
-      RGen::InputBase::Component.new
+      RGen::InputBase::Component.new(nil)
     end
 
     describe "#create" do

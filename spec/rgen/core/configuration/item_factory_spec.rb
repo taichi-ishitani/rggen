@@ -8,7 +8,7 @@ module RGen::Configuration
     end
 
     let(:configuration) do
-      get_component_class(:configuration, 0).new
+      get_component_class(:configuration, 0).new(nil)
     end
 
     let(:factory) do

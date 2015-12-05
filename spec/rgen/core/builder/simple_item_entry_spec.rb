@@ -15,7 +15,7 @@ module RGen::Builder
     end
 
     let(:component) do
-      RGen::InputBase::Component.new
+      RGen::InputBase::Component.new(nil)
     end
 
     def item_entry(context, &body)

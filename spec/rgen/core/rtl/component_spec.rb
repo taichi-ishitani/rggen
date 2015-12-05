@@ -9,7 +9,7 @@ module RGen::Rtl
     end
 
     let(:component) do
-      Component.new
+      Component.new(nil)
     end
 
     let(:children) do

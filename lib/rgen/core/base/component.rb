@@ -3,7 +3,7 @@ module RGen
     class Component
       include HierarchicalStructure
 
-      def initialize(parent = nil)
+      def initialize(parent)
         super(parent)
         @items  = []
       end

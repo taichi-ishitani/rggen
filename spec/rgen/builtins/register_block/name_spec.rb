@@ -13,7 +13,7 @@ describe 'register_block/name' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new
+    RGen::InputBase::Component.new(nil)
   end
 
   context "適切な入力が与えられたとき" do
