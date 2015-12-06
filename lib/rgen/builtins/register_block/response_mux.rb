@@ -12,7 +12,7 @@ RGen.simple_item(:register_block, :response_mux) do
     end
 
     def total_registers
-      @total_registers  ||= source.registers.size
+      register_block.registers.size
     end
   end
 end

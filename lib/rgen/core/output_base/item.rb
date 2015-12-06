@@ -93,19 +93,15 @@ module RGen
         define_hierarchical_item_accessors
       end
 
-      attr_reader :configuration
-      attr_reader :source
-
       class_delegator :builders
       class_delegator :code_generator
       class_delegator :file_writer
 
-      def build(configuration, source)
-        @configuration  = configuration
-        @source         = source
+      def build
+        return if builders.nil?
         builders.each do |builder|
           instance_exec(&builder)
-        end unless builders.nil?
+        end
       end
 
       def generate_code(kind, buffer)
@@ -116,6 +112,12 @@ module RGen
       def write_file(output_directory = '')
         return if file_writer.nil?
         file_writer.write_file(self, output_directory)
+      end
+
+      private
+
+      def configuration
+        @owner.configuration
       end
     end
   end

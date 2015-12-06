@@ -4,7 +4,7 @@ rgen_address_decoder #(
   .WRITABLE       (<%= writable %>),
   .START_ADDRESS  (<%= start_address%>),
   .END_ADDRESS    (<%= end_address %>)
-) u_<%= source.name%>_address_decoder (
+) u_<%= register.name%>_address_decoder (
   .i_address  (<%= register_block.host_if.address %>),
   .i_read     (<%= register_block.host_if.read %>),
   .i_write    (<%= register_block.host_if.write %>),

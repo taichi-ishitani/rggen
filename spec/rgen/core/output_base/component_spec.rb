@@ -3,7 +3,7 @@ require_relative '../../../spec_helper'
 module RGen::OutputBase
   describe Component do
     def create_component(parent)
-      component = Component.new(parent)
+      component = Component.new(parent, configuration, register_map)
       [:foo, :bar].each do |kind|
         item  = Class.new(Item) {
           generate_code kind do |buffer|
@@ -38,10 +38,55 @@ module RGen::OutputBase
       @grandchild_components
     end
 
+    let(:configuration) do
+      RGen::InputBase::Component.new(nil)
+    end
+
+    let(:register_map) do
+      r = RGen::InputBase::Component.new(nil)
+      allow(r).to receive(:fields).and_return [:foo, :bar]
+      r
+    end
+
     it "階層アクセッサを持つ" do
       expect(component.hierarchy                   ).to     eq :register_map
       expect(child_components.map(&:hierarchy)     ).to all(eq :register_block)
       expect(grandchild_components.map(&:hierarchy)).to all(eq :register      )
+    end
+
+    specify "自身をレシーバとして、与えられたレジスタマップオブジェクトの各フィールドにアクセスできる" do
+      expect(register_map).to receive(:foo)
+      expect(register_map).to receive(:bar)
+      component.foo
+      component.bar
+    end
+
+    describe "#configuration" do
+      it "与えられたコンフィグレーションオブジェクトを返す" do
+        expect(component.configuration).to eql configuration
+      end
+    end
+
+    describe "#build" do
+      before do
+        component.items.each do |item|
+          expect(item).to receive(:build)
+        end
+        child_components.each do |child_component|
+          child_component.items.each do |item|
+            expect(item).to receive(:build)
+          end
+        end
+        grandchild_components.each do |grandchild_component|
+          grandchild_component.items.each do |item|
+            expect(item).to receive(:build)
+          end
+        end
+      end
+
+      it "配下の全アイテムの#buildを呼び出す" do
+        component.build
+      end
     end
 
     describe "#generate_code" do

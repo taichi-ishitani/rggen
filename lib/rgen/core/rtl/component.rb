@@ -1,11 +1,11 @@
 module RGen
   module Rtl
     class Component < OutputBase::Component
-      include SingleForwardable
-
-      def add_item(item)
-        super(item)
-        def_object_delegators(@items.last, *item.identifiers)
+      def build
+        super
+        @items.each do |item|
+          def_object_delegators(item, *item.identifiers)
+        end
       end
 
       def signal_declarations

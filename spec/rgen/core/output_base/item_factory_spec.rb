@@ -9,28 +9,21 @@ module RGen::OutputBase
     end
 
     let(:component) do
-      Component.new(nil)
+      Component.new(nil, configuration, register_map)
     end
 
     let(:configuration) do
       RGen::InputBase::Component.new(nil)
     end
 
-    let(:source) do
+    let(:register_map) do
       RGen::InputBase::Component.new(nil)
     end
 
     describe "#create" do
-      it "与えられたcomponent, configuration, sourceを引数として#create_itemを呼び出す" do
-        expect(factory).to receive(:create_item).with(component, configuration, source).and_call_original
-        factory.create(component, configuration, source)
-      end
-
-      it "与えられたconfiguration, sourceを引数としてItem#buildを呼び出す" do
-        item  = Item.new(component)
-        expect(item).to receive(:build).with(configuration, source).and_call_original
-        allow(Item).to receive(:new).and_return(item)
-        factory.create(component, configuration, source)
+      it "与えられたcomponent, configuration, register_mapを引数として#create_itemを呼び出す" do
+        expect(factory).to receive(:create_item).with(component, configuration, register_map).and_call_original
+        factory.create(component, configuration, register_map)
       end
     end
   end

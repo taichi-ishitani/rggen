@@ -4,17 +4,25 @@ module RGen::Rtl
   describe Component do
     def create_item(owner, &body)
       i = Class.new(Item, &body).new(owner)
-      i.build(nil, nil)
+      i.build
       i
     end
 
+    let(:configuration) do
+      RGen::InputBase::Component.new(nil)
+    end
+
+    let(:register_map) do
+      RGen::InputBase::Component.new(nil)
+    end
+
     let(:component) do
-      Component.new(nil)
+      Component.new(nil, configuration, register_map)
     end
 
     let(:children) do
       2.times.map do
-        c = Component.new(component)
+        c = Component.new(component, configuration, register_map)
         component.add_child(c)
         c
       end
@@ -83,27 +91,35 @@ module RGen::Rtl
       end
     end
 
-    describe "#add_item" do
+    describe "#build" do
       before do
-        component.add_item(item)
+        component.add_item(items[0])
+        component.add_item(items[1])
+        component.build
       end
 
-      let(:item) do
-        create_item(component) do
-          build do
-            wire :foo
-            group(:bar_baz) do
-              input   :bar
-              output  :baz
+      let(:items) do
+        [
+          create_item(component) {
+            build do
+              wire :foo
             end
-          end
-        end
+          },
+          create_item(component) {
+            build do
+              group(:bar_baz) do
+                input   :bar
+                output  :baz
+              end
+            end
+          }
+        ]
       end
 
       it "アイテムオブジェクトが持つIdentifierオブジェクトへのアクセッサを定義する" do
-        expect(component.foo        ).to eql item.foo
-        expect(component.bar_baz.bar).to eql item.bar_baz.bar
-        expect(component.bar_baz.baz).to eql item.bar_baz.baz
+        expect(component.foo        ).to eql items[0].foo
+        expect(component.bar_baz.bar).to eql items[1].bar_baz.bar
+        expect(component.bar_baz.baz).to eql items[1].bar_baz.baz
       end
     end
 

@@ -3,9 +3,19 @@ module RGen
     class Component < Base::Component
       include Base::HierarchicalAccessors
 
-      def initialize(parent)
+      def initialize(parent, configuration, register_map)
         super(parent)
         define_hierarchical_accessors
+        @configuration  = configuration
+        @register_map   = register_map
+        def_delegators(:@register_map, *@register_map.fields)
+      end
+
+      attr_reader :configuration
+
+      def build
+        items.each(&:build)
+        children.each(&:build)
       end
 
       def generate_code(kind, mode, buffer)

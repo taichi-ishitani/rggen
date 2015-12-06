@@ -3,7 +3,9 @@ require_relative '../../../spec_helper'
 module RGen::Rtl
   describe Item do
     let(:owner) do
-      Component.new(nil)
+      configuration = RGen::InputBase::Component.new(nil)
+      register_map  = RGen::InputBase::Component.new(nil)
+      Component.new(nil, configuration, register_map)
     end
 
     let(:item) do

@@ -3,13 +3,17 @@ require_relative '../../../spec_helper'
 module RGen::Rtl
   describe RegisterIndex do
     describe "#register_index" do
+      let(:input_component) do
+        RGen::InputBase::Component.new(nil)
+      end
+
       let(:register_map) do
-        Component.new(nil)
+        Component.new(nil, input_component, input_component)
       end
 
       let(:register_blocks) do
         2.times.map {
-          register_block  = Component.new(register_map)
+          register_block  = Component.new(register_map, input_component, input_component)
           register_map.add_child(register_block)
           register_block
         }
@@ -17,7 +21,7 @@ module RGen::Rtl
 
       let(:registers) do
         4.times.map do |i|
-          register  = Component.new(register_blocks[i / 2])
+          register  = Component.new(register_blocks[i / 2], input_component, input_component)
           register_blocks[i / 2].add_child(register)
           register
         end
@@ -44,7 +48,7 @@ module RGen::Rtl
       context "階層がビットフィールドの場合" do
         let(:bit_fields) do
           8.times.map do |i|
-            bit_field = Component.new(registers[i / 2])
+            bit_field = Component.new(registers[i / 2], input_component, input_component)
             registers[i / 2].add_child(bit_field)
             bit_field
           end

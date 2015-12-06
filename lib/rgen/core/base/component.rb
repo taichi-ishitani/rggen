@@ -1,6 +1,7 @@
 module RGen
   module Base
     class Component
+      include SingleForwardable
       include HierarchicalStructure
 
       def initialize(parent)

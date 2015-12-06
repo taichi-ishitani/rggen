@@ -142,15 +142,15 @@ RGen.list_item(:bit_field, :type) do
   rtl do
     item_base do
       build do
-        logic :value, name: value_name, width: value_width unless source.reserved?
+        logic :value, name: value_name, width: value_width unless bit_field.reserved?
       end
 
       def value_name
-        "#{source.name}_value"
+        "#{bit_field.name}_value"
       end
 
       def value_width
-        source.width
+        bit_field.width
       end
     end
 

@@ -39,7 +39,7 @@ module RGen::OutputBase
     end
 
     describe "#create" do
-      it "与えられたコンフィグレーション、ソースオブジェクトを用いて、属するアイテムオブジェクトを生成する" do
+      it "与えられたコンフィグレーション、レジスタマップオブジェクトを用いて、属するアイテムオブジェクトを生成する" do
         item_factories.each_value do |f|
           allow(f).to receive(:create).and_call_original
         end
@@ -58,6 +58,31 @@ module RGen::OutputBase
 
         expect(child_factory).to have_received(:create).with(component, configuration, register_map.register_blocks[0])
         expect(child_factory).to have_received(:create).with(component, configuration, register_map.register_blocks[1])
+      end
+
+      context "ルートファクトリのとき" do
+        before do
+          c = Component.new(nil, configuration, register_map)
+          expect(c).to receive(:build).with(no_args)
+          allow(factory). to receive(:create_component).and_return(c)
+        end
+
+        it "生成したコンポーネントの#buildを呼び出す" do
+          factory.create(configuration, register_map)
+        end
+      end
+
+      context "ルートファクトリではないとき" do
+        before do
+          c = Component.new(nil, configuration, register_map)
+          expect(c).not_to receive(:build)
+          allow(child_factory). to receive(:create_component).and_return(c)
+        end
+
+        it "生成したコンポーネントの#buildを呼び出さない" do
+          parent  = Component.new(nil, configuration, register_map)
+          child_factory.create(parent, configuration, register_map)
+        end
       end
     end
   end

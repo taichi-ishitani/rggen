@@ -64,8 +64,16 @@ module RGen::OutputBase
       end
     end
 
+    let(:configuration) do
+      RGen::InputBase::Component.new(nil)
+    end
+
+    let(:register_map) do
+      RGen::InputBase::Component.new(nil)
+    end
+
     let(:component) do
-      Component.new(nil)
+      Component.new(nil, configuration, register_map)
     end
 
     let(:foo_item) do
@@ -92,35 +100,21 @@ module RGen::OutputBase
       @foo_bar_item
     end
 
-    let(:configuration) do
-      RGen::Base::Component.new(nil)
-    end
-
-    let(:source) do
-      RGen::Base::Component.new(nil)
-    end
-
     let(:buffer) do
       []
     end
 
     describe "#build" do
-      it "与えられたコンフィグレーション、ソースオブジェクトを取り込む" do
-        foo_item.build(configuration, source)
-        expect(foo_item.configuration).to eql configuration
-        expect(foo_item.source       ).to eql source
-      end
-
       context ".buildでブロックが与えられた場合" do
         it "登録されたブロックをアイテムのコンテキストで実行する" do
-          baz_item.build(configuration, source)
+          baz_item.build
           baz_item.generate_code(:baz, buffer)
           expect(buffer).to match ["#{baz_item.object_id}_baz"]
         end
 
         context "継承されたとき" do
           specify "登録されたブロックが継承先に引き継がれる" do
-            qux_item.build(configuration, source)
+            qux_item.build
             qux_item.generate_code(:baz, buffer)
             qux_item.generate_code(:qux, buffer)
             expect(buffer).to match [
@@ -184,7 +178,7 @@ module RGen::OutputBase
 
       context "継承されたとき" do
         specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          qux_item.build(configuration, source)
+          qux_item.build
           qux_item.generate_code(:baz, buffer)
           qux_item.generate_code(:qux, buffer)
           expect(buffer).to match [
