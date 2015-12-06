@@ -9,11 +9,28 @@ RGen.simple_item(:register, :read_data) do
     end
 
     def read_data
-      return hex(0, configuration.data_width) unless register.readable?
+      if register.readable?
+        concat(*read_data_expressions)
+      else
+        hex(0, configuration.data_width)
+      end
+    end
+
+    def read_data_expressions
+      last_lsb    = configuration.data_width
+      expressions = []
+      readable_fields.each do |field|
+        padding_bits  = last_lsb - field.msb - 1
+        last_lsb      = field.lsb
+        expressions << hex(0, padding_bits) if padding_bits > 0
+        expressions << field.value
+      end
+      expressions << hex(0, last_lsb) if last_lsb > 0
+      expressions
     end
 
     def readable_fields
-      bit_fields.select
+      register.bit_fields.select(&:readable?).sort_by(&:msb).reverse
     end
   end
 end
