@@ -64,6 +64,7 @@ rgen_response_mux #(
 ) u_response_mux (
   .clk                  (clk),
   .rst_n                (rst_n),
+  .i_command_valid      (command_valid),
   .o_response_ready     (response_ready),
   .o_read_data          (read_data),
   .o_status             (status),
