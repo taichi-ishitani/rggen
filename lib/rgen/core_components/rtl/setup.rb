@@ -1,6 +1,6 @@
 module RGen
   module Rtl
-    RGen.output_component_store(:rtl) do
+    output_component_store(:rtl) do
       entry do
         component_class   OutputBase::Component
         component_factory OutputBase::ComponentFactory

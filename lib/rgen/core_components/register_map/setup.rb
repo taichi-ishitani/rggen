@@ -1,6 +1,6 @@
 module RGen
   module RegisterMap
-    RGen.input_component_store(:register_map) do
+    input_component_store(:register_map) do
       entry do
         component_class   Component
         component_factory RegisterMapFactory

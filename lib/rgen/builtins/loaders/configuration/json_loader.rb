@@ -1,4 +1,4 @@
-RGen.loader(:configuration, :json) do
+loader(:configuration, :json) do
   require 'json'
 
   def load_file(file)

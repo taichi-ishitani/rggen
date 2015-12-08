@@ -1,4 +1,4 @@
-RGen.simple_item(:register_block, :response_mux) do
+simple_item(:register_block, :response_mux) do
   rtl do
     build do
       logic :register_select   , width: total_registers

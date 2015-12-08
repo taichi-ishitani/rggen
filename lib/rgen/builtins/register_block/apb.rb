@@ -1,4 +1,4 @@
-RGen.list_item(:register_block, :host_if, :apb) do
+list_item(:register_block, :host_if, :apb) do
   rtl do
     build do
       group(:apb) do

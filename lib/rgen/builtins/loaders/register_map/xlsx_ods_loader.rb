@@ -1,4 +1,4 @@
-RGen.loader(:register_map, [:xlsx, :ods]) do
+loader(:register_map, [:xlsx, :ods]) do
   require 'roo'
 
   def load_file(file)

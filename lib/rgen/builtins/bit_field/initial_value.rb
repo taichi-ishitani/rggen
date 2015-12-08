@@ -1,4 +1,4 @@
-RGen.simple_item(:bit_field, :initial_value) do
+simple_item(:bit_field, :initial_value) do
   register_map do
     field :initial_value
 

@@ -1,6 +1,6 @@
 module RGen
   module Configuration
-    RGen.input_component_store(:configuration) do
+    input_component_store(:configuration) do
       entry do
         component_class   InputBase::Component
         component_factory ConfigurationFactory

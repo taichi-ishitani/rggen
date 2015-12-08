@@ -1,4 +1,4 @@
-RGen.loader(:configuration, [:yml, :yaml]) do
+loader(:configuration, [:yml, :yaml]) do
   require 'yaml'
 
   def load_file(file)

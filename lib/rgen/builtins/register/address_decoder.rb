@@ -1,4 +1,4 @@
-RGen.simple_item(:register, :address_decoder) do
+simple_item(:register, :address_decoder) do
   rtl do
     generate_code_from_template(:module_item)
 
