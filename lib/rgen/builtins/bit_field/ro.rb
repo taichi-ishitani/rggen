@@ -9,7 +9,7 @@ list_item(:bit_field, :type, :ro) do
     end
 
     generate_code(:module_item) do |buffer|
-      buffer << assign(value, value_in) << "\n"
+      buffer << assign(value, value_in) << nl
     end
   end
 end

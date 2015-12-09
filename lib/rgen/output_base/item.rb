@@ -2,6 +2,7 @@ module RGen
   module OutputBase
     class Item < Base::Item
       include Base::HierarchicalItemAccessors
+      include CodeUtility
       include TemplateUtility
 
       class CodeGenerator

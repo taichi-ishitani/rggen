@@ -1,7 +1,7 @@
 simple_item(:register, :read_data) do
   rtl do
     generate_code(:module_item) do |buffer|
-      buffer  << assign(register_read_data, read_data) << "\n"
+      buffer  << assign(register_read_data, read_data) << nl
     end
 
     def register_read_data
