@@ -33,9 +33,15 @@ module RGen::Rtl
         end
       end
 
-      context "信号幅属性の指定がある場合" do
+      context "信号幅属性が1ビットの場合" do
+        it "空文字を返す" do
+          expect(SignalDeclaration.new(name, width: 1).width).to eq ""
+        end
+      end
+
+      context "信号幅属性の2ビット以上の場合" do
         it "信号幅指定のコード片を返す" do
-          [1, 2].each do |width|
+          [2, 3].each do |width|
             expect(SignalDeclaration.new(name, width: width).width).to eq "[#{width - 1}:0]"
           end
         end

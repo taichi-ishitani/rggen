@@ -17,7 +17,9 @@ module RGen
 
       def width_code(signal_attributes)
         width = signal_attributes[:width]
-        (width && "[#{width - 1}:0]") || ''
+        return '' if width.nil?
+        return '' if width == 1
+        "[#{width - 1}:0]"
       end
 
       def dimension_code(signal_attributes)
