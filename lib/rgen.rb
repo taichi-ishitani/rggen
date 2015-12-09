@@ -39,7 +39,7 @@ module RGen
   require_relative 'rgen/builder/category'
   require_relative 'rgen/builder/builder'
 
-  require_relative 'rgen/dsl'
+  require_relative 'rgen/commands'
 
   require_relative 'rgen/core_components'
   require_relative 'rgen/builtins'

@@ -3,7 +3,7 @@ module RGen
     @builder  ||= Builder::Builder.new
   end
 
-  module DSL
+  module Commands
     extend Forwardable
 
     [
@@ -20,4 +20,4 @@ module RGen
   end
 end
 
-include RGen::DSL
+include RGen::Commands
