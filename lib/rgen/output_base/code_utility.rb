@@ -9,6 +9,10 @@ module RGen
 
       alias_method :nl, :newline
 
+      def comma
+        ','
+      end
+
       def space(size = 1)
         ' ' * size
       end

@@ -17,7 +17,7 @@ describe "register_block/signal_declarations" do
     end
 
     enable(:global, [:data_width, :address_width])
-    enable(:register_block, [:name, :byte_size, :signal_declarations, :host_if, :clock_reset, :response_mux])
+    enable(:register_block, [:name, :byte_size])
     enable(:register_block, [:clock_reset, :signal_declarations, :host_if, :response_mux])
     enable(:register_block, :host_if, :apb)
     enable(:register, :name)
