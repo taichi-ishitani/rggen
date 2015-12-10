@@ -136,6 +136,24 @@ module RGen::OutputBase
           ]
         end
       end
+
+      context "バッファ用の配列を与えなかった場合" do
+        let(:expected_code) do
+          [
+            "#{component.object_id}_foo",
+            "#{child_components[0].object_id}_foo",
+            "#{grandchild_components[0].object_id}_foo",
+            "#{grandchild_components[1].object_id}_foo",
+            "#{child_components[1].object_id}_foo",
+            "#{grandchild_components[2].object_id}_foo",
+            "#{grandchild_components[3].object_id}_foo"
+          ].join
+        end
+
+        it "生成したコードを文字列として返す" do
+          expect(component.generate_code(:foo, :top_down)).to eq expected_code
+        end
+      end
     end
 
     describe "#write_file" do

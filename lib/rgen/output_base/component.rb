@@ -18,15 +18,11 @@ module RGen
         children.each(&:build)
       end
 
-      def generate_code(kind, mode, buffer)
-        case mode
-        when :top_down
-          generate_item_code(kind, buffer)
-          generate_child_code(kind, mode, buffer)
-        when :bottom_up
-          generate_child_code(kind, mode, buffer)
-          generate_item_code(kind, buffer)
-        end
+      def generate_code(kind, mode, buffer = nil)
+        output_code = buffer.nil?
+        buffer      = buffer || []
+        generate_code_main(kind, mode, buffer)
+        buffer.join if output_code
       end
 
       def write_file(output_directory = '')
@@ -39,6 +35,17 @@ module RGen
       end
 
       private
+
+      def generate_code_main(kind, mode, buffer)
+        case mode
+        when :top_down
+          generate_item_code(kind, buffer)
+          generate_child_code(kind, mode, buffer)
+        when :bottom_up
+          generate_child_code(kind, mode, buffer)
+          generate_item_code(kind, buffer)
+        end
+      end
 
       def generate_child_code(kind, mode, buffer)
         children.each do |child|
