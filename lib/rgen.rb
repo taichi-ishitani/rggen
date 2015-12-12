@@ -1,6 +1,9 @@
 module RGen
   require 'forwardable'
   require 'baby_erubis'
+  require 'optparse'
+
+  require_relative 'rgen/version'
 
   require_relative 'rgen/exceptions'
 
@@ -38,6 +41,8 @@ module RGen
   require_relative 'rgen/builder/input_component_store'
   require_relative 'rgen/builder/category'
   require_relative 'rgen/builder/builder'
+
+  require_relative 'rgen/generator'
 
   require_relative 'rgen/commands'
 
