@@ -1,4 +1,6 @@
 module RGen
+  RGEN_HOME = File.realpath(File.join(__dir__, '..'))
+
   require 'forwardable'
   require 'baby_erubis'
   require 'optparse'

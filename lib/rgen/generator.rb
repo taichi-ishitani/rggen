@@ -15,13 +15,18 @@ module RGen
       end
     end
 
+    add_option :setup do |option|
+      option.long = '--setup FILE'
+    end
+
     add_option :configuration do |option|
       option.short  = '-c'
       option.long   = '--configuration FILE'
     end
 
     def run(argv)
-      options       = parse_options(argv)
+      options = parse_options(argv)
+      load_setup(options[:setup])
       configuration = load_configuration(options[:configuration])
     end
 
@@ -47,6 +52,11 @@ module RGen
           options[name] = v
         end
       end
+    end
+
+    def load_setup(setup_file)
+      setup_file  ||= File.join(RGEN_HOME, 'setup', 'default.rb')
+      require(setup_file)
     end
 
     def load_configuration(file)

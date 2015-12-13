@@ -26,27 +26,3 @@ def match_bit_assignment(msb, lsb)
   width = msb - lsb + 1
   have_attributes(msb: msb, lsb: lsb, width: width)
 end
-
-def clear_enabled_items
-  RGen.builder.categories.each_value do |category|
-    category.instance_variable_get(:@item_stores).each_value do |item_store|
-      item_store.instance_variable_get(:@enabled_entries).clear
-      list_item_entries = item_store.instance_variable_get(:@list_item_entries)
-      list_item_entries.each_value do |entry|
-        entry.instance_variable_get(:@enabled_items).clear
-      end
-    end
-  end
-end
-
-def clear_dummy_list_items(list_name, items)
-  RGen.builder.categories.each_value do |category|
-    category.instance_variable_get(:@item_stores).each_value do |item_store|
-      entry = item_store.instance_variable_get(:@list_item_entries)[list_name]
-      next if entry.nil?
-      items.each do |item|
-        entry.instance_variable_get(:@items).delete(item)
-      end
-    end
-  end
-end

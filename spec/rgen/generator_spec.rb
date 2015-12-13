@@ -29,6 +29,51 @@ module RGen
         end
       end
 
+      describe "--setup" do
+        after do
+          clear_enabled_items
+        end
+
+        context "セットアップファイルの指定が無い場合" do
+          before do
+            expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
+          end
+
+          it "デフォルトのセットアップが実行される" do
+            generator.run([])
+          end
+        end
+
+        context "セットアップファイルの指定がある場合" do
+          before do
+            expect(RGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
+            expect(RGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+            expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
+          end
+
+          after do
+            clear_dummy_list_items(:type   , [:foo])
+            clear_dummy_list_items(:host_if, [:bar])
+          end
+
+          it "--setupで指定したファイルからセットアップが実行される" do
+            generator.run(["--setup", "#{__dir__}/files/sample_setup.rb"])
+          end
+        end
+      end
+
       describe "-c/--configuration" do
         let(:configuration_factory) do
           f = RGen.builder.build_factory(:configuration)
