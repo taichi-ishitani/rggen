@@ -46,7 +46,9 @@ module RGen
           end
 
           it "デフォルトのセットアップが実行される" do
-            generator.run([])
+            expect {
+              generator.run([])
+            }.not_to raise_error
           end
         end
 
@@ -68,8 +70,14 @@ module RGen
             clear_dummy_list_items(:host_if, [:bar])
           end
 
+          let(:setup_file) do
+            "#{__dir__}/files/sample_setup.rb"
+          end
+
           it "--setupで指定したファイルからセットアップが実行される" do
-            generator.run(["--setup", "#{__dir__}/files/sample_setup.rb"])
+            expect {
+              generator.run(["--setup", setup_file])
+            }.not_to raise_error
           end
         end
       end
@@ -101,17 +109,25 @@ module RGen
 
         context "コンフィグレーションファイルの指定が無い場合" do
           before do
-            expect(configuration_factory).to receive(:create).with('foo.yaml').and_call_original
-            expect(configuration_factory).to receive(:create).with('foo.json').and_call_original
+            expect(configuration_factory).to receive(:create).with(sample_yaml).and_call_original
+            expect(configuration_factory).to receive(:create).with(sample_json).and_call_original
+          end
+
+          let(:sample_yaml) do
+            "#{__dir__}/files/sample.yaml"
+          end
+
+          let(:sample_json) do
+            "#{__dir__}/files/sample.json"
           end
 
           it "指定したファイルからコンフィグレーションを生成する" do
             expect {
-              generator.run(["-c", "foo.yaml"])
-            }.to raise_error Errno::ENOENT
+              generator.run(["-c", sample_yaml])
+            }.not_to raise_error
             expect {
-              generator.run(["--configuration", "foo.json"])
-            }.to raise_error Errno::ENOENT
+              generator.run(["--configuration", sample_json])
+            }.not_to raise_error
           end
         end
       end
