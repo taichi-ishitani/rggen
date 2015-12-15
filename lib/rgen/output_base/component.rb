@@ -25,7 +25,8 @@ module RGen
         buffer.join if output_code
       end
 
-      def write_file(output_directory = '')
+      def write_file(output_directory = '.')
+        FileUtils.mkpath(output_directory) unless Dir.exist?(output_directory)
         items.each do |item|
           item.write_file(output_directory)
         end

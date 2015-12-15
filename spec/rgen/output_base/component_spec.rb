@@ -171,10 +171,10 @@ module RGen::OutputBase
 
       context "出力ディレクトリが指定されていない場合" do
         let(:output_directory) do
-          ''
+          '.'
         end
 
-        it "空文字列を引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
+        it "'.'を引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
           component.write_file
         end
       end
@@ -186,6 +186,16 @@ module RGen::OutputBase
 
         it "与えられた出力ディレクトリを引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
           component.write_file(output_directory)
+        end
+
+        context "指定したディレクトリが存在しない場合" do
+          before do
+            expect(FileUtils).to receive(:mkpath).with(output_directory)
+          end
+
+          it "ディレクトリの作成する" do
+            component.write_file(output_directory)
+          end
         end
       end
     end

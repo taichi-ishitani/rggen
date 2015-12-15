@@ -3,6 +3,7 @@ module RGen
 
   require 'forwardable'
   require 'baby_erubis'
+  require 'fileutils'
   require 'optparse'
 
   require_relative 'rgen/version'
