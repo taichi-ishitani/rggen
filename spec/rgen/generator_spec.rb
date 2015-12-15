@@ -41,19 +41,19 @@ module RGen
     end
 
     let(:sample_setup) do
-      "#{__dir__}/files/sample_setup.rb"
+      "#{RGEN_HOME}/sample/sample_setup.rb"
     end
 
     let(:sample_yaml) do
-      "#{__dir__}/files/sample.yaml"
+      "#{RGEN_HOME}/sample/sample.yaml"
     end
 
     let(:sample_json) do
-      "#{__dir__}/files/sample.json"
+      "#{RGEN_HOME}/sample/sample.json"
     end
 
     let(:sample_register_maps) do
-      ["#{__dir__}/files/sample.xls", "#{__dir__}/files/sample.xlsx", "#{__dir__}/files/sample.csv"]
+      ["#{RGEN_HOME}/sample/sample.xls", "#{RGEN_HOME}/sample/sample.xlsx", "#{RGEN_HOME}/sample/sample.csv"]
     end
 
     describe "バージョンの出力" do
@@ -220,7 +220,7 @@ module RGen
     describe "ファイルの書き出し" do
       let(:expected_code) do
         2.times.map do |i|
-          File.read("#{__dir__}/files/sample_#{i}.sv")
+          File.read("#{RGEN_HOME}/sample/sample_#{i}.sv")
         end
       end
 
