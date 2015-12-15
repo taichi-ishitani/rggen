@@ -18,6 +18,10 @@ module RGen
       end
     end
 
+    before do
+      allow(File).to receive(:write)
+    end
+
     after do
       clear_enabled_items
     end
@@ -84,6 +88,7 @@ module RGen
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data])
         end
 
         it "デフォルトのセットアップが実行される" do
@@ -104,6 +109,7 @@ module RGen
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data])
         end
 
         after do
@@ -129,7 +135,7 @@ module RGen
         end
       end
 
-      context "-c/--configurationでコンフィグレーションファイルの指定が無い場合" do
+      context "-c/--configurationでコンフィグレーションファイルの指定がある場合" do
         it "指定したファイルからコンフィグレーションを生成する" do
           expect {
             generator.run(["-c", sample_yaml, sample_register_maps[0]])
@@ -175,6 +181,74 @@ module RGen
           generator.run([sample_register_maps[2]])
         }.not_to raise_error
         expect(factory_cache[:register_map][2]).to have_received(:create).with(configuration_cache[2], sample_register_maps[2])
+      end
+    end
+
+    describe "ファイルジェネレータの生成" do
+      before do
+        cache = configuration_cache
+        factory_plugin[:configuration] = proc do |m, *args|
+          cache << m.call(*args)
+          cache.last
+        end
+      end
+
+      before do
+        cache = register_map_cache
+        factory_plugin[:register_map] = proc do |m, *args|
+          cache << m.call(*args)
+          cache.last
+        end
+      end
+
+      let(:configuration_cache) do
+        []
+      end
+
+      let(:register_map_cache) do
+        []
+      end
+
+      it "読み出したコンフィグレーション、レジスタマップからファイルジェネレータを生成する" do
+        expect {
+          generator.run([sample_register_maps[0]])
+        }.not_to raise_error
+        expect(factory_cache[:rtl][0]).to have_received(:create).with(configuration_cache[0], register_map_cache[0])
+      end
+    end
+
+    describe "ファイルの書き出し" do
+      let(:expected_code) do
+        2.times.map do |i|
+          File.read("#{__dir__}/files/sample_#{i}.sv")
+        end
+      end
+
+      context "-o/--outputで出力ディレクトリの指定が無い場合" do
+        it "カレントディレクトリにファイを書き出す" do
+          expect {
+            generator.run(['-c', sample_yaml, sample_register_maps[0]])
+          }.not_to raise_error
+          expect(File).to have_received(:write).with("./block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("./block_1.sv", expected_code[1])
+        end
+      end
+
+      context "-o/--outputで出力ディレクトリの指定がある場合" do
+        it "カレントディレクトリにファイを書き出す" do
+          expect {
+            generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
+          }.not_to raise_error
+          expect(File).to have_received(:write).with("/foo/bar/block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("/foo/bar/block_1.sv", expected_code[1])
+          clear_enabled_items
+
+          expect {
+            generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
+          }.not_to raise_error
+          expect(File).to have_received(:write).with("../baz/block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("../baz/block_1.sv", expected_code[1])
+        end
       end
     end
   end

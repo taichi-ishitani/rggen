@@ -1,7 +1,7 @@
 module RGen
   class Generator
     class << self
-      Option = Struct.new(:short, :long, :description)
+      Option = Struct.new(:short, :long, :default, :description)
 
       def options
         @options  ||= {}
@@ -16,7 +16,8 @@ module RGen
     end
 
     add_option :setup do |option|
-      option.long = '--setup FILE'
+      option.long     = '--setup FILE'
+      option.default  = File.join(RGEN_HOME, 'setup', 'default.rb')
     end
 
     add_option :configuration do |option|
@@ -24,11 +25,18 @@ module RGen
       option.long   = '--configuration FILE'
     end
 
+    add_option :output do |option|
+      option.short    = '-o'
+      option.long     = '--output DIR'
+      option.default  = './'
+    end
+
     def run(argv)
       options = parse_options(argv)
       load_setup(options[:setup])
       configuration = load_configuration(options[:configuration])
       register_map  = load_register_map(configuration, argv.first)
+      write_files(configuration, register_map, options[:output])
     end
 
     private
@@ -49,6 +57,7 @@ module RGen
 
     def add_option_switches(parser, options)
       self.class.options.each do |name, option|
+        options[name] = option.default
         parser.on(*option.values.compact) do |v|
           options[name] = v
         end
@@ -56,7 +65,6 @@ module RGen
     end
 
     def load_setup(file)
-      file  ||= File.join(RGEN_HOME, 'setup', 'default.rb')
       load(file)
     end
 
@@ -70,6 +78,21 @@ module RGen
 
     def load_register_map(configuration, file)
       build_factory(:register_map).create(configuration, file)
+    end
+
+    def write_files(configuration, register_map, output)
+      file_generators(configuration, register_map).each do |generator|
+        generator.write_file(output)
+      end
+    end
+
+    def file_generators(configuration, register_map)
+      output_components = RGen.builder.stored_components.reject do |component|
+        [:configuration, :register_map].include?(component)
+      end
+      output_components.map do |component|
+        build_factory(component).create(configuration, register_map)
+      end
     end
   end
 end
