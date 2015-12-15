@@ -63,6 +63,21 @@ module RGen::Builder
       end
     end
 
+    describe "#stored_components" do
+      before do
+        builder.input_component_store(:configuration) do
+        end
+        builder.input_component_store(:register_map) do
+        end
+        builder.output_component_store(:rtl) do
+        end
+      end
+
+      it "登録されているコンポーネントの一覧を返す" do
+        expect(builder.stored_components).to match [:configuration, :register_map, :rtl]
+      end
+    end
+
     describe "#define_loader" do
       before do
         builder.input_component_store(:register_map) do

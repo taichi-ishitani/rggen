@@ -30,6 +30,10 @@ module RGen
         component_store(OutputComponentStore, component_name, body)
       end
 
+      def stored_components
+        @stores.keys
+      end
+
       def define_loader(component_name, type_or_types, &body)
         @stores[component_name].define_loader(type_or_types, &body)
       end
