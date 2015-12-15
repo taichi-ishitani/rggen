@@ -52,97 +52,95 @@ module RGen
       ["#{__dir__}/files/sample.xls", "#{__dir__}/files/sample.xlsx", "#{__dir__}/files/sample.csv"]
     end
 
-    describe "options" do
-      describe "-v/--version" do
+    describe "バージョンの出力" do
+      before do
+        $stdout = StringIO.new
+        $stderr = StringIO.new
+      end
+
+      after do
+        $stdout = STDOUT
+        $stderr = STDERR
+      end
+
+      it "バージョンを出力し、そのまま終了する" do
+        expect {
+          generator.run(['-v'])
+        }.to raise_error SystemExit
+        expect {
+          generator.run(['--version'])
+        }.to raise_error SystemExit
+        expect($stdout.string).to eq("rgen #{RGen::VERSION}\n" * 2)
+      end
+    end
+
+    describe "ジェネレータのセットアップ" do
+      context "--setupでセットアップファイルの指定が無い場合" do
         before do
-          $stdout = StringIO.new
-          $stderr = StringIO.new
+          expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
+        end
+
+        it "デフォルトのセットアップが実行される" do
+          expect {
+            generator.run([sample_register_maps[0]])
+          }.not_to raise_error
+        end
+      end
+
+      context "--setupでセットアップファイルの指定がある場合" do
+        before do
+          expect(RGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
+          expect(RGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
         end
 
         after do
-          $stdout = STDOUT
-          $stderr = STDERR
+          clear_dummy_list_items(:type   , [:foo])
+          clear_dummy_list_items(:host_if, [:bar])
         end
 
-        it "バージョンを出力し、そのまま終了する" do
+        it "--setupで指定したファイルからセットアップが実行される" do
           expect {
-            generator.run(['-v'])
-          }.to raise_error SystemExit
+            generator.run(["--setup", sample_setup, sample_register_maps[1]])
+          }.not_to raise_error
+        end
+      end
+    end
+
+    describe "コンフィグレーションの読み出し" do
+      context "-c/--configurationでコンフィグレーションファイルの指定が無い場合" do
+        it "デフォルト値でコンフィグレーションを生成する" do
           expect {
-            generator.run(['--version'])
-          }.to raise_error SystemExit
-          expect($stdout.string).to eq("rgen #{RGen::VERSION}\n" * 2)
+            generator.run([sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][0]).to have_received(:create).with(nil)
         end
       end
 
-      describe "--setup" do
-        context "セットアップファイルの指定が無い場合" do
-          before do
-            expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
-          end
+      context "-c/--configurationでコンフィグレーションファイルの指定が無い場合" do
+        it "指定したファイルからコンフィグレーションを生成する" do
+          expect {
+            generator.run(["-c", sample_yaml, sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_yaml)
+          clear_enabled_items
 
-          it "デフォルトのセットアップが実行される" do
-            expect {
-              generator.run([sample_register_maps[0]])
-            }.not_to raise_error
-          end
-        end
-
-        context "セットアップファイルの指定がある場合" do
-          before do
-            expect(RGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
-            expect(RGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :accessibility]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
-            expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
-          end
-
-          after do
-            clear_dummy_list_items(:type   , [:foo])
-            clear_dummy_list_items(:host_if, [:bar])
-          end
-
-          it "--setupで指定したファイルからセットアップが実行される" do
-            expect {
-              generator.run(["--setup", sample_setup, sample_register_maps[1]])
-            }.not_to raise_error
-          end
-        end
-      end
-
-      describe "-c/--configuration" do
-        context "コンフィグレーションファイルの指定が無い場合" do
-          it "デフォルト値でコンフィグレーションを生成する" do
-            expect {
-              generator.run([sample_register_maps[0]])
-            }.not_to raise_error
-            expect(factory_cache[:configuration][0]).to have_received(:create).with(nil)
-          end
-        end
-
-        context "コンフィグレーションファイルの指定が無い場合" do
-          it "指定したファイルからコンフィグレーションを生成する" do
-            expect {
-              generator.run(["-c", sample_yaml, sample_register_maps[0]])
-            }.not_to raise_error
-            expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_yaml)
-            clear_enabled_items
-
-            expect {
-              generator.run(["--configuration", sample_json, sample_register_maps[0]])
-            }.not_to raise_error
-            expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
-          end
+          expect {
+            generator.run(["--configuration", sample_json, sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
         end
       end
     end
