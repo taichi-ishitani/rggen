@@ -28,6 +28,7 @@ module RGen
       options = parse_options(argv)
       load_setup(options[:setup])
       configuration = load_configuration(options[:configuration])
+      register_map  = load_register_map(configuration, argv.first)
     end
 
     private
@@ -54,13 +55,21 @@ module RGen
       end
     end
 
-    def load_setup(setup_file)
-      setup_file  ||= File.join(RGEN_HOME, 'setup', 'default.rb')
-      require(setup_file)
+    def load_setup(file)
+      file  ||= File.join(RGEN_HOME, 'setup', 'default.rb')
+      load(file)
+    end
+
+    def build_factory(component_name)
+      RGen.builder.build_factory(component_name)
     end
 
     def load_configuration(file)
-      RGen.builder.build_factory(:configuration).create(file)
+      build_factory(:configuration).create(file)
+    end
+
+    def load_register_map(configuration, file)
+      build_factory(:register_map).create(configuration, file)
     end
   end
 end

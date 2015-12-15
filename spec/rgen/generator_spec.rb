@@ -2,22 +2,68 @@ require_relative '../spec_helper'
 
 module RGen
   describe Generator do
+    before do
+      cache   = factory_cache
+      plugin  = factory_plugin
+      allow(RGen.builder).to receive(:build_factory).and_wrap_original do |m, component_name|
+        f     = m.call(component_name)
+        mock  = allow(f)
+        if plugin.key?(component_name)
+          mock.to receive(:create).and_wrap_original(&plugin[component_name])
+        else
+          mock.to receive(:create).and_call_original
+        end
+        cache[component_name] << f
+        f
+      end
+    end
+
+    after do
+      clear_enabled_items
+    end
+
     let(:generator) do
       Generator.new
     end
 
+    let(:factory_cache) do
+      Hash.new do |hash, component_name|
+        hash[component_name]  = []
+      end
+    end
+
+    let(:factory_plugin) do
+      {}
+    end
+
+    let(:sample_setup) do
+      "#{__dir__}/files/sample_setup.rb"
+    end
+
+    let(:sample_yaml) do
+      "#{__dir__}/files/sample.yaml"
+    end
+
+    let(:sample_json) do
+      "#{__dir__}/files/sample.json"
+    end
+
+    let(:sample_register_maps) do
+      ["#{__dir__}/files/sample.xls", "#{__dir__}/files/sample.xlsx", "#{__dir__}/files/sample.csv"]
+    end
+
     describe "options" do
-      before do
-        $stdout = StringIO.new
-        $stderr = StringIO.new
-      end
-
-      after do
-        $stdout = STDOUT
-        $stderr = STDERR
-      end
-
       describe "-v/--version" do
+        before do
+          $stdout = StringIO.new
+          $stderr = StringIO.new
+        end
+
+        after do
+          $stdout = STDOUT
+          $stderr = STDERR
+        end
+
         it "バージョンを出力し、そのまま終了する" do
           expect {
             generator.run(['-v'])
@@ -30,10 +76,6 @@ module RGen
       end
 
       describe "--setup" do
-        after do
-          clear_enabled_items
-        end
-
         context "セットアップファイルの指定が無い場合" do
           before do
             expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
@@ -47,7 +89,7 @@ module RGen
 
           it "デフォルトのセットアップが実行される" do
             expect {
-              generator.run([])
+              generator.run([sample_register_maps[0]])
             }.not_to raise_error
           end
         end
@@ -70,66 +112,71 @@ module RGen
             clear_dummy_list_items(:host_if, [:bar])
           end
 
-          let(:setup_file) do
-            "#{__dir__}/files/sample_setup.rb"
-          end
-
           it "--setupで指定したファイルからセットアップが実行される" do
             expect {
-              generator.run(["--setup", setup_file])
+              generator.run(["--setup", sample_setup, sample_register_maps[1]])
             }.not_to raise_error
           end
         end
       end
 
       describe "-c/--configuration" do
-        let(:configuration_factory) do
-          f = RGen.builder.build_factory(:configuration)
-          allow(RGen.builder).to receive(:build_factory).and_wrap_original do |m, *args|
-            if args[0] == :configuration
-              f
-            else
-              m.call(*args)
-            end
-          end
-          f
-        end
-
         context "コンフィグレーションファイルの指定が無い場合" do
-          before do
-            expect(configuration_factory).to receive(:create).with(nil).and_call_original
-          end
-
           it "デフォルト値でコンフィグレーションを生成する" do
             expect {
-              generator.run([])
+              generator.run([sample_register_maps[0]])
             }.not_to raise_error
+            expect(factory_cache[:configuration][0]).to have_received(:create).with(nil)
           end
         end
 
         context "コンフィグレーションファイルの指定が無い場合" do
-          before do
-            expect(configuration_factory).to receive(:create).with(sample_yaml).and_call_original
-            expect(configuration_factory).to receive(:create).with(sample_json).and_call_original
-          end
-
-          let(:sample_yaml) do
-            "#{__dir__}/files/sample.yaml"
-          end
-
-          let(:sample_json) do
-            "#{__dir__}/files/sample.json"
-          end
-
           it "指定したファイルからコンフィグレーションを生成する" do
             expect {
-              generator.run(["-c", sample_yaml])
+              generator.run(["-c", sample_yaml, sample_register_maps[0]])
             }.not_to raise_error
+            expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_yaml)
+            clear_enabled_items
+
             expect {
-              generator.run(["--configuration", sample_json])
+              generator.run(["--configuration", sample_json, sample_register_maps[0]])
             }.not_to raise_error
+            expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
           end
         end
+      end
+    end
+
+    describe "レジスタマップの読み出し" do
+      before do
+        cache = configuration_cache
+        factory_plugin[:configuration]  = proc do |m, *args|
+          cache << m.call(*args)
+          cache.last
+        end
+      end
+
+      let(:configuration_cache) do
+        []
+      end
+
+      it "オプション解析後の先頭の引数をレジスタマップとして読み出す" do
+        expect {
+          generator.run(['-c', sample_yaml, sample_register_maps[0]])
+        }.not_to raise_error
+        expect(factory_cache[:register_map][0]).to have_received(:create).with(configuration_cache[0], sample_register_maps[0])
+        clear_enabled_items
+
+        expect {
+          generator.run(['--setup', sample_setup, sample_register_maps[1]])
+        }.not_to raise_error
+        expect(factory_cache[:register_map][1]).to have_received(:create).with(configuration_cache[1], sample_register_maps[1])
+        clear_enabled_items
+
+        expect {
+          generator.run([sample_register_maps[2]])
+        }.not_to raise_error
+        expect(factory_cache[:register_map][2]).to have_received(:create).with(configuration_cache[2], sample_register_maps[2])
       end
     end
   end

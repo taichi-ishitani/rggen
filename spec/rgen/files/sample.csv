@@ -1,0 +1,9 @@
+,block name,block_0,,,,,
+,byte size,256,,,,,
+,,,,,,,
+,offset address,registe name,assignment,field name,type,initial value,reference
+,0x00,register_0,[31:16],bit_field_0_0,rw,0,
+,,,[15:0],bit_field_0_1,ro,,
+,0x04,register_1,[31:0],bit_field_1_0,rw,0,
+,0x08,register_2,[16],bit_field_2_0,ro,,
+,,,[0],bit_field_2_1,rw,0,
