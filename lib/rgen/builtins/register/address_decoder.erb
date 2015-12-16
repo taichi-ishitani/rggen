@@ -1,11 +1,11 @@
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (<%= local_address_width %>),
+  .ADDRESS_WIDTH  (<%= local_address_width - address_lsb %>),
   .READABLE       (<%= readable %>),
   .WRITABLE       (<%= writable %>),
   .START_ADDRESS  (<%= start_address%>),
   .END_ADDRESS    (<%= end_address %>)
 ) u_<%= register.name%>_address_decoder (
-  .i_address  (<%= register_block.host_if.address %>),
+  .i_address  (<%= register_block.host_if.address[local_address_width - 1, address_lsb] %>),
   .i_read     (<%= register_block.host_if.read %>),
   .i_write    (<%= register_block.host_if.write %>),
   .o_select   (<%= register_block.register_select[register_index] %>)

@@ -121,13 +121,13 @@ module block_0 (
     .i_register_read_data (register_read_data)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (8),
+    .ADDRESS_WIDTH  (6),
     .READABLE       (1),
     .WRITABLE       (1),
-    .START_ADDRESS  (8'h00),
-    .END_ADDRESS    (8'h03)
+    .START_ADDRESS  (6'h00),
+    .END_ADDRESS    (6'h00)
   ) u_register_0_address_decoder (
-    .i_address  (address),
+    .i_address  (address[7:2]),
     .i_read     (read),
     .i_write    (write),
     .o_select   (register_select[0])
@@ -149,13 +149,13 @@ module block_0 (
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (8),
+    .ADDRESS_WIDTH  (6),
     .READABLE       (1),
     .WRITABLE       (1),
-    .START_ADDRESS  (8'h04),
-    .END_ADDRESS    (8'h07)
+    .START_ADDRESS  (6'h01),
+    .END_ADDRESS    (6'h01)
   ) u_register_1_address_decoder (
-    .i_address  (address),
+    .i_address  (address[7:2]),
     .i_read     (read),
     .i_write    (write),
     .o_select   (register_select[1])

@@ -42,13 +42,13 @@ describe "register/address_decoder" do
       let(:expected_code) do
         <<'CODE'
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (8),
+  .ADDRESS_WIDTH  (6),
   .READABLE       (1),
   .WRITABLE       (1),
-  .START_ADDRESS  (8'h10),
-  .END_ADDRESS    (8'h13)
+  .START_ADDRESS  (6'h04),
+  .END_ADDRESS    (6'h04)
 ) u_register_0_address_decoder (
-  .i_address  (address),
+  .i_address  (address[7:2]),
   .i_read     (read),
   .i_write    (write),
   .o_select   (register_select[0])
@@ -69,13 +69,13 @@ CODE
       let(:expected_code) do
         <<'CODE'
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (8),
+  .ADDRESS_WIDTH  (6),
   .READABLE       (1),
   .WRITABLE       (0),
-  .START_ADDRESS  (8'h14),
-  .END_ADDRESS    (8'h17)
+  .START_ADDRESS  (6'h05),
+  .END_ADDRESS    (6'h05)
 ) u_register_1_address_decoder (
-  .i_address  (address),
+  .i_address  (address[7:2]),
   .i_read     (read),
   .i_write    (write),
   .o_select   (register_select[1])
@@ -96,13 +96,13 @@ CODE
       let(:expected_code) do
         <<'CODE'
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (8),
+  .ADDRESS_WIDTH  (6),
   .READABLE       (0),
   .WRITABLE       (1),
-  .START_ADDRESS  (8'h18),
-  .END_ADDRESS    (8'h1b)
+  .START_ADDRESS  (6'h06),
+  .END_ADDRESS    (6'h06)
 ) u_register_2_address_decoder (
-  .i_address  (address),
+  .i_address  (address[7:2]),
   .i_read     (read),
   .i_write    (write),
   .o_select   (register_select[2])
@@ -123,13 +123,13 @@ CODE
       let(:expected_code) do
         <<'CODE'
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (8),
+  .ADDRESS_WIDTH  (6),
   .READABLE       (1),
   .WRITABLE       (1),
-  .START_ADDRESS  (8'h20),
-  .END_ADDRESS    (8'h2f)
+  .START_ADDRESS  (6'h08),
+  .END_ADDRESS    (6'h0b)
 ) u_register_3_address_decoder (
-  .i_address  (address),
+  .i_address  (address[7:2]),
   .i_read     (read),
   .i_write    (write),
   .o_select   (register_select[3])

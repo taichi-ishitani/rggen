@@ -6,6 +6,10 @@ simple_item(:register, :address_decoder) do
       register_block.local_address_width
     end
 
+    def address_lsb
+      Math.clog2(configuration.byte_width)
+    end
+
     def readable
       (register.readable? && 1) || 0
     end
@@ -15,11 +19,13 @@ simple_item(:register, :address_decoder) do
     end
 
     def start_address
-      hex(register.start_address, local_address_width)
+      shift = address_lsb
+      hex(register.start_address >> shift, local_address_width - shift)
     end
 
     def end_address
-      hex(register.end_address, local_address_width)
+      shift = address_lsb
+      hex(register.end_address >> shift, local_address_width - shift)
     end
   end
 end
