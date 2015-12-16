@@ -31,7 +31,7 @@ module rgen_response_mux #(
   logic [2:0] status;
 
   assign  o_status      = status;
-  assign  slave_error   = ~|i_regiter_select;
+  assign  slave_error   = (TOTAL_REGISTERS == 1) ? ~i_regiter_select[0] : ~|i_regiter_select;
   assign  decode_error  = 1'b0;
   assign  exokay        = 1'b0;
   always_ff @(posedge clk or negedge rst_n) begin
@@ -63,11 +63,16 @@ module rgen_response_mux #(
     end
   end
 
-  for (genvar i = 0;i < DATA_WIDTH;i++) begin
-    logic [TOTAL_REGISTERS-1:0] temp;
-    assign  selected_data[i]  = |temp;
-    for (genvar j = 0;j < TOTAL_REGISTERS;j++) begin
-      assign  temp[j] = i_regiter_select[j] & i_register_read_data[j][i];
+  if (TOTAL_REGISTERS > 1) begin
+    for (genvar i = 0;i < DATA_WIDTH;i++) begin
+      logic [TOTAL_REGISTERS-1:0] temp;
+      assign  selected_data[i]  = |temp;
+      for (genvar j = 0;j < TOTAL_REGISTERS;j++) begin
+        assign  temp[j] = i_regiter_select[j] & i_register_read_data[j][i];
+      end
     end
+  end
+  else begin
+    assign  selected_data = i_register_read_data[0];
   end
 endmodule
