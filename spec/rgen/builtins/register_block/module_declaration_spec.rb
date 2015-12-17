@@ -90,6 +90,7 @@ module block_0 (
     .rst_n            (rst_n),
     .i_paddr          (i_paddr),
     .i_pprot          (i_pprot),
+    .i_psel           (i_psel),
     .i_penable        (i_penable),
     .i_pwrite         (i_pwrite),
     .i_pwdata         (i_pwdata),

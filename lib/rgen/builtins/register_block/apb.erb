@@ -7,6 +7,7 @@ rgen_host_if_apb #(
   .rst_n            (<%= register_block.reset %>),
   .i_paddr          (<%= apb.paddr %>),
   .i_pprot          (<%= apb.pprot %>),
+  .i_psel           (<%= apb.psel %>),
   .i_penable        (<%= apb.penable %>),
   .i_pwrite         (<%= apb.pwrite %>),
   .i_pwdata         (<%= apb.pwdata %>),
