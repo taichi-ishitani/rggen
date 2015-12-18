@@ -74,32 +74,22 @@ module RGen::Builder
 
     describe "#build_factory" do
       before do
-        classes = factory_classes
-
         component_store.loader_base(loader_base)
         component_store.entry do
           component_class   RGen::InputBase::Component
-
           component_factory RGen::InputBase::ComponentFactory do
-            classes << self
           end
         end
         component_store.entry(:register_block) do
           component_class   RGen::InputBase::Component
           component_factory RGen::InputBase::ComponentFactory do
-            classes << self
           end
         end
         component_store.entry(:register) do
           component_class   RGen::InputBase::Component
           component_factory RGen::InputBase::ComponentFactory do
-            classes << self
           end
         end
-      end
-
-      let(:factory_classes) do
-        []
       end
 
       let(:built_factories) do
