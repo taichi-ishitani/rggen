@@ -7,7 +7,7 @@ module rgen_response_mux #(
   input                         i_command_valid,
   output                        o_response_ready,
   output  [DATA_WIDTH-1:0]      o_read_data,
-  output  [2:0]                 o_status,
+  output  [1:0]                 o_status,
   input   [TOTAL_REGISTERS-1:0] i_regiter_select,
   input   [DATA_WIDTH-1:0]      i_register_read_data[TOTAL_REGISTERS]
 );
@@ -19,27 +19,28 @@ module rgen_response_mux #(
     if (!rst_n) begin
       response_ready  <= 1'b0;
     end
+    else if (i_command_valid && (!response_ready)) begin
+      response_ready  <= 1'b1;
+    end
     else begin
-      response_ready  <= i_command_valid;
+      response_ready  <= 1'b0;
     end
   end
 
   //  Status
   logic       slave_error;
-  logic       decode_error;
   logic       exokay;
-  logic [2:0] status;
+  logic [1:0] status;
 
   assign  o_status      = status;
   assign  slave_error   = (TOTAL_REGISTERS == 1) ? ~i_regiter_select[0] : ~|i_regiter_select;
-  assign  decode_error  = 1'b0;
   assign  exokay        = 1'b0;
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       status  <= 3'b000;
     end
     else if (i_command_valid) begin
-      status  <= {exokay, decode_error, slave_error};
+      status  <= {exokay, slave_error};
     end
     else begin
       status  <= 3'b000;

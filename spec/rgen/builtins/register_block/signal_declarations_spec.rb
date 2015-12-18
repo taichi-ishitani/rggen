@@ -61,7 +61,7 @@ logic [31:0] write_data;
 logic [31:0] write_mask;
 logic response_ready;
 logic [31:0] read_data;
-logic [2:0] status;
+logic [1:0] status;
 logic [1:0] register_select;
 logic [31:0] register_read_data[2];
 logic bit_field_0_0_value;
