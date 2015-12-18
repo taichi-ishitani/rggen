@@ -12,6 +12,7 @@ module RGen
       end
 
       attr_reader :configuration
+      attr_writer :output_directory
 
       def build
         items.each(&:build)
@@ -25,13 +26,14 @@ module RGen
         buffer.join if output_code
       end
 
-      def write_file(output_directory)
-        FileUtils.mkpath(output_directory) unless Dir.exist?(output_directory)
+      def write_file(root_directory)
+        directory = output_directory(root_directory)
+        FileUtils.mkpath(directory) unless Dir.exist?(directory)
         items.each do |item|
-          item.write_file(output_directory)
+          item.write_file(directory)
         end
         children.each do |child|
-          child.write_file(output_directory)
+          child.write_file(directory)
         end
       end
 
@@ -58,6 +60,10 @@ module RGen
         items.each do |item|
           item.generate_code(kind, buffer)
         end
+      end
+
+      def output_directory(root_directory)
+        File.join([root_directory, @output_directory.to_s].reject(&:empty?))
       end
     end
   end

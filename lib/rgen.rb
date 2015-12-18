@@ -42,6 +42,7 @@ module RGen
   require_relative 'rgen/builder/component_entry'
   require_relative 'rgen/builder/component_store'
   require_relative 'rgen/builder/input_component_store'
+  require_relative 'rgen/builder/output_component_store'
   require_relative 'rgen/builder/category'
   require_relative 'rgen/builder/builder'
 

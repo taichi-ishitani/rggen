@@ -158,6 +158,7 @@ module RGen::OutputBase
 
     describe "#write_file" do
       before do
+        component.output_directory  = 'baz'
         component.items.each do |item|
           expect(item).to receive(:write_file).with(output_directory)
         end
@@ -169,12 +170,16 @@ module RGen::OutputBase
         end
       end
 
-      let(:output_directory) do
+      let(:root_directory) do
         '/foo/bar'
       end
 
-      it "与えられた出力ディレクトリを引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
-        component.write_file(output_directory)
+      let(:output_directory) do
+        '/foo/bar/baz'
+      end
+
+      it "与えられた出力ディレクトリ/@output_directoryを引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
+        component.write_file(root_directory)
       end
 
       context "指定したディレクトリが存在しない場合" do
@@ -183,7 +188,7 @@ module RGen::OutputBase
         end
 
         it "ディレクトリの作成する" do
-          component.write_file(output_directory)
+          component.write_file(root_directory)
         end
       end
     end

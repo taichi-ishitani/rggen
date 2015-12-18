@@ -62,25 +62,50 @@ module RGen::OutputBase
 
       context "ルートファクトリのとき" do
         before do
-          c = Component.new(nil, configuration, register_map)
-          expect(c).to receive(:build).with(no_args)
-          allow(factory). to receive(:create_component).and_return(c)
+          allow(component).to receive(:build).and_call_original
+          allow(component).to receive(:output_directory=).and_call_original
+          allow(factory). to receive(:create_component).and_return(component)
+          factory.output_directory  = output_directory
+          factory.create(configuration, register_map)
+        end
+
+        let(:component) do
+          Component.new(nil, configuration, register_map)
+        end
+
+        let(:output_directory) do
+          'foo'
         end
 
         it "生成したコンポーネントの#buildを呼び出す" do
-          factory.create(configuration, register_map)
+          expect(component).to have_received(:build).with(no_args)
+        end
+
+        it "生成したコンポーネントに出力ディレクトリを設定する" do
+          expect(component).to have_received(:output_directory=).with(output_directory)
         end
       end
 
       context "ルートファクトリではないとき" do
         before do
-          c = Component.new(nil, configuration, register_map)
-          expect(c).not_to receive(:build)
-          allow(child_factory). to receive(:create_component).and_return(c)
+          allow(child_factory). to receive(:create_component).and_return(component)
+        end
+
+        let(:parent) do
+          Component.new(nil, configuration, register_map)
+        end
+
+        let(:component) do
+          Component.new(parent, configuration, register_map)
         end
 
         it "生成したコンポーネントの#buildを呼び出さない" do
-          parent  = Component.new(nil, configuration, register_map)
+          expect(component).not_to receive(:build)
+          child_factory.create(parent, configuration, register_map)
+        end
+
+        it "生成したコンポーネントに出力ディレクトリの設定を行わない" do
+          expect(component).not_to receive(:output_directory=)
           child_factory.create(parent, configuration, register_map)
         end
       end

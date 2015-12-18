@@ -29,7 +29,5 @@ module RGen
         factories.first
       end
     end
-
-    OutputComponentStore  = ComponentStore
   end
 end

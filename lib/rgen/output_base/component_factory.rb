@@ -1,9 +1,14 @@
 module RGen
   module OutputBase
     class ComponentFactory < Base::ComponentFactory
+      attr_writer :output_directory
+
       def create(*args)
         component = super(*args)
-        component.build if @root_factory
+        if @root_factory
+          component.build
+          component.output_directory  = @output_directory
+        end
         component
       end
 
