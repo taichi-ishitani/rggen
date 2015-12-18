@@ -26,6 +26,8 @@ module RGen
         item_base         Item, include: RegisterIndex
         item_factory      OutputBase::ItemFactory
       end
+
+      output_directory  'rtl'
     end
   end
 end

@@ -229,8 +229,8 @@ module RGen
           expect {
             generator.run(['-c', sample_yaml, sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("./block_0.sv", expected_code[0])
-          expect(File).to have_received(:write).with("./block_1.sv", expected_code[1])
+          expect(File).to have_received(:write).with("./rtl/block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("./rtl/block_1.sv", expected_code[1])
         end
       end
 
@@ -239,15 +239,15 @@ module RGen
           expect {
             generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("/foo/bar/block_0.sv", expected_code[0])
-          expect(File).to have_received(:write).with("/foo/bar/block_1.sv", expected_code[1])
+          expect(File).to have_received(:write).with("/foo/bar/rtl/block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("/foo/bar/rtl/block_1.sv", expected_code[1])
           clear_enabled_items
 
           expect {
             generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("../baz/block_0.sv", expected_code[0])
-          expect(File).to have_received(:write).with("../baz/block_1.sv", expected_code[1])
+          expect(File).to have_received(:write).with("../baz/rtl/block_0.sv", expected_code[0])
+          expect(File).to have_received(:write).with("../baz/rtl/block_1.sv", expected_code[1])
         end
       end
     end
