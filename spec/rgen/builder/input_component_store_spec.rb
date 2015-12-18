@@ -14,14 +14,6 @@ module RGen::Builder
       InputComponentStore.new(builder, registry_name)
     end
 
-    let(:component_entries) do
-      component_store.instance_variable_get(:@entries)
-    end
-
-    let(:categories) do
-      builder.categories
-    end
-
     let(:loader_base) do
       RGen::InputBase::Loader
     end
