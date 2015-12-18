@@ -182,7 +182,7 @@ CODE
     end
 
     it "レジスタモジュールのRTLを書き出す" do
-      rtl.write_file
+      rtl.write_file('.')
     end
   end
 end
