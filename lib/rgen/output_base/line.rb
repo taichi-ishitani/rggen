@@ -6,13 +6,14 @@ module RGen
         @indent = 0
       end
 
-      attr_writer :indent
+      attr_accessor :indent
 
       def <<(word)
         @words << word
       end
 
       def to_s
+        return '' if @words.empty?
         @words.join.indent(@indent)
       end
     end

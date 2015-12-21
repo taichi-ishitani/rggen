@@ -30,6 +30,7 @@ module RGen
   require_relative 'rgen/input_base/item_factory'
 
   require_relative 'rgen/output_base/line'
+  require_relative 'rgen/output_base/code_block'
   require_relative 'rgen/output_base/code_utility'
   require_relative 'rgen/output_base/template_utility'
   require_relative 'rgen/output_base/component'
