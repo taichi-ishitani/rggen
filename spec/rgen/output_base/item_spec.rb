@@ -202,13 +202,13 @@ module RGen::OutputBase
       end
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
-        expect(File).to receive(:write).with(file_name, contents)
+        expect(File).to receive(:write).with(file_name, contents, nil, binmode: true)
         foo_bar_item.write_file
       end
 
       context "出力ディレクトリの指定がある場合" do
         it "指定されたディレクトリにファイルを書き出す" do
-          expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents)
+          expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents, nil, binmode: true)
           foo_bar_item.write_file(output_directory)
         end
       end

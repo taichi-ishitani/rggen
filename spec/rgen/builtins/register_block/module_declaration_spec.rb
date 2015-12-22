@@ -43,7 +43,7 @@ describe "register_block/module_declaration" do
 
   describe "#write_file" do
     before do
-      expect(File).to receive(:write).with("./block_0.sv", expected_code)
+      expect(File).to receive(:write).with("./block_0.sv", expected_code, nil, binmode: true)
     end
 
     let(:expected_code) do

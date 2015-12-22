@@ -1,4 +1,4 @@
-module block_0 (
+module sample_0 (
   input clk,
   input rst_n,
   input [15:0] i_paddr,
@@ -15,7 +15,8 @@ module block_0 (
   input [15:0] i_bit_field_0_1,
   output [31:0] o_bit_field_1_0,
   input i_bit_field_2_0,
-  output o_bit_field_2_1
+  output o_bit_field_2_1,
+  input [31:0] i_bit_field_3_0
 );
   logic command_valid;
   logic write;
@@ -26,13 +27,14 @@ module block_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [2:0] register_select;
-  logic [31:0] register_read_data[3];
+  logic [3:0] register_select;
+  logic [31:0] register_read_data[4];
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;
   logic [31:0] bit_field_1_0_value;
   logic bit_field_2_0_value;
   logic bit_field_2_1_value;
+  logic [31:0] bit_field_3_0_value;
   rgen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -62,7 +64,7 @@ module block_0 (
   );
   rgen_response_mux #(
     .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (3)
+    .TOTAL_REGISTERS  (4)
   ) u_response_mux (
     .clk                  (clk),
     .rst_n                (rst_n),
@@ -156,4 +158,18 @@ module block_0 (
     .i_write_mask     (write_mask[0]),
     .o_value          (bit_field_2_1_value)
   );
+  rgen_address_decoder #(
+    .ADDRESS_WIDTH  (6),
+    .READABLE       (1),
+    .WRITABLE       (0),
+    .START_ADDRESS  (6'h03),
+    .END_ADDRESS    (6'h03)
+  ) u_register_3_address_decoder (
+    .i_address  (address[7:2]),
+    .i_read     (read),
+    .i_write    (write),
+    .o_select   (register_select[3])
+  );
+  assign register_read_data[3] = {bit_field_3_0_value};
+  assign bit_field_3_0_value = i_bit_field_3_0;
 endmodule

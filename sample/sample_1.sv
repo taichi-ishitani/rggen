@@ -1,4 +1,4 @@
-module block_1 (
+module sample_1 (
   input clk,
   input rst_n,
   input [15:0] i_paddr,
@@ -20,7 +20,7 @@ module block_1 (
   logic command_valid;
   logic write;
   logic read;
-  logic [7:0] address;
+  logic [6:0] address;
   logic [31:0] write_data;
   logic [31:0] write_mask;
   logic response_ready;
@@ -36,7 +36,7 @@ module block_1 (
   rgen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
-    .LOCAL_ADDRESS_WIDTH  (8)
+    .LOCAL_ADDRESS_WIDTH  (7)
   ) u_host_if (
     .clk              (clk),
     .rst_n            (rst_n),
@@ -74,13 +74,13 @@ module block_1 (
     .i_register_read_data (register_read_data)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
+    .ADDRESS_WIDTH  (5),
     .READABLE       (1),
     .WRITABLE       (1),
-    .START_ADDRESS  (6'h00),
-    .END_ADDRESS    (6'h00)
+    .START_ADDRESS  (5'h00),
+    .END_ADDRESS    (5'h00)
   ) u_register_0_address_decoder (
-    .i_address  (address[7:2]),
+    .i_address  (address[6:2]),
     .i_read     (read),
     .i_write    (write),
     .o_select   (register_select[0])
@@ -102,13 +102,13 @@ module block_1 (
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
+    .ADDRESS_WIDTH  (5),
     .READABLE       (1),
     .WRITABLE       (1),
-    .START_ADDRESS  (6'h01),
-    .END_ADDRESS    (6'h01)
+    .START_ADDRESS  (5'h01),
+    .END_ADDRESS    (5'h01)
   ) u_register_1_address_decoder (
-    .i_address  (address[7:2]),
+    .i_address  (address[6:2]),
     .i_read     (read),
     .i_write    (write),
     .o_select   (register_select[1])
@@ -129,13 +129,13 @@ module block_1 (
     .o_value          (bit_field_1_0_value)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
+    .ADDRESS_WIDTH  (5),
     .READABLE       (1),
     .WRITABLE       (1),
-    .START_ADDRESS  (6'h02),
-    .END_ADDRESS    (6'h02)
+    .START_ADDRESS  (5'h02),
+    .END_ADDRESS    (5'h02)
   ) u_register_2_address_decoder (
-    .i_address  (address[7:2]),
+    .i_address  (address[6:2]),
     .i_read     (read),
     .i_write    (write),
     .o_select   (register_select[2])

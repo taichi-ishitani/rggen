@@ -7,3 +7,4 @@
 ,0x04,register_1,[31:0],bit_field_1_0,rw,0,
 ,0x08,register_2,[16],bit_field_2_0,ro,,
 ,,,[0],bit_field_2_1,rw,0,
+,0x0C,register_3,[31:0],bit_field_3_0,ro,,

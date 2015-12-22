@@ -32,7 +32,7 @@ module RGen
         def write_file(item, outptu_directory)
           code  = generate_code(item)
           path  = file_path(item, outptu_directory)
-          File.write(path, code)
+          File.write(path, code, nil, binmode: true)
         end
 
         private
