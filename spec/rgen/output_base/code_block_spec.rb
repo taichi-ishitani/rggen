@@ -18,6 +18,17 @@ module RGen::OutputBase
         end
       end
 
+      context "複数行の文字列を追加する場合" do
+        before do
+          code_block << 'foo'
+          code_block << "bar\nbaz"
+        end
+
+        it "行ごとに追加する" do
+          expect(code_block.to_s).to eq "foobar\nbaz"
+        end
+      end
+
       context ":newlineを追加する場合" do
         before do
           code_block << 'foo'
@@ -57,7 +68,7 @@ module RGen::OutputBase
         code_block.indent  += 2
         code_block << :newline
         code_block.indent  += 2
-        code_block << 'baz'
+        code_block << "baz\n\nqux\n"
         code_block << added_code_block
         code_block << :newline
         code_block.indent  -= 4
@@ -66,13 +77,13 @@ module RGen::OutputBase
 
       let(:added_code_block) do
         block = CodeBlock.new
-        block << 'qux' << :newline
+        block << 'quux' << :newline
         block.indent += 2
-        block << 'quux'
+        block << 'corge'
       end
 
       it "末尾の行から与えられたインデント幅を設定する" do
-        expect(code_block.to_s).to eq "foo\n  bar\n    baz\n    qux\n      quux\n\nfoobar"
+        expect(code_block.to_s).to eq "foo\n  bar\n    baz\n\n    qux\n\n    quux\n      corge\n\nfoobar"
       end
     end
   end
