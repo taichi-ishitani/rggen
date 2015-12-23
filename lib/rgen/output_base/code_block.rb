@@ -29,7 +29,7 @@ module RGen
       end
 
       def to_s
-        @lines.map(&:to_s).join("\n")
+        @lines.map(&:to_s).each(&:rstrip!).join("\n")
       end
 
       private
@@ -45,13 +45,17 @@ module RGen
           line.indent += @indent
         end
         @lines.concat(other_block.lines)
-        add_newline
+        if other_block.lines.last.empty?
+          @lines.last.indent  = @indent
+        else
+          add_newline
+        end
       end
 
       def add_multiple_lines_string(other_string)
         other_string.each_line.with_index do |line, i|
           add_newline if i > 0
-          @lines.last << line.rstrip unless /\A\s*\z/ =~ line
+          @lines.last << line
         end
         add_newline if other_string.end_with?("\n")
       end

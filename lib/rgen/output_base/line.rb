@@ -2,20 +2,25 @@ module RGen
   module OutputBase
     class Line
       def initialize
-        @words  = []
-        @indent = 0
+        @words      = []
+        @not_empty  = false
+        @indent     = 0
       end
 
       attr_accessor :indent
 
       def <<(word)
-        @words << word
+        @words << word.to_s
+        self
+      end
+
+      def empty?
+        @words.all?(&:empty?)
       end
 
       def to_s
         return '' if @words.empty?
-        s = @words.join.indent(@indent)
-        ((/\A\s*\z/ !~ s) && s) || ''
+        @words.join.indent(@indent)
       end
     end
   end
