@@ -14,6 +14,17 @@ module RGen::OutputBase
         expect(line.to_s).to eq "foobar1"
       end
 
+      context "連結結果が空白文字のみの場合" do
+        before do
+          line << '  '
+          line << "\t\r"
+        end
+
+        it "空文字を返す" do
+          expect(line.to_s).to eq ''
+        end
+      end
+
       context "#indent=でインデント幅が設定されている場合" do
         before do
           line << 'foo'

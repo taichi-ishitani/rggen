@@ -14,7 +14,8 @@ module RGen
 
       def to_s
         return '' if @words.empty?
-        @words.join.indent(@indent)
+        s = @words.join.indent(@indent)
+        ((/\A\s*\z/ !~ s) && s) || ''
       end
     end
   end
