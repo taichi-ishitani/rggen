@@ -1,9 +1,9 @@
 define_simple_item :register_block, :port_declarations do
   rtl do
     generate_code :port_declarations do |buffer|
-      buffer << '(' << nl
+      buffer << '('
       buffer << declarations
-      buffer << nl  << ')'
+      buffer << ')'
     end
 
     def declarations

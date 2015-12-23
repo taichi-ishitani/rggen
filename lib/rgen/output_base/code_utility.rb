@@ -4,7 +4,7 @@ module RGen
       private
 
       def newline
-        "\n"
+        :newline
       end
 
       alias_method :nl, :newline
@@ -18,15 +18,10 @@ module RGen
       end
 
       def indent(size, &block)
-        buffer  = []
-        block.call(buffer)
-        buffer.join.each_line.with_object('') do |line, indented_code|
-          if line =~ /^\s*$/
-            indented_code << nl
-          else
-            indented_code << space(size) << line
-          end
-        end
+        code        = CodeBlock.new
+        code.indent = size
+        block.call(code)
+        code
       end
     end
   end

@@ -38,15 +38,16 @@ module RGen::OutputBase
 CODE
       end
 
-      it "ブロック内で入力されたコードに、sizeで指定されたインデントを付けて1つの文字列として返す" do
+      it "ブロック内で入力されたコードに、sizeで指定されたインデントされたCodeBlockオブジェクトとして返す" do
         output  = test_object.send(:indent, 2) do |buf|
-          buf << :foo       << "\n"
-          buf << '  bar'    << "\n"
-          buf               << "\n"
-          buf << "  \t"     << "\n"
-          buf << "bar\nbaz" << "\n"
+          buf << :foo       << :newline
+          buf << '  bar'    << :newline
+          buf               << :newline
+          buf << "  \t"     << :newline
+          buf << "bar\nbaz" << :newline
         end
-        expect(output).to eq expected_code
+        expect(output).to be_a_kind_of(CodeBlock)
+        expect(output.to_s).to eq expected_code
       end
     end
   end

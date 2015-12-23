@@ -21,9 +21,9 @@ module RGen
 
       def generate_code(kind, mode, buffer = nil)
         output_code = buffer.nil?
-        buffer      = buffer || []
+        buffer      = buffer || CodeBlock.new
         generate_code_main(kind, mode, buffer)
-        buffer.join if output_code
+        buffer.to_s if output_code
       end
 
       def write_file(root_directory)

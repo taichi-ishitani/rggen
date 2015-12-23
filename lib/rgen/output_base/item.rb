@@ -38,9 +38,9 @@ module RGen
         private
 
         def generate_code(item)
-          buffer  = []
+          buffer  = CodeBlock.new
           item.instance_exec(buffer, &@body)
-          buffer.join
+          buffer.to_s
         end
 
         def file_path(item, outptu_directory)

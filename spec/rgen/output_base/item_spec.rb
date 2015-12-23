@@ -101,7 +101,7 @@ module RGen::OutputBase
     end
 
     let(:buffer) do
-      []
+      CodeBlock.new
     end
 
     describe "#build" do
@@ -109,7 +109,7 @@ module RGen::OutputBase
         it "登録されたブロックをアイテムのコンテキストで実行する" do
           baz_item.build
           baz_item.generate_code(:baz, buffer)
-          expect(buffer).to match ["#{baz_item.object_id}_baz"]
+          expect(buffer.to_s).to eq "#{baz_item.object_id}_baz"
         end
 
         context "継承されたとき" do
@@ -117,9 +117,7 @@ module RGen::OutputBase
             qux_item.build
             qux_item.generate_code(:baz, buffer)
             qux_item.generate_code(:qux, buffer)
-            expect(buffer).to match [
-              "#{qux_item.object_id}_baz", "#{qux_item.object_id}_qux"
-            ]
+            expect(buffer.to_s).to eq  "#{qux_item.object_id}_baz#{qux_item.object_id}_qux"
           end
         end
       end
@@ -129,7 +127,7 @@ module RGen::OutputBase
       context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
         it "指定された種類のコード生成ブロックを実行する" do
           foo_item.generate_code(:foo, buffer)
-          expect(buffer).to match ['foo']
+          expect(buffer.to_s).to eq 'foo'
         end
       end
 
@@ -141,7 +139,7 @@ module RGen::OutputBase
 
           it "[呼び出しもとのファイル名].erbをテンプレートとしてコードを生成する" do
             quux_item.generate_code(:quux_0, buffer)
-            expect(buffer).to match ['quux']
+            expect(buffer.to_s).to eq 'quux'
           end
         end
 
@@ -152,7 +150,7 @@ module RGen::OutputBase
 
           it "指定されたテンプレートからコードを生成する" do
             quux_item.generate_code(:quux_1, buffer)
-            expect(buffer).to match ['quux_quux']
+            expect(buffer.to_s).to eq 'quux_quux'
           end
         end
       end
@@ -161,7 +159,7 @@ module RGen::OutputBase
         it "指定された種類のコード生成ブロックを実行する" do
           bar_item.generate_code(:barbar, buffer)
           bar_item.generate_code(:bar   , buffer)
-          expect(buffer).to match ['barbar', 'bar']
+          expect(buffer.to_s).to eq 'barbarbar'
         end
       end
 
@@ -171,7 +169,7 @@ module RGen::OutputBase
             expect {
               foo_item.generate_code(:bar, buffer)
             }.not_to raise_error
-            expect(buffer).to be_empty
+            expect(buffer.to_s).to be_empty
           end
         end
       end
@@ -181,9 +179,7 @@ module RGen::OutputBase
           qux_item.build
           qux_item.generate_code(:baz, buffer)
           qux_item.generate_code(:qux, buffer)
-          expect(buffer).to match [
-            "#{qux_item.object_id}_baz", "#{qux_item.object_id}_qux"
-          ]
+          expect(buffer.to_s).to eq "#{qux_item.object_id}_baz#{qux_item.object_id}_qux"
         end
       end
     end

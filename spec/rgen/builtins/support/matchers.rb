@@ -91,8 +91,8 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
   attr_reader :expected
 
   def generate_code(component, kind, mode)
-    buffer  = []
+    buffer  = RGen::OutputBase::CodeBlock.new
     component.generate_code(kind, mode, buffer)
-    @actual = buffer.join
+    @actual = buffer.to_s
   end
 end

@@ -91,12 +91,12 @@ module RGen::OutputBase
 
     describe "#generate_code" do
       let(:buffer) do
-        []
+        CodeBlock.new
       end
 
       it "kindで指定した種類のコードを生成する" do
         component.generate_code(:foo, :top_down, buffer)
-        expect(buffer).to match [
+        expect(buffer.to_s).to eq [
           "#{component.object_id}_foo",
           "#{child_components[0].object_id}_foo",
           "#{grandchild_components[0].object_id}_foo",
@@ -104,13 +104,13 @@ module RGen::OutputBase
           "#{child_components[1].object_id}_foo",
           "#{grandchild_components[2].object_id}_foo",
           "#{grandchild_components[3].object_id}_foo"
-        ]
+        ].join
       end
 
       context "modeが:top_downを指定した場合" do
         it "上位からコードの生成を行う" do
           component.generate_code(:foo, :top_down, buffer)
-          expect(buffer).to match [
+          expect(buffer.to_s).to eq [
             "#{component.object_id}_foo",
             "#{child_components[0].object_id}_foo",
             "#{grandchild_components[0].object_id}_foo",
@@ -118,14 +118,14 @@ module RGen::OutputBase
             "#{child_components[1].object_id}_foo",
             "#{grandchild_components[2].object_id}_foo",
             "#{grandchild_components[3].object_id}_foo"
-          ]
+          ].join
         end
       end
 
       context "modeが:bottom_upを指定した場合" do
         it "下位からコードの生成を行う" do
           component.generate_code(:foo, :bottom_up, buffer)
-          expect(buffer).to match [
+          expect(buffer.to_s).to eq [
             "#{grandchild_components[0].object_id}_foo",
             "#{grandchild_components[1].object_id}_foo",
             "#{child_components[0].object_id}_foo",
@@ -133,7 +133,7 @@ module RGen::OutputBase
             "#{grandchild_components[3].object_id}_foo",
             "#{child_components[1].object_id}_foo",
             "#{component.object_id}_foo"
-          ]
+          ].join
         end
       end
 
