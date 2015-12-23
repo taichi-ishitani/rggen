@@ -19,7 +19,7 @@ module RGen
         when CodeBlock
           merge_code_block(other)
         when /\n/
-          add_string(other)
+          add_multiple_lines_string(other)
         when :newline
           add_newline
         else
@@ -48,11 +48,10 @@ module RGen
         add_newline
       end
 
-      def add_string(other_string)
+      def add_multiple_lines_string(other_string)
         other_string.each_line.with_index do |line, i|
           add_newline if i > 0
-          line.strip!
-          @lines.last << line unless line.empty?
+          @lines.last << line.rstrip unless /\A\s*\z/ =~ line
         end
         add_newline if other_string.end_with?("\n")
       end

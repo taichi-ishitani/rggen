@@ -21,11 +21,11 @@ module RGen::OutputBase
       context "複数行の文字列を追加する場合" do
         before do
           code_block << 'foo'
-          code_block << "bar\nbaz"
+          code_block << "bar\n  \n  baz  \nqux"
         end
 
         it "行ごとに追加する" do
-          expect(code_block.to_s).to eq "foobar\nbaz"
+          expect(code_block.to_s).to eq "foobar\n\n  baz\nqux"
         end
       end
 
