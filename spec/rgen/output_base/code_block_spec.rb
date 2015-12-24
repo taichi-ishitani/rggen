@@ -41,42 +41,58 @@ module RGen::OutputBase
         end
       end
 
-      context "最終行が空ではないCodeBlockを追加する場合" do
-        before do
-          code_block << 'foo'
-          code_block << added_code_block
-          code_block << 'baz'
-        end
-
-        let(:added_code_block) do
-          block = CodeBlock.new
-          block << 'bar'
-          block << :newline
-          block << 'baz'
-        end
-
-        it "与えられたコードブロックを末尾に追加し、また、新しい行を追加する" do
-          expect(code_block.to_s).to eq "foo\nbar\nbaz\nbaz"
-        end
-      end
-
-      context "最終行が空のCodeBlockを追加する場合" do
-        before do
-          code_block << 'foo'
-          code_block << added_code_block
-          code_block << 'baz'
-        end
-
+      context "CodeBlockを追加する場合" do
         let(:added_code_block) do
           block         = CodeBlock.new
           block.indent  = 2
-          block << 'bar'
-          block << :newline
-          block << 'baz' << :newline
+          block
         end
 
-        it "与えられたコードブロックを末尾に追加し、最終行のインデントを追加先のインデントに合わせる" do
-          expect(code_block.to_s).to eq "foo\n  bar\n  baz\nbaz"
+        context "最終行が空行の時" do
+          before do
+            added_code_block << 'bar' << :newline
+            added_code_block << 'baz'
+
+            code_block << 'foo' << :newline
+            code_block << added_code_block
+            code_block << 'qux' << :newline
+            code_block << 'quux'
+          end
+
+          it "与えられたコードブロックをそのまま追加する" do
+            expect(code_block.to_s).to eq "foo\n  bar\n  bazqux\nquux"
+          end
+        end
+
+        context "最終行が空行でない時" do
+          before do
+            added_code_block << 'bar' << :newline
+            added_code_block << 'baz'
+
+            code_block << 'foo'
+            code_block << added_code_block
+            code_block << 'qux' << :newline
+            code_block << 'quux'
+          end
+
+          it "追加するコードブロックの先頭行を、最終行に追加し、残りの行をそのまま追加する" do
+            expect(code_block.to_s).to eq "foobar\n  bazqux\nquux"
+          end
+        end
+
+        context "追加するコードブロックの最終行が空行の時" do
+          before do
+            added_code_block << 'bar' << :newline
+            added_code_block << 'baz' << :newline
+
+            code_block << 'foo' << :newline
+            code_block << added_code_block
+            code_block << 'qux'
+          end
+
+          it "最終行のインデントを追加先のインデントに合わせる" do
+            expect(code_block.to_s).to eq "foo\n  bar\n  baz\nqux"
+          end
         end
       end
     end
@@ -103,7 +119,7 @@ module RGen::OutputBase
       end
 
       it "末尾の行から与えられたインデント幅を設定する" do
-        expect(code_block.to_s).to eq "foo\n  bar\n    baz\n\n    qux\n\n    quux\n      corge\n\nfoobar"
+        expect(code_block.to_s).to eq "foo\n  bar\n    baz\n\n    qux\n    quux\n      corge\nfoobar"
       end
     end
 

@@ -7,6 +7,7 @@ module RGen
         @indent     = 0
       end
 
+      attr_reader   :words
       attr_accessor :indent
 
       def <<(word)

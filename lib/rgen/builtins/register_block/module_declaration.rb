@@ -3,7 +3,7 @@ define_simple_item :register_block, :module_declaration do
     write_file "<%= register_block.name %>.sv" do |buffer|
       buffer << "module #{register_block.name}" << space
       buffer << parameter_port_declarations
-      buffer << ';'
+      buffer << ';' << nl
       buffer << module_items
       buffer << 'endmodule' << nl
     end

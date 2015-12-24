@@ -41,15 +41,16 @@ module RGen
       end
 
       def merge_code_block(other_block)
-        other_block.lines.each do |line|
+        other_block.lines.each_with_index do |line, i|
           line.indent += @indent
+          if i == 0
+            @lines.last.indent  = line.indent if @lines.last.empty?
+            @lines.last.words.concat(line.words)
+          else
+            @lines << line
+          end
         end
-        @lines.concat(other_block.lines)
-        if other_block.lines.last.empty?
-          @lines.last.indent  = @indent
-        else
-          add_newline
-        end
+        @lines.last.indent  = @indent if other_block.lines.last.empty?
       end
 
       def add_multiple_lines_string(other_string)
