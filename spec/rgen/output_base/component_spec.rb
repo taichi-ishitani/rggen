@@ -137,7 +137,15 @@ module RGen::OutputBase
         end
       end
 
-      context "バッファ用の配列を与えなかった場合" do
+      context "バッファ用のCodeBlockを与えなかった場合" do
+        before do
+          expect(CodeBlock).to receive(:new).and_call_original
+        end
+
+        let(:code_block) do
+          component.generate_code(:foo, :top_down)
+        end
+
         let(:expected_code) do
           [
             "#{component.object_id}_foo",
@@ -150,8 +158,9 @@ module RGen::OutputBase
           ].join
         end
 
-        it "生成したコードを文字列として返す" do
-          expect(component.generate_code(:foo, :top_down)).to eq expected_code
+        it "CodeBlockオブジェクトを生成する" do
+          expect(code_block     ).to be_a_kind_of(CodeBlock)
+          expect(code_block.to_s).to eq expected_code
         end
       end
     end

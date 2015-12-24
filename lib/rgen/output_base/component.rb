@@ -20,10 +20,9 @@ module RGen
       end
 
       def generate_code(kind, mode, buffer = nil)
-        output_code = buffer.nil?
-        buffer      = buffer || CodeBlock.new
+        buffer  ||= CodeBlock.new
         generate_code_main(kind, mode, buffer)
-        buffer.to_s if output_code
+        buffer
       end
 
       def write_file(root_directory)
