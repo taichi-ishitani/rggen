@@ -5,6 +5,7 @@ module rgen_response_mux #(
   input                         clk,
   input                         rst_n,
   input                         i_command_valid,
+  input                         i_read,
   output                        o_response_ready,
   output  [DATA_WIDTH-1:0]      o_read_data,
   output  [1:0]                 o_status,
@@ -58,7 +59,7 @@ module rgen_response_mux #(
     if (!rst_n)  begin
       read_data <= {DATA_WIDTH{1'b0}};
     end
-    else if (response_valid) begin
+    else if (response_valid && i_read) begin
       read_data <= selected_data;
     end
     else begin

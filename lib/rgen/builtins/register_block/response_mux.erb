@@ -5,6 +5,7 @@ rgen_response_mux #(
   .clk                  (<%= register_block.clock %>),
   .rst_n                (<%= register_block.reset %>),
   .i_command_valid      (<%= register_block.host_if.command_valid %>),
+  .i_read               (<%= register_block.host_if.read %>),
   .o_response_ready     (<%= register_block.host_if.response_ready %>),
   .o_read_data          (<%= register_block.host_if.read_data %>),
   .o_status             (<%= register_block.host_if.status %>),

@@ -67,6 +67,7 @@ module sample_1 (
     .clk                  (clk),
     .rst_n                (rst_n),
     .i_command_valid      (command_valid),
+    .i_read               (read),
     .o_response_ready     (response_ready),
     .o_read_data          (read_data),
     .o_status             (status),
