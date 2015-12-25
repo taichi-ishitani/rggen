@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/taichi-ishitani/rgen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rgen)
 [![Code Climate](https://codeclimate.com/github/taichi-ishitani/rgen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rgen)
 
 # RGen
