@@ -6,7 +6,7 @@ require 'rgen/version'
 Gem::Specification.new do |spec|
   spec.name                   = "rgen"
   spec.version                = RGen::VERSION
-  spec.required_ruby_version  = ">= 2.2"
+  spec.required_ruby_version  = ">= 2.0"
   spec.authors                = ["Taichi Ishitani"]
   spec.email                  = ["taichi730@jf6.so-net.ne.jp"]
 
