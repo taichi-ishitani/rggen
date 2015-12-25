@@ -4,6 +4,8 @@
 
 # RGen
 
+[![Join the chat at https://gitter.im/taichi-ishitani/rgen](https://badges.gitter.im/taichi-ishitani/rgen.svg)](https://gitter.im/taichi-ishitani/rgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 RGen is a code generation tool for SoC designers. You can automatically generate soruce code for control registers in a SoC design, e.g. RTL, UVM RAL model, from its register map document. You can also customize RGen, so you can build your specific generation tool.
 
 ## Installation
