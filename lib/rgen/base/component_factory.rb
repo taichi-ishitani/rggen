@@ -33,7 +33,7 @@ module RGen
       end
 
       def create_child(component, *sources)
-        child = @child_factory.create(component, *sources)
+        @child_factory.create(component, *sources)
       end
     end
   end
