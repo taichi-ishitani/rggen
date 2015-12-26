@@ -4,5 +4,7 @@ rvm:
   - 2.0
   - 2.1
   - 2.2
+env:
+  - CODECLIMATE_REPO_TOKEN=366962523d19ec399edf4283a161bee24ce0827a849e251747f86e0c18c06280
 script:
   - bundle exec rspec
