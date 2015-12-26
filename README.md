@@ -27,5 +27,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/taichi
 
 ## License
 
-RGen &copy; 2015 by [Taichi Ishitani](mailto:taichi730@jf6.so-net.ne.jp).
-RGen is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copyright &copy; 2015 [Taichi Ishitani](mailto:taichi730@jf6.so-net.ne.jp).
+RGen is available as open source under the terms of the [MIT License](LICENSE.txt).
