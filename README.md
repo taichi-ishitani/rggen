@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/taichi-ishitani/rgen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rgen)
 [![Code Climate](https://codeclimate.com/github/taichi-ishitani/rgen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rgen)
+[![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rgen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rgen/coverage)
 [![Gitter](https://badges.gitter.im/taichi-ishitani/rgen.svg)](https://gitter.im/taichi-ishitani/rgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # RGen
