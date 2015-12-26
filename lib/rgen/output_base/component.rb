@@ -14,6 +14,11 @@ module RGen
       attr_reader :configuration
       attr_writer :output_directory
 
+      def add_item(item)
+        super(item)
+        def_object_delegators(@items.last, *item.exported_methods)
+      end
+
       def build
         items.each(&:build)
         children.each(&:build)

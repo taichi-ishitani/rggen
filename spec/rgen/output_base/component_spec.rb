@@ -6,6 +6,10 @@ module RGen::OutputBase
       component = Component.new(parent, configuration, register_map)
       [:foo, :bar].each do |kind|
         item  = Class.new(Item) {
+          export kind
+
+          define_method(kind) {kind}
+
           generate_code kind do |buffer|
             buffer  << "#{component.object_id}_#{kind}"
           end
@@ -44,7 +48,7 @@ module RGen::OutputBase
 
     let(:register_map) do
       r = RGen::InputBase::Component.new(nil)
-      allow(r).to receive(:fields).and_return [:foo, :bar]
+      allow(r).to receive(:fields).and_return [:baz, :qux]
       r
     end
 
@@ -54,11 +58,18 @@ module RGen::OutputBase
       expect(grandchild_components.map(&:hierarchy)).to all(eq :register      )
     end
 
-    specify "自身をレシーバとして、与えられたレジスタマップオブジェクトの各フィールドにアクセスできる" do
-      expect(register_map).to receive(:foo)
-      expect(register_map).to receive(:bar)
-      component.foo
-      component.bar
+    it "自身をレシーバとして、配下のアイテムのexportされたメソッドを呼び出せる" do
+      expect(component.items[0]).to receive(:foo).and_call_original
+      expect(component.items[1]).to receive(:bar).and_call_original
+      expect(component.foo).to eq :foo
+      expect(component.bar).to eq :bar
+    end
+
+    it "自身をレシーバとして、与えられたレジスタマップオブジェクトの各フィールドにアクセスできる" do
+      expect(register_map).to receive(:baz)
+      expect(register_map).to receive(:qux)
+      component.baz
+      component.qux
     end
 
     describe "#configuration" do

@@ -78,12 +78,23 @@ module RGen
         def write_file(name_pattern, &body)
           @file_writer  ||= FileWriter.new(name_pattern, body)
         end
+
+        def export(*exporting_methods)
+          exported_methods.concat(
+            exporting_methods.reject(&exported_methods.method(:include?))
+          )
+        end
+
+        def exported_methods
+          @exported_methods ||= []
+        end
       end
 
       def self.inherited(subclass)
         {
-          :@builders       => builders       && Array.new(builders),
-          :@code_generator => code_generator && code_generator.copy
+          :@builders         => @builders         && Array.new(@builders),
+          :@code_generator   => @code_generator   && @code_generator.copy,
+          :@exported_methods => @exported_methods && Array.new(@exported_methods)
         }.each do |k, v|
           subclass.instance_variable_set(k, v) if v
         end
@@ -97,6 +108,7 @@ module RGen
       class_delegator :builders
       class_delegator :code_generator
       class_delegator :file_writer
+      class_delegator :exported_methods
 
       def build
         return if builders.nil?

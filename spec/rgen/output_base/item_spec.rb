@@ -18,6 +18,10 @@ module RGen::OutputBase
     end
 
     class BazItem < Item
+      export :foo
+      export :bar, :baz
+      export :foo
+
       generate_code :baz do |buffer|
         buffer << @baz
       end
@@ -27,6 +31,9 @@ module RGen::OutputBase
     end
 
     class QuxItem < BazItem
+      export :foo, :qux
+      export :quux
+
       generate_code :qux do |buffer|
         buffer << @qux
       end
@@ -219,6 +226,16 @@ module RGen::OutputBase
             item.write_file
           }.not_to raise_error
         end
+      end
+    end
+
+    describe "#exported_methods" do
+      it ".exportで登録されたメソッド名一覧を返す" do
+        expect(baz_item.exported_methods).to match [:foo, :bar, :baz]
+      end
+
+      specify "継承元のメソッド名一覧を引き継ぐ" do
+        expect(qux_item.exported_methods).to match [:foo, :bar, :baz, :qux, :quux]
       end
     end
   end
