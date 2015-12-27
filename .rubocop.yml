@@ -1,0 +1,7 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - 'sample/*'
+    - 'setup/*'
+    - 'spec/**/*'
