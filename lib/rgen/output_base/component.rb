@@ -26,7 +26,9 @@ module RGen
 
       def generate_code(kind, mode, buffer = nil)
         buffer  ||= CodeBlock.new
-        generate_code_main(kind, mode, buffer)
+        generate_pre_code(kind, buffer)
+        generate_main_code(kind, mode, buffer)
+        generate_post_code(kind, buffer)
         buffer
       end
 
@@ -43,7 +45,13 @@ module RGen
 
       private
 
-      def generate_code_main(kind, mode, buffer)
+      def generate_pre_code(kind, buffer)
+        items.each do |item|
+          item.generate_pre_code(kind, buffer)
+        end
+      end
+
+      def generate_main_code(kind, mode, buffer)
         case mode
         when :top_down
           generate_item_code(kind, buffer)
@@ -63,6 +71,12 @@ module RGen
       def generate_item_code(kind, buffer)
         items.each do |item|
           item.generate_code(kind, buffer)
+        end
+      end
+
+      def generate_post_code(kind, buffer)
+        items.reverse_each do |item|
+          item.generate_post_code(kind, buffer)
         end
       end
 

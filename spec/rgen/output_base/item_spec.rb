@@ -3,17 +3,37 @@ require_relative '../../spec_helper'
 module RGen::OutputBase
   describe Item do
     class FooItem < Item
+      generate_pre_code :foo do |buffer|
+        buffer << 'pre_foo'
+      end
       generate_code :foo do |buffer|
         buffer << 'foo'
+      end
+      generate_post_code :foo do |buffer|
+        buffer << 'post_foo'
       end
     end
 
     class BarItem < Item
+      generate_pre_code :bar do |buffer|
+        buffer << 'pre_bar'
+      end
+      generate_pre_code :barbar do |buffer|
+        buffer << 'pre_barbar'
+      end
+
       generate_code :bar do |buffer|
         buffer << 'bar'
       end
       generate_code :barbar do |buffer|
         buffer << 'barbar'
+      end
+
+      generate_post_code :bar do |buffer|
+        buffer << 'post_bar'
+      end
+      generate_post_code :barbar do |buffer|
+        buffer << 'post_barbar'
       end
     end
 
@@ -22,9 +42,16 @@ module RGen::OutputBase
       export :bar, :baz
       export :foo
 
+      generate_pre_code :baz do |buffer|
+        buffer << "pre_#{@baz}"
+      end
       generate_code :baz do |buffer|
         buffer << @baz
       end
+      generate_post_code :baz do |buffer|
+        buffer << "post_#{@baz}"
+      end
+
       build do
         @baz  = "#{object_id}_baz"
       end
@@ -34,9 +61,16 @@ module RGen::OutputBase
       export :foo, :qux
       export :quux
 
+      generate_pre_code :qux do |buffer|
+        buffer << "pre_#{@qux}"
+      end
       generate_code :qux do |buffer|
         buffer << @qux
       end
+      generate_post_code :qux do |buffer|
+        buffer << "post_#{@qux}"
+      end
+
       build do
         @qux  = "#{object_id}_qux"
       end
@@ -130,6 +164,43 @@ module RGen::OutputBase
       end
     end
 
+    describe "#generate_pre_code" do
+      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定された場合" do
+        it "指定された種類のコード生成ブロックを実行する" do
+          foo_item.generate_pre_code(:foo, buffer)
+          expect(buffer.to_s).to eq 'pre_foo'
+        end
+      end
+
+      context ".generate_pre_codeで複数回コード生成が登録された場合" do
+        it "指定された種類のコード生成ブロックを実行する" do
+          bar_item.generate_pre_code(:barbar, buffer)
+          bar_item.generate_pre_code(:bar   , buffer)
+          expect(buffer.to_s).to eq 'pre_barbarpre_bar'
+        end
+      end
+
+      context ".generate_pre_codeで登録されていないコード生成の種類が指定された場合" do
+        it "何も起こらない" do
+          aggregate_failures do
+            expect {
+              foo_item.generate_pre_code(:bar, buffer)
+            }.not_to raise_error
+            expect(buffer.to_s).to be_empty
+          end
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたコード生成ブロックが継承先に引き継がれる" do
+          qux_item.build
+          qux_item.generate_pre_code(:baz, buffer)
+          qux_item.generate_pre_code(:qux, buffer)
+          expect(buffer.to_s).to eq "pre_#{qux_item.object_id}_bazpre_#{qux_item.object_id}_qux"
+        end
+      end
+    end
+
     describe "#generate_code" do
       context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
         it "指定された種類のコード生成ブロックを実行する" do
@@ -191,6 +262,43 @@ module RGen::OutputBase
       end
     end
 
+    describe "#generate_post_code" do
+      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定された場合" do
+        it "指定された種類のコード生成ブロックを実行する" do
+          foo_item.generate_post_code(:foo, buffer)
+          expect(buffer.to_s).to eq 'post_foo'
+        end
+      end
+
+      context ".generate_post_codeで複数回コード生成が登録された場合" do
+        it "指定された種類のコード生成ブロックを実行する" do
+          bar_item.generate_post_code(:barbar, buffer)
+          bar_item.generate_post_code(:bar   , buffer)
+          expect(buffer.to_s).to eq 'post_barbarpost_bar'
+        end
+      end
+
+      context ".generate_post_codeで登録されていないコード生成の種類が指定された場合" do
+        it "何も起こらない" do
+          aggregate_failures do
+            expect {
+              foo_item.generate_post_code(:bar, buffer)
+            }.not_to raise_error
+            expect(buffer.to_s).to be_empty
+          end
+        end
+      end
+
+      context "継承されたとき" do
+        specify "登録されたコード生成ブロックが継承先に引き継がれる" do
+          qux_item.build
+          qux_item.generate_post_code(:baz, buffer)
+          qux_item.generate_post_code(:qux, buffer)
+          expect(buffer.to_s).to eq "post_#{qux_item.object_id}_bazpost_#{qux_item.object_id}_qux"
+        end
+      end
+    end
+
     describe "#write_file" do
       let(:output_directory) do
         '/foo/bar'
@@ -201,7 +309,7 @@ module RGen::OutputBase
       end
 
       let(:contents) do
-        "foo\nbar"
+        "pre_foofoopost_foo\npre_barbarpost_bar"
       end
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do

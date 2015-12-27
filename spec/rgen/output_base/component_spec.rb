@@ -148,6 +148,114 @@ module RGen::OutputBase
         end
       end
 
+      context "Item.generate_pre_codeでコード生成が登録されている場合" do
+        before do
+          item  = Class.new(Item) {
+            generate_pre_code :foo do |buffer|
+              buffer << 'pre_foo_baz'
+            end
+            generate_pre_code :bar do |buffer|
+              buffer << 'pre_bar_baz'
+            end
+          }.new(component)
+          component.add_item(item)
+          item  = Class.new(Item) {
+            generate_pre_code :foo do |buffer|
+              buffer << 'pre_foo_qux'
+            end
+            generate_pre_code :bar do |buffer|
+              buffer << 'pre_bar_qux'
+            end
+          }.new(component)
+          component.add_item(item)
+        end
+
+        it "generate_codeで登録されたコードの前に、generate_pre_codeで登録され、kindで指定された種類のコードを登録された順に挿入する" do
+          component.generate_code(:foo, :top_down, buffer)
+          expect(buffer.to_s).to eq [
+            "pre_foo_baz",
+            "pre_foo_qux",
+            "#{component.object_id}_foo",
+            "#{child_components[0].object_id}_foo",
+            "#{grandchild_components[0].object_id}_foo",
+            "#{grandchild_components[1].object_id}_foo",
+            "#{child_components[1].object_id}_foo",
+            "#{grandchild_components[2].object_id}_foo",
+            "#{grandchild_components[3].object_id}_foo"
+          ].join
+
+          buffer.instance_variable_get(:@lines).clear
+          buffer.send(:add_newline)
+
+          component.generate_code(:bar, :bottom_up, buffer)
+          expect(buffer.to_s).to eq [
+            "pre_bar_baz",
+            "pre_bar_qux",
+            "#{grandchild_components[0].object_id}_bar",
+            "#{grandchild_components[1].object_id}_bar",
+            "#{child_components[0].object_id}_bar",
+            "#{grandchild_components[2].object_id}_bar",
+            "#{grandchild_components[3].object_id}_bar",
+            "#{child_components[1].object_id}_bar",
+            "#{component.object_id}_bar"
+          ].join
+        end
+      end
+
+      context "Item.generate_post_codeでコード生成が登録されている場合" do
+        before do
+          item  = Class.new(Item) {
+            generate_post_code :foo do |buffer|
+              buffer << 'post_foo_baz'
+            end
+            generate_post_code :bar do |buffer|
+              buffer << 'post_bar_baz'
+            end
+          }.new(component)
+          component.add_item(item)
+          item  = Class.new(Item) {
+            generate_post_code :foo do |buffer|
+              buffer << 'post_foo_qux'
+            end
+            generate_post_code :bar do |buffer|
+              buffer << 'post_bar_qux'
+            end
+          }.new(component)
+          component.add_item(item)
+        end
+
+        it "generate_codeで登録されたコードの後に、generate_post_codeで登録され、kindで指定された種類のコードを登録された順と逆順に挿入する" do
+          component.generate_code(:foo, :top_down, buffer)
+          expect(buffer.to_s).to eq [
+            "#{component.object_id}_foo",
+            "#{child_components[0].object_id}_foo",
+            "#{grandchild_components[0].object_id}_foo",
+            "#{grandchild_components[1].object_id}_foo",
+            "#{child_components[1].object_id}_foo",
+            "#{grandchild_components[2].object_id}_foo",
+            "#{grandchild_components[3].object_id}_foo",
+            "post_foo_qux",
+            "post_foo_baz"
+          ].join
+
+          buffer.instance_variable_get(:@lines).clear
+          buffer.send(:add_newline)
+
+          component.generate_code(:bar, :bottom_up, buffer)
+          expect(buffer.to_s).to eq [
+            "#{grandchild_components[0].object_id}_bar",
+            "#{grandchild_components[1].object_id}_bar",
+            "#{child_components[0].object_id}_bar",
+            "#{grandchild_components[2].object_id}_bar",
+            "#{grandchild_components[3].object_id}_bar",
+            "#{child_components[1].object_id}_bar",
+            "#{component.object_id}_bar",
+            "post_bar_qux",
+            "post_bar_baz"
+          ].join
+        end
+      end
+
       context "バッファ用のCodeBlockを与えなかった場合" do
         before do
           expect(CodeBlock).to receive(:new).and_call_original

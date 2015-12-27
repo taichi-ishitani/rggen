@@ -55,12 +55,19 @@ module RGen
 
       define_helpers do
         attr_reader :builders
+        attr_reader :pre_code_generator
         attr_reader :code_generator
+        attr_reader :post_code_generator
         attr_reader :file_writer
 
         def build(&body)
           @builders ||= []
           @builders << body
+        end
+
+        def generate_pre_code(kind, &body)
+          @pre_code_generator ||= CodeGenerator.new
+          @pre_code_generator[kind] = body
         end
 
         def generate_code(kind, &body)
@@ -73,6 +80,11 @@ module RGen
           generate_code(kind) do |buffer|
             buffer  << process_template(path)
           end
+        end
+
+        def generate_post_code(kind, &body)
+          @post_code_generator  ||= CodeGenerator.new
+          @post_code_generator[kind]  = body
         end
 
         def write_file(name_pattern, &body)
@@ -92,9 +104,11 @@ module RGen
 
       def self.inherited(subclass)
         {
-          :@builders         => @builders         && Array.new(@builders),
-          :@code_generator   => @code_generator   && @code_generator.copy,
-          :@exported_methods => @exported_methods && Array.new(@exported_methods)
+          :@builders            => @builders            && Array.new(@builders),
+          :@pre_code_generator  => @pre_code_generator  && @pre_code_generator.copy,
+          :@code_generator      => @code_generator      && @code_generator.copy,
+          :@post_code_generator => @post_code_generator && @post_code_generator.copy,
+          :@exported_methods    => @exported_methods    && Array.new(@exported_methods)
         }.each do |k, v|
           subclass.instance_variable_set(k, v) if v
         end
@@ -106,8 +120,10 @@ module RGen
       end
 
       class_delegator :builders
+      class_delegator :pre_code_generator
       class_delegator :code_generator
       class_delegator :file_writer
+      class_delegator :post_code_generator
       class_delegator :exported_methods
 
       def build
@@ -117,9 +133,19 @@ module RGen
         end
       end
 
+      def generate_pre_code(kind, buffer)
+        return if pre_code_generator.nil?
+        pre_code_generator.generate_code(self, kind, buffer)
+      end
+
       def generate_code(kind, buffer)
         return if code_generator.nil?
         code_generator.generate_code(self, kind, buffer)
+      end
+
+      def generate_post_code(kind, buffer)
+        return if post_code_generator.nil?
+        post_code_generator.generate_code(self, kind, buffer)
       end
 
       def write_file(output_directory = '')
