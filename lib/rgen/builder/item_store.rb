@@ -47,7 +47,7 @@ module RGen
       private
 
       def create_item_entry(entry_type, entry_name, context, body)
-        klass = {simple: SimpleItemEntry, list: ListItemEntry}[entry_type]
+        klass = { simple: SimpleItemEntry, list: ListItemEntry }[entry_type]
         entry = klass.new(base, factory, context, &body)
         update_entries(entry_type, entry_name, entry)
       end

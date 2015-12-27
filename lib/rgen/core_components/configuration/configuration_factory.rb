@@ -11,7 +11,7 @@ module RGen
         return {} if file.nil? || file.empty?
 
         data  = load_file(file)
-        if data.kind_of?(Hash)
+        if data.is_a?(Hash)
           data.symbolize_keys!
         else
           message = "Hash type required for configuration: #{data.class}"

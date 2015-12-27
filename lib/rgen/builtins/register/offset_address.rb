@@ -12,10 +12,10 @@ simple_item(:register, :offset_address) do
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
       when unaligned_address?
-        error "not aligned with data width" \
+        error 'not aligned with data width' \
               "(#{configuration.data_width}): #{cell}"
       when @end_address > max_address
-        error "exceeds the maximum offset address" \
+        error 'exceeds the maximum offset address' \
               "(0x#{max_address.to_s(16)}): #{cell}"
       when overlapped_address?
         error "overlapped offset address: #{cell}"

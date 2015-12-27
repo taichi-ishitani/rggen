@@ -1,6 +1,6 @@
 define_simple_item :register_block, :module_declaration do
   rtl do
-    write_file "<%= register_block.name %>.sv" do |buffer|
+    write_file '<%= register_block.name %>.sv' do |buffer|
       buffer << "module #{register_block.name}" << space
       buffer << parameter_port_declarations
       buffer << ';' << nl

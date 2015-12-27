@@ -50,7 +50,7 @@ module RGen
       end
 
       def find_loader(file)
-        loader  = @loaders && @loaders.find {|l| l.acceptable?(file)}
+        loader  = @loaders && @loaders.find { |l| l.acceptable?(file) }
         if loader
           loader.new
         else

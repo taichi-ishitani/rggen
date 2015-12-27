@@ -9,7 +9,7 @@ module RGen
 
       def load(file)
         map = load_file(file)
-        if map.kind_of?(GenericMap)
+        if map.is_a?(GenericMap)
           map
         else
           message = "GenericMap type required for register map: #{map.class}"

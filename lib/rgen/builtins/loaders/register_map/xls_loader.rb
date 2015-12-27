@@ -10,7 +10,7 @@ loader(:register_map, :xls) do
   end
 
   def load_spreadsheet(file)
-    Spreadsheet.open(file, "rb") do |book|
+    Spreadsheet.open(file, 'rb') do |book|
       book.worksheets.select do |worksheet|
         worksheet.row_count > 0
       end

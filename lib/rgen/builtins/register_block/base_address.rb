@@ -11,13 +11,13 @@ simple_item(:register_block, :base_address) do
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
       when not_aligned_with_data_width?
-        error "not aligned with data width" \
+        error 'not aligned with data width' \
               "(#{configuration.data_width}): #{cell}"
       when not_aligned_with_local_address_width?
-        error "not aligned with local address width" \
+        error 'not aligned with local address width' \
               "(#{@local_address_width}): #{cell}"
       when @end_address > max_address
-        error "exceeds the maximum base address" \
+        error 'exceeds the maximum base address' \
               "(0x#{max_address.to_s(16)}): #{cell}"
       when overlapped_address?
         error "overlapped base address: #{cell}"

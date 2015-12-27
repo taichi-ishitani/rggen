@@ -6,7 +6,7 @@ module RGen
 
         def acceptable?(file_name)
           ext = File.ext(file_name).to_sym
-          @supported_types.any? {|type| type.casecmp(ext) == 0}
+          @supported_types.any? { |type| type.casecmp(ext) == 0 }
         end
       end
     end

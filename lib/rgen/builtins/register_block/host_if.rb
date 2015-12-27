@@ -13,9 +13,7 @@ list_item(:register_block, :host_if) do
         @host_if  = shared_context.enabled_host_ifs.find do |host_if|
           host_if.to_sym.casecmp(value.to_sym) == 0
         end
-        if @host_if.nil?
-          error "unknown host interface: #{value}"
-        end
+        error "unknown host interface: #{value}" if @host_if.nil?
       end
     end
   end
@@ -40,7 +38,7 @@ list_item(:register_block, :host_if) do
     end
 
     factory do
-      def select_target_item(configuration, register_block)
+      def select_target_item(configuration, _register_block)
         @target_items[configuration.host_if]
       end
     end

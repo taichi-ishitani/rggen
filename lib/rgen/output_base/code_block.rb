@@ -61,11 +61,8 @@ module RGen
         add_newline if other_string.end_with?("\n")
       end
 
-      protected
-
-      def lines
-        @lines
-      end
+      attr_reader :lines
+      protected :lines
     end
   end
 end

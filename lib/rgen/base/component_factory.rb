@@ -23,7 +23,7 @@ module RGen
 
       private
 
-      def create_component(parent, *sources)
+      def create_component(parent, *_sources)
         @target_component.new(parent)
       end
 

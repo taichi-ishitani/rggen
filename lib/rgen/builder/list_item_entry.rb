@@ -15,7 +15,7 @@ module RGen
       end
 
       def item_base(&body)
-        @item_base.class_exec(&body)  if block_given?
+        @item_base.class_exec(&body) if block_given?
         @item_base
       end
 
@@ -28,7 +28,7 @@ module RGen
       alias_method :default_item, :item_class
 
       def factory(&body)
-        @factory.class_exec(&body)  if block_given?
+        @factory.class_exec(&body) if block_given?
         @factory
       end
 

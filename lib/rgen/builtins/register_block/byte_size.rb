@@ -14,10 +14,10 @@ simple_item(:register_block, :byte_size) do
       when @byte_size.not.positive?
         error "zero or negative value is not allowed for byte size: #{cell}"
       when @byte_size.not.multiple?(configuration.byte_width)
-        error "not aligned with data width" \
+        error 'not aligned with data width' \
               "(#{configuration.data_width}): #{cell}"
       when total_byte_size > upper_bound
-        error "exceeds upper bound of total byte size" \
+        error 'exceeds upper bound of total byte size' \
               "(#{upper_bound}): #{total_byte_size}"
       end
 

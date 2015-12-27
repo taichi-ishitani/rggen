@@ -86,7 +86,7 @@ list_item(:bit_field, :type) do
           error "#{required_width} bit(s) width required:" \
                 " #{bit_field.width} bit(s)"
         when required_refercne_not_exist?
-          error "reference bit field required"
+          error 'reference bit field required'
         when reference_width_mismatch?
           error "#{required_reference_width} bit(s) reference bit field" \
                 " required: #{bit_field.reference.width}"

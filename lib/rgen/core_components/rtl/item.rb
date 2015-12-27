@@ -85,16 +85,16 @@ module RGen
       end
 
       def bin(value, width)
-        sprintf("%d'b%0*b", width, width, value)
+        format("%d'b%0*b", width, width, value)
       end
 
       def dec(value, width)
-        sprintf("%d'd%d", width, value)
+        format("%d'd%d", width, value)
       end
 
       def hex(value, width)
         print_width = (width + 3) / 4
-        sprintf("%d'h%0*x", width, print_width, value)
+        format("%d'h%0*x", width, print_width, value)
       end
     end
   end
