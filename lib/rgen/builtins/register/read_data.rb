@@ -5,7 +5,7 @@ simple_item(:register, :read_data) do
     end
 
     def register_read_data
-      register_block.register_read_data[register_index]
+      register_block.register_read_data[register.index]
     end
 
     def read_data

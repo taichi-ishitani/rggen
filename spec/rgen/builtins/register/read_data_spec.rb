@@ -12,7 +12,7 @@ describe "register/read_data" do
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
     RGen.enable(:register, [:name, :accessibility])
-    RGen.enable(:register, :read_data)
+    RGen.enable(:register, [:read_data, :index])
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value])
     RGen.enable(:bit_field, :type, [:rw, :ro, :wo, :reserved])
 

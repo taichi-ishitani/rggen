@@ -5,4 +5,4 @@ enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :referen
 enable :bit_field     , :type, [:rw, :ro, :reserved]
 enable :register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]
 enable :register_block, :host_if, [:apb]
-enable :register      , [:address_decoder, :read_data]
+enable :register      , [:address_decoder, :read_data, :index]

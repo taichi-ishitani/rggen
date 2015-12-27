@@ -11,6 +11,7 @@ describe 'bit_fields/type/rw' do
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
     RGen.enable(:register, :name)
+    RGen.enable(:register, :index)
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
     RGen.enable(:bit_field, :type, :rw)
 

@@ -8,5 +8,5 @@ rgen_address_decoder #(
   .i_address  (<%= register_block.host_if.address[local_address_width - 1, address_lsb] %>),
   .i_read     (<%= register_block.host_if.read %>),
   .i_write    (<%= register_block.host_if.write %>),
-  .o_select   (<%= register_block.register_select[register_index] %>)
+  .o_select   (<%= register_block.register_select[register.index] %>)
 );

@@ -11,7 +11,7 @@ describe "register_block/module_declaration" do
     enable(:register_block, [:module_declaration, :port_declarations, :clock_reset, :signal_declarations, :host_if, :response_mux])
     enable(:register_block, :host_if, :apb)
     enable(:register, [:name, :offset_address, :accessibility])
-    enable(:register, [:address_decoder, :read_data])
+    enable(:register, [:address_decoder, :read_data, :index])
     enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
     enable(:bit_field, :type, [:rw, :ro])
 

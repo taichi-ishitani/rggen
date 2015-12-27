@@ -88,7 +88,7 @@ module RGen
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data])
+          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :index]).and_call_original
         end
 
         it "デフォルトのセットアップが実行される" do
@@ -109,7 +109,7 @@ module RGen
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data])
+          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :index]).and_call_original
         end
 
         after do
