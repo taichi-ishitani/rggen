@@ -23,7 +23,7 @@ module RGen
 
       def item_store
         return nil unless item_base && item_factory
-        @item_Store ||= ItemStore.new(item_base, item_factory)
+        @item_store ||= ItemStore.new(item_base, item_factory)
       end
 
       def build_factory

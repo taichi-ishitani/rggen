@@ -29,12 +29,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 11
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'lib/rgen/core_components/configuration/raise_error.rb'
-
 # Offense count: 72
 # Configuration parameters: Exclude.
 Style/Documentation:
@@ -62,13 +56,6 @@ Style/SingleSpaceBeforeFirstArg:
     - 'lib/rgen/core_components/register_map/setup.rb'
     - 'lib/rgen/core_components/rtl/setup.rb'
     - 'lib/rgen/output_base/line.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/SpaceAfterColon:
-  Exclude:
-    - 'lib/rgen/builtins/bit_field/reference.rb'
-    - 'lib/rgen/builtins/bit_field/type.rb'
 
 # Offense count: 28
 # Cop supports --auto-correct.
@@ -102,7 +89,3 @@ Style/SpaceInsideParens:
   Exclude:
     - 'lib/rgen/builder/category.rb'
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/VariableName:
-  Enabled: false

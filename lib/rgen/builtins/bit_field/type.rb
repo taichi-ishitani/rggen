@@ -65,11 +65,11 @@ list_item(:bit_field, :type) do
       end
 
       field :type
-      field :readable?  , forward_to_helper:true
-      field :writable?  , forward_to_helper:true
-      field :read_only? , forward_to_helper:true
-      field :write_only?, forward_to_helper:true
-      field :reserved?  , forward_to_helper:true
+      field :readable?  , forward_to_helper: true
+      field :writable?  , forward_to_helper: true
+      field :read_only? , forward_to_helper: true
+      field :write_only?, forward_to_helper: true
+      field :reserved?  , forward_to_helper: true
 
       class_delegator :full_width
       class_delegator :use_reference?
