@@ -55,8 +55,8 @@ module RGen
     end
 
     add_option :setup do |option|
-      option.long     = '--setup FILE'
-      option.default  = File.join(RGEN_HOME, 'setup', 'default.rb')
+      option.long         = '--setup FILE'
+      option.default      = File.join(RGEN_HOME, 'setup', 'default.rb')
       option.description  = 'Specify a setup file to set up RGen tool'
     end
 
