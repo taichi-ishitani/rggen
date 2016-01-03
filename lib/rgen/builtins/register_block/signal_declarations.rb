@@ -10,7 +10,7 @@ define_simple_item :register_block, :signal_declarations do
       type_width  = [
         declaration.type, declaration.width
       ].reject(&:empty?).join(space)
-      "#{type_width} #{declaration.name}#{declaration.dimension};"
+      "#{type_width} #{declaration.name}#{declaration.dimensions};"
     end
   end
 end

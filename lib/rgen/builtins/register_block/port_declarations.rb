@@ -20,7 +20,7 @@ define_simple_item :register_block, :port_declarations do
         declaration.direction,
         declaration.type,
         declaration.width,
-        "#{declaration.name}#{declaration.dimension}"
+        "#{declaration.name}#{declaration.dimensions}"
       ].reject(&:empty?).join(space)
     end
   end

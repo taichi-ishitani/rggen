@@ -52,7 +52,7 @@ describe "register_block/response_mux" do
   end
 
   it "各レジスタの読み出しデータを保持する配列信号を持つ" do
-    expect(rtl).to have_logic(:register_read_data, width: data_width, dimension: total_registers)
+    expect(rtl).to have_logic(:register_read_data, width: data_width, dimensions: [total_registers])
   end
 
   describe "#generate_code" do

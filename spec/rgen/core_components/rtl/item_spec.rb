@@ -32,9 +32,9 @@ module RGen::Rtl
       end
 
       specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {wire :foo, width:2, dimension:4}
-        expect(item.signal_declarations.last.width    ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimension).to eq '[4]'
+        item.instance_eval {wire :foo, width:2, dimensions:[4]}
+        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
+        expect(item.signal_declarations.last.dimensions).to eq '[4]'
       end
 
       context "属性で信号名を与えた場合" do
@@ -66,9 +66,9 @@ module RGen::Rtl
       end
 
       specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {reg :foo, width:2, dimension:4}
-        expect(item.signal_declarations.last.width    ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimension).to eq '[4]'
+        item.instance_eval {reg :foo, width:2, dimensions:[4]}
+        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
+        expect(item.signal_declarations.last.dimensions).to eq '[4]'
       end
 
       context "属性で信号名を与えた場合" do
@@ -100,9 +100,9 @@ module RGen::Rtl
       end
 
       specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {logic :foo, width:2, dimension:4}
-        expect(item.signal_declarations.last.width    ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimension).to eq '[4]'
+        item.instance_eval {logic :foo, width:2, dimensions:[4]}
+        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
+        expect(item.signal_declarations.last.dimensions).to eq '[4]'
       end
 
       context "属性で信号名を与えた場合" do
@@ -134,10 +134,10 @@ module RGen::Rtl
       end
 
       specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
-        item.instance_eval {input :foo, type: :logic, width:2, dimension:4}
-        expect(item.port_declarations.last.type     ).to eq :logic
-        expect(item.port_declarations.last.width    ).to eq '[1:0]'
-        expect(item.port_declarations.last.dimension).to eq '[4]'
+        item.instance_eval {input :foo, type: :logic, width:2, dimensions:[4]}
+        expect(item.port_declarations.last.type      ).to eq :logic
+        expect(item.port_declarations.last.width     ).to eq '[1:0]'
+        expect(item.port_declarations.last.dimensions).to eq '[4]'
       end
 
       context "属性でポート名を与えた場合" do
@@ -169,10 +169,10 @@ module RGen::Rtl
       end
 
       specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
-        item.instance_eval {output :foo, type: :logic, width:2, dimension:4}
-        expect(item.port_declarations.last.type     ).to eq :logic
-        expect(item.port_declarations.last.width    ).to eq '[1:0]'
-        expect(item.port_declarations.last.dimension).to eq '[4]'
+        item.instance_eval {output :foo, type: :logic, width:2, dimensions:[4]}
+        expect(item.port_declarations.last.type      ).to eq :logic
+        expect(item.port_declarations.last.width     ).to eq '[1:0]'
+        expect(item.port_declarations.last.dimensions).to eq '[4]'
       end
 
       context "属性でポート名を与えた場合" do

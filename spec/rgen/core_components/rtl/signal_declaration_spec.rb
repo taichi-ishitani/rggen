@@ -48,33 +48,38 @@ module RGen::Rtl
       end
     end
 
-    describe "#dimension" do
+    describe "#dimensions" do
       context "配列幅属性の指定が無い場合" do
         it "空文字列を返す" do
-          expect(SignalDeclaration.new(name).dimension).to eq ""
+          expect(SignalDeclaration.new(name).dimensions).to eq ""
         end
       end
 
-      context "配列幅属性の指定があり" do
-        let(:dimension) do
-          16
+      context "配列属性がnilの場合" do
+        it "空文字列を返す" do
+          expect(SignalDeclaration.new(name, dimensions: nil).dimensions).to eq ""
         end
+      end
 
+      context "配列幅属性の指定がありで" do
         context "sv_enable属性の指定が無い場合" do
           it "SV形式配列幅指定のコード片を返す" do
-            expect(SignalDeclaration.new(name, dimension: dimension).dimension).to eq "[#{dimension}]"
+            expect(SignalDeclaration.new(name, dimensions: [2    ]).dimensions).to eq "[2]"
+            expect(SignalDeclaration.new(name, dimensions: [2, 16]).dimensions).to eq "[2][16]"
           end
         end
 
         context "sv_enable属性の指定がtrueの場合" do
           it "SV形式配列幅指定のコード片を返す" do
-            expect(SignalDeclaration.new(name, dimension: dimension, sv_enable: true).dimension).to eq "[#{dimension}]"
+            expect(SignalDeclaration.new(name, dimensions: [2    ], sv_enable: true).dimensions).to eq "[2]"
+            expect(SignalDeclaration.new(name, dimensions: [2, 16], sv_enable: true).dimensions).to eq "[2][16]"
           end
         end
 
         context "sv_enable属性の指定がfalseの場合" do
           it "Verilog形式配列幅指定のコード片を返す" do
-            expect(SignalDeclaration.new(name, dimension: dimension, sv_enable: false).dimension).to eq "[0:#{dimension - 1}]"
+            expect(SignalDeclaration.new(name, dimensions: [2    ], sv_enable: false).dimensions).to eq "[0:1]"
+            expect(SignalDeclaration.new(name, dimensions: [2, 16], sv_enable: false).dimensions).to eq "[0:1][0:15]"
           end
         end
       end
