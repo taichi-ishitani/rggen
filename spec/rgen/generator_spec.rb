@@ -78,6 +78,39 @@ module RGen
       end
     end
 
+    describe "ヘルプの表示" do
+      before do
+        $stdout = StringIO.new
+        $stderr = StringIO.new
+      end
+
+      after do
+        $stdout = STDOUT
+        $stderr = STDERR
+      end
+
+      let(:expected_message) do
+        <<'HELP'
+Usage: rgen [options] REGISTER_MAP
+        --setup FILE                 Specify a setup file to set up RGen tool(default: D:/workspace/rgen/setup/default.rb)
+    -c, --configuration FILE         Specify a configuration file for generated source code
+    -o, --output DIR                 Specify output directory(default: ./)
+    -v, --version                    Display the version
+    -h, --help                       Display this message
+HELP
+      end
+
+      it "ヘルプを表示し、そのまま終了する" do
+        expect {
+          generator.run(['-h'])
+        }.to raise_error SystemExit
+        expect {
+          generator.run(['--help'])
+        }.to raise_error SystemExit
+        expect($stdout.string).to eq(expected_message * 2)
+      end
+    end
+
     describe "ジェネレータのセットアップ" do
       context "--setupでセットアップファイルの指定が無い場合" do
         before do
