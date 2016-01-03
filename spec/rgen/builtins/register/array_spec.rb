@@ -3,6 +3,7 @@ require_relative '../spec_helper'
 describe 'register/array' do
   include_context 'bit field type common'
   include_context 'configuration common'
+  include_context 'rtl common'
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
@@ -122,6 +123,64 @@ describe 'register/array' do
           expect {
             @factory.create(configuration, register_map_file)
           }.to raise_register_map_error(message, position("block_0", 4, 3))
+        end
+      end
+    end
+  end
+
+  describe "rtl" do
+    before(:all) do
+      register_map  = create_register_map(
+        @configuration,
+        "block_0" => [
+          [nil, nil         , "block_0"         ],
+          [nil, nil         , 256               ],
+          [                                     ],
+          [                                     ],
+          [nil, "register_0", "0x00"     , ""   ],
+          [nil, "register_1", "0x04"     , "[1]"],
+          [nil, "register_2", "0x08-0x0F", "[2]"],
+          [nil, "register_3", "0x20"     , ""   ]
+        ],
+        "block_1" => [
+          [nil, nil         , "block_1"         ],
+          [nil, nil         , 256               ],
+          [                                     ],
+          [                                     ],
+          [nil, "register_0", "0x00"     , "[1]"],
+          [nil, "register_1", "0x04"     , ""   ],
+          [nil, "register_2", "0x08-0x0F", "[2]"],
+          [nil, "register_3", "0x20"     , ""   ]
+        ]
+      )
+      @rtl  = build_rtl_factory.create(@configuration, register_map)
+    end
+
+    let(:rtl) do
+      @rtl
+    end
+
+    describe "#index" do
+      it "自身が属するレジスタブロック内でのインデックスを返す" do
+        expect(rtl.registers.map(&:index)).to match [
+          0        , "1 + g_i", "2 + g_i", 4,
+          "0 + g_i", 1        , "2 + g_i", 4
+        ]
+      end
+    end
+
+    describe "#local_index" do
+      context "レジスタが配列では無い場合" do
+        it "nilを返す" do
+          expect(rtl.registers[0].local_index).to be_nil
+          expect(rtl.registers[3].local_index).to be_nil
+        end
+      end
+
+      context "レジスタが配列の場合" do
+        it "generate for文内でのインデックスを返す" do
+          expect(rtl.registers[1].local_index).to eq :g_i
+          expect(rtl.registers[2].local_index).to eq :g_i
         end
       end
     end

@@ -37,4 +37,33 @@ simple_item :register, :array do
       register.byte_size != dimensions.first * configuration.byte_width
     end
   end
+
+  rtl do
+    export :index
+    export :local_index
+
+    def index
+      (register.array? && "#{base_index} + #{local_index}") || base_index
+    end
+
+    def local_index
+      (register.array? && genvar) || nil
+    end
+
+    def base_index
+      previous_registers.map(&total_registers).sum(0)
+    end
+
+    def genvar
+      :g_i
+    end
+
+    def previous_registers
+      register_block.registers.take_while { |r| !register.equal?(r) }
+    end
+
+    def total_registers
+      ->(r) { (r.array? && r.dimensions.sum(0)) || 1 }
+    end
+  end
 end
