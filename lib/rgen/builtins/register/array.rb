@@ -29,7 +29,7 @@ simple_item :register, :array do
     end
 
     def empty?
-      lambda { |v| v.empty? }
+      ->(v) { v.empty? }
     end
 
     def mismatch_with_own_byte_size?
