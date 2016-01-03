@@ -29,6 +29,12 @@ module RGen::Rtl
         end
       end
 
+      context "#[]にnilが与えられた場合" do
+        it "変数名を返す" do
+          expect(identifier[nil].to_s).to eq name
+        end
+      end
+
       context "#[]でビット選択がされた場合" do
         it "ビット選択込みの変数名を返す" do
           expect(identifier[index].to_s).to eq "#{name}[#{index}]"

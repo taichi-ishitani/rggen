@@ -10,7 +10,9 @@ module RGen
       end
 
       def [](msb, lsb = msb)
-        if msb == lsb
+        if msb.nil?
+          self
+        elsif msb == lsb
           Identifier.new("#{@name}[#{msb}]")
         else
           Identifier.new("#{@name}[#{msb}:#{lsb}]")
