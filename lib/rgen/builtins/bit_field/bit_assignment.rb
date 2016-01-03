@@ -20,10 +20,10 @@ simple_item(:bit_field, :bit_assignment) do
 
     def parse_bit_assignment(value)
       case value
-      when /\A\[ *([1-9]?\d+) *\]\z/
+      when /\A\[ *(\d|(?:[1-9]\d*)) *\]\z/
         @msb  = Regexp.last_match[1].to_i
         @lsb  = @msb
-      when /\A\[ *([1-9]?\d+) *: *([1-9]?\d+) *\]\z/
+      when /\A\[ *(\d|(?:[1-9]\d*)) *: *(\d|(?:[1-9]\d*)) *\]\z/
         @msb  = Regexp.last_match[1].to_i
         @lsb  = Regexp.last_match[2].to_i
       else
