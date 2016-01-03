@@ -90,9 +90,9 @@ module RGen
       end
 
       let(:expected_message) do
-        <<'HELP'
+        <<HELP
 Usage: rgen [options] REGISTER_MAP
-        --setup FILE                 Specify a setup file to set up RGen tool(default: D:/workspace/rgen/setup/default.rb)
+        --setup FILE                 Specify a setup file to set up RGen tool(default: #{RGen::RGEN_HOME}/setup/default.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: ./)
     -v, --version                    Display the version
