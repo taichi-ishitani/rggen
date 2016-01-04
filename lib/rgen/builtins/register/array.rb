@@ -19,16 +19,14 @@ simple_item :register, :array do
     def parse_dimension(value)
       case value
       when empty?
-        @array      = false
         @dimensions = nil
-        @count      = 1
       when /\A\[ *([1-9]\d*) *\]\z/
-        @array      = true
         @dimensions = Regexp.last_match.captures.map(&:to_i)
-        @count      = @dimensions.sum(0)
       else
         error "invalid value for array dimension: #{value.inspect}"
       end
+      @array  = @dimensions.not_nil?
+      @count  = (@dimensions && @dimensions.sum(0)) || 1
     end
 
     def empty?
@@ -72,11 +70,10 @@ simple_item :register, :array do
     end
 
     generate_post_code :module_item do |buffer|
-      register.dimensions.size.times do |level|
-        generate_for_end_code(level, buffer)
+      register.dimensions.size.times do
+        generate_for_end_code(buffer)
       end if register.array?
     end
-
 
     def generate_for_begin_code(dimension, level, buffer)
       buffer << generate_for_header(dimension)
@@ -86,7 +83,7 @@ simple_item :register, :array do
       buffer.indent += 2
     end
 
-    def generate_for_end_code(level, buffer)
+    def generate_for_end_code(buffer)
       buffer.indent -= 2
       buffer << 'end' << nl
     end
