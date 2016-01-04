@@ -5,7 +5,16 @@ simple_item :register, :array do
     field :count
 
     build do |cell|
-      parse_dimension(cell.to_s)
+      case cell
+      when empty?
+        @dimensions = nil
+      when /\A\[ *([1-9]\d*) *\]\z/
+        @dimensions = Regexp.last_match.captures.map(&:to_i)
+      else
+        error "invalid value for array dimension: #{cell.inspect}"
+      end
+      @array  = @dimensions.not_nil?
+      @count  = (@dimensions && @dimensions.sum(0)) || 1
     end
 
     validate do
@@ -16,21 +25,8 @@ simple_item :register, :array do
       end
     end
 
-    def parse_dimension(value)
-      case value
-      when empty?
-        @dimensions = nil
-      when /\A\[ *([1-9]\d*) *\]\z/
-        @dimensions = Regexp.last_match.captures.map(&:to_i)
-      else
-        error "invalid value for array dimension: #{value.inspect}"
-      end
-      @array  = @dimensions.not_nil?
-      @count  = (@dimensions && @dimensions.sum(0)) || 1
-    end
-
     def empty?
-      ->(v) { v.empty? }
+      ->(v) { v.nil? || v.empty? }
     end
 
     def mismatch_with_own_byte_size?
