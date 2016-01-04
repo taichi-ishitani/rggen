@@ -142,16 +142,16 @@ list_item(:bit_field, :type) do
   rtl do
     item_base do
       build do
-        logic :value, name: value_name, width: value_width unless bit_field.reserved?
+        next if bit_field.reserved?
+        logic :value, name: value_name, width: width, dimensions: dimensions
       end
 
       def value_name
         "#{bit_field.name}_value"
       end
 
-      def value_width
-        bit_field.width
-      end
+      delegate dimensions: :register
+      delegate width: :bit_field
     end
 
     default_item do

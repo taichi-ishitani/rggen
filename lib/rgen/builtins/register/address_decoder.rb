@@ -2,9 +2,7 @@ simple_item(:register, :address_decoder) do
   rtl do
     generate_code_from_template(:module_item)
 
-    def local_address_width
-      register_block.local_address_width
-    end
+    delegate local_address_width: :register_block
 
     def address_lsb
       Math.clog2(configuration.byte_width)
@@ -19,13 +17,22 @@ simple_item(:register, :address_decoder) do
     end
 
     def start_address
-      shift = address_lsb
-      hex(register.start_address >> shift, local_address_width - shift)
+      address_code(register.start_address)
     end
 
     def end_address
+      if register.array?
+        address = register.start_address + configuration.byte_width - 1
+        address_code(address)
+      else
+        address_code(register.end_address)
+      end
+    end
+
+    def address_code(address)
       shift = address_lsb
-      hex(register.end_address >> shift, local_address_width - shift)
+      base  = hex(address >> shift, local_address_width - shift)
+      (register.array? && "#{base} + #{register.local_index}") || base
     end
   end
 end

@@ -7,12 +7,10 @@ simple_item(:register_block, :response_mux) do
 
     generate_code_from_template(:module_item)
 
-    def data_width
-      configuration.data_width
-    end
+    delegate data_width: :configuration
 
     def total_registers
-      register_block.registers.size
+      register_block.registers.map(&:count).sum(0)
     end
   end
 end

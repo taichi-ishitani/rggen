@@ -11,7 +11,7 @@ describe "register/address_decoder" do
     RGen.enable(:register_block, [:name, :byte_size])
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :accessibility, :address_decoder, :index])
+    RGen.enable(:register, [:name, :offset_address, :array, :accessibility, :address_decoder])
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value])
     RGen.enable(:bit_field, :type, [:rw, :ro, :wo])
 
@@ -19,14 +19,15 @@ describe "register/address_decoder" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                         ],
-        [nil, nil         , 256                                               ],
-        [nil, nil         , nil                                               ],
-        [nil, nil         , nil                                               ],
-        [nil, "register_0", "0x10"      , "bit_field_0_0", "[31:0]", "rw", '0'],
-        [nil, "register_1", "0x14"      , "bit_field_1_0", "[31:0]", "ro", '0'],
-        [nil, "register_2", "0x18"      , "bit_field_2_0", "[31:0]", "wo", '0'],
-        [nil, "register_3", "0x20-0x02F", "bit_field_3_0", "[31:0]", "rw", '0']
+        [nil, nil         , "block_0"                                                ],
+        [nil, nil         , 256                                                      ],
+        [nil, nil         , nil                                                      ],
+        [nil, nil         , nil                                                      ],
+        [nil, "register_0", "0x10"      , nil  , "bit_field_0_0", "[31:0]", "rw", '0'],
+        [nil, "register_1", "0x14"      , nil  , "bit_field_1_0", "[31:0]", "ro", '0'],
+        [nil, "register_2", "0x18"      , nil  , "bit_field_2_0", "[31:0]", "wo", '0'],
+        [nil, "register_3", "0x20-0x02F", nil  , "bit_field_3_0", "[31:0]", "rw", '0'],
+        [nil, "register_4", "0x30-0x03F", "[4]", "bit_field_4_0", "[31:0]", "rw", '0']
       ]
     )
 
@@ -60,7 +61,7 @@ CODE
         @rtl.registers[0]
       end
 
-      it "読み書き可能に対応したアドレスでコーダモジュールをインスタンスするコードを出力する" do
+      it "読み書き可能に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
         expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end
@@ -87,7 +88,7 @@ CODE
         @rtl.registers[1]
       end
 
-      it "読み出し可能、書き込み不可に対応したアドレスでコーダモジュールをインスタンスするコードを出力する" do
+      it "読み出し可能、書き込み不可に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
         expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end
@@ -114,7 +115,7 @@ CODE
         @rtl.registers[2]
       end
 
-      it "読み出し不可、書き込み可能に対応したアドレスでコーダモジュールをインスタンスするコードを出力する" do
+      it "読み出し不可、書き込み可能に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
         expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end
@@ -141,7 +142,34 @@ CODE
         @rtl.registers[3]
       end
 
-      it "複数アドレスに対応したアドレスでコーダモジュールをインスタンスするコードを出力する" do
+      it "複数アドレスに対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
+        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+      end
+    end
+
+    context "対象レジスタが配列になっている場合" do
+      let(:expected_code) do
+        <<'CODE'
+  rgen_address_decoder #(
+    .ADDRESS_WIDTH  (6),
+    .READABLE       (1),
+    .WRITABLE       (1),
+    .START_ADDRESS  (6'h0c + g_i),
+    .END_ADDRESS    (6'h0c + g_i)
+  ) u_register_4_address_decoder (
+    .i_address  (address[7:2]),
+    .i_read     (read),
+    .i_write    (write),
+    .o_select   (register_select[4+g_i])
+  );
+CODE
+      end
+
+      let(:rtl) do
+        @rtl.registers[4]
+      end
+
+      it "配列レジスタに対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
         expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end

@@ -10,8 +10,8 @@ describe "register_block/signal_declarations" do
       register_map {read_write}
       rtl do
         build do
-          input  :foo_in , name: "i_#{bit_field.name}", type: :wire, width: bit_field.width
-          output :foo_out, name: "o_#{bit_field.name}", type: :reg , width: bit_field.width
+          input  :foo_in , name: "i_#{bit_field.name}", type: :wire, width: bit_field.width, dimensions: register.dimensions
+          output :foo_out, name: "o_#{bit_field.name}", type: :reg , width: bit_field.width, dimensions: register.dimensions
         end
       end
     end
@@ -20,7 +20,7 @@ describe "register_block/signal_declarations" do
     enable(:register_block, [:name, :byte_size])
     enable(:register_block, [:port_declarations, :clock_reset, :host_if, :response_mux])
     enable(:register_block, :host_if, :apb)
-    enable(:register, :name)
+    enable(:register, [:name, :offset_address, :array])
     enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
     enable(:bit_field, :type, :foo)
 
@@ -28,14 +28,15 @@ describe "register_block/signal_declarations" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                ],
-        [nil, nil         , 256                                      ],
-        [                                                            ],
-        [                                                            ],
-        [nil, "register_0", "bit_field_0_0", "[16]"   , "foo", 0, nil],
-        [nil, nil         , "bit_field_0_1", "[0]"    , "foo", 0, nil],
-        [nil, "register_1", "bit_field_1_0", "[31:16]", "foo", 0, nil],
-        [nil, nil         , "bit_field_1_1", "[15:0]" , "foo", 0, nil]
+        [nil, nil         , "block_0"                                                    ],
+        [nil, nil         , 256                                                          ],
+        [                                                                                ],
+        [                                                                                ],
+        [nil, "register_0", "0x00"     , nil  , "bit_field_0_0", "[16]"   , "foo", 0, nil],
+        [nil, nil         , nil        , nil  , "bit_field_0_1", "[0]"    , "foo", 0, nil],
+        [nil, "register_1", "0x04"     , nil  , "bit_field_1_0", "[31:16]", "foo", 0, nil],
+        [nil, nil         , nil        , nil  , "bit_field_1_1", "[15:0]" , "foo", 0, nil],
+        [nil, "register_2", "0x08-0x0f", "[2]", "bit_field_2_0", "[31:0]" , "foo", 0, nil]
       ]
     )
 
@@ -74,7 +75,9 @@ describe "register_block/signal_declarations" do
   input wire [15:0] i_bit_field_1_0,
   output reg [15:0] o_bit_field_1_0,
   input wire [15:0] i_bit_field_1_1,
-  output reg [15:0] o_bit_field_1_1
+  output reg [15:0] o_bit_field_1_1,
+  input wire [31:0] i_bit_field_2_0[2],
+  output reg [31:0] o_bit_field_2_0[2]
 )
 CODE
     end

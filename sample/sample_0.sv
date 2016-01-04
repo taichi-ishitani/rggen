@@ -16,7 +16,9 @@ module sample_0 (
   output [31:0] o_bit_field_1_0,
   input i_bit_field_2_0,
   output o_bit_field_2_1,
-  input [31:0] i_bit_field_3_0
+  input [31:0] i_bit_field_3_0,
+  input [15:0] i_bit_field_4_0[4],
+  output [15:0] o_bit_field_4_1[4]
 );
   logic command_valid;
   logic write;
@@ -27,14 +29,16 @@ module sample_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [3:0] register_select;
-  logic [31:0] register_read_data[4];
+  logic [7:0] register_select;
+  logic [31:0] register_read_data[8];
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;
   logic [31:0] bit_field_1_0_value;
   logic bit_field_2_0_value;
   logic bit_field_2_1_value;
   logic [31:0] bit_field_3_0_value;
+  logic [15:0] bit_field_4_0_value[4];
+  logic [15:0] bit_field_4_1_value[4];
   rgen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -64,7 +68,7 @@ module sample_0 (
   );
   rgen_response_mux #(
     .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (4)
+    .TOTAL_REGISTERS  (8)
   ) u_response_mux (
     .clk                  (clk),
     .rst_n                (rst_n),
@@ -173,4 +177,34 @@ module sample_0 (
   );
   assign register_read_data[3] = {bit_field_3_0_value};
   assign bit_field_3_0_value = i_bit_field_3_0;
+  for (genvar g_i = 0;g_i < 4;g_i++) begin : gen_register_4_0
+    rgen_address_decoder #(
+      .ADDRESS_WIDTH  (6),
+      .READABLE       (1),
+      .WRITABLE       (1),
+      .START_ADDRESS  (6'h04 + g_i),
+      .END_ADDRESS    (6'h04 + g_i)
+    ) u_register_4_address_decoder (
+      .i_address  (address[7:2]),
+      .i_read     (read),
+      .i_write    (write),
+      .o_select   (register_select[4+g_i])
+    );
+    assign register_read_data[4+g_i] = {bit_field_4_0_value[g_i], bit_field_4_1_value[g_i]};
+    assign bit_field_4_0_value[g_i] = i_bit_field_4_0[g_i];
+    assign o_bit_field_4_1[g_i] = bit_field_4_1_value[g_i];
+    rgen_bit_field_rw #(
+      .WIDTH          (16),
+      .INITIAL_VALUE  (16'h0000)
+    ) u_bit_field_4_1 (
+      .clk              (clk),
+      .rst_n            (rst_n),
+      .i_command_valid  (command_valid),
+      .i_select         (register_select[4+g_i]),
+      .i_write          (write),
+      .i_write_data     (write_data[15:0]),
+      .i_write_mask     (write_mask[15:0]),
+      .o_value          (bit_field_4_1_value[g_i])
+    );
+  end
 endmodule

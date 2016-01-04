@@ -2,6 +2,7 @@ simple_item :register, :array do
   register_map do
     field :array?
     field :dimensions
+    field :count
 
     build do |cell|
       parse_dimension(cell.to_s)
@@ -20,9 +21,11 @@ simple_item :register, :array do
       when empty?
         @array      = false
         @dimensions = nil
+        @count      = 1
       when /\A\[ *([1-9]\d*) *\]\z/
         @array      = true
         @dimensions = Regexp.last_match.captures.map(&:to_i)
+        @count      = @dimensions.sum(0)
       else
         error "invalid value for array dimension: #{value.inspect}"
       end
@@ -43,7 +46,7 @@ simple_item :register, :array do
     export :local_index
 
     def index
-      (register.array? && "#{base_index} + #{local_index}") || base_index
+      (register.array? && "#{base_index}+#{local_index}") || base_index
     end
 
     def local_index
@@ -51,7 +54,7 @@ simple_item :register, :array do
     end
 
     def base_index
-      previous_registers.map(&total_registers).sum(0)
+      previous_registers.map(&:count).sum(0)
     end
 
     def genvar
@@ -62,8 +65,38 @@ simple_item :register, :array do
       register_block.registers.take_while { |r| !register.equal?(r) }
     end
 
-    def total_registers
-      ->(r) { (r.array? && r.dimensions.sum(0)) || 1 }
+    generate_pre_code :module_item do |buffer|
+      register.dimensions.each_with_index do |dimension, level|
+        generate_for_begin_code(dimension, level, buffer)
+      end if register.array?
+    end
+
+    generate_post_code :module_item do |buffer|
+      register.dimensions.size.times do |level|
+        generate_for_end_code(level, buffer)
+      end if register.array?
+    end
+
+
+    def generate_for_begin_code(dimension, level, buffer)
+      buffer << generate_for_header(dimension)
+      buffer << ' begin : '
+      buffer << block_name(level)
+      buffer << nl
+      buffer.indent += 2
+    end
+
+    def generate_for_end_code(level, buffer)
+      buffer.indent -= 2
+      buffer << 'end' << nl
+    end
+
+    def generate_for_header(dimension)
+      "for (genvar #{genvar} = 0;#{genvar} < #{dimension};#{genvar}++)"
+    end
+
+    def block_name(level)
+      "gen_#{register.name}_#{level}"
     end
   end
 end

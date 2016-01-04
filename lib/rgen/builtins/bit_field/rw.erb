@@ -9,5 +9,5 @@ rgen_bit_field_rw #(
   .i_write          (<%= register_block.host_if.write %>),
   .i_write_data     (<%= register_block.host_if.write_data[bit_field.msb, bit_field.lsb] %>),
   .i_write_mask     (<%= register_block.host_if.write_mask[bit_field.msb, bit_field.lsb] %>),
-  .o_value          (<%= value %>)
+  .o_value          (<%= value[register.local_index] %>)
 );

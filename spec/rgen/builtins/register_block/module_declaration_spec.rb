@@ -10,8 +10,8 @@ describe "register_block/module_declaration" do
     enable(:register_block, [:name, :byte_size])
     enable(:register_block, [:module_declaration, :port_declarations, :clock_reset, :signal_declarations, :host_if, :response_mux])
     enable(:register_block, :host_if, :apb)
-    enable(:register, [:name, :offset_address, :accessibility])
-    enable(:register, [:address_decoder, :read_data, :index])
+    enable(:register, [:name, :offset_address, :array, :accessibility])
+    enable(:register, [:address_decoder, :read_data])
     enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
     enable(:bit_field, :type, [:rw, :ro])
 
@@ -19,14 +19,16 @@ describe "register_block/module_declaration" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                       ],
-        [nil, nil         , 256                                             ],
-        [                                                                   ],
-        [                                                                   ],
-        [nil, "register_0", "0x00", "bit_field_0_0", "[16]"   , "rw", 0, nil],
-        [nil, nil         , nil   , "bit_field_0_1", "[0]"    , "ro", 0, nil],
-        [nil, "register_1", "0x04", "bit_field_1_0", "[31:16]", "ro", 0, nil],
-        [nil, nil         , nil   , "bit_field_1_1", "[15:0]" , "rw", 0, nil]
+        [nil, nil         , "block_0"                                                   ],
+        [nil, nil         , 256                                                         ],
+        [                                                                               ],
+        [                                                                               ],
+        [nil, "register_0", "0x00"     , nil  , "bit_field_0_0", "[16]"   , "rw", 0, nil],
+        [nil, nil         , nil        , nil  , "bit_field_0_1", "[0]"    , "ro", 0, nil],
+        [nil, "register_1", "0x04"     , nil  , "bit_field_1_0", "[31:16]", "ro", 0, nil],
+        [nil, nil         , nil        , nil  , "bit_field_1_1", "[15:0]" , "rw", 0, nil],
+        [nil, "register_2", "0x08-0x0F", "[2]", "bit_field_2_0", "[31:16]", "ro", 0, nil],
+        [nil, nil         , nil        , nil  , "bit_field_2_1", "[15:0]" , "rw", 0, nil]
       ]
     )
 
@@ -64,7 +66,9 @@ module block_0 (
   output o_bit_field_0_0,
   input i_bit_field_0_1,
   input [15:0] i_bit_field_1_0,
-  output [15:0] o_bit_field_1_1
+  output [15:0] o_bit_field_1_1,
+  input [15:0] i_bit_field_2_0[2],
+  output [15:0] o_bit_field_2_1[2]
 );
   logic command_valid;
   logic write;
@@ -75,12 +79,14 @@ module block_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [1:0] register_select;
-  logic [31:0] register_read_data[2];
+  logic [3:0] register_select;
+  logic [31:0] register_read_data[4];
   logic bit_field_0_0_value;
   logic bit_field_0_1_value;
   logic [15:0] bit_field_1_0_value;
   logic [15:0] bit_field_1_1_value;
+  logic [15:0] bit_field_2_0_value[2];
+  logic [15:0] bit_field_2_1_value[2];
   rgen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -110,7 +116,7 @@ module block_0 (
   );
   rgen_response_mux #(
     .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (2)
+    .TOTAL_REGISTERS  (4)
   ) u_response_mux (
     .clk                  (clk),
     .rst_n                (rst_n),
@@ -178,6 +184,36 @@ module block_0 (
     .i_write_mask     (write_mask[15:0]),
     .o_value          (bit_field_1_1_value)
   );
+  for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
+    rgen_address_decoder #(
+      .ADDRESS_WIDTH  (6),
+      .READABLE       (1),
+      .WRITABLE       (1),
+      .START_ADDRESS  (6'h02 + g_i),
+      .END_ADDRESS    (6'h02 + g_i)
+    ) u_register_2_address_decoder (
+      .i_address  (address[7:2]),
+      .i_read     (read),
+      .i_write    (write),
+      .o_select   (register_select[2+g_i])
+    );
+    assign register_read_data[2+g_i] = {bit_field_2_0_value[g_i], bit_field_2_1_value[g_i]};
+    assign bit_field_2_0_value[g_i] = i_bit_field_2_0[g_i];
+    assign o_bit_field_2_1[g_i] = bit_field_2_1_value[g_i];
+    rgen_bit_field_rw #(
+      .WIDTH          (16),
+      .INITIAL_VALUE  (16'h0000)
+    ) u_bit_field_2_1 (
+      .clk              (clk),
+      .rst_n            (rst_n),
+      .i_command_valid  (command_valid),
+      .i_select         (register_select[2+g_i]),
+      .i_write          (write),
+      .i_write_data     (write_data[15:0]),
+      .i_write_mask     (write_mask[15:0]),
+      .o_value          (bit_field_2_1_value[g_i])
+    );
+  end
 endmodule
 CODE
     end
