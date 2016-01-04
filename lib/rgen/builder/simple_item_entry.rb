@@ -10,9 +10,9 @@ module RGen
       attr_reader :factory
 
       def build_factory
-        f             = @factory.new
-        f.target_item = @item_class
-        f
+        @factory.new.tap do |f|
+          f.target_item = @item_class
+        end
       end
 
       private

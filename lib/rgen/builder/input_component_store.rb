@@ -10,15 +10,15 @@ module RGen
 
       def define_loader(type_or_types, &body)
         return unless loader_base
-        l                 = Class.new(loader_base, &body)
-        l.supported_types = Array(type_or_types)
-        @loaders  << l
+        @loaders  << Class.new(loader_base, &body).tap do |l|
+          l.supported_types = Array(type_or_types)
+        end
       end
 
       def build_factory
-        f         = super
-        f.loaders = @loaders
-        f
+        super.tap do |f|
+          f.loaders = @loaders
+        end
       end
     end
   end

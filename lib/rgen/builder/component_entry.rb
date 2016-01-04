@@ -27,10 +27,10 @@ module RGen
       end
 
       def build_factory
-        f                   = component_factory.new
-        f.target_component  = component_class
-        f.item_factories    = item_store.build_factories if item_store
-        f
+        component_factory.new.tap do |f|
+          f.target_component  = component_class
+          f.item_factories    = item_store.build_factories if item_store
+        end
       end
 
       private

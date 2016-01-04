@@ -53,10 +53,10 @@ module RGen
       end
 
       def build_factory
-        f               = @factory.new
-        f.target_items  = target_items
-        f.target_item   = @item_class unless @item_class.nil?
-        f
+        @factory.new.tap do |f|
+          f.target_items  = target_items
+          f.target_item   = @item_class unless @item_class.nil?
+        end
       end
 
       private

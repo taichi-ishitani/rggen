@@ -4,9 +4,9 @@ module RGen
       attr_setter :output_directory
 
       def build_factory
-        f                   = super
-        f.output_directory  = @output_directory
-        f
+        super.tap do |f|
+          f.output_directory  = @output_directory
+        end
       end
     end
   end
