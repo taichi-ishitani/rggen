@@ -52,32 +52,64 @@ describe 'register/offset_address' do
   end
 
   context "適切な入力が与えられた場合" do
+    let(:valid_values) do
+      {
+        "0x00"         => [0x00, 0x03],
+        "0x04-0x07"    => [0x04, 0x07],
+        "0x08 -0x0F"   => [0x08, 0x0F],
+        "0x10- 0x1B"   => [0x10, 0x1B],
+        "0x1C - 0x2F"  => [0x1C, 0x2F],
+        "0x3_0-0x43_"  => [0x30, 0x43],
+        "0x48"         => [0x48, 0x4B],
+        "0x44"         => [0x44, 0x47],
+        "0xFC-0xFF"    => [0xFC, 0xFF]
+      }
+    end
+
+    let(:register_map) do
+      @factory.create(configuration, register_map_file)
+    end
+
+    before do
+      RegisterMapDummyLoader.load_data(load_data(valid_values.keys))
+    end
+
     describe "#start_address/#end_address/#byte_size" do
-      let(:valid_values) do
-        {
-          "0x00"         => [0x00, 0x03],
-          "0x04-0x07"    => [0x04, 0x07],
-          "0x08 -0x0F"   => [0x08, 0x0F],
-          "0x10- 0x1B"   => [0x10, 0x1B],
-          "0x1C - 0x2F"  => [0x1C, 0x2F],
-          "0x3_0-0x43_"  => [0x30, 0x43],
-          "0x48"         => [0x48, 0x4B],
-          "0x44"         => [0x44, 0x47],
-          "0xFC-0xFF"    => [0xFC, 0xFF]
-        }
-      end
-
-      let(:register_map) do
-        @factory.create(configuration, register_map_file)
-      end
-
-      before do
-        RegisterMapDummyLoader.load_data(load_data(valid_values.keys))
-      end
-
       it "入力されたスタートアドレス/エンドアドレス/バイトサイズを返す" do
         valid_values.values.each_with_index do |(start_address, end_address), i|
           expect(register_map.registers[i]).to match_offset_address(start_address, end_address)
+        end
+      end
+    end
+
+    context "#byte_sizeがデータ幅と同じとき" do
+      describe "#single?" do
+        it "真を返す" do
+          expect(register_map.registers[0]).to be_single
+          expect(register_map.registers[1]).to be_single
+        end
+      end
+
+      describe "#multiple?" do
+        it "偽を返す" do
+          expect(register_map.registers[0]).not_to be_multiple
+          expect(register_map.registers[1]).not_to be_multiple
+        end
+      end
+    end
+
+    context "#byte_sizeがデータ幅より大きいとき" do
+      describe "#single?" do
+        it "偽を返す" do
+          expect(register_map.registers[2]).not_to be_single
+          expect(register_map.registers[3]).not_to be_single
+        end
+      end
+
+      describe "#multiple?" do
+        it "真を返す" do
+          expect(register_map.registers[2]).to be_multiple
+          expect(register_map.registers[3]).to be_multiple
         end
       end
     end

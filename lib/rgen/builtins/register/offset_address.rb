@@ -5,6 +5,12 @@ simple_item(:register, :offset_address) do
     field :byte_size do
       end_address - start_address + 1
     end
+    field :single? do
+      byte_size == configuration.byte_width
+    end
+    field :multiple? do
+      byte_size > configuration.byte_width
+    end
 
     build do |cell|
       parse_address(cell.to_s)
