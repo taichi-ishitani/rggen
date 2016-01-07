@@ -1,18 +1,21 @@
-simple_item(:bit_field, :name) do
+simple_item :bit_field, :name do
   register_map do
     field :name
 
+    BIT_FIELD_AME_REGEXP  = /\A#{wrap_blank(/(#{variable_name})/)}\z/
+
     build do |cell|
-      @name = cell.to_s
-      if invalid_value?
-        error "invalid value for bit field name: #{cell.inspect}"
-      elsif repeated_name?
-        error "repeated bit field name: #{@name}"
-      end
+      @name = parse_name(cell)
+      error "repeated bit field name: #{@name}" if repeated_name?
     end
 
-    def invalid_value?
-      /\A[a-z_][a-z0-9_]*\z/i.match(@name).nil?
+    def parse_name(cell)
+      case cell
+      when BIT_FIELD_AME_REGEXP
+        Regexp.last_match.captures.first
+      else
+        error "invalid value for bit field name: #{cell.inspect}"
+      end
     end
 
     def repeated_name?

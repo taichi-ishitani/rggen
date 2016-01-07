@@ -1,4 +1,4 @@
-simple_item(:register, :offset_address) do
+simple_item :register, :offset_address do
   register_map do
     field :start_address
     field :end_address
@@ -12,8 +12,14 @@ simple_item(:register, :offset_address) do
       byte_size > configuration.byte_width
     end
 
+    OFFSET_ADDRESS_REGEXP = (
+      /\A#{blank}/ +
+      /(#{number})(?:#{wrap_blank(/-/)}(#{number}))?/ +
+      /#{blank}\z/
+    )
+
     build do |cell|
-      parse_address(cell.to_s)
+      @start_address, @end_address  = parse_address(cell.to_s)
       case
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
@@ -30,12 +36,13 @@ simple_item(:register, :offset_address) do
 
     def parse_address(value)
       case value
-      when /\A(0x\h[\h_]*)\z/i
-        @start_address  = Regexp.last_match[1].hex
-        @end_address    = @start_address + configuration.byte_width - 1
-      when /\A(0x\h[\h_]*) *- *(0x\h[\h_]*)\z/i
-        @start_address  = Regexp.last_match[1].hex
-        @end_address    = Regexp.last_match[2].hex
+      when OFFSET_ADDRESS_REGEXP
+        captures  = Regexp.last_match.captures.compact.map(&method(:Integer))
+        if captures.size == 2
+          captures
+        else
+          [captures[0], captures[0] + configuration.byte_width - 1]
+        end
       else
         error "invalid value for offset address: #{value.inspect}"
       end

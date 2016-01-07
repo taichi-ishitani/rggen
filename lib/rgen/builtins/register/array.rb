@@ -4,17 +4,19 @@ simple_item :register, :array do
     field :dimensions
     field :count
 
+    ARRAY_DEMENSIONS_REGEXP = (
+      /\A#{wrap_blank(/\[/)}/ +
+      /(#{number})/ +
+      /#{wrap_blank(/\]/)}\z/
+    )
+
     build do |cell|
-      case cell
-      when empty?
-        @dimensions = nil
-      when /\A\[ *([1-9]\d*) *\]\z/
-        @dimensions = Regexp.last_match.captures.map(&:to_i)
-      else
-        error "invalid value for array dimension: #{cell.inspect}"
+      @dimensions = parse_array_dimensions(cell)
+      @array      = @dimensions.not_nil?
+      @count      = (@dimensions && @dimensions.sum(0)) || 1
+      if @dimensions && @dimensions.any?(&:zero?)
+        error "0 is not allowed for array dimension: #{cell.inspect}"
       end
-      @array  = @dimensions.not_nil?
-      @count  = (@dimensions && @dimensions.sum(0)) || 1
     end
 
     validate do
@@ -22,6 +24,17 @@ simple_item :register, :array do
       when mismatch_with_own_byte_size?
         error "mismatches with own byte size(#{register.byte_size}):" \
               " #{dimensions}"
+      end
+    end
+
+    def parse_array_dimensions(cell)
+      case cell
+      when empty?
+        nil
+      when ARRAY_DEMENSIONS_REGEXP
+        Regexp.last_match.captures.map(&:to_i)
+      else
+        error "invalid value for array dimension: #{cell.inspect}"
       end
     end
 

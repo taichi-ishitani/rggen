@@ -1,6 +1,8 @@
 module RGen
   module InputBase
     class Item < Base::Item
+      include RegxpPatterns
+
       define_helpers do
         attr_reader :builders
         attr_reader :validators

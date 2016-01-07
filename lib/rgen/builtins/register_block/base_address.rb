@@ -1,9 +1,15 @@
-simple_item(:register_block, :base_address) do
+simple_item :register_block, :base_address do
   register_map do
     field :start_address
     field :end_address
     field :byte_size
     field :local_address_width
+
+    BASE_ADDRESS_REGEXP = (
+      /\A#{blank}/ +
+      /(#{number})#{wrap_blank(/-/)}(#{number})/ +
+      /#{blank}\z/
+    )
 
     build do |cell|
       parse_address(cell.to_s)
@@ -25,10 +31,10 @@ simple_item(:register_block, :base_address) do
     end
 
     def parse_address(value)
-      match = /\A(0x\h[\h_]*) *- *(0x\h[\h_]*)\z/i.match(value)
+      match = BASE_ADDRESS_REGEXP.match(value)
       if match
-        @start_address        = match.captures[0].hex
-        @end_address          = match.captures[1].hex
+        @start_address        = Integer(match.captures[0])
+        @end_address          = Integer(match.captures[1])
         @byte_size            = @end_address - @start_address + 1
         @local_address_width  = Math.clog2(@byte_size) if @byte_size > 0
       else

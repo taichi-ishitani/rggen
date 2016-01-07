@@ -110,7 +110,7 @@ describe 'register/array' do
 
     context "入力が配列設定に適さないとき" do
       let(:invalid_values) do
-        ["[0]", "[01]", "[1.0]", "[1", "1]", "1", "[1\t]", "[\n1]", "foo"]
+        ["[-1]", "[01]", "[1.0]", "[1", "1]", "1", "[\n1]", "foo"]
       end
 
       it "RegisterMapErrorを発生させる" do
@@ -124,6 +124,23 @@ describe 'register/array' do
             @factory.create(configuration, register_map_file)
           }.to raise_register_map_error(message, position("block_0", 4, 3))
         end
+      end
+    end
+
+    context "配列の大きさに0が設定されたとき" do
+      let(:invalid_value) do
+        "[0]"
+      end
+
+      it do
+        set_load_data([
+          [nil, "register_0", "0x00", invalid_value, "bit_field_0_0", "[31:0]", "rw", 0]
+        ])
+
+        message = "0 is not allowed for array dimension: #{invalid_value.inspect}"
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error(message, position("block_0", 4, 3))
       end
     end
 

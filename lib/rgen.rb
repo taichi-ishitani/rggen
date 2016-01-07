@@ -23,6 +23,7 @@ module RGen
   require_relative 'rgen/base/component_factory'
   require_relative 'rgen/base/item_factory'
 
+  require_relative 'rgen/input_base/regexp_patterns'
   require_relative 'rgen/input_base/component'
   require_relative 'rgen/input_base/item'
   require_relative 'rgen/input_base/loader'

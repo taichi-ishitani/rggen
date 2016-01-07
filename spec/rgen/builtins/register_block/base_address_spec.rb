@@ -40,7 +40,7 @@ describe 'register_map/offset_address' do
           ["0x1000 -0x1fff" , 0x1000, 0x1FFF],
           ["0x3000- 0x3fFB" , 0x3000, 0x3FFB],
           ["0x5000 - 0x5FFF", 0x5000, 0x5FFF],
-          ["0X40_00-0x4FFB_", 0x4000, 0x4FFB],
+          ["0X40_00-0x4FFB" , 0x4000, 0x4FFB],
           ["0xFFFC - 0xFFFF", 0xFFFC, 0xFFFF]
         ]
       end
@@ -71,7 +71,7 @@ describe 'register_map/offset_address' do
 
   context "入力がベースアドレスに適さないとき" do
     let(:invalid_values) do
-      ["foo", "012-ABC", "0b000-0b111", "0o0-0o3", "0-3", "0x_0000-0x0FFF", "0x0000\n-0x0FFF", "0x0000-\t0x0FFF", "0x0000"]
+      ["foo", "-0x0000 - 0x0004", "0x0000 - -0x0004", "012-ABC", "0x_0000-0x0FFF", "0x0000\n-0x0FFF", "0x0000"]
     end
 
     it "RegisterMapErrorを発生させる" do

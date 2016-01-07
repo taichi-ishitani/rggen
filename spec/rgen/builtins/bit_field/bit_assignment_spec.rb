@@ -84,7 +84,7 @@ describe 'bit_field/bit_assignment' do
 
   context "入力がビット割り当てに適さないとき" do
     let(:invalid_values) do
-      ["[01]", "[0.0]", "[0", "0]", "0", "[0\n]", "[0] ", "[01:0]", "[1:00]", "[1\n:0]", "foo"]
+      ["[01]", "[0.0]", "[0", "0]", "0", "[0\n]", "[01:0]", "[1:00]", "[1\n:0]", "foo"]
     end
 
     it "RegisterMapErrorを発生させる" do

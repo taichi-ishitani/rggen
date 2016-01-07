@@ -1,18 +1,21 @@
-simple_item(:register_block, :name) do
+simple_item :register_block, :name do
   register_map do
     field :name
 
+    REGISTER_BLOCK_NAME_REGEXP  = /\A#{wrap_blank(/(#{variable_name})/)}\z/
+
     build do |cell|
-      @name = cell.to_s
-      if invalid_value?
-        error "invalid value for register block name: #{cell.inspect}"
-      elsif repeated_name?
-        error "repeated register block name: #{@name}"
-      end
+      @name = parse_name(cell)
+      error "repeated register block name: #{@name}" if repeated_name?
     end
 
-    def invalid_value?
-      /\A[a-z_][a-z0-9_]*\z/i.match(@name).nil?
+    def parse_name(cell)
+      case cell
+      when REGISTER_BLOCK_NAME_REGEXP
+        Regexp.last_match.captures.first
+      else
+        error "invalid value for register block name: #{cell.inspect}"
+      end
     end
 
     def repeated_name?
