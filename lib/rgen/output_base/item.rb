@@ -103,14 +103,15 @@ module RGen
       end
 
       def self.inherited(subclass)
-        {
-          :@builders            => @builders            && Array.new(@builders),
-          :@pre_code_generator  => @pre_code_generator  && @pre_code_generator.copy,
-          :@code_generator      => @code_generator      && @code_generator.copy,
-          :@post_code_generator => @post_code_generator && @post_code_generator.copy,
-          :@exported_methods    => @exported_methods    && Array.new(@exported_methods)
-        }.each do |k, v|
-          subclass.instance_variable_set(k, v) if v
+        [:@builders, :@exported_methods].each do |v|
+          subclass.inherit_class_instance_variable(v, self, &:dup)
+        end
+        [
+          :@pre_code_generator,
+          :@code_generator,
+          :@post_code_generator
+        ].each do |v|
+          subclass.inherit_class_instance_variable(v, self, &:copy)
         end
       end
 
