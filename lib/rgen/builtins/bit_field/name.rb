@@ -2,7 +2,7 @@ simple_item :bit_field, :name do
   register_map do
     field :name
 
-    input_pattern %r{\A(#{variable_name})\z}, ignore_blank: true
+    input_pattern %r{(#{variable_name})}
 
     build do |cell|
       @name = parse_name(cell)
@@ -10,7 +10,7 @@ simple_item :bit_field, :name do
     end
 
     def parse_name(cell)
-      if match_data
+      if pattern_matched?
         captures.first
       else
         error "invalid value for bit field name: #{cell.inspect}"

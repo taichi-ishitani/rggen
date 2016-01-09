@@ -6,7 +6,7 @@ simple_item :bit_field, :bit_assignment do
       msb - lsb + 1
     end
 
-    input_pattern %r{\A\[(#{number})(?::(#{number}))?\]\z}, ignore_blank: true
+    input_pattern %r{\[(#{number})(?::(#{number}))?\]}
 
     build do |cell|
       parse_bit_assignment(cell)
@@ -21,7 +21,7 @@ simple_item :bit_field, :bit_assignment do
     end
 
     def parse_bit_assignment(cell)
-      if match_data
+      if pattern_matched?
         @msb, @lsb  = captures.compact.map(&method(:Integer))
         @lsb ||= @msb
       else

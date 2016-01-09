@@ -12,7 +12,7 @@ simple_item :register, :offset_address do
       byte_size > configuration.byte_width
     end
 
-    input_pattern %r{\A(#{number})(?:-(#{number}))?\z}, ignore_blank: true
+    input_pattern %r{(#{number})(?:-(#{number}))?}
 
     build do |cell|
       @start_address, @end_address  = parse_address(cell)
@@ -31,7 +31,7 @@ simple_item :register, :offset_address do
     end
 
     def parse_address(cell)
-      if match_data
+      if pattern_matched?
         addresses = captures.compact.map(&method(:Integer))
         if addresses.size == 2
           addresses

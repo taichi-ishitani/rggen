@@ -4,7 +4,7 @@ simple_item :register, :array do
     field :dimensions
     field :count
 
-    input_pattern %r{\A\[(#{number})\]\z}, ignore_blank: true
+    input_pattern %r{\[(#{number})\]}, match_automatically: false
 
     build do |cell|
       @dimensions = parse_array_dimensions(cell)
@@ -27,7 +27,7 @@ simple_item :register, :array do
       case
       when cell.nil? || cell.empty?
         nil
-      when match_data
+      when pattern_match(cell)
         captures.map(&method(:Integer))
       else
         error "invalid value for array dimension: #{cell.inspect}"

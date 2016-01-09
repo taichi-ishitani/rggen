@@ -5,8 +5,13 @@ module RGen
 
       class InputMatcher
         def initialize(pattern, options)
-          @pattern  = pattern
           @options  = options
+          @pattern  =
+            if @options.fetch(:match_wholly, true)
+              /\A#{pattern}\z/
+            else
+              pattern
+            end
         end
 
         attr_reader :match_data
@@ -17,16 +22,12 @@ module RGen
 
         def match(rhs)
           rhs = rhs.to_s if @options[:convert_to_string]
-          rhs = delete_blanks(rhs) if @options[:ignore_blank]
+          rhs = delete_blanks(rhs) if @options.fetch(:ignore_blank, true)
           @match_data =
             case rhs
             when @pattern
               Regexp.last_match
             end
-        end
-
-        def captures
-          (@match_data && @match_data.captures) || nil
         end
 
         private
@@ -129,8 +130,12 @@ module RGen
         input_matcher && input_matcher.match_data
       end
 
+      def pattern_matched?
+        match_data.not_nil?
+      end
+
       def captures
-        input_matcher && input_matcher.captures
+        match_data && match_data.captures
       end
 
       def match_automatically?

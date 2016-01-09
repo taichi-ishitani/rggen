@@ -5,7 +5,7 @@ simple_item :register_block, :base_address do
     field :byte_size
     field :local_address_width
 
-    input_pattern %r{\A(#{number})-(#{number})\z}, ignore_blank: true
+    input_pattern %r{(#{number})-(#{number})}
 
     build do |cell|
       parse_address(cell)
@@ -27,7 +27,7 @@ simple_item :register_block, :base_address do
     end
 
     def parse_address(cell)
-      if match_data
+      if pattern_matched?
         @start_address        = Integer(captures[0])
         @end_address          = Integer(captures[1])
         @byte_size            = @end_address - @start_address + 1
