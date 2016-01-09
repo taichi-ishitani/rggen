@@ -4,11 +4,7 @@ simple_item :register, :array do
     field :dimensions
     field :count
 
-    ARRAY_DEMENSIONS_REGEXP = (
-      /\A#{wrap_blank(/\[/)}/ +
-      /(#{number})/ +
-      /#{wrap_blank(/\]/)}\z/
-    )
+    input_pattern %r{\A\[(#{number})\]\z}, ignore_blank: true
 
     build do |cell|
       @dimensions = parse_array_dimensions(cell)
@@ -28,18 +24,14 @@ simple_item :register, :array do
     end
 
     def parse_array_dimensions(cell)
-      case cell
-      when empty?
+      case
+      when cell.nil? || cell.empty?
         nil
-      when ARRAY_DEMENSIONS_REGEXP
-        Regexp.last_match.captures.map(&:to_i)
+      when match_data
+        captures.map(&method(:Integer))
       else
         error "invalid value for array dimension: #{cell.inspect}"
       end
-    end
-
-    def empty?
-      ->(v) { v.nil? || v.empty? }
     end
 
     def mismatch_with_own_byte_size?

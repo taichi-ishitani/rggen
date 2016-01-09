@@ -5,14 +5,10 @@ simple_item :register_block, :base_address do
     field :byte_size
     field :local_address_width
 
-    BASE_ADDRESS_REGEXP = (
-      /\A#{blank}/ +
-      /(#{number})#{wrap_blank(/-/)}(#{number})/ +
-      /#{blank}\z/
-    )
+    input_pattern %r{\A(#{number})-(#{number})\z}, ignore_blank: true
 
     build do |cell|
-      parse_address(cell.to_s)
+      parse_address(cell)
       case
       when @start_address >= @end_address
         error "start address is equal to or greater than end address: #{cell}"
@@ -30,15 +26,14 @@ simple_item :register_block, :base_address do
       end
     end
 
-    def parse_address(value)
-      match = BASE_ADDRESS_REGEXP.match(value)
-      if match
-        @start_address        = Integer(match.captures[0])
-        @end_address          = Integer(match.captures[1])
+    def parse_address(cell)
+      if match_data
+        @start_address        = Integer(captures[0])
+        @end_address          = Integer(captures[1])
         @byte_size            = @end_address - @start_address + 1
         @local_address_width  = Math.clog2(@byte_size) if @byte_size > 0
       else
-        error "invalid value for base address: #{value.inspect}"
+        error "invalid value for base address: #{cell.inspect}"
       end
     end
 

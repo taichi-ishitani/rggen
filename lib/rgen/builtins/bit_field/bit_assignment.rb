@@ -6,11 +6,7 @@ simple_item :bit_field, :bit_assignment do
       msb - lsb + 1
     end
 
-    BIT_ASSIGNMENT_REGEXP = (
-      /\A#{wrap_blank(/\[/)}/ +
-      /(#{number})(?:#{wrap_blank(/:/)}(#{number}))?/ +
-      /#{wrap_blank(/\]/)}\z/
-    )
+    input_pattern %r{\A\[(#{number})(?::(#{number}))?\]\z}, ignore_blank: true
 
     build do |cell|
       parse_bit_assignment(cell)
@@ -24,13 +20,12 @@ simple_item :bit_field, :bit_assignment do
       end
     end
 
-    def parse_bit_assignment(value)
-      case value
-      when BIT_ASSIGNMENT_REGEXP
-        @msb, @lsb  = Regexp.last_match.captures.compact.map(&method(:Integer))
+    def parse_bit_assignment(cell)
+      if match_data
+        @msb, @lsb  = captures.compact.map(&method(:Integer))
         @lsb ||= @msb
       else
-        error "invalid value for bit assignment: #{value.inspect}"
+        error "invalid value for bit assignment: #{cell.inspect}"
       end
     end
 

@@ -2,7 +2,7 @@ simple_item :bit_field, :name do
   register_map do
     field :name
 
-    BIT_FIELD_AME_REGEXP  = /\A#{wrap_blank(/(#{variable_name})/)}\z/
+    input_pattern %r{\A(#{variable_name})\z}, ignore_blank: true
 
     build do |cell|
       @name = parse_name(cell)
@@ -10,9 +10,8 @@ simple_item :bit_field, :name do
     end
 
     def parse_name(cell)
-      case cell
-      when BIT_FIELD_AME_REGEXP
-        Regexp.last_match.captures.first
+      if match_data
+        captures.first
       else
         error "invalid value for bit field name: #{cell.inspect}"
       end

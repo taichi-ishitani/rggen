@@ -2,7 +2,7 @@ simple_item :register, :name do
   register_map do
     field :name
 
-    REGISTER_NAME_REGEXP  = /\A#{wrap_blank(/(#{variable_name})/)}\z/
+    input_pattern %r{\A(#{variable_name})\z}, ignore_blank: true
 
     build do |cell|
       @name = parse_name(cell)
@@ -10,9 +10,8 @@ simple_item :register, :name do
     end
 
     def parse_name(cell)
-      case cell
-      when REGISTER_NAME_REGEXP
-        Regexp.last_match.captures.first
+      if match_data
+        captures.first
       else
         error "invalid value for register name: #{cell.inspect}"
       end
