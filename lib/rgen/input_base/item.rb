@@ -22,8 +22,6 @@ module RGen
             case rhs
             when @pattern
               Regexp.last_match
-            else
-              nil
             end
         end
 
@@ -93,10 +91,8 @@ module RGen
       end
 
       def self.inherited(subclass)
-        [:@fields, :@builders, :@validators].each do |variable|
-          subclass.inherit_class_instance_variable(variable, self) do |v|
-            Array.new(v)
-          end
+        [:@fields, :@builders, :@validators].each do |v|
+          subclass.inherit_class_instance_variable(v, self, &:dup)
         end
         subclass.inherit_class_instance_variable(:@input_matcher, self)
       end
