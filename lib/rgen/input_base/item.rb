@@ -40,12 +40,8 @@ module RGen
         ].inject(&:|).freeze
 
         def delete_blanks(rhs)
-          case rhs
-          when String
-            rhs.strip.gsub(BLANK_REGEXP, '')
-          else
-            rhs
-          end
+          return rhs unless rhs.respond_to?(:gsub)
+          rhs.gsub(BLANK_REGEXP, '')
         end
       end
 
