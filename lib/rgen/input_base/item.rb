@@ -3,9 +3,57 @@ module RGen
     class Item < Base::Item
       include RegxpPatterns
 
+      class InputMatcher
+        def initialize(pattern, options)
+          @pattern  = pattern
+          @options  = options
+        end
+
+        attr_reader :match_data
+
+        def match_automatically?
+          @options.fetch(:match_automatically, true)
+        end
+
+        def match(rhs)
+          rhs = rhs.to_s if @options[:convert_to_string]
+          rhs = delete_blanks(rhs) if @options[:ignore_blank]
+          @match_data =
+            case rhs
+            when @pattern
+              Regexp.last_match
+            else
+              nil
+            end
+        end
+
+        def captures
+          (@match_data && @match_data.captures) || nil
+        end
+
+        private
+
+        BLANK_REGEXP  = [
+          /\A[ \t]+/,
+          /(?<=\w)[ \t]+(?=[[:punct:]])/,
+          /(?<=[[:punct:]])[ \t]+(?=\w)/,
+          /[ \t]+\z/
+        ].inject(&:|).freeze
+
+        def delete_blanks(rhs)
+          case rhs
+          when String
+            rhs.strip.gsub(BLANK_REGEXP, '')
+          else
+            rhs
+          end
+        end
+      end
+
       define_helpers do
         attr_reader :builders
         attr_reader :validators
+        attr_reader :input_matcher
 
         def field(field_name, options = {}, &body)
           return if fields.include?(field_name)
@@ -31,6 +79,10 @@ module RGen
           @validators << body
         end
 
+        def input_pattern(pattern, options = {})
+          @input_matcher  = InputMatcher.new(pattern, options)
+        end
+
         def active_item?
           !passive_item?
         end
@@ -42,19 +94,21 @@ module RGen
 
       def self.inherited(subclass)
         [:@fields, :@builders, :@validators].each do |variable|
-          if instance_variable_defined?(variable)
-            value = Array.new(instance_variable_get(variable))
-            subclass.instance_variable_set(variable, value)
+          subclass.inherit_class_instance_variable(variable, self) do |v|
+            Array.new(v)
           end
         end
+        subclass.inherit_class_instance_variable(:@input_matcher, self)
       end
 
       class_delegator :fields
       class_delegator :builders
       class_delegator :validators
+      class_delegator :input_matcher
 
       def build(*sources)
         return unless builders
+        pattern_match(sources.last) if match_automatically?
         builders.each do |builder|
           instance_exec(*sources, &builder)
         end
@@ -70,6 +124,22 @@ module RGen
       end
 
       private
+
+      def pattern_match(rhs)
+        input_matcher && input_matcher.match(rhs)
+      end
+
+      def match_data
+        input_matcher && input_matcher.match_data
+      end
+
+      def captures
+        input_matcher && input_matcher.captures
+      end
+
+      def match_automatically?
+        input_matcher && input_matcher.match_automatically?
+      end
 
       def field_method(field_name, options, body)
         validate if options[:need_validation]

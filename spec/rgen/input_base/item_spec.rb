@@ -352,5 +352,141 @@ module RGen::InputBase
         end
       end
     end
+
+    describe "#pattern_match" do
+      before(:all) do
+        owner   = Component.new(nil)
+        @items  = []
+        @items << Class.new(Item) {
+          input_pattern %r{foo(bar)?}
+          build { |cell| }
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{foo(bar)?}, match_automatically: true
+          build { |cell| }
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{foo(bar)?}, match_automatically: false
+          build { |cell| }
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{foo(bar)?}
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\Afoo-bar\z}
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\Afoo-bar\z}, ignore_blank: false
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\Afoo-bar\z}, ignore_blank: true
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\A100\z}
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\A100\z}, convert_to_string: false
+        }.new(owner)
+        @items << Class.new(Item) {
+          input_pattern %r{\A100\z}, convert_to_string: true
+        }.new(owner)
+        @items << Class.new(@items[0].class).new(owner)
+      end
+
+      let(:items) do
+        @items
+      end
+
+      it ".input_patternで登録された正規表現で一致比較を行う" do
+        match_data  = items[0].send(:pattern_match, "foo")
+        expect(match_data).to be_instance_of(MatchData)
+        expect(match_data[0]).to eq "foo"
+
+        match_data  = items[0].send(:pattern_match, "baz")
+        expect(match_data).to be_nil
+      end
+
+      specify "#match_dataで直近の比較結果を参照できる" do
+        match_data  = items[0].send(:pattern_match, "foo")
+        expect(items[0].send(:match_data)).to eql match_data
+
+        items[0].send(:pattern_match, "baz")
+        expect(items[0].send(:match_data)).to be_nil
+      end
+
+      specify "#capturesで直近のキャプチャ文字列を参照できる" do
+        items[0].send(:pattern_match, "foo")
+        expect(items[0].send(:captures)).to match [nil]
+
+        items[0].send(:pattern_match, "foobar")
+        expect(items[0].send(:captures)).to match ["bar"]
+
+        items[0].send(:pattern_match, "baz")
+        expect(items[0].send(:captures)).to be_nil
+      end
+
+      describe "match_automaticallyオプション" do
+        context "match_automaticallyオプションが設定されていないか、trueが設定された場合" do
+          it "#build実行に末尾の引数に対して一致比較を行う" do
+            expect(items[0]).to receive(:pattern_match).with("bar")
+            expect(items[1]).to receive(:pattern_match).with("bar")
+            items[0].build("foo", "bar")
+            items[1].build("foo", "bar")
+          end
+        end
+
+        context "match_automaticalyオプションにfalseが設定された場合" do
+          it "#build実行に一致比較を行わない" do
+            expect(items[2]).not_to receive(:pattern_match)
+            items[2].build("foo")
+          end
+        end
+
+        context "ビルドブロックが登録されていない場合" do
+          it "#build実行に一致比較を行わない" do
+            expect(items[3]).not_to receive(:pattern_match)
+            items[3].build("foo")
+          end
+        end
+      end
+
+      describe "ignore_blankオプション" do
+        context "ignore_blankオプションが設定されていないか、falseが設定された場合" do
+          it "先頭、末尾、単語と記号間の空白を無視せず、一致比較を行う" do
+            expect(items[4].send(:pattern_match, "foo-bar"      )).to be_truthy
+            expect(items[4].send(:pattern_match, " foo -\tbar\t")).to be_falsey
+            expect(items[5].send(:pattern_match, "foo-bar"      )).to be_truthy
+            expect(items[5].send(:pattern_match, " foo -\tbar\t")).to be_falsey
+          end
+        end
+
+        context "ignore_blankオプションにtrueが設定された場合" do
+          it "先頭、末尾、単語と記号間の空白を無視して、一致比較を行う" do
+            expect(items[6].send(:pattern_match, "foo-bar"      )).to be_truthy
+            expect(items[6].send(:pattern_match, " foo -\tbar\t")).to be_truthy
+            expect(items[6].send(:pattern_match, " foo -\nbar\t")).to be_falsey
+          end
+        end
+      end
+
+      describe "convert_to_stringオプション" do
+        context "convert_to_stringオプションが設定されていないか、falseが設定された場合" do
+          it "入力データをそのまま使って一致比較を行う" do
+            expect(items[7].send(:pattern_match, 100)).to be_falsey
+            expect(items[8].send(:pattern_match, 100)).to be_falsey
+          end
+        end
+
+        context "convert_to_stringオプションにfalseが設定された場合" do
+          it "入力データを文字列に変換して一致比較を行う" do
+            expect(items[9].send(:pattern_match, 100)).to be_truthy
+          end
+        end
+      end
+
+      specify ".input_patternで登録されたパターンは継承先に引き継がれる" do
+        expect(items[10].send(:pattern_match, "foo")).to be_truthy
+      end
+    end
   end
 end
