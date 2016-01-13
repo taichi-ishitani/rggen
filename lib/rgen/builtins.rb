@@ -23,6 +23,7 @@ require_relative 'builtins/register/array'
 require_relative 'builtins/register/offset_address'
 require_relative 'builtins/register/name'
 require_relative 'builtins/register/read_data'
+require_relative 'builtins/register/shadow'
 
 require_relative 'builtins/register_block/base_address'
 require_relative 'builtins/register_block/byte_size'
