@@ -342,7 +342,6 @@ describe 'register/shadow' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_value_pairs.each do |invalid_value_pair|
-        p invalid_value_pair
         set_load_data([
           *index_registers,
           [nil, "register_0", "0x08", invalid_value_pair[0][0], invalid_value_pair[0][1], "bit_field_0_0", "[31:0]", "ro", nil],
