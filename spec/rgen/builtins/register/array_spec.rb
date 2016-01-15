@@ -7,7 +7,7 @@ describe 'register/array' do
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register      , [:name, :offset_address, :array, :accessibility]
+    enable :register      , [:name, :offset_address, :array, :shadow, :accessibility]
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field     , :type, [:rw]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
@@ -52,8 +52,8 @@ describe 'register/array' do
     context "入力がnilや空文字の場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00"     , nil, "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04-0x0B", "" , "bit_field_1_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00"     , nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04-0x0B", "" , nil, "bit_field_1_0", "[31:0]", "rw", 0]
         ]
       end
 
@@ -79,30 +79,34 @@ describe 'register/array' do
     context "適切な入力が与えられた場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00"     , "[ 1]", "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04-0x0B", "[2 ]", "bit_field_1_0", "[31:0]", "rw", 0],
-          [nil, "register_2", "0x20-0x47", "[10]", "bit_field_2_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00"     , "[ 1]"     , nil                        , "bit_field_0_0", "[31:0]" , "rw", 0],
+          [nil, "register_1", "0x04-0x0B", "[2 ]"     , nil                        , "bit_field_1_0", "[31:0]" , "rw", 0],
+          [nil, "register_2", "0x20-0x47", "[10]"     , nil                        , "bit_field_2_0", "[31:0]" , "rw", 0],
+          [nil, "register_3", "0x50"     , "[2, 3, 4]", "index_0, index_1, index_2", "bit_field_3_0", "[31:0]" , "rw", 0],
+          [nil, "regsiter_4", "0x54"     , nil        , nil                        , "index_0"      , "[17:16]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                        , "index_1"      , "[ 9: 8]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                        , "index_2"      , "[ 1: 0]", "rw", 0]
         ]
       end
 
       describe "#array?" do
         it "真を返す" do
-          expect(registers.map(&:array?)).to all(be_truthy)
+          expect(registers.first(4).map(&:array?)).to all(be_truthy)
         end
       end
 
       describe "#dimensions" do
         it "次元を配列で返す" do
-          expect(registers.map(&:dimensions)).to match([
-            [1], [2], [10]
+          expect(registers.first(4).map(&:dimensions)).to match([
+            [1], [2], [10], [2, 3, 4]
           ])
         end
       end
 
       describe "#count" do
         it "含まれるレジスタの総数を返す" do
-          expect(registers.map(&:count)).to match([
-            1, 2, 10
+          expect(registers.first(4).map(&:count)).to match([
+            1, 2, 10, 9
           ])
         end
       end
@@ -116,7 +120,7 @@ describe 'register/array' do
       it "RegisterMapErrorを発生させる" do
         invalid_values.each do |invalid_value|
           set_load_data([
-            [nil, "register_0", "0x00", invalid_value, "bit_field_0_0", "[31:0]", "rw", 0]
+            [nil, "register_0", "0x00", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
           ])
 
           message = "invalid value for array dimension: #{invalid_value.inspect}"
@@ -127,6 +131,23 @@ describe 'register/array' do
       end
     end
 
+    context "実レジスタに対して、複数次元を持つ配列を設定したとき" do
+      let(:invalid_value) do
+        "[2, 2]"
+      end
+
+      it "RegisterMapErrorを発生させる" do
+        set_load_data([
+          [nil, "register_0", "0x00 - 0x0F", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
+        ])
+
+        message = "not use multi dimensions array with real register"
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error(message, position("block_0", 4, 3))
+      end
+    end
+
     context "配列の大きさに0が設定されたとき" do
       let(:invalid_value) do
         "[0]"
@@ -134,7 +155,7 @@ describe 'register/array' do
 
       it do
         set_load_data([
-          [nil, "register_0", "0x00", invalid_value, "bit_field_0_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
         ])
 
         message = "0 is not allowed for array dimension: #{invalid_value.inspect}"
@@ -152,7 +173,7 @@ describe 'register/array' do
       it "RegisterMapErrorを発生させる" do
         invalid_values.each do |invalid_value|
           set_load_data([
-            [nil, "register_0", "0x00-0x07", "[#{invalid_value}]", "bit_field_0_0", "[31:0]", "rw", 0]
+            [nil, "register_0", "0x00-0x07", "[#{invalid_value}]", nil, "bit_field_0_0", "[31:0]", "rw", 0]
           ])
 
           message = "mismatches with own byte size(8): #{[invalid_value]}"
@@ -169,24 +190,24 @@ describe 'register/array' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil         , "block_0"                                             ],
-          [nil, nil         , 256                                                   ],
-          [                                                                         ],
-          [                                                                         ],
-          [nil, "register_0", "0x00"     , ""   , "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04"     , "[1]", "bit_field_1_0", "[31:0]", "rw", 0],
-          [nil, "register_2", "0x08-0x0F", "[2]", "bit_field_2_0", "[31:0]", "rw", 0],
-          [nil, "register_3", "0x20"     , ""   , "bit_field_3_0", "[31:0]", "rw", 0]
+          [nil, nil         , "block_0"                                                  ],
+          [nil, nil         , 256                                                        ],
+          [                                                                              ],
+          [                                                                              ],
+          [nil, "register_0", "0x00"     , ""   , nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04"     , "[1]", nil, "bit_field_1_0", "[31:0]", "rw", 0],
+          [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:0]", "rw", 0],
+          [nil, "register_3", "0x20"     , ""   , nil, "bit_field_3_0", "[31:0]", "rw", 0]
         ],
         "block_1" => [
-          [nil, nil         , "block_1"                                             ],
-          [nil, nil         , 256                                                   ],
-          [                                                                         ],
-          [                                                                         ],
-          [nil, "register_0", "0x00"     , "[1]", "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04"     , ""   , "bit_field_1_0", "[31:0]", "rw", 0],
-          [nil, "register_2", "0x08-0x0F", "[2]", "bit_field_2_0", "[31:0]", "rw", 0],
-          [nil, "register_3", "0x20"     , ""   , "bit_field_3_0", "[31:0]", "rw", 0]
+          [nil, nil         , "block_1"                                                  ],
+          [nil, nil         , 256                                                        ],
+          [                                                                              ],
+          [                                                                              ],
+          [nil, "register_0", "0x00"     , "[1]", nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04"     , ""   , nil, "bit_field_1_0", "[31:0]", "rw", 0],
+          [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:0]", "rw", 0],
+          [nil, "register_3", "0x20"     , ""   , nil, "bit_field_3_0", "[31:0]", "rw", 0]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map)

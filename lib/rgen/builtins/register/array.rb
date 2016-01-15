@@ -4,7 +4,8 @@ simple_item :register, :array do
     field :dimensions
     field :count
 
-    input_pattern %r{\[(#{number})\]}, match_automatically: false
+    input_pattern %r{\[(#{number}(?:,#{number})*)\]},
+                  match_automatically: false
 
     build do |cell|
       @dimensions = parse_array_dimensions(cell)
@@ -17,6 +18,8 @@ simple_item :register, :array do
 
     validate do
       case
+      when multi_dimensions_array_with_real_register?
+        error 'not use multi dimensions array with real register'
       when mismatch_with_own_byte_size?
         error "mismatches with own byte size(#{register.byte_size}):" \
               " #{dimensions}"
@@ -28,14 +31,21 @@ simple_item :register, :array do
       when cell.nil? || cell.empty?
         nil
       when pattern_match(cell)
-        captures.map(&method(:Integer))
+        captures.first.split(',').map(&method(:Integer))
       else
         error "invalid value for array dimension: #{cell.inspect}"
       end
     end
 
+    def multi_dimensions_array_with_real_register?
+      return false unless array?
+      return false if register.shadow?
+      register.multiple? && dimensions.size > 1
+    end
+
     def mismatch_with_own_byte_size?
       return false unless array?
+      return false if register.shadow?
       register.byte_size != dimensions.first * configuration.byte_width
     end
   end
