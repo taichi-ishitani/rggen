@@ -324,35 +324,4 @@ describe 'register/shadow' do
       end
     end
   end
-
-  context "同一アドレスのシャドウインデックスが重なる場合" do
-    let(:invalid_value_pairs) do
-      [
-        [["[2]"   , "index_0"                    ], ["[2]"   , "index_0"                      ]],
-        [[nil     , "index_0:0"                  ], [nil     , "index_0:0"                    ]],
-        [["[2]"   , "index_0"                    ], [nil     , "index_0:0"                    ]],
-        [[nil     , "index_0:0"                  ], ["[2]"   , "index_0"                      ]],
-        [["[2]"   , "index_0, index_1:0"         ], ["[2]"   , "index_0, index_1:0"           ]],
-        [["[2]"   , "index_0, index_1:0"         ], ["[2, 2]", "index_0, index_1:0, index_2"  ]],
-        [["[2]"   , "index_0, index_1:0"         ], ["[2]"   , "index_0, index_1:0, index_2:0"]],
-        [["[2, 2]", "index_0, index_1:0, index_2"], ["[2]"   , "index_0, index_1:0"           ]],
-        [["[2, 2]", "index_0, index_1:0, index_2"], ["[2, 2]", "index_0, index_2"             ]]
-      ]
-    end
-
-    it "RegisterMapErrorを発生させる" do
-      invalid_value_pairs.each do |invalid_value_pair|
-        set_load_data([
-          *index_registers,
-          [nil, "register_0", "0x08", invalid_value_pair[0][0], invalid_value_pair[0][1], "bit_field_0_0", "[31:0]", "ro", nil],
-          [nil, "register_1", "0x08", invalid_value_pair[1][0], invalid_value_pair[1][1], "bit_field_1_0", "[31:0]", "ro", nil]
-        ])
-
-        message = "overlapped shadow indexes"
-        expect {
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(message, position("block_0", 8, 4))
-      end
-    end
-  end
 end

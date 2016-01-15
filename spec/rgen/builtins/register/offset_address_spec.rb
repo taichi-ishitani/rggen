@@ -5,14 +5,14 @@ describe 'register/offset_address' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:register_block, :byte_size)
-    RGen.enable(:register      , :offset_address)
+    enable :register_block, :byte_size
+    enable :register      , :offset_address
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    RGen.enable(:global, :address_width)
-    RGen.enable(:global, :data_width   )
+    enable :global, :address_width
+    enable :global, :data_width
     @configuration_factory  = build_configuration_factory
   end
 
@@ -37,18 +37,14 @@ describe 'register/offset_address' do
     256
   end
 
-  def load_data(value_or_values)
-    data  = {
-      "block_0" => [
-        [nil, nil, byte_size],
-        [nil, nil, nil      ],
-        [nil, nil, nil      ]
-      ]
-    }
-    Array(value_or_values).each do |value|
-      data["block_0"] << [nil, value]
-    end
-    data
+  def set_load_data(value_or_values)
+    data  = [
+      [nil, nil, byte_size],
+      [                   ],
+      [                   ]
+    ]
+    data.concat(Array(value_or_values))
+    RegisterMapDummyLoader.load_data("block_0" => data)
   end
 
   context "適切な入力が与えられた場合" do
@@ -66,12 +62,24 @@ describe 'register/offset_address' do
       }
     end
 
-    let(:register_map) do
-      @factory.create(configuration, register_map_file)
+    let(:load_data) do
+      cell_values = valid_values.keys
+      [
+        [nil, cell_values[0]],
+        [nil, cell_values[1]],
+        [nil, cell_values[2]],
+        [nil, cell_values[3]],
+        [nil, cell_values[4]],
+        [nil, cell_values[5]],
+        [nil, cell_values[6]],
+        [nil, cell_values[7]],
+        [nil, cell_values[8]]
+      ]
     end
 
-    before do
-      RegisterMapDummyLoader.load_data(load_data(valid_values.keys))
+    let(:register_map) do
+      set_load_data(load_data)
+      @factory.create(configuration, register_map_file)
     end
 
     describe "#start_address/#end_address/#byte_size" do
@@ -122,7 +130,10 @@ describe 'register/offset_address' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_values.each do |value|
-        RegisterMapDummyLoader.load_data(load_data(value))
+        set_load_data([
+          [nil, value]
+        ])
+
         message = "invalid value for offset address: #{value.inspect}"
         expect {
           @factory.create(configuration, register_map_file)
@@ -136,11 +147,11 @@ describe 'register/offset_address' do
       "0x00 - 0x00"
     end
 
-    before do
-      RegisterMapDummyLoader.load_data(load_data(invalid_value))
-    end
-
     it "RegisterMapErrorを発生させる" do
+      set_load_data([
+        [nil, invalid_value]
+      ])
+
       message = "start address is equal to or greater than end address: #{invalid_value}"
       expect{
         @factory.create(configuration, register_map_file)
@@ -153,11 +164,11 @@ describe 'register/offset_address' do
       "0x03 - 0x00"
     end
 
-    before do
-      RegisterMapDummyLoader.load_data(load_data(invalid_value))
-    end
-
     it "RegisterMapErrorを発生させる" do
+      set_load_data([
+        [nil, invalid_value]
+      ])
+
       message = "start address is equal to or greater than end address: #{invalid_value}"
       expect{
         @factory.create(configuration, register_map_file)
@@ -172,7 +183,9 @@ describe 'register/offset_address' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_values.each do |value|
-        RegisterMapDummyLoader.load_data(load_data(value))
+        set_load_data([
+          [nil, value]
+        ])
 
         message = "not aligned with data width(#{data_width}): #{value}"
         expect{
@@ -189,7 +202,9 @@ describe 'register/offset_address' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_values.each do |value|
-        RegisterMapDummyLoader.load_data(load_data(value))
+        set_load_data([
+          [nil, value]
+        ])
 
         message = "not aligned with data width(#{data_width}): #{value}"
         expect{
@@ -206,29 +221,14 @@ describe 'register/offset_address' do
 
     it "RegisterMapErrorを発生させる" do
       invalid_values.each do |value|
-        RegisterMapDummyLoader.load_data(load_data(value))
+        set_load_data([
+          [nil, value]
+        ])
 
         message = "exceeds the maximum offset address(0xff): #{value}"
         expect{
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 3, 1))
-      end
-    end
-  end
-
-  context "入力アドレスが重複するとき" do
-    let(:invalid_values) do
-      ["0x04", "0x08", "0x10", "0x00-0x07", "0x10-0x17", "0x08-0x0F", "0x04-0x13"]
-    end
-
-    it "RegisterMapErrorを発生させる" do
-      invalid_values.each do |value|
-        RegisterMapDummyLoader.load_data(load_data(["0x04-0x13", value]))
-
-        message = "overlapped offset address: #{value}"
-        expect{
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(message, position("block_0", 4, 1))
       end
     end
   end

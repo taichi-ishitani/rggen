@@ -29,7 +29,6 @@ simple_item :register, :shadow do
       check_index_fields
       check_size_of_array_index_fields
       check_index_values
-      check_uniqueness_of_shadow_index
     end
 
     def parse_shadow_indexes(cell)
@@ -115,26 +114,6 @@ simple_item :register, :shadow do
 
     def maximum_value(index_name)
       2**shadow_index_bit_field[index_name].width - 1
-    end
-
-    def check_uniqueness_of_shadow_index
-      same_address_registers.map(&:shadow_indexes).each do |other_indexes|
-        if ovverlapped_shadow_indexes?(other_indexes)
-          error 'overlapped shadow indexes'
-        end
-      end
-    end
-
-    def same_address_registers
-      register_block.registers.select do |r|
-        r.start_address == register.start_address && !r.equal?(register)
-      end
-    end
-
-    def ovverlapped_shadow_indexes?(other_indexes)
-      return true if shadow_indexes.all?(&other_indexes.method(:include?))
-      return true if other_indexes.all?(&shadow_indexes.method(:include?))
-      false
     end
 
     def shadow_index_bit_field

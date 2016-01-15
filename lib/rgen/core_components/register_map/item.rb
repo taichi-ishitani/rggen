@@ -5,6 +5,7 @@ module RGen
       include RaiseError
 
       attr_reader :configuration
+      attr_reader :position
 
       def initialize(owner)
         super(owner)
