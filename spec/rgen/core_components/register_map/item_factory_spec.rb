@@ -40,28 +40,5 @@ module RGen::RegisterMap
         factory.create(component, configuration, cell)
       end
     end
-
-    describe "#error" do
-      let(:message) do
-        "some error"
-      end
-
-      let(:factory) do
-        m = message
-        f = Class.new(ItemFactory) {
-          define_method(:select_target_item) do |cell|
-            error m, cell
-          end
-        }.new
-        f.target_items  = {}
-        f
-      end
-
-      it "入力されたメッセージとセルの位置情報で、RGen::RegisterMapErrorを発生させる" do
-        expect {
-          factory.create(component, configuration, cell)
-        }.to raise_register_map_error(message, cell.position)
-      end
-    end
   end
 end

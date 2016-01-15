@@ -42,23 +42,5 @@ module RGen::RegisterMap
         expect(i.configuration).to eql configuration
       end
     end
-
-    describe "#error" do
-      let(:message) do
-        "some register map error"
-      end
-
-      it "入力されたメッセージと入力セルの位置情報で、RGen::RegisterMapErrorを発生させる" do
-        m = message
-        i = Class.new(Item) {
-          validate do
-            error m
-          end
-        }.new(component)
-        i.build(configuration, cell)
-
-        expect{i.validate}.to raise_register_map_error(message, position)
-      end
-    end
   end
 end

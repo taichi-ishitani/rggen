@@ -2,6 +2,7 @@ module RGen
   module RegisterMap
     class Item < InputBase::Item
       include Base::HierarchicalItemAccessors
+      include RaiseError
 
       attr_reader :configuration
 
@@ -14,12 +15,6 @@ module RGen
         @configuration  = configuration
         @position       = cell.position
         super(cell.value)
-      end
-
-      private
-
-      def error(message)
-        fail RGen::RegisterMapError.new(message, @position)
       end
     end
   end

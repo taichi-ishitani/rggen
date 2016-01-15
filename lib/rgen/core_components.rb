@@ -5,6 +5,7 @@ require_relative 'core_components/configuration/setup'
 
 require_relative 'core_components/register_map/generic_map'
 require_relative 'core_components/register_map/loader'
+require_relative 'core_components/register_map/raise_error'
 require_relative 'core_components/register_map/component'
 require_relative 'core_components/register_map/item'
 require_relative 'core_components/register_map/register_map_factory'
