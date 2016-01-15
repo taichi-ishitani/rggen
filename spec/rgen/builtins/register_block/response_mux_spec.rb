@@ -11,7 +11,7 @@ describe "register_block/response_mux" do
     RGen.enable(:register_block, [:name, :byte_size])
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :array])
+    RGen.enable(:register, [:name, :offset_address, :array, :shadow])
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(

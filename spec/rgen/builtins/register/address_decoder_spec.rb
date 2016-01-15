@@ -11,7 +11,7 @@ describe "register/address_decoder" do
     RGen.enable(:register_block, [:name, :byte_size])
     RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
     RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :array, :accessibility, :address_decoder])
+    RGen.enable(:register, [:name, :offset_address, :array, :shadow, :accessibility, :address_decoder])
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value])
     RGen.enable(:bit_field, :type, [:rw, :ro, :wo])
 
@@ -19,15 +19,15 @@ describe "register/address_decoder" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                ],
-        [nil, nil         , 256                                                      ],
-        [nil, nil         , nil                                                      ],
-        [nil, nil         , nil                                                      ],
-        [nil, "register_0", "0x10"      , nil  , "bit_field_0_0", "[31:0]", "rw", '0'],
-        [nil, "register_1", "0x14"      , nil  , "bit_field_1_0", "[31:0]", "ro", '0'],
-        [nil, "register_2", "0x18"      , nil  , "bit_field_2_0", "[31:0]", "wo", '0'],
-        [nil, "register_3", "0x20-0x02F", nil  , "bit_field_3_0", "[31:0]", "rw", '0'],
-        [nil, "register_4", "0x30-0x03F", "[4]", "bit_field_4_0", "[31:0]", "rw", '0']
+        [nil, nil         , "block_0"                                                     ],
+        [nil, nil         , 256                                                           ],
+        [nil, nil         , nil                                                           ],
+        [nil, nil         , nil                                                           ],
+        [nil, "register_0", "0x10"      , nil  , nil, "bit_field_0_0", "[31:0]", "rw", '0'],
+        [nil, "register_1", "0x14"      , nil  , nil, "bit_field_1_0", "[31:0]", "ro", '0'],
+        [nil, "register_2", "0x18"      , nil  , nil, "bit_field_2_0", "[31:0]", "wo", '0'],
+        [nil, "register_3", "0x20-0x02F", nil  , nil, "bit_field_3_0", "[31:0]", "rw", '0'],
+        [nil, "register_4", "0x30-0x03F", "[4]", nil, "bit_field_4_0", "[31:0]", "rw", '0']
       ]
     )
 

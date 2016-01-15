@@ -10,7 +10,7 @@ end
 
 enable :global        , [:data_width, :address_width]
 enable :register_block, [:name, :base_address]
-enable :register      , [:offset_address, :name, :array, :accessibility]
+enable :register      , [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]
 enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :reference]
 enable :bit_field     , :type, [:rw, :ro, :foo, :reserved]
 enable :register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]

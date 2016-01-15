@@ -116,7 +116,7 @@ HELP
         before do
           expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :accessibility]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
@@ -137,7 +137,7 @@ HELP
           expect(RGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
           expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :accessibility]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_declaration, :port_declarations, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original

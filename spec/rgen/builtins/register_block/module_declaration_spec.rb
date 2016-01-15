@@ -10,7 +10,7 @@ describe "register_block/module_declaration" do
     enable(:register_block, [:name, :byte_size])
     enable(:register_block, [:module_declaration, :port_declarations, :clock_reset, :signal_declarations, :host_if, :response_mux])
     enable(:register_block, :host_if, :apb)
-    enable(:register, [:name, :offset_address, :array, :accessibility])
+    enable(:register, [:name, :offset_address, :array, :shadow, :accessibility])
     enable(:register, [:address_decoder, :read_data])
     enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
     enable(:bit_field, :type, [:rw, :ro])
@@ -19,16 +19,16 @@ describe "register_block/module_declaration" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                   ],
-        [nil, nil         , 256                                                         ],
-        [                                                                               ],
-        [                                                                               ],
-        [nil, "register_0", "0x00"     , nil  , "bit_field_0_0", "[16]"   , "rw", 0, nil],
-        [nil, nil         , nil        , nil  , "bit_field_0_1", "[0]"    , "ro", 0, nil],
-        [nil, "register_1", "0x04"     , nil  , "bit_field_1_0", "[31:16]", "ro", 0, nil],
-        [nil, nil         , nil        , nil  , "bit_field_1_1", "[15:0]" , "rw", 0, nil],
-        [nil, "register_2", "0x08-0x0F", "[2]", "bit_field_2_0", "[31:16]", "ro", 0, nil],
-        [nil, nil         , nil        , nil  , "bit_field_2_1", "[15:0]" , "rw", 0, nil]
+        [nil, nil         , "block_0"                                                        ],
+        [nil, nil         , 256                                                              ],
+        [                                                                                    ],
+        [                                                                                    ],
+        [nil, "register_0", "0x00"     , nil  , nil, "bit_field_0_0", "[16]"   , "rw", 0, nil],
+        [nil, nil         , nil        , nil  , nil, "bit_field_0_1", "[0]"    , "ro", 0, nil],
+        [nil, "register_1", "0x04"     , nil  , nil, "bit_field_1_0", "[31:16]", "ro", 0, nil],
+        [nil, nil         , nil        , nil  , nil, "bit_field_1_1", "[15:0]" , "rw", 0, nil],
+        [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:16]", "ro", 0, nil],
+        [nil, nil         , nil        , nil  , nil, "bit_field_2_1", "[15:0]" , "rw", 0, nil]
       ]
     )
 

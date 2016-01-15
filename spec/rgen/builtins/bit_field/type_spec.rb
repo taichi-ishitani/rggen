@@ -16,7 +16,7 @@ describe 'bit_field/type' do
 
     RGen.enable(:global, [:data_width, :address_width])
     RGen.enable(:register_block, [:name, :byte_size])
-    RGen.enable(:register, [:name, :offset_address, :array])
+    RGen.enable(:register, [:name, :offset_address, :array, :shadow])
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
     RGen.enable(:bit_field, :type, [:foo, :bar])
 
@@ -56,10 +56,10 @@ describe 'bit_field/type' do
     describe "#type" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, "bit_field_0_0", "[3]", "BAR", nil],
-          [nil, nil         , nil   , nil, "bit_field_0_1", "[2]", "foo", nil],
-          [nil, nil         , nil   , nil, "bit_field_0_2", "[1]", "fOo", nil],
-          [nil, nil         , nil   , nil, "bit_field_0_3", "[0]", "BaR", nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[3]", "BAR", nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[2]", "foo", nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_2", "[1]", "fOo", nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_3", "[0]", "BaR", nil]
         ]
       end
 
@@ -74,7 +74,7 @@ describe 'bit_field/type' do
       end
 
       let(:load_data) do
-        [[nil, "register_0", "0x00", nil, "bit_field_0_0", "[0]", "foo", nil]]
+        [[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "foo", nil]]
       end
 
       it "アクセス属性をread-writeに設定する" do
@@ -88,7 +88,7 @@ describe 'bit_field/type' do
       end
 
       let(:load_data) do
-        [[nil, "register_0", "0x00", nil, "bit_field_0_0", "[0]", "foo", nil]]
+        [[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "foo", nil]]
       end
 
       it "アクセス属性をread-onlyに設定する" do
@@ -102,7 +102,7 @@ describe 'bit_field/type' do
       end
 
       let(:load_data) do
-        [[nil, "register_0", "0x00", nil, "bit_field_0_0", "[0]", "foo", nil]]
+        [[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "foo", nil]]
       end
 
       it "アクセス属性をwrite-onlyに設定する" do
@@ -116,7 +116,7 @@ describe 'bit_field/type' do
       end
 
       let(:load_data) do
-        [[nil, "register_0", "0x00", nil, "bit_field_0_0", "[0]", "foo", nil]]
+        [[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "foo", nil]]
       end
 
       it "アクセス属性をreservedに設定する" do
@@ -128,9 +128,9 @@ describe 'bit_field/type' do
       context ".required_widthで必要なビット幅が設定されていない場合" do
         it "任意の幅のビットフィールドで使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field_0_0", "[15:8]", "foo", nil],
-            [nil, nil         , nil   , nil, "bit_field_0_1", "[0]"   , "foo", nil],
-            [nil, "register_1", "0x04", nil, "bit_field_1_0", "[31:0]", "foo", nil]
+            [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[15:8]", "foo", nil],
+            [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]"   , "foo", nil],
+            [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[31:0]", "foo", nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -145,8 +145,8 @@ describe 'bit_field/type' do
 
         it "設定したビット幅を持つビットフィールドで使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field_0_0", "[17:16]", "foo", nil],
-            [nil, nil         , nil   , nil, "bit_field_0_1", "[1:0]"  , "foo", nil]
+            [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[17:16]", "foo", nil],
+            [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[1:0]"  , "foo", nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -156,10 +156,10 @@ describe 'bit_field/type' do
         context "設定した幅以外のビットフィールドで使用した場合" do
           it "RegisterMapErrorを発生させる" do
             {1 => "[0]", 3 => "[2:0]", 32 => "[31:0]"}.each do |width, assignment|
-              set_load_data([[nil, "register_0", "0x00", nil, "bit_field_0_0", assignment, "foo", nil]])
+              set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil]])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_register_map_error("2 bit(s) width required: #{width} bit(s)", position("block_0", 4, 6))
+              }.to raise_register_map_error("2 bit(s) width required: #{width} bit(s)", position("block_0", 4, 7))
             end
           end
         end
@@ -172,8 +172,8 @@ describe 'bit_field/type' do
 
         it "指定した幅のどれかを持つビットフィールドで使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field0_0", "[6:4]", "foo", nil],
-            [nil, nil         , nil   , nil, "bit_field0_1", "[0]"  , "foo", nil]
+            [nil, "register_0", "0x00", nil, nil, "bit_field0_0", "[6:4]", "foo", nil],
+            [nil, nil         , nil   , nil, nil, "bit_field0_1", "[0]"  , "foo", nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -183,10 +183,10 @@ describe 'bit_field/type' do
         context "指定された以外の幅を持つビットフィールドで使用した場合" do
           it "RGen::RegisterMapErrorを発生させる" do
             {2 => "[1:0]", 4 => "[3:0]"}.each do |width, assignment|
-              set_load_data([[nil, "register_0", "0x00", nil, "bit_field_0_0", assignment, "foo", nil]])
+              set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil]])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_register_map_error("#{[1, 3]} bit(s) width required: #{width} bit(s)", position("block_0", 4, 6))
+              }.to raise_register_map_error("#{[1, 3]} bit(s) width required: #{width} bit(s)", position("block_0", 4, 7))
             end
           end
         end
@@ -199,9 +199,9 @@ describe 'bit_field/type' do
 
         it "指定した幅のどれかを持つビットフィールドで使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field0_0", "[11:8]", "foo", nil],
-            [nil, nil         , nil   , nil, "bit_field0_1", "[6:4]" , "foo", nil],
-            [nil, nil         , nil   , nil, "bit_field0_2", "[1:0]" , "foo", nil]
+            [nil, "register_0", "0x00", nil, nil, "bit_field0_0", "[11:8]", "foo", nil],
+            [nil, nil         , nil   , nil, nil, "bit_field0_1", "[6:4]" , "foo", nil],
+            [nil, nil         , nil   , nil, nil, "bit_field0_2", "[1:0]" , "foo", nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -211,10 +211,10 @@ describe 'bit_field/type' do
         context "指定された以外の幅を持つビットフィールドで使用した場合" do
           it "RGen::RegisterMapErrorを発生させる" do
             {1 => "[0]", 5 => "[4:0]"}.each do |width, assignment|
-              set_load_data([[nil, "register_0", "0x00", nil, "bit_field_0_0", assignment, "foo", nil]])
+              set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil]])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_register_map_error("#{2..4} bit(s) width required: #{width} bit(s)", position("block_0", 4, 6))
+              }.to raise_register_map_error("#{2..4} bit(s) width required: #{width} bit(s)", position("block_0", 4, 7))
             end
           end
         end
@@ -227,7 +227,7 @@ describe 'bit_field/type' do
 
         it "コンフィグレーションで指定したデータ幅を持つビットフィールドで使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field0_0", "[31:0]", "foo", nil]
+            [nil, "register_0", "0x00", nil, nil, "bit_field0_0", "[31:0]", "foo", nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -237,10 +237,10 @@ describe 'bit_field/type' do
         context "データ幅以外のビットフィールド使用した場合" do
           it "RGen::RegisterMapErrorを発生させる" do
             {1 => "[0]", 31 => "[30:0]"}.each do |width, assignment|
-              set_load_data([[nil, "register_0", "0x00", nil, "bit_field_0_0", assignment, "foo", nil]])
+              set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil]])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_register_map_error("#{configuration.data_width} bit(s) width required: #{width} bit(s)", position("block_0", 4, 6))
+              }.to raise_register_map_error("#{configuration.data_width} bit(s) width required: #{width} bit(s)", position("block_0", 4, 7))
             end
           end
         end
@@ -251,9 +251,9 @@ describe 'bit_field/type' do
       context ".use_referenceで参照信号設定がない場合" do
         it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
           set_load_data([
-            [nil, "register_0", "0x00", nil, "bit_field_0_0", "[15:8]", "foo", nil            ],
-            [nil, nil         , nil   , nil, "bit_field_0_1", "[0]"   , "foo", nil            ],
-            [nil, "register_1", "0x04", nil, "bit_field_1_0", "[31:0]", "foo", "bit_field_0_0"]
+            [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[15:8]", "foo", nil            ],
+            [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]"   , "foo", nil            ],
+            [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[31:0]", "foo", "bit_field_0_0"]
           ])
           expect {
             @factory.create(configuration, register_map_file)
@@ -269,8 +269,8 @@ describe 'bit_field/type' do
 
           it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[1]", "foo", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[1]", "foo", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -285,8 +285,8 @@ describe 'bit_field/type' do
 
           it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[2]"  , "foo", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[1:0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[2]"  , "foo", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[1:0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -301,8 +301,8 @@ describe 'bit_field/type' do
 
           it "参照ビットフィールドを持つビットフィールドで使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[4]"  , "bar", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[4]"  , "bar", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -312,11 +312,11 @@ describe 'bit_field/type' do
           context "参照信号を持たないビットフィールで使用した場合" do
             it "RGen::RegisterMapErrorを発生させる" do
               set_load_data([
-                [nil, "register_0", "0x00", nil, "bit_field_0_0", "[7:4]", "foo", nil]
+                [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[7:4]", "foo", nil]
               ])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_error "reference bit field required", position("block_0", 4, 6)
+              }.to raise_error "reference bit field required", position("block_0", 4, 7)
             end
           end
         end
@@ -330,8 +330,8 @@ describe 'bit_field/type' do
 
           it "1ビットの参照ビットフィールドを持つビットフィールで使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[1]", "bar", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[1]", "bar", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -341,12 +341,12 @@ describe 'bit_field/type' do
           context "2ビット以上のビットフィールドを参照ビットフィールドに指定した場合" do
             it "RGen::RegisterMapErrorを発生させる" do
               set_load_data([
-                [nil, "register_0", "0x00", nil, "bit_field_0_0", "[2:1]", "bar", nil            ],
-                [nil, nil         , nil   , nil, "bit_field_0_1", "[0]"  , "foo", "bit_field_0_0"]
+                [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[2:1]", "bar", nil            ],
+                [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]"  , "foo", "bit_field_0_0"]
               ])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_error "1 bit(s) reference bit field required: 2", position("block_0", 4, 6)
+              }.to raise_error "1 bit(s) reference bit field required: 2", position("block_0", 4, 7)
             end
           end
         end
@@ -358,8 +358,8 @@ describe 'bit_field/type' do
 
           it "指定幅の参照ビットフィールドを持つビットフィールで使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[5:4]", "bar", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[5:4]", "bar", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -370,12 +370,12 @@ describe 'bit_field/type' do
             it "RGen::RegisterMapErrorを発生させる" do
               {3 => "[6:4]", 1 => "[4]"}.each do |width, assigment|
                 set_load_data([
-                  [nil, "register_0", "0x00", nil, "bit_field_0_0", assigment, "bar", nil            ],
-                  [nil, nil         , nil   , nil, "bit_field_0_1", "[0]"    , "foo", "bit_field_0_0"]
+                  [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assigment, "bar", nil            ],
+                  [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]"    , "foo", "bit_field_0_0"]
                 ])
                 expect {
                   @factory.create(configuration, register_map_file)
-                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 6)
+                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 7)
               end
             end
           end
@@ -388,8 +388,8 @@ describe 'bit_field/type' do
 
           it "同じ幅の参照ビットフィールドを持つビットフィールで使用できる" do
             set_load_data([
-              [nil, "register_0", "0x00", nil, "bit_field_0_0", "[7:4]", "bar", nil            ],
-              [nil, nil         , nil   , nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
+              [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[7:4]", "bar", nil            ],
+              [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "foo", "bit_field_0_0"]
             ])
             expect {
               @factory.create(configuration, register_map_file)
@@ -400,12 +400,12 @@ describe 'bit_field/type' do
             it "RGen::RegisterMapErrorを発生させる" do
               {3 => "[6:4]", 1 => "[4]"}.each do |width, assigment|
                 set_load_data([
-                  [nil, "register_0", "0x00", nil, "bit_field_0_0", assigment, "bar", nil            ],
-                  [nil, nil         , nil   , nil, "bit_field_0_1", "[1:0]"  , "foo", "bit_field_0_0"]
+                  [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assigment, "bar", nil            ],
+                  [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[1:0]"  , "foo", "bit_field_0_0"]
                 ])
                 expect {
                   @factory.create(configuration, register_map_file)
-                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 6)
+                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 7)
               end
             end
           end
@@ -416,10 +416,10 @@ describe 'bit_field/type' do
     context "Rgen.enableで有効にされたタイプ以外が入力された場合" do
       it "RegisterMapErrorを発生させる" do
         ["baz", "qux"].each do |type|
-          set_load_data([[nil, "register_0", "0x00", nil, "bit_field_0_0", "[0]", type, nil]])
+          set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", type, nil]])
           expect {
             @factory.create(configuration, register_map_file)
-          }.to raise_register_map_error("unknown bit field type: #{type}", position("block_0", 4, 6))
+          }.to raise_register_map_error("unknown bit field type: #{type}", position("block_0", 4, 7))
         end
       end
     end
@@ -428,8 +428,8 @@ describe 'bit_field/type' do
   describe "rtl" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "0x00"     , nil  , "bit_field_0_0", "[31:0]", "foo", nil],
-        [nil, "register_1", "0x04-0x0B", "[2]", "bit_field_1_0", "[0]"   , "foo", nil]
+        [nil, "register_0", "0x00"     , nil  , nil, "bit_field_0_0", "[31:0]", "foo", nil],
+        [nil, "register_1", "0x04-0x0B", "[2]", nil, "bit_field_1_0", "[0]"   , "foo", nil]
       ])
       @factory.create(configuration, register_map_file)
     end
