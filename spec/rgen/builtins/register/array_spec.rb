@@ -106,7 +106,7 @@ describe 'register/array' do
       describe "#count" do
         it "含まれるレジスタの総数を返す" do
           expect(registers.first(4).map(&:count)).to match([
-            1, 2, 10, 9
+            1, 2, 10, 24
           ])
         end
       end
@@ -190,14 +190,17 @@ describe 'register/array' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil         , "block_0"                                                  ],
-          [nil, nil         , 256                                                        ],
-          [                                                                              ],
-          [                                                                              ],
-          [nil, "register_0", "0x00"     , ""   , nil, "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04"     , "[1]", nil, "bit_field_1_0", "[31:0]", "rw", 0],
-          [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:0]", "rw", 0],
-          [nil, "register_3", "0x20"     , ""   , nil, "bit_field_3_0", "[31:0]", "rw", 0]
+          [nil, nil         , "block_0"                                                                                                   ],
+          [nil, nil         , 256                                                                                                         ],
+          [                                                                                                                               ],
+          [                                                                                                                               ],
+          [nil, "register_0", "0x00"     , ""         , nil                                          , "bit_field_0_0", "[31:0]" , "rw", 0],
+          [nil, "register_1", "0x04"     , "[1]"      , nil                                          , "bit_field_1_0", "[31:0]" , "rw", 0],
+          [nil, "register_2", "0x08-0x0F", "[2]"      , nil                                          , "bit_field_2_0", "[31:0]" , "rw", 0],
+          [nil, "register_3", "0x10"     , "[1, 2, 3]", "bit_field_4_0, bit_field_4_1, bit_field_4_2", "bit_field_3_0", "[31:0]" , "rw", 0],
+          [nil, "register_4", "0x20"     , ""         , nil                                          , "bit_field_4_0", "[23:16]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                          , "bit_field_4_1", "[15:8]" , "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                          , "bit_field_4_2", "[7:0]"  , "rw", 0]
         ],
         "block_1" => [
           [nil, nil         , "block_1"                                                  ],
@@ -220,7 +223,7 @@ describe 'register/array' do
     describe "#index" do
       it "自身が属するレジスタブロック内でのインデックスを返す" do
         expect(rtl.registers.map(&:index)).to match [
-          0        , "1+g_i", "2+g_i", 4,
+          0        , "1+g_i", "2+g_i", "4+6*g_i+3*g_j+g_k", 10,
           "0+g_i", 1        , "2+g_i", 4
         ]
       end
@@ -230,14 +233,51 @@ describe 'register/array' do
       context "レジスタが配列では無い場合" do
         it "nilを返す" do
           expect(rtl.registers[0].local_index).to be_nil
-          expect(rtl.registers[3].local_index).to be_nil
+          expect(rtl.registers[4].local_index).to be_nil
         end
       end
 
       context "レジスタが配列の場合" do
         it "generate for文内でのインデックスを返す" do
-          expect(rtl.registers[1].local_index).to eq :g_i
-          expect(rtl.registers[2].local_index).to eq :g_i
+          expect(rtl.registers[1].local_index).to eq "g_i"
+          expect(rtl.registers[2].local_index).to eq "g_i"
+          expect(rtl.registers[3].local_index).to eq "6*g_i+3*g_j+g_k"
+        end
+      end
+    end
+
+    describe "#loop_variables" do
+      context "レジスタが配列ではない場合" do
+        it "nilを返す" do
+          expect(rtl.registers[0].loop_variables).to be_nil
+          expect(rtl.registers[4].loop_variables).to be_nil
+        end
+      end
+
+      context "レジスタが配列の場合" do
+        it "generate for文のループ変数一覧を返す" do
+          expect(rtl.registers[1].loop_variables).to match [match_identifier("g_i")]
+          expect(rtl.registers[2].loop_variables).to match [match_identifier("g_i")]
+          expect(rtl.registers[3].loop_variables).to match [match_identifier("g_i"), match_identifier("g_j"), match_identifier("g_k")]
+        end
+      end
+    end
+
+    describe "#loop_variable" do
+      context "レジスタが配列ではない場合" do
+        it "与えたlevelによらずnilを返す" do
+          4.times do |level|
+            expect(rtl.registers[0].loop_variable(level)).to be_nil
+          end
+        end
+      end
+
+      context "レジスタが配列の場合" do
+        it "与えたレベルのgenerate for文用のループ変数を返す" do
+          expect(rtl.registers[3].loop_variable(0)).to match_identifier("g_i")
+          expect(rtl.registers[3].loop_variable(1)).to match_identifier("g_j")
+          expect(rtl.registers[3].loop_variable(2)).to match_identifier("g_k")
+          expect(rtl.registers[3].loop_variable(3)).to be_nil
         end
       end
     end

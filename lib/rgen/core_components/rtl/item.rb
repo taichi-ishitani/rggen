@@ -57,15 +57,19 @@ module RGen
 
       def declare(klass, declarations, handle_name, attributes)
         name  = (attributes[:name] || handle_name).to_s
-        create_identifier(handle_name, name)
+        add_identifer(handle_name, name)
         declarations  << klass.new(name, attributes)
       end
 
-      def create_identifier(handle_name, name)
+      def add_identifer(handle_name, name)
         context = @group || self
-        context.instance_variable_set(handle_name.variablize, Identifier.new(name))
+        context.instance_variable_set(handle_name.variablize, create_identifier(name))
         context.attr_singleton_reader(handle_name)
         identifiers << handle_name if @group.nil?
+      end
+
+      def create_identifier(name)
+        Identifier.new(name)
       end
 
       def create_group(group_name)

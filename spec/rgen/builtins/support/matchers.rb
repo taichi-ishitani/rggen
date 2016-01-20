@@ -24,6 +24,13 @@ RSpec::Matchers.define :match_access do |expected_access|
   end
 end
 
+RSpec::Matchers.define :match_identifier do |expected_name|
+  match do |identifier|
+    next false unless identifier.is_a?(RGen::Rtl::Identifier)
+    identifier.to_s == expected_name
+  end
+end
+
 RSpec::Matchers.define :have_identifier do |*expectation|
   match do |component|
     if expectation.size == 3

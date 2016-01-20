@@ -10,7 +10,7 @@ simple_item :register, :array do
     build do |cell|
       @dimensions = parse_array_dimensions(cell)
       @array      = @dimensions.not_nil?
-      @count      = (@dimensions && @dimensions.sum(0)) || 1
+      @count      = (@dimensions && @dimensions.inject(&:*)) || 1
       if @dimensions && @dimensions.any?(&:zero?)
         error "0 is not allowed for array dimension: #{cell.inspect}"
       end
@@ -53,21 +53,47 @@ simple_item :register, :array do
   rtl do
     export :index
     export :local_index
+    export :loop_variables
+    export :loop_variable
 
     def index
       (register.array? && "#{base_index}+#{local_index}") || base_index
     end
 
     def local_index
-      (register.array? && genvar) || nil
+      return nil unless register.array?
+      local_index_terms(0).join('+')
+    end
+
+    def loop_variables
+      return nil unless register.array?
+      register.dimensions.size.times.map { |l| loop_variable(l) }
+    end
+
+    def loop_variable(level)
+      return nil unless register.array? && level < register.dimensions.size
+      @loop_variables ||= Hash.new do |h, l|
+        h[l]  = create_identifier("g_#{loop_index(l)}")
+      end
+      @loop_variables[level]
     end
 
     def base_index
       previous_registers.map(&:count).sum(0)
     end
 
-    def genvar
-      :g_i
+    def local_index_terms(level)
+      if level < (register.dimensions.size - 1)
+        partial_count = register.dimensions[(level + 1)..-1].inject(:*)
+        term          = [partial_count, '*', loop_variable(level)].join
+        local_index_terms(level + 1).unshift(term)
+      else
+        [loop_variable(level)]
+      end
+    end
+
+    def loop_index(level)
+      level.times.with_object('i') { |_, index| index.next! }
     end
 
     def previous_registers
@@ -87,7 +113,7 @@ simple_item :register, :array do
     end
 
     def generate_for_begin_code(dimension, level, buffer)
-      buffer << generate_for_header(dimension)
+      buffer << generate_for_header(dimension, level)
       buffer << ' begin : '
       buffer << block_name(level)
       buffer << nl
@@ -99,7 +125,8 @@ simple_item :register, :array do
       buffer << 'end' << nl
     end
 
-    def generate_for_header(dimension)
+    def generate_for_header(dimension, level)
+      genvar  = loop_variable(level)
       "for (genvar #{genvar} = 0;#{genvar} < #{dimension};#{genvar}++)"
     end
 
