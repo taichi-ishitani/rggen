@@ -18,7 +18,7 @@ describe 'bit_field/type' do
     RGen.enable(:register_block, [:name, :byte_size])
     RGen.enable(:register, [:name, :offset_address, :array, :shadow])
     RGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
-    RGen.enable(:bit_field, :type, [:foo, :bar])
+    RGen.enable(:bit_field, :type, [:ro, :foo, :bar])
 
     @items    = items
     @factory  = build_register_map_factory
@@ -428,8 +428,11 @@ describe 'bit_field/type' do
   describe "rtl" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "0x00"     , nil  , nil, "bit_field_0_0", "[31:0]", "foo", nil],
-        [nil, "register_1", "0x04-0x0B", "[2]", nil, "bit_field_1_0", "[0]"   , "foo", nil]
+        [nil, "register_0", "0x00"     , nil     , nil                           , "bit_field_0_0", "[31:0]" , "foo", nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , "bit_field_1_0", "[0]"    , "foo", nil],
+        [nil, "register_2", "0x0C"     , "[3, 4]", "bit_field_3_0, bit_field_3_1", "bit_field_2_0", "[0]"    , "foo", nil],
+        [nil, "register_3", "0x10"     , nil     , nil                           , "bit_field_3_0", "[31:16]", "ro" , nil],
+        [nil, nil         , nil        , nil     , nil                           , "bit_field_3_1", "[15:0]" , "ro" , nil]
       ])
       @factory.create(configuration, register_map_file)
     end
@@ -446,6 +449,7 @@ describe 'bit_field/type' do
       it "value信号を持つ" do
         expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
         expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
+        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
       end
     end
 
@@ -457,6 +461,7 @@ describe 'bit_field/type' do
       it "value信号を持つ" do
         expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
         expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
+        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
       end
     end
 
@@ -468,6 +473,7 @@ describe 'bit_field/type' do
       it "value信号を持つ" do
         expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
         expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
+        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
       end
     end
 
@@ -481,6 +487,8 @@ describe 'bit_field/type' do
         expect(rtl[0]).not_to have_signal_declaration(name: 'bit_field_0_0_value', type: :logic, width: 32)
         expect(rtl[1]).not_to have_identifier(:value, name: 'bit_field_1_0_value')
         expect(rtl[1]).not_to have_signal_declaration(name: 'bit_field_1_0_value', type: :logic, width: 1, dimensions: [2])
+        expect(rtl[2]).not_to have_identifier(:value, name: 'bit_field_2_0_value')
+        expect(rtl[2]).not_to have_signal_declaration(name: 'bit_field_2_0_value', type: :logic, width: 1, dimensions: [3, 4])
       end
     end
   end
