@@ -75,13 +75,14 @@ describe 'bit_fields/type/ro' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil, "block_0"                                                              ],
-          [nil, nil, 256                                                                    ],
-          [nil, nil, nil                                                                    ],
-          [nil, nil, nil                                                                    ],
-          [nil, 'register_0', "0x00-0x07", "[2]", nil, 'bit_field_0_0', "[31:0]" , "ro", nil],
-          [nil, 'register_1', "0x08"     , nil  , nil, 'bit_field_1_0', "[31:16]", "ro", nil],
-          [nil, nil         , nil        , nil  , nil, 'bit_field_1_1', "[0]"    , "ro", nil]
+          [nil, nil, "block_0"                                                                                            ],
+          [nil, nil, 256                                                                                                  ],
+          [nil, nil, nil                                                                                                  ],
+          [nil, nil, nil                                                                                                  ],
+          [nil, "register_0", "0x00-0x07", "[2]"   , nil                           , "bit_field_0_0", "[31:0]" , "ro", nil],
+          [nil, "register_1", "0x08"     , nil     , nil                           , "bit_field_1_0", "[31:16]", "ro", nil],
+          [nil, nil         , nil        , nil     , nil                           , "bit_field_1_1", "[0]"    , "ro", nil],
+          [nil, "register_2", "0x0C"     , "[4, 2]", "bit_field_1_0, bit_field_1_1", "bit_field_2_0", "[31:0]" , "ro", nil]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
@@ -95,6 +96,7 @@ describe 'bit_fields/type/ro' do
       expect(rtl[0]).to have_input(:value_in, name: "i_bit_field_0_0", width: 32, dimensions: [2])
       expect(rtl[1]).to have_input(:value_in, name: "i_bit_field_1_0", width: 16)
       expect(rtl[2]).to have_input(:value_in, name: "i_bit_field_1_1", width: 1 )
+      expect(rtl[3]).to have_input(:value_in, name: "i_bit_field_2_0", width: 32, dimensions: [4, 2])
     end
 
     describe "#generate_code" do
@@ -102,6 +104,7 @@ describe 'bit_fields/type/ro' do
         expect(rtl[0]).to generate_code(:module_item, :top_down, "assign bit_field_0_0_value[g_i] = i_bit_field_0_0[g_i];\n")
         expect(rtl[1]).to generate_code(:module_item, :top_down, "assign bit_field_1_0_value = i_bit_field_1_0;\n")
         expect(rtl[2]).to generate_code(:module_item, :top_down, "assign bit_field_1_1_value = i_bit_field_1_1;\n")
+        expect(rtl[3]).to generate_code(:module_item, :top_down, "assign bit_field_2_0_value[g_i][g_j] = i_bit_field_2_0[g_i][g_j];\n")
       end
     end
   end

@@ -75,13 +75,14 @@ describe 'bit_fields/type/rw' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil, "block_0"                                                                        ],
-          [nil, nil, 256                                                                              ],
-          [nil, nil, nil                                                                              ],
-          [nil, nil, nil                                                                              ],
-          [nil, 'register_0', "0x00"     , nil  , nil, 'bit_field_0_0', "[31:16]", "rw", '0xabcd', nil],
-          [nil, nil         , nil        , nil  , nil, 'bit_field_0_1', "[0]"    , "rw", '1'     , nil],
-          [nil, 'register_1', "0x04-0x0B", "[2]", nil, 'bit_field_1_0', "[31:0]" , "rw", '0'     , nil]
+          [nil, nil, "block_0"                                                                                                      ],
+          [nil, nil, 256                                                                                                            ],
+          [nil, nil, nil                                                                                                            ],
+          [nil, nil, nil                                                                                                            ],
+          [nil, "register_0", "0x00"     , nil     , nil                           , "bit_field_0_0", "[31:16]", "rw", "0xabcd", nil],
+          [nil, nil         , nil        , nil     , nil                           , "bit_field_0_1", "[0]"    , "rw", "1"     , nil],
+          [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , "bit_field_1_0", "[31:0]" , "rw", "0"     , nil],
+          [nil, "register_2", "0x0C"     , "[4, 2]", "bit_field_0_0, bit_field_0_1", "bit_field_2_0", "[31:0]" , "rw", "0"     , nil]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
@@ -95,6 +96,7 @@ describe 'bit_fields/type/rw' do
       expect(rtl[0]).to have_output(:value_out, name: 'o_bit_field_0_0', width: 16)
       expect(rtl[1]).to have_output(:value_out, name: 'o_bit_field_0_1', width: 1 )
       expect(rtl[2]).to have_output(:value_out, name: 'o_bit_field_1_0', width: 32, dimensions: [2])
+      expect(rtl[3]).to have_output(:value_out, name: 'o_bit_field_2_0', width: 32, dimensions: [4, 2])
     end
 
     describe "#generate_code" do
@@ -155,10 +157,30 @@ rgen_bit_field_rw #(
 CODE
       end
 
+      let(:expected_code_3) do
+        <<'CODE'
+assign o_bit_field_2_0[g_i][g_j] = bit_field_2_0_value[g_i][g_j];
+rgen_bit_field_rw #(
+  .WIDTH          (32),
+  .INITIAL_VALUE  (32'h00000000)
+) u_bit_field_2_0 (
+  .clk              (clk),
+  .rst_n            (rst_n),
+  .i_command_valid  (command_valid),
+  .i_select         (register_select[3+2*g_i+g_j]),
+  .i_write          (write),
+  .i_write_data     (write_data[31:0]),
+  .i_write_mask     (write_mask[31:0]),
+  .o_value          (bit_field_2_0_value[g_i][g_j])
+);
+CODE
+      end
+
       it "#value_outと#valueを接続、RWビットフィールドモジュールをインスタンスするコードを生成する" do
         expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
         expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
         expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
       end
     end
   end

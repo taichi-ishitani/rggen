@@ -150,8 +150,9 @@ list_item(:bit_field, :type) do
         "#{bit_field.name}_value"
       end
 
-      delegate dimensions: :register
-      delegate width: :bit_field
+      delegate [:dimensions                          ] => :register
+      delegate [:width                               ] => :bit_field
+      delegate [:index, :local_index, :loop_variables] => :register
     end
 
     default_item do

@@ -9,7 +9,7 @@ list_item(:bit_field, :type, :ro) do
     end
 
     generate_code(:module_item) do |buffer|
-      buffer << assign(value[local_index], value_in[local_index]) << nl
+      buffer << assign(value[loop_variables], value_in[loop_variables]) << nl
     end
 
     def port_name

@@ -9,7 +9,7 @@ list_item(:bit_field, :type, :rw) do
     end
 
     generate_code(:module_item) do |buffer|
-      buffer << assign(value_out[local_index], value[local_index]) << nl
+      buffer << assign(value_out[loop_variables], value[loop_variables]) << nl
       buffer << process_template
     end
 
@@ -20,7 +20,5 @@ list_item(:bit_field, :type, :rw) do
     def initial_value
       hex(bit_field.initial_value, bit_field.width)
     end
-
-    delegate local_index: :register
   end
 end
