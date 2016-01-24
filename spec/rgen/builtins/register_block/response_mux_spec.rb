@@ -6,24 +6,28 @@ describe "register_block/response_mux" do
   include_context 'rtl common'
 
   before(:all) do
-    RGen.enable(:global, :data_width)
-    RGen.enable(:global, :address_width)
-    RGen.enable(:register_block, [:name, :byte_size])
-    RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
-    RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :array, :shadow])
+    enable :global, :data_width
+    enable :global, :address_width
+    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, :host_if, :apb
+    enable :register, [:name, :offset_address, :array, :shadow]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :bit_field, :type, :rw
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"              ],
-        [nil, nil         , 256                    ],
-        [nil, nil         , nil                    ],
-        [nil, nil         , nil                    ],
-        [nil, "register_0", "0x00"     , nil  , nil],
-        [nil, "register_1", "0x04"     , nil  , nil],
-        [nil, "register_2", "0x08-0x0F", "[2]", nil]
+        [nil, nil         , "block_0"                                                                                     ],
+        [nil, nil         , 256                                                                                           ],
+        [                                                                                                                 ],
+        [                                                                                                                 ],
+        [nil, "register_0", "0x00"     , nil    , nil                           , "bit_field_0_0", "[0]"    , "rw", 0, nil],
+        [nil, nil         , nil        , nil    , nil                           , "bit_field_0_1", "[31:16]", "rw", 0, nil],
+        [nil, "register_1", "0x04"     , nil    , nil                           , "bit_field_1_0", "[31:0]" , "rw", 0, nil],
+        [nil, "register_2", "0x08-0x0F", "[2]"  , nil                           , "bit_field_2_0", "[31:0]" , "rw", 0, nil],
+        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0, bit_field_0_1", "bit_field_3_0", "[31:0]" , "rw", 0, nil]
       ]
     )
 
@@ -43,7 +47,7 @@ describe "register_block/response_mux" do
   end
 
   let(:total_registers) do
-    4
+    12
   end
 
   it "レジスタのセレクト信号を持つ" do
@@ -59,7 +63,7 @@ describe "register_block/response_mux" do
       <<'CODE'
 rgen_response_mux #(
   .DATA_WIDTH       (32),
-  .TOTAL_REGISTERS  (4)
+  .TOTAL_REGISTERS  (12)
 ) u_response_mux (
   .clk                  (clk),
   .rst_n                (rst_n),

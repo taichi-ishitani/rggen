@@ -287,16 +287,20 @@ describe 'register/array' do
         let(:expected_code) do
           <<'CODE'
 rgen_address_decoder #(
-  .ADDRESS_WIDTH  (6),
-  .READABLE       (1),
-  .WRITABLE       (1),
-  .START_ADDRESS  (6'h00),
-  .END_ADDRESS    (6'h00)
+  .READABLE           (1),
+  .WRITABLE           (1),
+  .ADDRESS_WIDTH      (6),
+  .START_ADDRESS      (6'h00),
+  .END_ADDRESS        (6'h00),
+  .USE_SHADOW_INDEX   (0),
+  .SHADOW_INDEX_WIDTH (1),
+  .SHADOW_INDEX_VALUE (1'h0)
 ) u_register_0_address_decoder (
-  .i_address  (address[7:2]),
-  .i_read     (read),
-  .i_write    (write),
-  .o_select   (register_select[0])
+  .i_read         (read),
+  .i_write        (write),
+  .i_address      (address[7:2]),
+  .i_shadow_index (1'h0),
+  .o_select       (register_select[0])
 );
 assign o_bit_field_0_0 = bit_field_0_0_value;
 rgen_bit_field_rw #(
@@ -321,20 +325,24 @@ CODE
       end
 
       context "レジスタが配列の場合" do
-        let(:expected_code) do
+        let(:expected_code_0) do
           <<'CODE'
 for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
-    .READABLE       (1),
-    .WRITABLE       (1),
-    .START_ADDRESS  (6'h02 + g_i),
-    .END_ADDRESS    (6'h02 + g_i)
+    .READABLE           (1),
+    .WRITABLE           (1),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h02 + g_i),
+    .END_ADDRESS        (6'h02 + g_i),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_2_address_decoder (
-    .i_address  (address[7:2]),
-    .i_read     (read),
-    .i_write    (write),
-    .o_select   (register_select[2+g_i])
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[2+g_i])
   );
   assign o_bit_field_2_0[g_i] = bit_field_2_0_value[g_i];
   rgen_bit_field_rw #(
@@ -354,8 +362,51 @@ end
 CODE
         end
 
+        let(:expected_code_1) do
+          <<'CODE'
+for (genvar g_i = 0;g_i < 1;g_i++) begin : gen_register_3_0
+  for (genvar g_j = 0;g_j < 2;g_j++) begin : gen_register_3_1
+    for (genvar g_k = 0;g_k < 3;g_k++) begin : gen_register_3_2
+      assign register_3_shadow_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
+      rgen_address_decoder #(
+        .READABLE           (1),
+        .WRITABLE           (1),
+        .ADDRESS_WIDTH      (6),
+        .START_ADDRESS      (6'h04),
+        .END_ADDRESS        (6'h04),
+        .USE_SHADOW_INDEX   (1),
+        .SHADOW_INDEX_WIDTH (24),
+        .SHADOW_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
+      ) u_register_3_address_decoder (
+        .i_read         (read),
+        .i_write        (write),
+        .i_address      (address[7:2]),
+        .i_shadow_index (register_3_shadow_index[g_i][g_j][g_k]),
+        .o_select       (register_select[4+6*g_i+3*g_j+g_k])
+      );
+      assign o_bit_field_3_0[g_i][g_j][g_k] = bit_field_3_0_value[g_i][g_j][g_k];
+      rgen_bit_field_rw #(
+        .WIDTH          (32),
+        .INITIAL_VALUE  (32'h00000000)
+      ) u_bit_field_3_0 (
+        .clk              (clk),
+        .rst_n            (rst_n),
+        .i_command_valid  (command_valid),
+        .i_select         (register_select[4+6*g_i+3*g_j+g_k]),
+        .i_write          (write),
+        .i_write_data     (write_data[31:0]),
+        .i_write_mask     (write_mask[31:0]),
+        .o_value          (bit_field_3_0_value[g_i][g_j][g_k])
+      );
+    end
+  end
+end
+CODE
+        end
+
         it "generate for文で包んだコードを出力する" do
-          expect(rtl.registers[2]).to generate_code(:module_item, :top_down, expected_code)
+          expect(rtl.registers[2]).to generate_code(:module_item, :top_down, expected_code_0)
+          expect(rtl.registers[3]).to generate_code(:module_item, :top_down, expected_code_1)
         end
       end
     end

@@ -18,7 +18,9 @@ module sample_0 (
   output o_bit_field_2_1,
   input [31:0] i_bit_field_3_0,
   input [15:0] i_bit_field_4_0[4],
-  output [15:0] o_bit_field_4_1[4]
+  output [15:0] o_bit_field_4_1[4],
+  input [15:0] i_bit_field_5_0[2][4],
+  output [15:0] o_bit_field_5_1[2][4]
 );
   logic command_valid;
   logic write;
@@ -29,8 +31,8 @@ module sample_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [7:0] register_select;
-  logic [31:0] register_read_data[8];
+  logic [15:0] register_select;
+  logic [31:0] register_read_data[16];
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;
   logic [31:0] bit_field_1_0_value;
@@ -39,6 +41,9 @@ module sample_0 (
   logic [31:0] bit_field_3_0_value;
   logic [15:0] bit_field_4_0_value[4];
   logic [15:0] bit_field_4_1_value[4];
+  logic [32:0] register_5_shadow_index[2][4];
+  logic [15:0] bit_field_5_0_value[2][4];
+  logic [15:0] bit_field_5_1_value[2][4];
   rgen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -68,7 +73,7 @@ module sample_0 (
   );
   rgen_response_mux #(
     .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (8)
+    .TOTAL_REGISTERS  (16)
   ) u_response_mux (
     .clk                  (clk),
     .rst_n                (rst_n),
@@ -81,16 +86,20 @@ module sample_0 (
     .i_register_read_data (register_read_data)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
-    .READABLE       (1),
-    .WRITABLE       (1),
-    .START_ADDRESS  (6'h00),
-    .END_ADDRESS    (6'h00)
+    .READABLE           (1),
+    .WRITABLE           (1),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h00),
+    .END_ADDRESS        (6'h00),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_0_address_decoder (
-    .i_address  (address[7:2]),
-    .i_read     (read),
-    .i_write    (write),
-    .o_select   (register_select[0])
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[0])
   );
   assign register_read_data[0] = {bit_field_0_0_value, bit_field_0_1_value};
   assign o_bit_field_0_0 = bit_field_0_0_value;
@@ -109,16 +118,20 @@ module sample_0 (
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
-    .READABLE       (1),
-    .WRITABLE       (1),
-    .START_ADDRESS  (6'h01),
-    .END_ADDRESS    (6'h01)
+    .READABLE           (1),
+    .WRITABLE           (1),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h01),
+    .END_ADDRESS        (6'h01),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_1_address_decoder (
-    .i_address  (address[7:2]),
-    .i_read     (read),
-    .i_write    (write),
-    .o_select   (register_select[1])
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[1])
   );
   assign register_read_data[1] = {bit_field_1_0_value};
   assign o_bit_field_1_0 = bit_field_1_0_value;
@@ -136,16 +149,20 @@ module sample_0 (
     .o_value          (bit_field_1_0_value)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
-    .READABLE       (1),
-    .WRITABLE       (1),
-    .START_ADDRESS  (6'h02),
-    .END_ADDRESS    (6'h02)
+    .READABLE           (1),
+    .WRITABLE           (1),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h02),
+    .END_ADDRESS        (6'h02),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_2_address_decoder (
-    .i_address  (address[7:2]),
-    .i_read     (read),
-    .i_write    (write),
-    .o_select   (register_select[2])
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[2])
   );
   assign register_read_data[2] = {15'h0000, bit_field_2_0_value, 15'h0000, bit_field_2_1_value};
   assign bit_field_2_0_value = i_bit_field_2_0;
@@ -164,31 +181,39 @@ module sample_0 (
     .o_value          (bit_field_2_1_value)
   );
   rgen_address_decoder #(
-    .ADDRESS_WIDTH  (6),
-    .READABLE       (1),
-    .WRITABLE       (0),
-    .START_ADDRESS  (6'h03),
-    .END_ADDRESS    (6'h03)
+    .READABLE           (1),
+    .WRITABLE           (0),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h03),
+    .END_ADDRESS        (6'h03),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_3_address_decoder (
-    .i_address  (address[7:2]),
-    .i_read     (read),
-    .i_write    (write),
-    .o_select   (register_select[3])
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[3])
   );
   assign register_read_data[3] = {bit_field_3_0_value};
   assign bit_field_3_0_value = i_bit_field_3_0;
   for (genvar g_i = 0;g_i < 4;g_i++) begin : gen_register_4_0
     rgen_address_decoder #(
-      .ADDRESS_WIDTH  (6),
-      .READABLE       (1),
-      .WRITABLE       (1),
-      .START_ADDRESS  (6'h04 + g_i),
-      .END_ADDRESS    (6'h04 + g_i)
+      .READABLE           (1),
+      .WRITABLE           (1),
+      .ADDRESS_WIDTH      (6),
+      .START_ADDRESS      (6'h04 + g_i),
+      .END_ADDRESS        (6'h04 + g_i),
+      .USE_SHADOW_INDEX   (0),
+      .SHADOW_INDEX_WIDTH (1),
+      .SHADOW_INDEX_VALUE (1'h0)
     ) u_register_4_address_decoder (
-      .i_address  (address[7:2]),
-      .i_read     (read),
-      .i_write    (write),
-      .o_select   (register_select[4+g_i])
+      .i_read         (read),
+      .i_write        (write),
+      .i_address      (address[7:2]),
+      .i_shadow_index (1'h0),
+      .o_select       (register_select[4+g_i])
     );
     assign register_read_data[4+g_i] = {bit_field_4_0_value[g_i], bit_field_4_1_value[g_i]};
     assign bit_field_4_0_value[g_i] = i_bit_field_4_0[g_i];
@@ -206,5 +231,42 @@ module sample_0 (
       .i_write_mask     (write_mask[15:0]),
       .o_value          (bit_field_4_1_value[g_i])
     );
+  end
+  for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_5_0
+    for (genvar g_j = 0;g_j < 4;g_j++) begin : gen_register_5_1
+      assign register_5_shadow_index[g_i][g_j] = {bit_field_2_0_value, bit_field_0_0_value, bit_field_0_1_value};
+      rgen_address_decoder #(
+        .READABLE           (1),
+        .WRITABLE           (1),
+        .ADDRESS_WIDTH      (6),
+        .START_ADDRESS      (6'h08),
+        .END_ADDRESS        (6'h08),
+        .USE_SHADOW_INDEX   (1),
+        .SHADOW_INDEX_WIDTH (33),
+        .SHADOW_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
+      ) u_register_5_address_decoder (
+        .i_read         (read),
+        .i_write        (write),
+        .i_address      (address[7:2]),
+        .i_shadow_index (register_5_shadow_index[g_i][g_j]),
+        .o_select       (register_select[8+4*g_i+g_j])
+      );
+      assign register_read_data[8+4*g_i+g_j] = {bit_field_5_0_value[g_i][g_j], bit_field_5_1_value[g_i][g_j]};
+      assign bit_field_5_0_value[g_i][g_j] = i_bit_field_5_0[g_i][g_j];
+      assign o_bit_field_5_1[g_i][g_j] = bit_field_5_1_value[g_i][g_j];
+      rgen_bit_field_rw #(
+        .WIDTH          (16),
+        .INITIAL_VALUE  (16'h0000)
+      ) u_bit_field_5_1 (
+        .clk              (clk),
+        .rst_n            (rst_n),
+        .i_command_valid  (command_valid),
+        .i_select         (register_select[8+4*g_i+g_j]),
+        .i_write          (write),
+        .i_write_data     (write_data[15:0]),
+        .i_write_mask     (write_mask[15:0]),
+        .o_value          (bit_field_5_1_value[g_i][g_j])
+      );
+    end
   end
 endmodule

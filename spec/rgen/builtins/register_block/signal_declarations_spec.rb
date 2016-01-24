@@ -28,14 +28,15 @@ describe "register_block/signal_declarations" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                         ],
-        [nil, nil         , 256                                                               ],
-        [                                                                                     ],
-        [                                                                                     ],
-        [nil, "register_0", "0x00"     , nil  , nil, "bit_field_0_0", "[0]"    , "foo", 0, nil],
-        [nil, nil         , nil        , nil  , nil, "bit_field_0_1", "[31:16]", "foo", 0, nil],
-        [nil, "register_1", "0x04"     , nil  , nil, "bit_field_1_0", "[31:0]" , "foo", 0, nil],
-        [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:0]" , "foo", 0, nil]
+        [nil, nil         , "block_0"                                                                                      ],
+        [nil, nil         , 256                                                                                            ],
+        [                                                                                                                  ],
+        [                                                                                                                  ],
+        [nil, "register_0", "0x00"     , nil    , nil                           , "bit_field_0_0", "[0]"    , "foo", 0, nil],
+        [nil, nil         , nil        , nil    , nil                           , "bit_field_0_1", "[31:16]", "foo", 0, nil],
+        [nil, "register_1", "0x04"     , nil    , nil                           , "bit_field_1_0", "[31:0]" , "foo", 0, nil],
+        [nil, "register_2", "0x08-0x0F", "[2]"  , nil                           , "bit_field_2_0", "[31:0]" , "foo", 0, nil],
+        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0, bit_field_0_1", "bit_field_3_0", "[31:0]" , "foo", 0, nil]
       ]
     )
 
@@ -63,8 +64,8 @@ logic [31:0] write_mask;
 logic response_ready;
 logic [31:0] read_data;
 logic [1:0] status;
-logic [3:0] register_select;
-logic [31:0] register_read_data[4];
+logic [11:0] register_select;
+logic [31:0] register_read_data[12];
 logic bit_field_0_0_value;
 reg bit_field_0_0_reg;
 wire bit_field_0_0_wire;
@@ -77,6 +78,9 @@ wire [31:0] bit_field_1_0_wire;
 logic [31:0] bit_field_2_0_value[2];
 reg [31:0] bit_field_2_0_reg[2];
 wire [31:0] bit_field_2_0_wire[2];
+logic [31:0] bit_field_3_0_value[2][4];
+reg [31:0] bit_field_3_0_reg[2][4];
+wire [31:0] bit_field_3_0_wire[2][4];
 CODE
     end
 
