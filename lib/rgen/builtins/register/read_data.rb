@@ -23,7 +23,7 @@ simple_item(:register, :read_data) do
         padding_bits  = last_lsb - field.msb - 1
         last_lsb      = field.lsb
         expressions << hex(0, padding_bits) if padding_bits > 0
-        expressions << field.value[register.local_index]
+        expressions << field.value[register.loop_variables]
       end
       expressions << hex(0, last_lsb) if last_lsb > 0
       expressions
