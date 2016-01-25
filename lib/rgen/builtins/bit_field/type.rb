@@ -1,4 +1,4 @@
-list_item(:bit_field, :type) do
+list_item :bit_field, :type do
   register_map do
     item_base do
       define_helpers do

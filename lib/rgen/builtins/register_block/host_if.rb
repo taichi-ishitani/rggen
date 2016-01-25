@@ -1,4 +1,4 @@
-list_item(:register_block, :host_if) do
+list_item :register_block, :host_if do
   shared_context do
     attr_accessor :enabled_host_ifs
   end

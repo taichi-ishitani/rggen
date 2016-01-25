@@ -1,4 +1,4 @@
-loader(:register_map, [:csv, :tsv]) do
+loader :register_map, [:csv, :tsv] do
   require 'csv'
 
   def load_file(file)

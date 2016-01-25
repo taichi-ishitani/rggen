@@ -1,4 +1,4 @@
-loader(:register_map, :xls) do
+loader :register_map, :xls do
   require 'spreadsheet'
 
   def load_file(file)

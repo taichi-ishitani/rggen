@@ -1,4 +1,4 @@
-list_item(:register_block, :host_if, :apb) do
+list_item :register_block, :host_if, :apb do
   rtl do
     build do
       group(:apb) do
@@ -15,6 +15,6 @@ list_item(:register_block, :host_if, :apb) do
       end
     end
 
-    generate_code_from_template(:module_item)
+    generate_code_from_template :module_item
   end
 end

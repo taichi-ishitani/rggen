@@ -1,4 +1,4 @@
-simple_item(:register_block, :clock_reset) do
+simple_item :register_block, :clock_reset do
   rtl do
     build do
       input :clock, name: 'clk'  , width: 1

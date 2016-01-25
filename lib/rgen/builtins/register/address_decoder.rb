@@ -1,4 +1,4 @@
-simple_item(:register, :address_decoder) do
+simple_item :register, :address_decoder do
   rtl do
     build do
       next unless register.shadow?

@@ -1,4 +1,4 @@
-simple_item(:register_block, :byte_size) do
+simple_item :register_block, :byte_size do
   register_map do
     field :byte_size
     field :local_address_width

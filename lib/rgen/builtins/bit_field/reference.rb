@@ -1,4 +1,4 @@
-simple_item(:bit_field, :reference) do
+simple_item :bit_field, :reference do
   register_map do
     field :reference, need_validation: true, forward_to: :find_reference
     field :has_reference? do

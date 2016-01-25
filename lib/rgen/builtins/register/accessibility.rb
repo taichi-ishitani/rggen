@@ -1,4 +1,4 @@
-simple_item(:register, :accessibility) do
+simple_item :register, :accessibility do
   register_map do
     field :readable? do
       register.bit_fields.any?(&:readable?)

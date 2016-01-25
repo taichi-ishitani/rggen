@@ -1,4 +1,4 @@
-list_item(:bit_field, :type, :rw) do
+list_item :bit_field, :type, :rw do
   register_map do
     read_write
   end
@@ -8,7 +8,7 @@ list_item(:bit_field, :type, :rw) do
       output :value_out, name: port_name, width: width, dimensions: dimensions
     end
 
-    generate_code(:module_item) do |buffer|
+    generate_code :module_item do |buffer|
       buffer << assign(value_out[loop_variables], value[loop_variables]) << nl
       buffer << process_template
     end
