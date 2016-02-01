@@ -1,6 +1,6 @@
-require_relative '../../../spec_helper'
+require_relative '../../spec_helper'
 
-module RGen::Rtl
+module RGen::Verilog
   describe PortDeclaration do
     let(:name) do
       "foo"

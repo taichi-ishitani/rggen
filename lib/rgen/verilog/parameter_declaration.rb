@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module Verilog
     class ParameterDeclaration
       def initialize(name, attributes = {})
         @name           = name

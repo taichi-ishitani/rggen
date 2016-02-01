@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module Verilog
     class SignalDeclaration
       def initialize(name, signal_attributes = {})
         @name       = name

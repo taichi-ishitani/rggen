@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module Verilog
     class PortDeclaration < SignalDeclaration
       def initialize(name, port_attributes = {})
         super(name, port_attributes)

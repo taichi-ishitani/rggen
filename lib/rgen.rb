@@ -39,6 +39,11 @@ module RGen
   require_relative 'rgen/output_base/component_factory'
   require_relative 'rgen/output_base/item_factory'
 
+  require_relative 'rgen/verilog/identifier'
+  require_relative 'rgen/verilog/signal_declaration'
+  require_relative 'rgen/verilog/port_declaration'
+  require_relative 'rgen/verilog/parameter_declaration'
+
   require_relative 'rgen/builder/simple_item_entry'
   require_relative 'rgen/builder/list_item_entry'
   require_relative 'rgen/builder/item_store'
