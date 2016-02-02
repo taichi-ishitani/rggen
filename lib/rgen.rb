@@ -41,6 +41,7 @@ module RGen
 
   require_relative 'rgen/verilog/identifier'
   require_relative 'rgen/verilog/declaration'
+  require_relative 'rgen/verilog'
 
   require_relative 'rgen/builder/simple_item_entry'
   require_relative 'rgen/builder/list_item_entry'
