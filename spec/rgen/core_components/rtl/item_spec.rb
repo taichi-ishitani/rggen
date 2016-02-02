@@ -13,240 +13,226 @@ module RGen::Rtl
     end
 
     describe "#wire" do
+      before do
+        item.instance_eval do
+          wire :foo
+          wire :bar, width: 2, dimensions: [4]
+          wire :baz, name: 'w_baz'
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {wire :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'w_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {wire :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#typeが:wireのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        item.instance_eval {wire :foo}
-        expect(item.signal_declarations.last     ).to be_instance_of SignalDeclaration
-        expect(item.signal_declarations.last.type).to eq :wire
-        expect(item.signal_declarations.last.name).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {wire :foo, width:2, dimensions:[4]}
-        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimensions).to eq '[4]'
-      end
-
-      context "属性で信号名を与えた場合" do
-        specify "与えた信号名が反映される" do
-          item.instance_eval {wire :foo, name:"w_foo"}
-          expect(item.foo.to_s                     ).to eq "w_foo"
-          expect(item.signal_declarations.last.name).to eq "w_foo"
-        end
+      it "wire宣言用のDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        expect(item.signal_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[0].to_s).to eq "wire foo"
+        expect(item.signal_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[1].to_s).to eq "wire [1:0] bar[4]"
+        expect(item.signal_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[2].to_s).to eq "wire w_baz"
       end
     end
 
     describe "#reg" do
+      before do
+        item.instance_eval do
+          reg :foo
+          reg :bar, width: 2, dimensions: [4]
+          reg :baz, name: 'r_baz'
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {reg :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'r_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {reg :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#typeが:regのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        item.instance_eval {reg :foo}
-        expect(item.signal_declarations.last     ).to be_instance_of SignalDeclaration
-        expect(item.signal_declarations.last.type).to eq :reg
-        expect(item.signal_declarations.last.name).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {reg :foo, width:2, dimensions:[4]}
-        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimensions).to eq '[4]'
-      end
-
-      context "属性で信号名を与えた場合" do
-        specify "与えた信号名が反映される" do
-          item.instance_eval {reg :foo, name:"r_foo"}
-          expect(item.foo.to_s                     ).to eq "r_foo"
-          expect(item.signal_declarations.last.name).to eq "r_foo"
-        end
+      it "reg宣言用のDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        expect(item.signal_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[0].to_s).to eq "reg foo"
+        expect(item.signal_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[1].to_s).to eq "reg [1:0] bar[4]"
+        expect(item.signal_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[2].to_s).to eq "reg r_baz"
       end
     end
 
     describe "#logic" do
+      before do
+        item.instance_eval do
+          logic :foo
+          logic :bar, width: 2, dimensions: [4]
+          logic :baz, name: 'l_baz'
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {logic :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'l_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {logic :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#typeが:logicのSignalDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        item.instance_eval {logic :foo}
-        expect(item.signal_declarations.last     ).to be_instance_of SignalDeclaration
-        expect(item.signal_declarations.last.type).to eq :logic
-        expect(item.signal_declarations.last.name).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するSignalDeclarationオブジェクトに反映される" do
-        item.instance_eval {logic :foo, width:2, dimensions:[4]}
-        expect(item.signal_declarations.last.width     ).to eq '[1:0]'
-        expect(item.signal_declarations.last.dimensions).to eq '[4]'
-      end
-
-      context "属性で信号名を与えた場合" do
-        specify "与えた信号名が反映される" do
-          item.instance_eval {logic :foo, name:"l_foo"}
-          expect(item.foo.to_s                     ).to eq "l_foo"
-          expect(item.signal_declarations.last.name).to eq "l_foo"
-        end
+      it "logic宣言用のDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
+        expect(item.signal_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[0].to_s).to eq "logic foo"
+        expect(item.signal_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[1].to_s).to eq "logic [1:0] bar[4]"
+        expect(item.signal_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.signal_declarations[2].to_s).to eq "logic l_baz"
       end
     end
 
     describe "#input" do
+      before do
+        item.instance_eval do
+          input :foo
+          input :bar, width: 2, dimensions: [4]
+          input :baz, name: 'i_baz'
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {input :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'i_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {input :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#directionが:inputのPortDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        item.instance_eval {input :foo}
-        expect(item.port_declarations.last          ).to be_instance_of PortDeclaration
-        expect(item.port_declarations.last.direction).to eq :input
-        expect(item.port_declarations.last.name     ).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
-        item.instance_eval {input :foo, type: :logic, width:2, dimensions:[4]}
-        expect(item.port_declarations.last.type      ).to eq :logic
-        expect(item.port_declarations.last.width     ).to eq '[1:0]'
-        expect(item.port_declarations.last.dimensions).to eq '[4]'
-      end
-
-      context "属性でポート名を与えた場合" do
-        specify "与えたポート名が反映される" do
-          item.instance_eval {input :foo, name:"i_foo"}
-          expect(item.foo.to_s                   ).to eq "i_foo"
-          expect(item.port_declarations.last.name).to eq "i_foo"
-        end
+      it "input宣言用のDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
+        expect(item.port_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[0].to_s).to eq "input foo"
+        expect(item.port_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[1].to_s).to eq "input [1:0] bar[4]"
+        expect(item.port_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[2].to_s).to eq "input i_baz"
       end
     end
 
     describe "#output" do
+      before do
+        item.instance_eval do
+          output :foo
+          output :bar, width: 2, dimensions: [4]
+          output :baz, name: 'o_baz'
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {output :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'o_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {output :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#directionが:outputのPortDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        item.instance_eval {output :foo}
-        expect(item.port_declarations.last          ).to be_instance_of PortDeclaration
-        expect(item.port_declarations.last.direction).to eq :output
-        expect(item.port_declarations.last.name     ).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するPortDeclarationオブジェクトに反映される" do
-        item.instance_eval {output :foo, type: :logic, width:2, dimensions:[4]}
-        expect(item.port_declarations.last.type      ).to eq :logic
-        expect(item.port_declarations.last.width     ).to eq '[1:0]'
-        expect(item.port_declarations.last.dimensions).to eq '[4]'
-      end
-
-      context "属性でポート名を与えた場合" do
-        specify "与えたポート名が反映される" do
-          item.instance_eval {output :foo, name:"o_foo"}
-          expect(item.foo.to_s                   ).to eq "o_foo"
-          expect(item.port_declarations.last.name).to eq "o_foo"
-        end
+      it "output宣言用のDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
+        expect(item.port_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[0].to_s).to eq "output foo"
+        expect(item.port_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[1].to_s).to eq "output [1:0] bar[4]"
+        expect(item.port_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.port_declarations[2].to_s).to eq "output o_baz"
       end
     end
 
     describe "#parameter" do
+      before do
+        item.instance_eval do
+          parameter :foo, default: 0
+          parameter :bar, width: 2, dimensions: [4], default: "'{0, 1, 2, 3}"
+          parameter :baz, name: 'p_baz', default: 1
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {parameter :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'p_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {parameter :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#typeが:parameterのParameterDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
-        item.instance_eval {parameter :foo}
-        expect(item.parameter_declarations.last     ).to be_instance_of ParameterDeclaration
-        expect(item.parameter_declarations.last.type).to eq :parameter
-        expect(item.parameter_declarations.last.name).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するParameterDeclarationオブジェクトに反映される" do
-        item.instance_eval {parameter :foo, default_value: 1}
-        expect(item.parameter_declarations.last.default_value).to eq 1
-      end
-
-      context "属性でパラメータ名を与えた場合" do
-        specify "与えたパラメータ名が反映される" do
-          item.instance_eval {parameter :foo, name:"FOO"}
-          expect(item.foo.to_s                        ).to eq "FOO"
-          expect(item.parameter_declarations.last.name).to eq "FOO"
-        end
+      it "parameter宣言用のDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
+        expect(item.parameter_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.parameter_declarations[0].to_s).to eq "parameter foo = 0"
+        expect(item.parameter_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.parameter_declarations[1].to_s).to eq "parameter [1:0] bar[4] = '{0, 1, 2, 3}"
+        expect(item.parameter_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.parameter_declarations[2].to_s).to eq "parameter p_baz = 1"
       end
     end
 
     describe "#localparam" do
+      before do
+        item.instance_eval do
+          localparam :foo, default: 0
+          localparam :bar, width: 2, dimensions: [4], default: "'{0, 1, 2, 3}"
+          localparam :baz, name: 'lp_baz', default: 1
+        end
+      end
+
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        item.instance_eval {localparam :foo}
-        expect(item.foo     ).to be_instance_of Identifier
+        expect(item.foo     ).to be_instance_of RGen::Verilog::Identifier
         expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RGen::Verilog::Identifier
+        expect(item.baz.to_s).to eq 'lp_baz'
       end
 
       it "#identifiersに与えたハンドル名を追加する" do
-        item.instance_eval {localparam :foo}
-        expect(item.identifiers.last).to eq :foo
+        expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "#typeが:localparamのParameterDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
-        item.instance_eval {localparam :foo}
-        expect(item.localparam_declarations.last     ).to be_instance_of ParameterDeclaration
-        expect(item.localparam_declarations.last.type).to eq :localparam
-        expect(item.localparam_declarations.last.name).to eq 'foo'
-      end
-
-      specify "与えた属性は生成するParameterDeclarationオブジェクトに反映される" do
-        item.instance_eval {localparam :foo, default_value: 1}
-        expect(item.localparam_declarations.last.default_value).to eq 1
-      end
-
-      context "属性でパラメータ名を与えた場合" do
-        specify "与えたパラメータ名が反映される" do
-          item.instance_eval {localparam :foo, name:"FOO"}
-          expect(item.foo.to_s                         ).to eq "FOO"
-          expect(item.localparam_declarations.last.name).to eq "FOO"
-        end
+      it "localparam宣言用のDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
+        expect(item.localparam_declarations[0]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.localparam_declarations[0].to_s).to eq "localparam foo = 0"
+        expect(item.localparam_declarations[1]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.localparam_declarations[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
+        expect(item.localparam_declarations[2]     ).to be_instance_of RGen::Verilog::Declaration
+        expect(item.localparam_declarations[2].to_s).to eq "localparam lp_baz = 1"
       end
     end
 
@@ -306,53 +292,6 @@ module RGen::Rtl
           localparam :QUX
         end
         expect(item.identifiers).to match [:foo_bar_baz, :qux_quux, :FOO_BAR, :BAZ_QUX, :foo, :bar, :baz, :qux, :quux, :FOO, :BAR, :BAZ, :QUX]
-      end
-    end
-
-    describe "#assign" do
-      let(:lhs) do
-        Identifier.new('foo')
-      end
-
-      let(:rhs_list) do
-        ["4'b0000", Identifier.new('bar')]
-      end
-
-      it "継続代入のコード片を返す" do
-        expect(item.send(:assign, lhs,      rhs_list[0])).to eq "assign foo = 4'b0000;"
-        expect(item.send(:assign, lhs[1,0], rhs_list[1])).to eq "assign foo[1:0] = bar;"
-      end
-    end
-
-    describe "#concat" do
-      let(:expressions) do
-        ["4'b0000", Identifier.new('foo'), Identifier.new('bar')]
-      end
-
-      it "連接のコード片を返す" do
-        expect(item.send(:concat, *expressions  )).to eq "{4'b0000, foo, bar}"
-        expect(item.send(:concat, expressions[0])).to eq "{4'b0000}"
-      end
-    end
-
-    describe "#bin" do
-      it "与えた値をVerilog形式の2進数表記に変換する" do
-        expect(item.send(:bin, 2, 2)).to eq "2'b10"
-        expect(item.send(:bin, 2, 3)).to eq "3'b010"
-      end
-    end
-
-    describe "#dec" do
-      it "与えた値をVerilog形式の10進数表記に変換する" do
-        expect(item.send(:dec, 8, 4)).to eq "4'd8"
-      end
-    end
-
-    describe "#hex" do
-      it "与えた値をVerilog形式の16進数表記に変換する" do
-        expect(item.send(:hex, 0x1f, 7)).to eq "7'h1f"
-        expect(item.send(:hex, 0x1f, 8)).to eq "8'h1f"
-        expect(item.send(:hex, 0x1f, 9)).to eq "9'h01f"
       end
     end
   end

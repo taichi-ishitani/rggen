@@ -1,6 +1,8 @@
 module RGen
   module Rtl
     class Item < OutputBase::Item
+      include Verilog
+
       def initialize(owner)
         super(owner)
         @identifiers              = []
@@ -18,36 +20,26 @@ module RGen
 
       private
 
-      [:wire, :reg, :logic].each do |type|
-        define_method(type) do |handle_name, attributes = {}|
-          attributes[:type] = type
-          declarations      = signal_declarations
-          declare(SignalDeclaration, declarations, handle_name, attributes)
+      class << self
+        private
+
+        def define_declaration_method(method_name)
+          define_method(method_name) do |handle_name, attributes = {}|
+            attributes[:name] ||= handle_name.to_s
+            add_identifier(handle_name, attributes[:name])
+            add_declaration(method_name, attributes)
+          end
+          private method_name
         end
-        private type
       end
 
-      [:input, :output].each do |direction|
-        define_method(direction) do |handle_name, attributes = {}|
-          attributes[:direction]  = direction
-          declarations            = port_declarations
-          declare(PortDeclaration, declarations, handle_name, attributes)
-        end
-        private direction
-      end
-
-      [:parameter, :localparam].each do |type|
-        define_method(type) do |handle_name, attributes = {}|
-          attributes[:type] = type
-          declarations      =
-            case type
-            when :parameter  then parameter_declarations
-            when :localparam then localparam_declarations
-            end
-          declare(ParameterDeclaration, declarations, handle_name, attributes)
-        end
-        private type
-      end
+      define_declaration_method :wire
+      define_declaration_method :reg
+      define_declaration_method :logic
+      define_declaration_method :input
+      define_declaration_method :output
+      define_declaration_method :parameter
+      define_declaration_method :localparam
 
       def group(group_name, &body)
         create_group(group_name)
@@ -55,21 +47,29 @@ module RGen
         @group  = nil
       end
 
-      def declare(klass, declarations, handle_name, attributes)
-        name  = (attributes[:name] || handle_name).to_s
-        add_identifer(handle_name, name)
-        declarations  << klass.new(name, attributes)
+      def add_declaration(type, attributes)
+        attribute_key, declaration_type, declarations =
+          case type
+          when :wire, :reg, :logic
+            [:data_type, :variable, signal_declarations]
+          when :input, :output
+            [:direction, :port, port_declarations]
+          when :parameter
+            [:parameter_type, :parameter, parameter_declarations]
+          when :localparam
+            [:parameter_type, :parameter, localparam_declarations]
+          end
+        attributes[attribute_key] = type
+        declarations << create_declaration(declaration_type, attributes)
       end
 
-      def add_identifer(handle_name, name)
-        context = @group || self
-        context.instance_variable_set(handle_name.variablize, create_identifier(name))
-        context.attr_singleton_reader(handle_name)
+      def add_identifier(handle_name, name)
+        identifier  = create_identifier(name)
+        (@group || self).instance_exec do
+          instance_variable_set(handle_name.variablize, identifier)
+          attr_singleton_reader(handle_name)
+        end
         identifiers << handle_name if @group.nil?
-      end
-
-      def create_identifier(name)
-        Identifier.new(name)
       end
 
       def create_group(group_name)
@@ -77,28 +77,6 @@ module RGen
         attr_singleton_reader(group_name)
         identifiers << group_name
         @group      = __send__(group_name)
-      end
-
-      def assign(lhs, rhs)
-        "assign #{lhs} = #{rhs};"
-      end
-
-      def concat(expression, *other_expressions)
-        expressions = Array[expression, *other_expressions]
-        "{#{expressions.join(', ')}}"
-      end
-
-      def bin(value, width)
-        format("%d'b%0*b", width, width, value)
-      end
-
-      def dec(value, width)
-        format("%d'd%d", width, value)
-      end
-
-      def hex(value, width)
-        print_width = (width + 3) / 4
-        format("%d'h%0*x", width, print_width, value)
       end
     end
   end
