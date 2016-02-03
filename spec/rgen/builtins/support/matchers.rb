@@ -26,7 +26,7 @@ end
 
 RSpec::Matchers.define :match_identifier do |expected_name|
   match do |identifier|
-    next false unless identifier.is_a?(RGen::Rtl::Identifier)
+    next false unless identifier.is_a?(RGen::Verilog::Identifier)
     identifier.to_s == expected_name
   end
 end
@@ -59,26 +59,15 @@ end
 
 RSpec::Matchers.define :have_port_declaration do |attributes|
   match do |component|
-    expectation = RGen::Rtl::PortDeclaration.new(attributes[:name], attributes)
-    component.port_declarations.any? do |declaration|
-      declaration.name       == expectation.name      &&
-      declaration.direction  == expectation.direction &&
-      declaration.type       == expectation.type      &&
-      declaration.width      == expectation.width     &&
-      declaration.dimensions == expectation.dimensions
-    end
+    expectation = RGen::Verilog::Declaration.new(:port, attributes).to_s
+    component.port_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
 
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
-    expectation = RGen::Rtl::SignalDeclaration.new(attributes[:name], attributes)
-    component.signal_declarations.any? do |declaration|
-      declaration.name       == expectation.name      &&
-      declaration.type       == expectation.type      &&
-      declaration.width      == expectation.width     &&
-      declaration.dimensions == expectation.dimensions
-    end
+    expectation = RGen::Verilog::Declaration.new(:variable, attributes).to_s
+    component.signal_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
 

@@ -10,8 +10,8 @@ describe "register_block/signal_declarations" do
       register_map {read_write}
       rtl do
         build do
-          input  :foo_in , name: "i_#{bit_field.name}", type: :wire, width: bit_field.width, dimensions: register.dimensions
-          output :foo_out, name: "o_#{bit_field.name}", type: :reg , width: bit_field.width, dimensions: register.dimensions
+          input  :foo_in , name: "i_#{bit_field.name}", data_type: :wire, width: bit_field.width, dimensions: register.dimensions
+          output :foo_out, name: "o_#{bit_field.name}", data_type: :reg , width: bit_field.width, dimensions: register.dimensions
         end
       end
     end

@@ -10,18 +10,9 @@ define_simple_item :register_block, :port_declarations do
       indent(2) do |buffer|
         register_block.port_declarations.each_with_index do |declaration, i|
           buffer << comma << nl if i > 0
-          buffer << declare_port(declaration)
+          buffer << declaration
         end
       end
-    end
-
-    def declare_port(declaration)
-      [
-        declaration.direction,
-        declaration.type,
-        declaration.width,
-        "#{declaration.name}#{declaration.dimensions}"
-      ].reject(&:empty?).join(space)
     end
   end
 end

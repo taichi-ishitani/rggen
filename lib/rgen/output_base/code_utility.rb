@@ -13,6 +13,10 @@ module RGen
         ','
       end
 
+      def semicolon
+        ';'
+      end
+
       def space(size = 1)
         ' ' * size
       end

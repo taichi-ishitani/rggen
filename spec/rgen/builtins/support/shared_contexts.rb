@@ -132,7 +132,7 @@ shared_context 'rtl common' do
   def have_logic(*expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name]  ||= handle_name.to_s
-    attributes[:type]  = :logic
+    attributes[:data_type]  = :logic
     have_identifier(*expectation).and have_signal_declaration(attributes)
   end
 end

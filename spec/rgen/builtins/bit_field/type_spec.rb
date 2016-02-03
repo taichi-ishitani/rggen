@@ -484,11 +484,11 @@ describe 'bit_field/type' do
 
       it "value信号を持たない" do
         expect(rtl[0]).not_to have_identifier(:value, name: 'bit_field_0_0_value')
-        expect(rtl[0]).not_to have_signal_declaration(name: 'bit_field_0_0_value', type: :logic, width: 32)
+        expect(rtl[0]).not_to have_signal_declaration(name: 'bit_field_0_0_value', data_type: :logic, width: 32)
         expect(rtl[1]).not_to have_identifier(:value, name: 'bit_field_1_0_value')
-        expect(rtl[1]).not_to have_signal_declaration(name: 'bit_field_1_0_value', type: :logic, width: 1, dimensions: [2])
+        expect(rtl[1]).not_to have_signal_declaration(name: 'bit_field_1_0_value', data_type: :logic, width: 1, dimensions: [2])
         expect(rtl[2]).not_to have_identifier(:value, name: 'bit_field_2_0_value')
-        expect(rtl[2]).not_to have_signal_declaration(name: 'bit_field_2_0_value', type: :logic, width: 1, dimensions: [3, 4])
+        expect(rtl[2]).not_to have_signal_declaration(name: 'bit_field_2_0_value', data_type: :logic, width: 1, dimensions: [3, 4])
       end
     end
   end
