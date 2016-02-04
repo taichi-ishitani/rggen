@@ -4,6 +4,7 @@ describe 'bit_field/type' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'rtl common'
+  include_context 'ral common'
 
   before(:all) do
     items = {}
@@ -11,6 +12,11 @@ describe 'bit_field/type' do
       RGen.list_item(:bit_field, :type, item_name) do
         register_map {items[item_name] = self}
         rtl {}
+        ral do
+          build do
+            @access = :rw if item_name == :bar
+          end
+        end
       end
     end
 
@@ -489,6 +495,36 @@ describe 'bit_field/type' do
         expect(rtl[1]).not_to have_signal_declaration(name: 'bit_field_1_0_value', data_type: :logic, width: 1, dimensions: [2])
         expect(rtl[2]).not_to have_identifier(:value, name: 'bit_field_2_0_value')
         expect(rtl[2]).not_to have_signal_declaration(name: 'bit_field_2_0_value', data_type: :logic, width: 1, dimensions: [3, 4])
+      end
+    end
+  end
+
+  describe "ral" do
+    let(:register_map) do
+      set_load_data([
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[31:0]", "ro" , nil],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[31:0]", "foo", nil],
+        [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[31:0]", "bar", nil]
+      ])
+      @factory.create(configuration, register_map_file)
+    end
+
+    let(:ral) do
+      build_ral_factory.create(@configuration, register_map).bit_fields
+    end
+
+    describe "#access" do
+      context "@accessが設定されていない場合" do
+        it "大文字化したタイプ名を返す" do
+          expect(ral[0].access).to eq '"RO"'
+          expect(ral[1].access).to eq '"FOO"'
+        end
+      end
+
+      context "@accessが設定されてる場合" do
+        it "大文字化した@accessを返す" do
+          expect(ral[2].access).to eq '"RW"'
+        end
       end
     end
   end

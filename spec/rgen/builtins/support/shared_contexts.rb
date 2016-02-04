@@ -136,3 +136,9 @@ shared_context 'rtl common' do
     have_identifier(*expectation).and have_signal_declaration(attributes)
   end
 end
+
+shared_context 'ral common' do
+  def build_ral_factory
+    RGen.builder.build_factory(:ral)
+  end
+end

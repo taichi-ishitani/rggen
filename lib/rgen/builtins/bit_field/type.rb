@@ -164,4 +164,23 @@ list_item :bit_field, :type do
       end
     end
   end
+
+  ral do
+    item_base do
+      export :access
+
+      def access
+        string((@access || bit_field.type).to_s.upcase)
+      end
+    end
+
+    default_item do
+    end
+
+    factory do
+      def select_target_item(_, bit_field)
+        @target_items[bit_field.type]
+      end
+    end
+  end
 end
