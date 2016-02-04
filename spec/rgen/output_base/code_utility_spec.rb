@@ -50,5 +50,14 @@ CODE
         expect(output.to_s).to eq expected_code
       end
     end
+
+    describe "#loop_index" do
+      it "ネストの深さに応じたループ変数名を返す" do
+        expect(test_object.send(:loop_index, 0)).to eq "i"
+        expect(test_object.send(:loop_index, 1)).to eq "j"
+        expect(test_object.send(:loop_index, 2)).to eq "k"
+        expect(test_object.send(:loop_index, 3)).to eq "l"
+      end
+    end
   end
 end

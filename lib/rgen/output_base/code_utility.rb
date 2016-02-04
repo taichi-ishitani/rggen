@@ -27,6 +27,10 @@ module RGen
         block.call(code)
         code
       end
+
+      def loop_index(level)
+        level.times.with_object('i') { |_, index| index.next! }
+      end
     end
   end
 end

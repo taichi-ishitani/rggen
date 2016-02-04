@@ -92,10 +92,6 @@ simple_item :register, :array do
       end
     end
 
-    def loop_index(level)
-      level.times.with_object('i') { |_, index| index.next! }
-    end
-
     def previous_registers
       register_block.registers.take_while { |r| !register.equal?(r) }
     end
