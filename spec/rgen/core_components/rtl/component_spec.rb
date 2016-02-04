@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::Rtl
+module RGen::RTL
   describe Component do
     def create_item(owner, &body)
       i = Class.new(Item, &body).new(owner)

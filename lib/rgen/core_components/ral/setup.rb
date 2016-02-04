@@ -1,5 +1,5 @@
 module RGen
-  module Ral
+  module RAL
     output_component_store :ral do
       entry do
         component_class   OutputBase::Component

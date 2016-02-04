@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module RTL
     class Component < OutputBase::Component
       def build
         super

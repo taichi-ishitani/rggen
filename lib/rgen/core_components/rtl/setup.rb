@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module RTL
     output_component_store :rtl do
       entry do
         component_class   OutputBase::Component

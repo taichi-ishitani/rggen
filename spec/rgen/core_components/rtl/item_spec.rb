@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::Rtl
+module RGen::RTL
   describe Item do
     let(:owner) do
       configuration = RGen::InputBase::Component.new(nil)

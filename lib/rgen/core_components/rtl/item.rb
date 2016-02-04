@@ -1,5 +1,5 @@
 module RGen
-  module Rtl
+  module RTL
     class Item < OutputBase::Item
       include Verilog
 
