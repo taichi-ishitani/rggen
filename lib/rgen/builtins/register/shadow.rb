@@ -28,7 +28,8 @@ simple_item :register, :shadow do
       check_using_shadow_register_only
       check_index_fields
       check_size_of_array_index_fields
-      check_index_values
+      check_array_index_values
+      check_specific_value_index_values
     end
 
     def parse_shadow_indexes(cell)
@@ -43,9 +44,8 @@ simple_item :register, :shadow do
     end
 
     def check_using_shadow_register_only
-      if register.multiple? && register.array?
-        error 'not use real array and shadow register on the same register'
-      end
+      return unless register.multiple? && register.array?
+      error 'not use real array and shadow register on the same register'
     end
 
     def check_index_fields
@@ -82,26 +82,29 @@ simple_item :register, :shadow do
     end
 
     def check_size_of_array_index_fields
-      size_of_dimensions  = (register.array? && register.dimensions.size) || 0
-      unless size_of_dimensions == array_indexes.size
-        error 'not match number of array dimensions and' \
-              ' number of array index fields'
+      return if size_of_dimensions == array_indexes.size
+      error 'not match number of array dimensions and' \
+            ' number of array index fields'
+    end
+
+    def check_array_index_values
+      array_indexes.each_with_index do |entry, i|
+        next if register.dimensions[i] <= (maximum_value(entry.name) + 1)
+        error "exceeds maximum array size specified by #{entry.name}" \
+              "(#{maximum_value(entry.name) + 1}): #{register.dimensions[i]}"
       end
     end
 
-    def check_index_values
-      array_indexes.each_with_index do |entry, i|
-        if register.dimensions[i] > (maximum_value(entry.name) + 1)
-          error "exceeds maximum array size specified by #{entry.name}" \
-                "(#{maximum_value(entry.name) + 1}): #{register.dimensions[i]}"
-        end
-      end
+    def check_specific_value_index_values
       specific_value_indexes.each do |entry|
-        if entry.value > maximum_value(entry.name)
-          error "exceeds maximum value of #{entry.name}" \
-                "(#{maximum_value(entry.name)}): #{entry.value}"
-        end
+        next if entry.value <= maximum_value(entry.name)
+        error "exceeds maximum value of #{entry.name}" \
+              "(#{maximum_value(entry.name)}): #{entry.value}"
       end
+    end
+
+    def size_of_dimensions
+      (register.array? && register.dimensions.size) || 0
     end
 
     def array_indexes
