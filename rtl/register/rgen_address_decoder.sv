@@ -16,7 +16,6 @@ module rgen_address_decoder #(
 );
   localparam  READ_ONLY   = (READABLE && (!WRITABLE)) ? 1 : 0;
   localparam  WRITE_ONLY  = (WRITABLE && (!READABLE)) ? 1 : 0;
-  localparam  RESERVED    = (!(READABLE || WRITABLE)) ? 1 : 0;
 
   logic match;
   logic match_address;
@@ -24,20 +23,14 @@ module rgen_address_decoder #(
 
   assign  match = (match_address && match_shadow_index) ? 1'b1 : 1'b0;
 
-  if (RESERVED) begin
-    assign  match_address = 1'b0;
-  end
-  else if (START_ADDRESS == END_ADDRESS) begin
+  if (START_ADDRESS == END_ADDRESS) begin
     assign  match_address = (i_address == START_ADDRESS) ? 1'b1 : 1'b0;
   end
   else begin
     assign  match_address = (i_address inside {[START_ADDRESS:END_ADDRESS]}) ? 1'b1 : 1'b0;
   end
 
-  if (RESERVED) begin
-    assign  match_shadow_index  = 1'b0;
-  end
-  else if (USE_SHADOW_INDEX) begin
+  if (USE_SHADOW_INDEX) begin
     assign  match_shadow_index  = (i_shadow_index == SHADOW_INDEX_VALUE) ? 1'b1 : 1'b0;
   end
   else begin

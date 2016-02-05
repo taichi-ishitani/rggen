@@ -6,37 +6,38 @@ describe "register/address_decoder" do
   include_context 'rtl common'
 
   before(:all) do
-    RGen.enable(:global, :data_width)
-    RGen.enable(:global, :address_width)
-    RGen.enable(:register_block, [:name, :byte_size])
-    RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
-    RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :array, :shadow, :accessibility, :address_decoder])
-    RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value])
-    RGen.enable(:bit_field, :type, [:rw, :ro, :wo])
+    enable :global, :data_width
+    enable :global, :address_width
+    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, :host_if, :apb
+    enable :register, [:name, :offset_address, :array, :shadow, :accessibility, :address_decoder]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
+    enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil          , "block_0"                                                                                                                           ],
-        [nil, nil          , 256                                                                                                                                 ],
-        [nil, nil          , nil                                                                                                                                 ],
-        [nil, nil          , nil                                                                                                                                 ],
-        [nil, "register_0" , "0x10"      , nil     , nil                                                                 , "bit_field_0_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_1" , "0x14"      , nil     , nil                                                                 , "bit_field_1_0" , "[31:0]" , "ro", "0"],
-        [nil, "register_2" , "0x18"      , nil     , nil                                                                 , "bit_field_2_0" , "[31:0]" , "wo", "0"],
-        [nil, "register_3" , "0x20-0x02F", nil     , nil                                                                 , "bit_field_3_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_4" , "0x30-0x03F", "[4]"   , nil                                                                 , "bit_field_4_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_5" , "0x40"      , nil     , "bit_field_10_0:0"                                                  , "bit_field_5_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_6" , "0x40"      , nil     , "bit_field_10_0:1, bit_field_10_1:2"                                , "bit_field_6_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_7" , "0x44"      , "[2]"   , "bit_field_10_0"                                                    , "bit_field_7_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_8" , "0x48"      , "[2, 4]", "bit_field_10_0, bit_field_10_1"                                    , "bit_field_8_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_9" , "0x4C"      , "[2, 4]", "bit_field_10_0:0, bit_field_10_1, bit_field_10_2:1, bit_field_10_3", "bit_field_9_0" , "[31:0]" , "rw", "0"],
-        [nil, "register_10", "0x50"      , nil     , nil                                                                 , "bit_field_10_0", "[24]"   , "rw", "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_1", "[17:16]", "rw", "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_2", "[11:8]" , "rw", "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_3", "[7:0]"  , "rw", "0"]
+        [nil, nil          , "block_0"                                                                                                                                 ],
+        [nil, nil          , 256                                                                                                                                       ],
+        [nil, nil          , nil                                                                                                                                       ],
+        [nil, nil          , nil                                                                                                                                       ],
+        [nil, "register_0" , "0x10"      , nil     , nil                                                                 , "bit_field_0_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_1" , "0x14"      , nil     , nil                                                                 , "bit_field_1_0" , "[31:0]" , "ro"      , "0"],
+        [nil, "register_2" , "0x18"      , nil     , nil                                                                 , "bit_field_2_0" , "[31:0]" , "wo"      , "0"],
+        [nil, "register_3" , "0x20-0x02F", nil     , nil                                                                 , "bit_field_3_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_4" , "0x30-0x03F", "[4]"   , nil                                                                 , "bit_field_4_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_5" , "0x40"      , nil     , "bit_field_10_0:0"                                                  , "bit_field_5_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_6" , "0x40"      , nil     , "bit_field_10_0:1, bit_field_10_1:2"                                , "bit_field_6_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_7" , "0x44"      , "[2]"   , "bit_field_10_0"                                                    , "bit_field_7_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_8" , "0x48"      , "[2, 4]", "bit_field_10_0, bit_field_10_1"                                    , "bit_field_8_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_9" , "0x4C"      , "[2, 4]", "bit_field_10_0:0, bit_field_10_1, bit_field_10_2:1, bit_field_10_3", "bit_field_9_0" , "[31:0]" , "rw"      , "0"],
+        [nil, "register_10", "0x50"      , nil     , nil                                                                 , "bit_field_10_0", "[24]"   , "rw"      , "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_1", "[17:16]", "rw"      , "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_2", "[11:8]" , "rw"      , "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , "bit_field_10_3", "[7:0]"  , "rw"      , "0"],
+        [nil, "register_11", "0x54"      , nil     , nil                                                                 , "bit_field_11_0", "[31:0]" , "reserved", "0"]
       ]
     )
 
@@ -338,6 +339,37 @@ CODE
         expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
         expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
         expect(rtl[4]).to generate_code(:module_item, :top_down, expected_code_4)
+      end
+    end
+
+    context "対象レジスタがリザーブドレジスタの場合" do
+      let(:expected_code) do
+        <<'CODE'
+rgen_address_decoder #(
+  .READABLE           (1),
+  .WRITABLE           (1),
+  .ADDRESS_WIDTH      (6),
+  .START_ADDRESS      (6'h15),
+  .END_ADDRESS        (6'h15),
+  .USE_SHADOW_INDEX   (0),
+  .SHADOW_INDEX_WIDTH (1),
+  .SHADOW_INDEX_VALUE (1'h0)
+) u_register_11_address_decoder (
+  .i_read         (read),
+  .i_write        (write),
+  .i_address      (address[7:2]),
+  .i_shadow_index (1'h0),
+  .o_select       (register_select[29])
+);
+CODE
+      end
+
+      let(:rtl) do
+        @rtl.registers[11]
+      end
+
+      it "読み書き可能レジスタとしてアドレスデコーダモジュールをインスタンスするコードを出力する" do
+        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end
   end

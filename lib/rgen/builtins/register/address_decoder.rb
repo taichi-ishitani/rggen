@@ -18,11 +18,11 @@ simple_item :register, :address_decoder do
     delegate [:shadow_indexes, :loop_variables] => :register
 
     def readable
-      (register.readable? && 1) || 0
+      ((register.readable? || register.reserved?) && 1) || 0
     end
 
     def writable
-      (register.writable? && 1) || 0
+      ((register.writable? || register.reserved?) && 1) || 0
     end
 
     def address_lsb
