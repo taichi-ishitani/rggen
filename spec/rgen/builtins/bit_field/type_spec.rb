@@ -13,9 +13,7 @@ describe 'bit_field/type' do
         register_map {items[item_name] = self}
         rtl {}
         ral do
-          build do
-            @access = :rw if item_name == :bar
-          end
+          access :rw if item_name == :bar
         end
       end
     end
@@ -514,15 +512,15 @@ describe 'bit_field/type' do
     end
 
     describe "#access" do
-      context "@accessが設定されていない場合" do
+      context ".accessでモデルのアクセス権設定されていない場合" do
         it "大文字化したタイプ名を返す" do
           expect(ral[0].access).to eq '"RO"'
           expect(ral[1].access).to eq '"FOO"'
         end
       end
 
-      context "@accessが設定されてる場合" do
-        it "大文字化した@accessを返す" do
+      context ".accessでモデルのアクセス権設定された場合" do
+        it "設定したアクセス権を大文字に化して返す" do
           expect(ral[2].access).to eq '"RW"'
         end
       end

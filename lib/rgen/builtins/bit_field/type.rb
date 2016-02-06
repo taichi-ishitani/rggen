@@ -169,8 +169,12 @@ list_item :bit_field, :type do
     item_base do
       export :access
 
+      define_helpers do
+        attr_setter :access
+      end
+
       def access
-        string((@access || bit_field.type).to_s.upcase)
+        string((self.class.access || bit_field.type).to_s.upcase)
       end
     end
 
