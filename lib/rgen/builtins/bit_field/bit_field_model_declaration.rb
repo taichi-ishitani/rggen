@@ -3,11 +3,7 @@ simple_item :bit_field, :bit_field_model_declaration do
     delegate [:name] => :bit_field
 
     generate_code :bit_field_model_declaration do |buffer|
-      buffer << declaratin << semicolon
-    end
-
-    def declaratin
-      create_declaration(:variable, data_type: :rgen_ral_field, name: name, random: true)
+      buffer << model_declaration(:rgen_ral_field, name) << semicolon
     end
   end
 end

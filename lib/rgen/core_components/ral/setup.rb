@@ -9,21 +9,21 @@ module RGen
       entry :register_block do
         component_class   OutputBase::Component
         component_factory OutputBase::ComponentFactory
-        item_base         OutputBase::Item, include: Verilog
+        item_base         Item
         item_factory      OutputBase::ItemFactory
       end
 
       entry :register do
         component_class   OutputBase::Component
         component_factory OutputBase::ComponentFactory
-        item_base         OutputBase::Item, include: Verilog
+        item_base         Item
         item_factory      OutputBase::ItemFactory
       end
 
       entry :bit_field do
         component_class   OutputBase::Component
         component_factory OutputBase::ComponentFactory
-        item_base         OutputBase::Item, include: Verilog
+        item_base         Item
         item_factory      OutputBase::ItemFactory
       end
 
