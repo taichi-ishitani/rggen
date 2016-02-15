@@ -8,6 +8,7 @@ require_relative 'builtins/global/address_width'
 require_relative 'builtins/global/data_width'
 
 require_relative 'builtins/bit_field/bit_assignment'
+require_relative 'builtins/bit_field/bit_field_model_creation'
 require_relative 'builtins/bit_field/bit_field_model_declaration'
 require_relative 'builtins/bit_field/initial_value'
 require_relative 'builtins/bit_field/name'

@@ -30,7 +30,7 @@ describe 'bit_field/initial_value' do
     32
   end
 
-  describe "#initial_value" do
+  describe "#initial_value/#initial_value?" do
     before do
       RegisterMapDummyLoader.load_data("block_0" => load_data)
     end
@@ -55,8 +55,9 @@ describe 'bit_field/initial_value' do
         ]
       end
 
-      it "0を返す" do
-        expect(register_map.bit_fields.map(&:initial_value)).to all(eq 0)
+      specify "初期値を持たない" do
+        expect(register_map.bit_fields.map(&:initial_value )).to all(be_nil)
+        expect(register_map.bit_fields.map(&:initial_value?)).to all(be_falsey)
       end
     end
 
@@ -86,8 +87,9 @@ describe 'bit_field/initial_value' do
         ]
       end
 
-      it "入力された初期値を返す" do
-        expect(register_map.bit_fields.map(&:initial_value)).to match expected_values
+      specify "入力された入力を初期値とする" do
+        expect(register_map.bit_fields.map(&:initial_value )).to match expected_values
+        expect(register_map.bit_fields.map(&:initial_value?)).to all(be_truthy)
       end
     end
   end

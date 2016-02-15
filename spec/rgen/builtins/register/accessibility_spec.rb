@@ -5,14 +5,18 @@ describe 'register/accessibility' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:global, :data_width)
+
     RGen.enable(:register_block, :name)
     RGen.enable(:register      , [:name, :accessibility])
-    RGen.enable(:bit_field     , [:name, :bit_assignment, :type, :reference])
+    RGen.enable(:bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference])
     RGen.enable(:bit_field     , :type, [:rw, :ro, :wo, :reserved])
+    @factory  = build_register_map_factory
+  end
 
-    @configuration_factory  = build_configuration_factory
-    @factory                = build_register_map_factory
+  before(:all) do
+    RGen.enable(:global, :data_width)
+    ConfigurationDummyLoader.load_data({})
+    @configuration  = build_configuration_factory.create(configuration_file)
   end
 
   after(:all) do
@@ -20,8 +24,7 @@ describe 'register/accessibility' do
   end
 
   let(:configuration) do
-    ConfigurationDummyLoader.load_data({})
-    @configuration_factory.create(configuration_file)
+    @configuration
   end
 
   let(:registers) do
@@ -33,12 +36,12 @@ describe 'register/accessibility' do
     context "読み出し可能なビットフィールドが1つ以上含まれる場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "ro"      , nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "rw"      , nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "reserved", nil],
-          [nil, "registers_3", "bit_field_3_0", "[1]", "wo"      , nil],
-          [nil, nil          , "bit_field_3_1", "[0]", "ro"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , 0  , nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "ro"      , nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "rw"      , 1  , nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "reserved", nil, nil],
+          [nil, "registers_3", "bit_field_3_0", "[1]", "wo"      , nil, nil],
+          [nil, nil          , "bit_field_3_1", "[0]", "ro"      , nil, nil]
         ]
       end
 
@@ -52,10 +55,10 @@ describe 'register/accessibility' do
     context "読み出し可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil, nil]
         ]
       end
 
@@ -71,12 +74,12 @@ describe 'register/accessibility' do
     context "書き込み可能なビットフィールドが1つ以上含まれる場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "wo"      , nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "rw"      , nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "reserved", nil],
-          [nil, "registers_3", "bit_field_3_0", "[1]", "wo"      , nil],
-          [nil, nil          , "bit_field_3_1", "[0]", "ro"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , 0  , nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "wo"      , nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "rw"      , 0  , nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "reserved", nil, nil],
+          [nil, "registers_3", "bit_field_3_0", "[1]", "wo"      , nil, nil],
+          [nil, nil          , "bit_field_3_1", "[0]", "ro"      , nil, nil]
         ]
       end
 
@@ -90,10 +93,10 @@ describe 'register/accessibility' do
     context "書き込み可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil, nil]
         ]
       end
 
@@ -109,11 +112,11 @@ describe 'register/accessibility' do
     context "読み出し可能かつ書き込み可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[1]", "ro"      , nil],
-          [nil, nil          , "bit_field_1_1", "[0]", "ro"      , nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[1]", "ro"      , nil, nil],
+          [nil, nil          , "bit_field_1_1", "[0]", "ro"      , nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil, nil]
         ]
       end
 
@@ -127,10 +130,10 @@ describe 'register/accessibility' do
     context "書き込み可能なビットフィールドが含まれる場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[1]", "ro", nil],
-          [nil, nil          , "bit_field_0_1", "[0]", "rw", nil],
-          [nil, "registers_1", "bit_field_1_0", "[1]", "ro", nil],
-          [nil, nil          , "bit_field_1_1", "[0]", "wo", nil]
+          [nil, "registers_0", "bit_field_0_0", "[1]", "ro", nil, nil],
+          [nil, nil          , "bit_field_0_1", "[0]", "rw", 0  , nil],
+          [nil, "registers_1", "bit_field_1_0", "[1]", "ro", nil, nil],
+          [nil, nil          , "bit_field_1_1", "[0]", "wo", nil, nil]
         ]
       end
 
@@ -144,10 +147,10 @@ describe 'register/accessibility' do
     context "読み出し可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil, nil]
         ]
       end
 
@@ -163,11 +166,11 @@ describe 'register/accessibility' do
     context "書き込み可能かつ読み出し可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[1]", "wo"      , nil],
-          [nil, nil          , "bit_field_1_1", "[0]", "wo"      , nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "wo"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[1]", "wo"      , nil, nil],
+          [nil, nil          , "bit_field_1_1", "[0]", "wo"      , nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "wo"      , nil, nil]
         ]
       end
 
@@ -181,10 +184,10 @@ describe 'register/accessibility' do
     context "読み出しなビットフィールドが含まれる場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[1]", "wo", nil],
-          [nil, nil          , "bit_field_0_1", "[0]", "rw", nil],
-          [nil, "registers_1", "bit_field_1_0", "[1]", "wo", nil],
-          [nil, nil          , "bit_field_1_1", "[0]", "ro", nil]
+          [nil, "registers_0", "bit_field_0_0", "[1]", "wo", nil, nil],
+          [nil, nil          , "bit_field_0_1", "[0]", "rw", 0  , nil],
+          [nil, "registers_1", "bit_field_1_0", "[1]", "wo", nil, nil],
+          [nil, nil          , "bit_field_1_1", "[0]", "ro", nil, nil]
         ]
       end
 
@@ -198,10 +201,10 @@ describe 'register/accessibility' do
     context "書き込み可能なビットフィールドが含まれない場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil],
-          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "ro"      , nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "reserved", nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_2_1", "[0]", "ro"      , nil, nil]
         ]
       end
 
@@ -217,9 +220,9 @@ describe 'register/accessibility' do
     context "含まれるビットフィールドがすべて読み書き不可の場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "reserved", nil],
-          [nil, "registers_1", "bit_field_1_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_1_1", "[0]", "reserved", nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "reserved", nil, nil],
+          [nil, "registers_1", "bit_field_1_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_1_1", "[0]", "reserved", nil, nil]
         ]
       end
 
@@ -233,15 +236,15 @@ describe 'register/accessibility' do
     context "1つ以上の読み書き可能ビットフィールドが含まれる場合" do
       let(:load_data) do
         [
-          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , nil],
-          [nil, "registers_1", "bit_field_1_0", "[0]", "ro"      , nil],
-          [nil, "registers_2", "bit_field_2_0", "[0]", "wo"      , nil],
-          [nil, "registers_3", "bit_field_3_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_3_1", "[0]", "rw"      , nil],
-          [nil, "registers_4", "bit_field_4_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_4_1", "[0]", "ro"      , nil],
-          [nil, "registers_5", "bit_field_5_0", "[1]", "reserved", nil],
-          [nil, nil          , "bit_field_5_1", "[0]", "wo"      , nil]
+          [nil, "registers_0", "bit_field_0_0", "[0]", "rw"      , 0  , nil],
+          [nil, "registers_1", "bit_field_1_0", "[0]", "ro"      , nil, nil],
+          [nil, "registers_2", "bit_field_2_0", "[0]", "wo"      , nil, nil],
+          [nil, "registers_3", "bit_field_3_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_3_1", "[0]", "rw"      , 0  , nil],
+          [nil, "registers_4", "bit_field_4_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_4_1", "[0]", "ro"      , nil, nil],
+          [nil, "registers_5", "bit_field_5_0", "[1]", "reserved", nil, nil],
+          [nil, nil          , "bit_field_5_1", "[0]", "wo"      , nil, nil]
         ]
       end
 

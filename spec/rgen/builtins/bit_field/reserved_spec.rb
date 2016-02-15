@@ -8,10 +8,9 @@ describe 'bit_fields/type/reserved' do
   before(:all) do
     enable :register_block, :name
     enable :register, :name
-    enable :bit_field, [:name, :bit_assignment, :type, :reference]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:reserved, :rw]
-
-    @factory                = build_register_map_factory
+    @factory  = build_register_map_factory
   end
 
   before(:all) do
@@ -32,7 +31,7 @@ describe 'bit_fields/type/reserved' do
     describe "#type" do
       it ":reservedを返す" do
         bit_fields  = build_bit_fields([
-          [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil]
+          [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil, nil]
         ])
         expect(bit_fields[0].type).to be :reserved
       end
@@ -40,7 +39,7 @@ describe 'bit_fields/type/reserved' do
 
     it "アクセス属性はreserved" do
       bit_fields  = build_bit_fields([
-        [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil]
+        [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil, nil]
       ])
       expect(bit_fields[0]).to match_access(:reserved)
     end
@@ -48,12 +47,12 @@ describe 'bit_fields/type/reserved' do
     it "任意のビット幅を持つビットフィールドで使用できる" do
       expect {
         build_bit_fields([
-          [nil, "register_0", "bit_field_0_0", "[0]"   , "reserved", nil],
-          [nil, "register_1", "bit_field_1_0", "[1:0]" , "reserved", nil],
-          [nil, "register_2", "bit_field_2_0", "[3:0]" , "reserved", nil],
-          [nil, "register_3", "bit_field_3_0", "[7:0]" , "reserved", nil],
-          [nil, "register_4", "bit_field_4_0", "[15:0]", "reserved", nil],
-          [nil, "register_5", "bit_field_5_0", "[31:0]", "reserved", nil]
+          [nil, "register_0", "bit_field_0_0", "[0]"   , "reserved", nil, nil],
+          [nil, "register_1", "bit_field_1_0", "[1:0]" , "reserved", nil, nil],
+          [nil, "register_2", "bit_field_2_0", "[3:0]" , "reserved", nil, nil],
+          [nil, "register_3", "bit_field_3_0", "[7:0]" , "reserved", nil, nil],
+          [nil, "register_4", "bit_field_4_0", "[15:0]", "reserved", nil, nil],
+          [nil, "register_5", "bit_field_5_0", "[31:0]", "reserved", nil, nil]
         ])
       }.not_to raise_error
     end
@@ -61,9 +60,9 @@ describe 'bit_fields/type/reserved' do
     it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
       expect {
         build_bit_fields([
-          [nil, "register_0", "bit_field_0_0", "[0]" , "rw"      , nil            ],
-          [nil, "register_1", "bit_field_1_0", "[0]" , "reserved", nil            ],
-          [nil, "register_2", "bit_field_2_0", "[0]" , "reserved", "bit_field_0_0"]
+          [nil, "register_0", "bit_field_0_0", "[0]" , "rw"      , 0  , nil            ],
+          [nil, "register_1", "bit_field_1_0", "[0]" , "reserved", nil, nil            ],
+          [nil, "register_2", "bit_field_2_0", "[0]" , "reserved", nil, "bit_field_0_0"]
         ])
       }.not_to raise_error
     end
@@ -72,7 +71,7 @@ describe 'bit_fields/type/reserved' do
   describe "ral" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil]
+        [nil, "register_0", "bit_field_0_0", "[0]", "reserved", nil, nil]
       ])
       @factory.create(configuration, register_map_file)
     end

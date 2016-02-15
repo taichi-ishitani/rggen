@@ -1,6 +1,7 @@
 list_item :bit_field, :type, :rw do
   register_map do
     read_write
+    need_initial_value
   end
 
   rtl do

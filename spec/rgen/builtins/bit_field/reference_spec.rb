@@ -1,16 +1,25 @@
 require_relative '../spec_helper'
 
 describe 'bit_field/reference' do
+  include_context 'configuration common'
   include_context 'register_map common'
 
   before(:all) do
-    RGen.enable(:register_block, :name     )
-    RGen.enable(:register      , :name     )
-    RGen.enable(:bit_field     , :name     )
-    RGen.enable(:bit_field     , :reference)
-    RGen.enable(:bit_field     , :type     )
+    RGen.enable(:register_block, :name          )
+    RGen.enable(:register      , :name          )
+    RGen.enable(:bit_field     , :name          )
+    RGen.enable(:bit_field     , :reference     )
+    RGen.enable(:bit_field     , :type          )
+    RGen.enable(:bit_field     , :bit_assignment)
+    RGen.enable(:bit_field     , :initial_value )
     RGen.enable(:bit_field     , :type     , [:rw, :reserved])
     @factory  = build_register_map_factory
+  end
+
+  before(:all) do
+    RGen.enable(:global, :data_width)
+    ConfigurationDummyLoader.load_data({})
+    @configuration  = build_configuration_factory.create(configuration_file)
   end
 
   after(:all) do
@@ -18,17 +27,17 @@ describe 'bit_field/reference' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new(nil)
+    @configuration
   end
 
   context "入力が空のとき" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"               ],
-        [nil, nil         , nil                     ],
-        [nil, nil         , nil                     ],
-        [nil, "register_0", "bit_field_0", nil, "rw"],
-        [nil, nil         , "bit_field_1", "" , "rw"]
+        [nil, nil         , "block_0"                             ],
+        [nil, nil         , nil                                   ],
+        [nil, nil         , nil                                   ],
+        [nil, "register_0", "bit_field_0", nil, "rw", "[31:16]", 0],
+        [nil, nil         , "bit_field_1", "" , "rw", "[15: 0]", 0]
       ]
     end
 
@@ -60,13 +69,13 @@ describe 'bit_field/reference' do
   context "参照ビットフィールドの指定があるとき" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"                         ],
-        [nil, nil         , nil                               ],
-        [nil, nil         , nil                               ],
-        [nil, "register_0", "bit_field_0", "bit_field_1", "rw"],
-        [nil, nil         , "bit_field_1", "bit_field_0", "rw"],
-        [nil, "register_1", "bit_field_2", "bit_field_3", "rw"],
-        [nil, "register_2", "bit_field_3", "bit_field_2", "rw"]
+        [nil, nil         , "block_0"                                       ],
+        [nil, nil         , nil                                             ],
+        [nil, nil         , nil                                             ],
+        [nil, "register_0", "bit_field_0", "bit_field_1", "rw", "[31:16]", 0],
+        [nil, nil         , "bit_field_1", "bit_field_0", "rw", "[15: 0]", 0],
+        [nil, "register_1", "bit_field_2", "bit_field_3", "rw", "[15: 0]", 0],
+        [nil, "register_2", "bit_field_3", "bit_field_2", "rw", "[15: 0]", 0]
       ]
     end
 
@@ -99,10 +108,10 @@ describe 'bit_field/reference' do
   context "入力が自分のビットフィールド名のとき" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"                         ],
-        [nil, nil         , nil                               ],
-        [nil, nil         , nil                               ],
-        [nil, "register_0", "bit_field_0", "bit_field_0", "rw"]
+        [nil, nil         , "block_0"                                   ],
+        [nil, nil         , nil                                         ],
+        [nil, nil         , nil                                         ],
+        [nil, "register_0", "bit_field_0", "bit_field_0", "rw", "[0]", 0]
       ]
     end
 
@@ -144,11 +153,11 @@ describe 'bit_field/reference' do
   context "入力されたビットフィールドの属性がreservedのとき" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"                               ],
-        [nil, nil         , nil                                     ],
-        [nil, nil         , nil                                     ],
-        [nil, "register_0", "bit_field_0", "bit_field_1", "rw"      ],
-        [nil, nil         , "bit_field_1", nil          , "reserved"]
+        [nil, nil         , "block_0"                                           ],
+        [nil, nil         , nil                                                 ],
+        [nil, nil         , nil                                                 ],
+        [nil, "register_0", "bit_field_0", "bit_field_1", "rw"      , "[1]", 0  ],
+        [nil, nil         , "bit_field_1", nil          , "reserved", "[0]", nil]
       ]
     end
 
@@ -166,10 +175,10 @@ describe 'bit_field/reference' do
 
   specify "#reference呼び出し時に#validateが呼び出される" do
     RegisterMapDummyLoader.load_data("block_0" => [
-      [nil, nil         , "block_0"              ],
-      [nil, nil         , nil                    ],
-      [nil, nil         , nil                    ],
-      [nil, "register_0", "bit_field_0", "", "rw"]
+      [nil, nil         , "block_0"                        ],
+      [nil, nil         , nil                              ],
+      [nil, nil         , nil                              ],
+      [nil, "register_0", "bit_field_0", "", "rw", "[0]", 0]
     ])
     register_map  = @factory.create(configuration, register_map_file)
 

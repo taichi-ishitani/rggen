@@ -60,6 +60,19 @@ describe 'bit_fields/type/rw' do
       }.not_to raise_error
     end
 
+    it "初期値を必要とする" do
+      expect {
+        build_bit_fields([
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rw", '0', nil]
+        ])
+      }.not_to raise_error
+      expect {
+        build_bit_fields([
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rw", nil, nil]
+        ])
+      }.to raise_error RGen::RegisterMapError
+    end
+
     it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
       expect {
         build_bit_fields([

@@ -48,6 +48,14 @@ list_item :bit_field, :type do
           :full_width
         end
 
+        def need_initial_value
+          @need_initial_value = true
+        end
+
+        def need_initial_value?
+          @need_initial_value || false
+        end
+
         def use_reference(options = {})
           @use_reference      = true
           @reference_options  = options
@@ -72,6 +80,7 @@ list_item :bit_field, :type do
       field :reserved?  , forward_to_helper: true
 
       class_delegator :full_width
+      class_delegator :need_initial_value?
       class_delegator :use_reference?
       class_delegator :reference_options
       class_delegator :same_width
@@ -85,6 +94,8 @@ list_item :bit_field, :type do
         when width_mismatch?
           error "#{required_width} bit(s) width required:" \
                 " #{bit_field.width} bit(s)"
+        when need_initial_value? && no_initial_value?
+          error 'no initial value'
         when required_refercne_not_exist?
           error 'reference bit field required'
         when reference_width_mismatch?
@@ -107,6 +118,10 @@ list_item :bit_field, :type do
         return nil if width.nil?
         return configuration.data_width if width == full_width
         width
+      end
+
+      def no_initial_value?
+        !bit_field.initial_value?
       end
 
       def required_refercne_not_exist?

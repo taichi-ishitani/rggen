@@ -9,7 +9,7 @@ describe 'bit_field/bit_field_model_declaration' do
     enable :global, :data_width
     enable :register_block, :name
     enable :register, :name
-    enable :bit_field, [:name, :bit_assignment, :type, :reference]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :reserved]
     enable :bit_field, :bit_field_model_declaration
 
@@ -17,12 +17,12 @@ describe 'bit_field/bit_field_model_declaration' do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         ,"block_0"                               ],
-        [                                                          ],
-        [                                                          ],
-        [nil, "register_0", "bit_field_0_0", "[2]", "rw"      , nil],
-        [nil, nil         , "bit_field_0_1", "[1]", "ro"      , nil],
-        [nil, nil         , "bit_field_0_2", "[0]", "reserved", nil]
+        [nil, nil         ,"block_0"                                    ],
+        [                                                               ],
+        [                                                               ],
+        [nil, "register_0", "bit_field_0_0", "[2]", "rw"      , 0  , nil],
+        [nil, nil         , "bit_field_0_1", "[1]", "ro"      , nil, nil],
+        [nil, nil         , "bit_field_0_2", "[0]", "reserved", nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).bit_fields
