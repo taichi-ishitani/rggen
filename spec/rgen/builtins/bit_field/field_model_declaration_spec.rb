@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'bit_field/bit_field_model_declaration' do
+describe 'bit_field/field_model_declaration' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -11,7 +11,7 @@ describe 'bit_field/bit_field_model_declaration' do
     enable :register, :name
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :reserved]
-    enable :bit_field, :bit_field_model_declaration
+    enable :bit_field, :field_model_declaration
 
     configuration = create_configuration
     register_map  = create_register_map(
@@ -38,9 +38,9 @@ describe 'bit_field/bit_field_model_declaration' do
 
   describe "#create_code" do
     it "ビットフィールドモデルを宣言するコードを生成する" do
-      expect(ral[0]).to generate_code(:bit_field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_0;")
-      expect(ral[1]).to generate_code(:bit_field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_1;")
-      expect(ral[2]).to generate_code(:bit_field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_2;")
+      expect(ral[0]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_0;")
+      expect(ral[1]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_1;")
+      expect(ral[2]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_2;")
     end
   end
 end

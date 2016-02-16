@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'bit_field/bit_field_model_declaration' do
+describe 'bit_field/field_model_declaration' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -11,7 +11,7 @@ describe 'bit_field/bit_field_model_declaration' do
     enable :register, :name
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :reserved]
-    enable :bit_field, :bit_field_model_creation
+    enable :bit_field, :field_model_creation
 
     configuration = create_configuration
     register_map  = create_register_map(
@@ -40,18 +40,18 @@ describe 'bit_field/bit_field_model_declaration' do
   describe "#create_code" do
     let(:expected_code) do
       [
-        "`rgen_ral_create_bit_field(bit_field_0_0, \"bit_field_0_0\", 32, 0, \"RW\", 0, 32'h00000123, 1)",
-        "`rgen_ral_create_bit_field(bit_field_1_0, \"bit_field_1_0\", 2, 8, \"RO\", 0, 2'h0, 0)",
-        "`rgen_ral_create_bit_field(bit_field_1_1, \"bit_field_1_1\", 1, 4, \"RO\", 0, 1'h1, 1)",
-        "`rgen_ral_create_bit_field(bit_field_1_2, \"bit_field_1_2\", 1, 0, \"RO\", 0, 1'h0, 0)"
+        "`rgen_ral_create_field(bit_field_0_0, \"bit_field_0_0\", 32, 0, \"RW\", 0, 32'h00000123, 1)",
+        "`rgen_ral_create_field(bit_field_1_0, \"bit_field_1_0\", 2, 8, \"RO\", 0, 2'h0, 0)",
+        "`rgen_ral_create_field(bit_field_1_1, \"bit_field_1_1\", 1, 4, \"RO\", 0, 1'h1, 1)",
+        "`rgen_ral_create_field(bit_field_1_2, \"bit_field_1_2\", 1, 0, \"RO\", 0, 1'h0, 0)"
       ]
     end
 
     it "ビットフィールドモデルを生成するコードを生成する" do
-      expect(ral[0]).to generate_code(:bit_field_model_creation, :top_down, expected_code[0])
-      expect(ral[1]).to generate_code(:bit_field_model_creation, :top_down, expected_code[1])
-      expect(ral[2]).to generate_code(:bit_field_model_creation, :top_down, expected_code[2])
-      expect(ral[3]).to generate_code(:bit_field_model_creation, :top_down, expected_code[3])
+      expect(ral[0]).to generate_code(:field_model_creation, :top_down, expected_code[0])
+      expect(ral[1]).to generate_code(:field_model_creation, :top_down, expected_code[1])
+      expect(ral[2]).to generate_code(:field_model_creation, :top_down, expected_code[2])
+      expect(ral[3]).to generate_code(:field_model_creation, :top_down, expected_code[3])
     end
   end
 end
