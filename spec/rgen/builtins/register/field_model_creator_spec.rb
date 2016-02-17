@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'bit_field/field_model_declaration' do
+describe 'bit_field/field_model_creator' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -12,7 +12,7 @@ describe 'bit_field/field_model_declaration' do
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :reserved]
     enable :bit_field, :field_model_creation
-    enable :register , :field_model_creations
+    enable :register , :field_model_creator
 
     configuration = create_configuration
     register_map  = create_register_map(
