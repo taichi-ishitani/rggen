@@ -27,6 +27,7 @@ require_relative 'builtins/register/field_model_declarations'
 require_relative 'builtins/register/offset_address'
 require_relative 'builtins/register/name'
 require_relative 'builtins/register/read_data'
+require_relative 'builtins/register/reg_model_constructor'
 require_relative 'builtins/register/shadow'
 require_relative 'builtins/register/uniqueness_validator'
 
