@@ -1,0 +1,86 @@
+require_relative '../spec_helper'
+
+describe 'bit_field/shadow_index_configurator' do
+  include_context 'bit field type common'
+  include_context 'configuration common'
+  include_context 'ral common'
+
+  before(:all) do
+    enable :global, [:data_width, :address_width]
+    enable :register_block, [:name, :byte_size]
+    enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :bit_field, :type, [:rw]
+    enable :register , :shadow_index_configurator
+
+    configuration = create_configuration
+    register_map  = create_register_map(
+      configuration,
+      "block_0" => [
+        [nil, nil         ,"block_0"                                                                                                                   ],
+        [nil, nil         , 256                                                                                                                        ],
+        [                                                                                                                                              ],
+        [                                                                                                                                              ],
+        [nil, "register_0", "0x00", nil    , nil                                                             , "bit_field_0_0", "[31:24]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_1", "[23:16]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_2", "[15: 8]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_3", "[ 7: 0]", "rw", 0, nil],
+        [nil, "register_1", "0x04", nil    , "bit_field_0_0:0"                                               , "bit_field_1_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_2", "0x08", "[4]"  , "bit_field_0_0  "                                               , "bit_field_2_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_3", "0x0C", "[2,4]", "bit_field_0_0:0, bit_field_0_1, bit_field_0_2, bit_field_0_3:3", "bit_field_3_0", "[31: 0]", "rw", 0, nil]
+      ]
+    )
+    @ral  = build_ral_factory.create(configuration, register_map).registers
+  end
+
+  after(:all) do
+    clear_enabled_items
+  end
+
+  let(:ral) do
+    @ral
+  end
+
+  describe "#create_code" do
+    context "シャドウレジスタではない場合" do
+      it "コードの生成を行わない" do
+        expect(ral[0]).to generate_code(:reg_model_item, :top_down, "")
+      end
+    end
+
+    context "シャドウレジスタの場合" do
+      let(:expected_code_1) do
+        <<'CODE'
+function void configure_shadow_indexes();
+  set_shadow_index("register_0", "bit_field_0_0", 0);
+endfunction
+CODE
+      end
+
+      let(:expected_code_2) do
+        <<'CODE'
+function void configure_shadow_indexes();
+  set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
+endfunction
+CODE
+      end
+
+      let(:expected_code_3) do
+        <<'CODE'
+function void configure_shadow_indexes();
+  set_shadow_index("register_0", "bit_field_0_0", 0);
+  set_shadow_index("register_0", "bit_field_0_1", indexes[0]);
+  set_shadow_index("register_0", "bit_field_0_2", indexes[1]);
+  set_shadow_index("register_0", "bit_field_0_3", 3);
+endfunction
+CODE
+      end
+
+      it "シャドウインデックスの設定を行うconfigure_shadow_indexesメソッドの定義を生成する" do
+        expect(ral[1]).to generate_code(:reg_model_item, :top_down, expected_code_1)
+        expect(ral[2]).to generate_code(:reg_model_item, :top_down, expected_code_2)
+        expect(ral[3]).to generate_code(:reg_model_item, :top_down, expected_code_3)
+      end
+    end
+  end
+end

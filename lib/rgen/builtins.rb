@@ -29,6 +29,7 @@ require_relative 'builtins/register/name'
 require_relative 'builtins/register/read_data'
 require_relative 'builtins/register/reg_model_constructor'
 require_relative 'builtins/register/shadow'
+require_relative 'builtins/register/shadow_index_configurator'
 require_relative 'builtins/register/uniqueness_validator'
 
 require_relative 'builtins/register_block/base_address'
