@@ -1,3 +1,5 @@
 function void create_fields();
-<%= indent(2, &method(:function_body)) %>
+<% register.bit_fields.each do |bit_field| %>
+  <%= bit_field.generate_code(:field_model_creation, :top_down) %>
+<% end %>
 endfunction
