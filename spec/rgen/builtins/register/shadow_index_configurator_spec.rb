@@ -23,11 +23,11 @@ describe 'bit_field/shadow_index_configurator' do
         [                                                                                                                                              ],
         [nil, "register_0", "0x00", nil    , nil                                                             , "bit_field_0_0", "[31:24]", "rw", 0, nil],
         [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_1", "[23:16]", "rw", 0, nil],
-        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_2", "[15: 8]", "rw", 0, nil],
-        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_3", "[ 7: 0]", "rw", 0, nil],
-        [nil, "register_1", "0x04", nil    , "bit_field_0_0:0"                                               , "bit_field_1_0", "[31: 0]", "rw", 0, nil],
-        [nil, "register_2", "0x08", "[4]"  , "bit_field_0_0  "                                               , "bit_field_2_0", "[31: 0]", "rw", 0, nil],
-        [nil, "register_3", "0x0C", "[2,4]", "bit_field_0_0:0, bit_field_0_1, bit_field_0_2, bit_field_0_3:3", "bit_field_3_0", "[31: 0]", "rw", 0, nil]
+        [nil, "register_1", "0x04", nil    , nil                                                             , "bit_field_1_0", "[15: 8]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_1_1", "[ 7: 0]", "rw", 0, nil],
+        [nil, "register_2", "0x10", nil    , "bit_field_0_0:0"                                               , "bit_field_2_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_3", "0x14", "[4]"  , "bit_field_0_0  "                                               , "bit_field_3_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_4", "0x18", "[2,4]", "bit_field_0_0:0, bit_field_0_1, bit_field_1_0, bit_field_1_1:3", "bit_field_4_0", "[31: 0]", "rw", 0, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).registers
@@ -49,18 +49,10 @@ describe 'bit_field/shadow_index_configurator' do
     end
 
     context "シャドウレジスタの場合" do
-      let(:expected_code_1) do
-        <<'CODE'
-function void configure_shadow_indexes();
-  set_shadow_index("register_0", "bit_field_0_0", 0);
-endfunction
-CODE
-      end
-
       let(:expected_code_2) do
         <<'CODE'
 function void configure_shadow_indexes();
-  set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
+  set_shadow_index("register_0", "bit_field_0_0", 0);
 endfunction
 CODE
       end
@@ -68,18 +60,26 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
 function void configure_shadow_indexes();
+  set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
+endfunction
+CODE
+      end
+
+      let(:expected_code_4) do
+        <<'CODE'
+function void configure_shadow_indexes();
   set_shadow_index("register_0", "bit_field_0_0", 0);
   set_shadow_index("register_0", "bit_field_0_1", indexes[0]);
-  set_shadow_index("register_0", "bit_field_0_2", indexes[1]);
-  set_shadow_index("register_0", "bit_field_0_3", 3);
+  set_shadow_index("register_1", "bit_field_1_0", indexes[1]);
+  set_shadow_index("register_1", "bit_field_1_1", 3);
 endfunction
 CODE
       end
 
       it "シャドウインデックスの設定を行うconfigure_shadow_indexesメソッドの定義を生成する" do
-        expect(ral[1]).to generate_code(:reg_model_item, :top_down, expected_code_1)
         expect(ral[2]).to generate_code(:reg_model_item, :top_down, expected_code_2)
         expect(ral[3]).to generate_code(:reg_model_item, :top_down, expected_code_3)
+        expect(ral[4]).to generate_code(:reg_model_item, :top_down, expected_code_4)
       end
     end
   end
