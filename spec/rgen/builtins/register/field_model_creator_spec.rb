@@ -38,7 +38,7 @@ describe 'bit_field/field_model_creator' do
     @ral
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     let(:expected_code) do
       <<'CODE'
 function void create_fields();

@@ -62,7 +62,7 @@ describe "register/address_decoder" do
     end
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     context "レジスタの属性が読み書き可能なとき" do
       let(:expected_code) do
         <<'CODE'

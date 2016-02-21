@@ -39,7 +39,7 @@ describe 'bit_field/reg_model_constructor' do
     @ral
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     let(:expected_code_0) do
       <<'CODE'
 function new(string name = "register_0");

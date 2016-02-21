@@ -37,7 +37,7 @@ describe 'bit_field/field_model_declaration' do
     @ral
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     let(:expected_code) do
       [
         "`rgen_ral_create_field(bit_field_0_0, \"bit_field_0_0\", 32, 0, \"RW\", 0, 32'h00000123, 1)",

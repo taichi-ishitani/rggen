@@ -50,7 +50,7 @@ describe 'bit_field/reg_model_definition' do
     end
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     let(:expected_code_0) do
       <<'CODE'
 class register_0_reg_model extends rgen_ral_reg;

@@ -41,7 +41,7 @@ describe 'bit_field/shadow_index_configurator' do
     @ral
   end
 
-  describe "#create_code" do
+  describe "#generate_code" do
     context "シャドウレジスタではない場合" do
       it "コードの生成を行わない" do
         expect(ral[0]).to generate_code(:reg_model_item, :top_down, "")
