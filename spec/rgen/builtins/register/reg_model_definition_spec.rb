@@ -62,10 +62,10 @@ class register_0_reg_model extends rgen_ral_reg;
     super.new(name, 32, 0);
   endfunction
   function void create_fields();
-    `rgen_ral_create_field(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1)
-    `rgen_ral_create_field(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1)
-    `rgen_ral_create_field(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1)
-    `rgen_ral_create_field(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0)
+    `rgen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1)
+    `rgen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1)
+    `rgen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1)
+    `rgen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0)
   endfunction
 endclass
 CODE
@@ -82,10 +82,10 @@ class register_1_reg_model extends rgen_ral_shadow_reg;
     super.new(name, 16, 0);
   endfunction
   function void create_fields();
-    `rgen_ral_create_field(bit_field_1_0, "bit_field_1_0", 4, 12, "RO", 0, 4'h0, 0)
-    `rgen_ral_create_field(bit_field_1_1, "bit_field_1_1", 4, 8, "RO", 0, 4'h3, 1)
-    `rgen_ral_create_field(bit_field_1_2, "bit_field_1_2", 4, 4, "RW", 0, 4'h4, 1)
-    `rgen_ral_create_field(bit_field_1_3, "bit_field_1_3", 4, 0, "RW", 0, 4'h5, 1)
+    `rgen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 4, 12, "RO", 0, 4'h0, 0)
+    `rgen_ral_create_field_model(bit_field_1_1, "bit_field_1_1", 4, 8, "RO", 0, 4'h3, 1)
+    `rgen_ral_create_field_model(bit_field_1_2, "bit_field_1_2", 4, 4, "RW", 0, 4'h4, 1)
+    `rgen_ral_create_field_model(bit_field_1_3, "bit_field_1_3", 4, 0, "RW", 0, 4'h5, 1)
   endfunction
   function void configure_shadow_indexes();
     set_shadow_index("register_0", "bit_field_0_0", indexes[0]);

@@ -3,7 +3,7 @@ simple_item :bit_field, :field_model_creation do
     delegate [:name, :width, :lsb, :access] => :bit_field
 
     generate_code :field_model_creation do |buffer|
-      buffer << "`rgen_ral_create_field(#{arguments.join(', ')})"
+      buffer << "`rgen_ral_create_field_model(#{arguments.join(', ')})"
     end
 
     def arguments
