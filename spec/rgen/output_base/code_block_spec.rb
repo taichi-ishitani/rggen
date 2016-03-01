@@ -123,6 +123,16 @@ module RGen::OutputBase
       end
     end
 
+    describe "#last_line_empty?" do
+      it "最終行が空行かどうかを返す" do
+        expect(code_block).to be_last_line_empty
+        code_block << "foo"
+        expect(code_block).not_to be_last_line_empty
+        code_block << :newline
+        expect(code_block).to be_last_line_empty
+      end
+    end
+
     describe "#to_s" do
       before do
         code_block << 'foo  ' << :newline

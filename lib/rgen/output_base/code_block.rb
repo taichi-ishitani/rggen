@@ -28,6 +28,10 @@ module RGen
         self
       end
 
+      def last_line_empty?
+        lines.empty? || lines.last.empty?
+      end
+
       def to_s
         @lines.map(&:to_s).each(&:rstrip!).join("\n")
       end
@@ -44,13 +48,13 @@ module RGen
         other_block.lines.each_with_index do |line, i|
           line.indent += @indent
           if i == 0
-            @lines.last.indent  = line.indent if @lines.last.empty?
+            @lines.last.indent  = line.indent if last_line_empty?
             @lines.last.words.concat(line.words)
           else
             @lines << line
           end
         end
-        @lines.last.indent  = @indent if other_block.lines.last.empty?
+        @lines.last.indent  = @indent if other_block.last_line_empty?
       end
 
       def add_multiple_lines_string(other_string)
