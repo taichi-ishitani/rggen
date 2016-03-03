@@ -21,6 +21,13 @@ module RGen
         ' ' * size
       end
 
+      def code_block(indent_size = 0, &block)
+        CodeBlock.new.tap do |code|
+          code.indent = indent_size
+          block.call(code) if block_given?
+        end
+      end
+
       def indent(size, &block)
         code        = CodeBlock.new
         code.indent = size
