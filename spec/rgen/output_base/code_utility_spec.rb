@@ -59,27 +59,36 @@ module RGen::OutputBase
     end
 
     describe "#indent" do
+      let(:code) do
+        test_object.send(:code_block) do |buffer|
+          buffer << 'foo' << :newline
+          test_object.send(:indent, buffer, 2) do
+            buffer << 'foo' << :newline
+            buffer << '     ' << :newline
+            buffer << '  foo' << :newline
+          end
+          buffer << 'foo'
+          test_object.send(:indent, buffer, 2) do
+            buffer << 'foo'
+          end
+          buffer << 'foo' << :newline
+        end
+      end
+
       let(:expected_code) do
         <<'CODE'
+foo
   foo
-    bar
 
-
-  bar
-  baz
+    foo
+foo
+  foo
+foo
 CODE
       end
 
-      it "ブロック内で入力されたコードに、sizeで指定されたインデントされたCodeBlockオブジェクトとして返す" do
-        output  = test_object.send(:indent, 2) do |buf|
-          buf << :foo       << :newline
-          buf << '  bar'    << :newline
-          buf               << :newline
-          buf << "  \t"     << :newline
-          buf << "bar\nbaz" << :newline
-        end
-        expect(output).to be_a_kind_of(CodeBlock)
-        expect(output.to_s).to eq expected_code
+      it "ブロック内で入力されたコードに、指定した幅でインデントを行う" do
+        expect(code.to_s).to eq expected_code
       end
     end
 

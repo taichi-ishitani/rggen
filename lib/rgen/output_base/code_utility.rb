@@ -28,11 +28,12 @@ module RGen
         end
       end
 
-      def indent(size, &block)
-        code        = CodeBlock.new
-        code.indent = size
-        block.call(code)
-        code
+      def indent(code_block, indent_size, &indent_block)
+        code_block << nl unless code_block.last_line_empty?
+        code_block.indent += indent_size
+        indent_block.call if block_given?
+        code_block << nl unless code_block.last_line_empty?
+        code_block.indent -= indent_size
       end
 
       def loop_index(level)
