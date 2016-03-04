@@ -1,5 +1,5 @@
 module RGen
-  module Verilog
+  module OutputBase
     class Declaration
       def initialize(declation_type, attributes)
         @declation_type = declation_type

@@ -24,7 +24,7 @@ module RGen::RAL
       end
 
       it "モデルクラス用の変数宣言オブジェクトを生成する" do
-        expect(declarations            ).to all(be_instance_of RGen::Verilog::Declaration)
+        expect(declarations            ).to all(be_instance_of RGen::OutputBase::Declaration)
         expect(declarations.map(&:to_s)).to match([
           "rand foo_model foo", "rand bar_model bar[2]", "rand baz_model baz[2][4]"
         ])

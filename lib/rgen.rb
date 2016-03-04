@@ -34,14 +34,13 @@ module RGen
   require_relative 'rgen/output_base/code_block'
   require_relative 'rgen/output_base/code_utility'
   require_relative 'rgen/output_base/template_utility'
+  require_relative 'rgen/output_base/identifier'
+  require_relative 'rgen/output_base/declaration'
+  require_relative 'rgen/output_base/verilog_utility'
   require_relative 'rgen/output_base/component'
   require_relative 'rgen/output_base/item'
   require_relative 'rgen/output_base/component_factory'
   require_relative 'rgen/output_base/item_factory'
-
-  require_relative 'rgen/verilog/identifier'
-  require_relative 'rgen/verilog/declaration'
-  require_relative 'rgen/verilog'
 
   require_relative 'rgen/builder/simple_item_entry'
   require_relative 'rgen/builder/list_item_entry'

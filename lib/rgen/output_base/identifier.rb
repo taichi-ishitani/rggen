@@ -1,5 +1,5 @@
 module RGen
-  module Verilog
+  module OutputBase
     class Identifier
       def initialize(name)
         @name = name

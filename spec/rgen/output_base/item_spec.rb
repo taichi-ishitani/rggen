@@ -154,7 +154,7 @@ module RGen::OutputBase
         expect {
           klass.class_eval { use_verilog_utility }
         }.to change {
-          klass.include?(RGen::Verilog)
+          klass.include?(VerilogUtility)
         }.from(false).to(true)
       end
     end

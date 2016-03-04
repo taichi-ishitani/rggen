@@ -61,7 +61,7 @@ module RGen
         attr_reader :file_writer
 
         def use_verilog_utility
-          include Verilog
+          include VerilogUtility
         end
 
         def build(&body)
