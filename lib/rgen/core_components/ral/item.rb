@@ -1,7 +1,7 @@
 module RGen
   module RAL
     class Item < OutputBase::Item
-      include Verilog
+      use_verilog_utility
 
       private
 

@@ -60,6 +60,10 @@ module RGen
         attr_reader :post_code_generator
         attr_reader :file_writer
 
+        def use_verilog_utility
+          include Verilog
+        end
+
         def build(&body)
           @builders ||= []
           @builders << body
