@@ -13,7 +13,11 @@ module RGen
 
         def generate_code(item, kind, buffer)
           return unless @bodies && @bodies.key?(kind)
-          item.instance_exec(buffer, &@bodies[kind])
+          if @bodies[kind].arity == 0
+            buffer << item.instance_exec(&@bodies[kind])
+          else
+            item.instance_exec(buffer, &@bodies[kind])
+          end
         end
 
         def copy
@@ -81,9 +85,7 @@ module RGen
 
         def generate_code_from_template(kind, path = nil)
           path  ||= File.ext(caller.first[/^(.+?):\d/, 1], 'erb')
-          generate_code(kind) do |buffer|
-            buffer  << process_template(path)
-          end
+          generate_code(kind) { process_template(path) }
         end
 
         def generate_post_code(kind, &body)

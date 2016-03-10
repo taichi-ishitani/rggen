@@ -12,6 +12,15 @@ module RGen::OutputBase
       generate_post_code :foo do |buffer|
         buffer << 'post_foo'
       end
+      generate_pre_code :foo_with_no_args do
+        'pre_foo_with_no_args'
+      end
+      generate_code :foo_with_no_args do
+        'foo_with_no_args'
+      end
+      generate_post_code :foo_with_no_args do
+        'post_foo_with_no_args'
+      end
     end
 
     class BarItem < Item
@@ -179,10 +188,19 @@ module RGen::OutputBase
     end
 
     describe "#generate_pre_code" do
-      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定された場合" do
-        it "指定された種類のコード生成ブロックを実行する" do
-          foo_item.generate_pre_code(:foo, buffer)
-          expect(buffer.to_s).to eq 'pre_foo'
+      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定され、" do
+        context "コード生成ブロックにブロック引数がある場合" do
+          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
+            foo_item.generate_pre_code(:foo, buffer)
+            expect(buffer.to_s).to eq 'pre_foo'
+          end
+        end
+
+        context "コード生成ブロックにブロック引数がない場合" do
+          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
+            foo_item.generate_pre_code(:foo_with_no_args, buffer)
+            expect(buffer.to_s).to eq 'pre_foo_with_no_args'
+          end
         end
       end
 
@@ -216,10 +234,19 @@ module RGen::OutputBase
     end
 
     describe "#generate_code" do
-      context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
-        it "指定された種類のコード生成ブロックを実行する" do
-          foo_item.generate_code(:foo, buffer)
-          expect(buffer.to_s).to eq 'foo'
+      context ".generate_codeで登録されたコード生成ブロックの種類が指定され、" do
+        context "コード生成ブロックにブロック引数がある場合" do
+          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
+            foo_item.generate_code(:foo, buffer)
+            expect(buffer.to_s).to eq 'foo'
+          end
+        end
+
+        context "コード生成ブロックにブロック引数がない場合" do
+          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
+            foo_item.generate_code(:foo_with_no_args, buffer)
+            expect(buffer.to_s).to eq 'foo_with_no_args'
+          end
         end
       end
 
@@ -277,10 +304,19 @@ module RGen::OutputBase
     end
 
     describe "#generate_post_code" do
-      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定された場合" do
-        it "指定された種類のコード生成ブロックを実行する" do
-          foo_item.generate_post_code(:foo, buffer)
-          expect(buffer.to_s).to eq 'post_foo'
+      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定され、" do
+        context "コード生成ブロックにブロック引数がある場合" do
+          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
+            foo_item.generate_post_code(:foo, buffer)
+            expect(buffer.to_s).to eq 'post_foo'
+          end
+        end
+
+        context "コード生成ブロックにブロック引数がない場合" do
+          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
+            foo_item.generate_post_code(:foo_with_no_args, buffer)
+            expect(buffer.to_s).to eq 'post_foo_with_no_args'
+          end
         end
       end
 
