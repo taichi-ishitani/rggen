@@ -27,7 +27,7 @@ module RGen
         when :variable
           (@attributes[:random] && 'rand') || ''
         when :port
-          @attributes[:direction]
+          @attributes[:direction] || ''
         when :parameter
           @attributes[:parameter_type]
         end
@@ -53,9 +53,7 @@ module RGen
       end
 
       def default_value_assignment
-        return '' if port?
-        return '' if @attributes[:default].nil?
-        "= #{@attributes[:default]}"
+        (@attributes[:default].nil? && '') || "= #{@attributes[:default]}"
       end
 
       def variable?
