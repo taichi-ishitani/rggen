@@ -11,6 +11,15 @@ module RGen
         Declaration.new(declaration_type, attributes)
       end
 
+      def function(name, &body)
+        SubroutineDefinition.new(:function, name, &body)
+      end
+
+      def argument(name, attributes)
+        attributes[:name] = name
+        create_declaration(:port, attributes)
+      end
+
       def assign(lhs, rhs)
         "assign #{lhs} = #{rhs};"
       end

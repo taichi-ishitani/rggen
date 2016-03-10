@@ -1,7 +1,16 @@
 simple_item :register, :shadow_index_configurator do
   ral do
-    generate_code :reg_model_item do |buffer|
-      buffer << process_template if register.shadow?
+    generate_code :reg_model_item do
+      function :configure_shadow_indexes do |f|
+        f.return_type :void
+        f.body { |code| function_body(code) }
+      end if register.shadow?
+    end
+
+    def function_body(code)
+      register.shadow_indexes.each do |shadow_index|
+        code << "set_shadow_index(#{arguments(shadow_index)});" << nl
+      end
     end
 
     def arguments(shadow_index)

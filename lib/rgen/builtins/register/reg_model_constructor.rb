@@ -1,6 +1,13 @@
 simple_item :register, :reg_model_constructor do
   ral do
-    generate_code_from_template :reg_model_item
+    generate_code :reg_model_item do
+      function :new do |f|
+        f.arguments [
+          argument(:name, data_type: :string, default: string(register.name))
+        ]
+        f.body { "super.new(name, #{bits}, 0);" }
+      end
+    end
 
     def bits
       max_msb = register.bit_fields.map(&:msb).max

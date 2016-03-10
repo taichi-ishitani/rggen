@@ -32,17 +32,19 @@ module RGen::OutputBase
     end
 
     it "ポート宣言を行うコードを生成する" do
-      expect(port_declaration(name: "foo", direction: :input                                                  )).to eq "input foo"
-      expect(port_declaration(name: "foo", direction: :output                                                 )).to eq "output foo"
-      expect(port_declaration(name: "foo", direction: :output,                    width: nil                  )).to eq "output foo"
-      expect(port_declaration(name: "foo", direction: :output,                    width: 1                    )).to eq "output foo"
-      expect(port_declaration(name: "foo", direction: :output,                    width: 2                    )).to eq "output [1:0] foo"
-      expect(port_declaration(name: "foo", direction: :output, data_type: :logic                              )).to eq "output logic foo"
-      expect(port_declaration(name: "foo", direction: :output, data_type: :logic, width: 2                    )).to eq "output logic [1:0] foo"
-      expect(port_declaration(name: "foo", direction: :output,                              dimensions: nil   )).to eq "output foo"
-      expect(port_declaration(name: "foo", direction: :output,                              dimensions: [2   ])).to eq "output foo[2]"
-      expect(port_declaration(name: "foo", direction: :output,                              dimensions: [3, 4])).to eq "output foo[3][4]"
-      expect(port_declaration(name: "foo", direction: :output, data_type: :logic, width: 2, dimensions: [3, 4])).to eq "output logic [1:0] foo[3][4]"
+      expect(port_declaration(name: "foo",                                                                                )).to eq "foo"
+      expect(port_declaration(name: "foo", direction: :input                                                              )).to eq "input foo"
+      expect(port_declaration(name: "foo", direction: :output                                                             )).to eq "output foo"
+      expect(port_declaration(name: "foo", direction: :output,                    width: nil                              )).to eq "output foo"
+      expect(port_declaration(name: "foo", direction: :output,                    width: 1                                )).to eq "output foo"
+      expect(port_declaration(name: "foo", direction: :output,                    width: 2                                )).to eq "output [1:0] foo"
+      expect(port_declaration(name: "foo", direction: :output, data_type: :logic                                          )).to eq "output logic foo"
+      expect(port_declaration(name: "foo", direction: :output, data_type: :logic, width: 2                                )).to eq "output logic [1:0] foo"
+      expect(port_declaration(name: "foo", direction: :output,                              dimensions: nil               )).to eq "output foo"
+      expect(port_declaration(name: "foo", direction: :output,                              dimensions: [2   ]            )).to eq "output foo[2]"
+      expect(port_declaration(name: "foo", direction: :output,                              dimensions: [3, 4]            )).to eq "output foo[3][4]"
+      expect(port_declaration(name: "foo", direction: :output, data_type: :logic, width: 2, dimensions: [3, 4]            )).to eq "output logic [1:0] foo[3][4]"
+      expect(port_declaration(name: "foo", direction: :input , data_type: :bit  , width: 2                    , default: 3)).to eq "input bit [1:0] foo = 3"
     end
 
     it "パラメータ宣言を行うコードを生成する" do

@@ -1,5 +1,0 @@
-function void create_fields();
-<% register.bit_fields.each do |bit_field| %>
-  <%= bit_field.generate_code(:field_model_creation, :top_down) %>
-<% end %>
-endfunction
