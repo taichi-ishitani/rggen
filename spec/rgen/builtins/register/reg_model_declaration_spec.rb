@@ -42,9 +42,9 @@ describe 'bit_field/reg_model_declaration' do
 
   describe "#generate_code" do
     it "レジスタモデルを宣言するコードを生成する" do
-      expect(ral[0]).to generate_code(:reg_model_declaration, :top_down, "rand register_0_reg_model register_0;")
-      expect(ral[1]).to generate_code(:reg_model_declaration, :top_down, "rand register_1_reg_model register_1[2];")
-      expect(ral[2]).to generate_code(:reg_model_declaration, :top_down, "rand register_2_reg_model register_2[2][4];")
+      expect(ral[0]).to generate_code(:reg_model_declaration, :top_down, "rand register_0_reg_model register_0;\n")
+      expect(ral[1]).to generate_code(:reg_model_declaration, :top_down, "rand register_1_reg_model register_1[2];\n")
+      expect(ral[2]).to generate_code(:reg_model_declaration, :top_down, "rand register_2_reg_model register_2[2][4];\n")
     end
   end
 end

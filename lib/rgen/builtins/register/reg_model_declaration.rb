@@ -3,7 +3,7 @@ simple_item :register, :reg_model_declaration do
     delegate [:model_name, :name, :dimensions] => :register
 
     generate_code :reg_model_declaration do |buffer|
-      buffer << declaration << semicolon
+      buffer << declaration << semicolon << nl
     end
 
     def declaration
