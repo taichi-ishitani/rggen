@@ -40,17 +40,7 @@ function foo();
   super.foo();
 endfunction
 CODE
-      expect(
-        function(:foo) { |f|
-          f.body do |code|
-            code << super_foo << :newline
-          end
-        }
-      ). to eq <<'CODE'
-function foo();
-  super.foo();
-endfunction
-CODE
+
       expect(
         function(:foo) { |f|
           f.return_type :void

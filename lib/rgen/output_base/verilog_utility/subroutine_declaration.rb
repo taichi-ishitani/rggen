@@ -1,12 +1,10 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class SubroutineDeclaration < CodeBlock
+      class SubroutineDeclaration < StructureDeclaration
         def initialize(type, name, &body)
-          super()
           @type = type
-          body.call(self)
-          build_subroutine_code(name)
+          super(name, &body)
         end
 
         def return_type(data_type_and_width)
@@ -24,17 +22,7 @@ module RGen
           @arguments  = args
         end
 
-        def body(&block)
-          @body = block
-        end
-
         private
-
-        def build_subroutine_code(name)
-          header_code(name)
-          body_code
-          footer_code
-        end
 
         def code
           self
@@ -45,35 +33,15 @@ module RGen
         end
 
         def header_code(name)
-          code << [
+          [
             (function? && :function   ) || :task,
             (function? && @return_type) || nil,
             "#{name}(#{Array(@arguments).join(', ')});"
           ].compact.join(' ')
-          code << :newline
-        end
-
-        def body_code
-          return if @body.nil?
-          indenting do
-            if @body.arity == 0
-              code << @body.call
-            else
-              @body.call(code)
-            end
-          end
-        end
-
-        def indenting(&block)
-          code.indent += 2
-          block.call
-          code << :newline unless code.last_line_empty?
-          code.indent -= 2
         end
 
         def footer_code
-          code << (function? && :endfunction) || :endtask
-          code << :newline
+          (function? && :endfunction) || :endtask
         end
       end
     end
