@@ -18,7 +18,7 @@ module RGen::OutputBase
       end
 
       it "識別子のインスタンスを生成する" do
-        expect(identifier).to be_instance_of Identifier
+        expect(identifier).to be_instance_of VerilogUtility::Identifier
         expect(identifier.to_s).to eq "foo"
       end
     end
@@ -37,22 +37,22 @@ module RGen::OutputBase
       end
 
       it "変数/ポート/パラメータ宣言のインスタンスを返す" do
-        expect(variable_declaration      ).to be_instance_of VariableDeclaration
+        expect(variable_declaration      ).to be_instance_of VerilogUtility::VariableDeclaration
         expect(variable_declaration.to_s ).to eq "rand logic [1:0] foo[2] = '{0, 1}"
-        expect(port_declaration          ).to be_instance_of VariableDeclaration
+        expect(port_declaration          ).to be_instance_of VerilogUtility::VariableDeclaration
         expect(port_declaration.to_s     ).to eq "input logic [1:0] foo[2]"
-        expect(parameter_declaration     ).to be_instance_of VariableDeclaration
+        expect(parameter_declaration     ).to be_instance_of VerilogUtility::VariableDeclaration
         expect(parameter_declaration.to_s).to eq "parameter logic [1:0] FOO[2] = '{0, 1}"
       end
     end
 
     describe "#assign" do
       let(:lhs) do
-        Identifier.new('foo')
+        VerilogUtility::Identifier.new('foo')
       end
 
       let(:rhs_list) do
-        ["4'b0000", Identifier.new('bar')]
+        ["4'b0000", VerilogUtility::Identifier.new('bar')]
       end
 
       it "継続代入のコード片を返す" do
@@ -63,7 +63,7 @@ module RGen::OutputBase
 
     describe "#concat" do
       let(:expressions) do
-        ["4'b0000", Identifier.new('foo'), Identifier.new('bar')]
+        ["4'b0000", VerilogUtility::Identifier.new('foo'), VerilogUtility::Identifier.new('bar')]
       end
 
       it "連接のコード片を返す" do
@@ -74,7 +74,7 @@ module RGen::OutputBase
 
     describe "#array" do
       let(:expressions) do
-        ["4'b0000", Identifier.new('foo'), Identifier.new('bar')]
+        ["4'b0000", VerilogUtility::Identifier.new('foo'), VerilogUtility::Identifier.new('bar')]
       end
 
       it "配列リテラルのコード片を返す" do

@@ -1,10 +1,10 @@
-require_relative '../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RGen::OutputBase
+module RGen::OutputBase::VerilogUtility
   describe SubroutineDeclaration do
     before(:all) do
       @verilog  = Class.new {
-        include VerilogUtility
+        include RGen::OutputBase::VerilogUtility
       }.new
     end
 

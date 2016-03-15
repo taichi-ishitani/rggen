@@ -26,7 +26,7 @@ end
 
 RSpec::Matchers.define :match_identifier do |expected_name|
   match do |identifier|
-    next false unless identifier.is_a?(RGen::OutputBase::Identifier)
+    next false unless identifier.is_a?(RGen::OutputBase::VerilogUtility::Identifier)
     identifier.to_s == expected_name
   end
 end
@@ -59,14 +59,14 @@ end
 
 RSpec::Matchers.define :have_port_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VariableDeclaration.new(:port, attributes).to_s
+    expectation = RGen::OutputBase::VerilogUtility::VariableDeclaration.new(:port, attributes).to_s
     component.port_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
 
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VariableDeclaration.new(:variable, attributes).to_s
+    expectation = RGen::OutputBase::VerilogUtility::VariableDeclaration.new(:variable, attributes).to_s
     component.signal_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end

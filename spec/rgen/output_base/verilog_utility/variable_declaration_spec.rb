@@ -1,6 +1,6 @@
-require_relative '../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RGen::OutputBase
+module RGen::OutputBase::VerilogUtility
   describe VariableDeclaration do
     def variable_declaration(attributes)
       VariableDeclaration.new(:variable, attributes).to_s
