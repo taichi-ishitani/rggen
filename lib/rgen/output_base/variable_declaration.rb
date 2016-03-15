@@ -1,6 +1,6 @@
 module RGen
   module OutputBase
-    class Declaration
+    class VariableDeclaration
       def initialize(declation_type, attributes)
         @declation_type = declation_type
         @attributes     = attributes

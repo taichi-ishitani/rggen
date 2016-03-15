@@ -37,11 +37,11 @@ module RGen::OutputBase
       end
 
       it "変数/ポート/パラメータ宣言のインスタンスを返す" do
-        expect(variable_declaration      ).to be_instance_of Declaration
+        expect(variable_declaration      ).to be_instance_of VariableDeclaration
         expect(variable_declaration.to_s ).to eq "rand logic [1:0] foo[2] = '{0, 1}"
-        expect(port_declaration          ).to be_instance_of Declaration
+        expect(port_declaration          ).to be_instance_of VariableDeclaration
         expect(port_declaration.to_s     ).to eq "input logic [1:0] foo[2]"
-        expect(parameter_declaration     ).to be_instance_of Declaration
+        expect(parameter_declaration     ).to be_instance_of VariableDeclaration
         expect(parameter_declaration.to_s).to eq "parameter logic [1:0] FOO[2] = '{0, 1}"
       end
     end
