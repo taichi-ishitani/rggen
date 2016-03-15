@@ -24,10 +24,6 @@ module RGen
 
         private
 
-        def code
-          self
-        end
-
         def function?
           @type == :function
         end
