@@ -1,7 +1,7 @@
 require_relative '../../spec_helper'
 
 module RGen::OutputBase
-  describe SubroutineDefinition do
+  describe SubroutineDeclaration do
     before(:all) do
       @verilog  = Class.new {
         include VerilogUtility
@@ -9,7 +9,7 @@ module RGen::OutputBase
     end
 
     def function(name, &body)
-      SubroutineDefinition.new(:function, name, &body).to_s
+      SubroutineDeclaration.new(:function, name, &body).to_s
     end
 
     def argument(name, attributes)

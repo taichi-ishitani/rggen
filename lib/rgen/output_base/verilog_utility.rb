@@ -12,7 +12,7 @@ module RGen
       end
 
       def function(name, &body)
-        SubroutineDefinition.new(:function, name, &body)
+        SubroutineDeclaration.new(:function, name, &body)
       end
 
       def argument(name, attributes)

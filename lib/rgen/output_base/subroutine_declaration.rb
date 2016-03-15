@@ -1,6 +1,6 @@
 module RGen
   module OutputBase
-    class SubroutineDefinition < CodeBlock
+    class SubroutineDeclaration < CodeBlock
       def initialize(type, name, &body)
         super()
         @type = type
