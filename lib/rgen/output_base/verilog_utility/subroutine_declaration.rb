@@ -28,11 +28,11 @@ module RGen
           @type == :function
         end
 
-        def header_code(name)
+        def header_code
           [
             (function? && :function   ) || :task,
             (function? && @return_type) || nil,
-            "#{name}(#{Array(@arguments).join(', ')});"
+            "#{@name}(#{Array(@arguments).join(', ')});"
           ].compact.join(' ')
         end
 

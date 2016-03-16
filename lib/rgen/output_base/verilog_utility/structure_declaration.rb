@@ -4,8 +4,9 @@ module RGen
       class StructureDeclaration < CodeBlock
         def initialize(name, &body)
           super()
+          @name = name
           body.call(self) if block_given?
-          build_code(name)
+          build_code
         end
 
         def body(&block)
@@ -14,8 +15,8 @@ module RGen
 
         private
 
-        def build_code(name)
-          code << header_code(name)
+        def build_code
+          code << header_code
           code << :newline
           body_code
           code << footer_code

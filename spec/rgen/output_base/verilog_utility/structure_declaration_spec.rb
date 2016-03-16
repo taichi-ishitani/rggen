@@ -4,8 +4,8 @@ module RGen::OutputBase::VerilogUtility
   describe StructureDeclaration do
     before(:all) do
       @structure_declaration  = Class.new(StructureDeclaration) do
-        def header_code(name)
-          "function #{name}();"
+        def header_code
+          "function #{@name}();"
         end
 
         def footer_code
