@@ -15,7 +15,6 @@ module RGen
   require_relative 'rgen/core_extensions/integer'
   require_relative 'rgen/core_extensions/math'
 
-  require_relative 'rgen/base/hierarchical_structure'
   require_relative 'rgen/base/hierarchical_accessors'
   require_relative 'rgen/base/hierarchical_item_accessors'
   require_relative 'rgen/base/component'

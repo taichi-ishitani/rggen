@@ -2,8 +2,7 @@ require_relative  '../../spec_helper'
 
 module RGen::Base
   describe HierarchicalAccessors do
-    class TestComponent
-      include HierarchicalStructure
+    class TestComponent < Component
       include HierarchicalAccessors
 
       def initialize(parent)
