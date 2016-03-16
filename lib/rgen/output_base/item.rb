@@ -13,7 +13,7 @@ module RGen
 
         def generate_code(item, kind, buffer)
           return unless @bodies && @bodies.key?(kind)
-          if @bodies[kind].arity == 0
+          if @bodies[kind].arity.zero?
             buffer << item.instance_exec(&@bodies[kind])
           else
             item.instance_exec(buffer, &@bodies[kind])
@@ -21,9 +21,9 @@ module RGen
         end
 
         def copy
-          g = CodeGenerator.new
-          g.instance_variable_set(:@bodies, Hash[@bodies]) if @bodies
-          g
+          CodeGenerator.new.tap do |g|
+            g.instance_variable_set(:@bodies, Hash[@bodies]) if @bodies
+          end
         end
       end
 
@@ -42,9 +42,14 @@ module RGen
         private
 
         def generate_code(item)
-          buffer  = CodeBlock.new
-          item.instance_exec(buffer, &@body)
-          buffer.to_s
+          code  = CodeBlock.new.tap do |c|
+            if @body.arity.zero?
+              c << item.instance_exec(&@body)
+            else
+              item.instance_exec(c, &@body)
+            end
+          end
+          code.to_s
         end
 
         def file_path(item, outptu_directory)

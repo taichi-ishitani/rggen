@@ -102,6 +102,13 @@ module RGen::OutputBase
       end
     end
 
+    class CorgeItem < Item
+      write_file "<%= owner.object_id %>.txt" do
+        owner.generate_code(:foo, :top_down) << "\n" <<
+        owner.generate_code(:bar, :top_down)
+      end
+    end
+
     before do
       @foo_item     = FooItem.new(component)
       @bar_item     = BarItem.new(component)
@@ -109,7 +116,8 @@ module RGen::OutputBase
       @qux_item     = QuxItem.new(component)
       @quux_item    = QuuxItem.new(component)
       @foo_bar_item = FooBarItem.new(component)
-      [@foo_item, @bar_item, @baz_item, @qux_item, @quux_item, @foo_bar_item].each do |item|
+      @corge_item   = CorgeItem.new(component)
+      [@foo_item, @bar_item, @baz_item, @qux_item, @quux_item, @foo_bar_item, @corge_item].each do |item|
         component.add_item(item)
       end
     end
@@ -148,6 +156,10 @@ module RGen::OutputBase
 
     let(:foo_bar_item) do
       @foo_bar_item
+    end
+
+    let(:corge_item) do
+      @corge_item
     end
 
     let(:buffer) do
@@ -365,12 +377,16 @@ module RGen::OutputBase
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
         expect(File).to receive(:write).with(file_name, contents, nil, binmode: true)
         foo_bar_item.write_file
+        expect(File).to receive(:write).with(file_name, contents, nil, binmode: true)
+        corge_item.write_file
       end
 
       context "出力ディレクトリの指定がある場合" do
         it "指定されたディレクトリにファイルを書き出す" do
           expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents, nil, binmode: true)
           foo_bar_item.write_file(output_directory)
+          expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents, nil, binmode: true)
+          corge_item.write_file(output_directory)
         end
       end
 
