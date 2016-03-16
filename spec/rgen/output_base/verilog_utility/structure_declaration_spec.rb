@@ -15,7 +15,7 @@ module RGen::OutputBase::VerilogUtility
     end
 
     def structure_declaration(name, &block)
-      @structure_declaration.new(name, &block).to_s
+      @structure_declaration.new(name, &block).to_code.to_s
     end
 
     it "構造の定義を行うコードを生成する" do

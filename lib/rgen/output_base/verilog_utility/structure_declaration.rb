@@ -1,48 +1,36 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class StructureDeclaration < CodeBlock
+      class StructureDeclaration
+        include CodeUtility
+
         def initialize(name, &body)
-          super()
           @name = name
           body.call(self) if block_given?
-          build_code
         end
 
         def body(&block)
           @body = block if block_given?
         end
 
+        def to_code
+          code_block do |code|
+            code << header_code << nl
+            body_code(code) unless @body.nil?
+            code << footer_code << nl
+          end
+        end
+
         private
 
-        def build_code
-          code << header_code
-          code << :newline
-          body_code
-          code << footer_code
-          code << :newline
-        end
-
-        def code
-          self
-        end
-
-        def body_code
-          return if @body.nil?
-          indenting do
+        def body_code(code)
+          indent(code, 2) do
             if @body.arity.zero?
               code << @body.call
             else
               @body.call(code)
             end
           end
-        end
-
-        def indenting(&block)
-          code.indent += 2
-          block.call
-          code << :newline unless code.last_line_empty?
-          code.indent -= 2
         end
       end
     end

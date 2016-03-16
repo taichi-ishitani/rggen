@@ -12,7 +12,7 @@ module RGen
       end
 
       def function_declaration(name, &body)
-        SubroutineDeclaration.new(:function, name, &body)
+        SubroutineDeclaration.new(:function, name, &body).to_code
       end
 
       def argument(name, attributes)

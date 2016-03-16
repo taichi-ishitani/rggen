@@ -9,7 +9,7 @@ module RGen::OutputBase::VerilogUtility
     end
 
     def function(name, &body)
-      SubroutineDeclaration.new(:function, name, &body).to_s
+      SubroutineDeclaration.new(:function, name, &body).to_code.to_s
     end
 
     def argument(name, attributes)
