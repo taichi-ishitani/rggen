@@ -11,7 +11,7 @@ module RGen
         VariableDeclaration.new(declaration_type, attributes)
       end
 
-      def function(name, &body)
+      def function_declaration(name, &body)
         SubroutineDeclaration.new(:function, name, &body)
       end
 
