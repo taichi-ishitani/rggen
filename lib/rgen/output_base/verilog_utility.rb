@@ -15,6 +15,10 @@ module RGen
         ModuleDefinition.new(name, &body).to_code
       end
 
+      def class_definition(name, &body)
+        ClassDefinition.new(name, &body).to_code
+      end
+
       def function_definition(name, &body)
         SubroutineDefinition.new(:function, name, &body).to_code
       end
