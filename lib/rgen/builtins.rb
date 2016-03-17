@@ -36,6 +36,7 @@ require_relative 'builtins/register/shadow_index_configurator'
 require_relative 'builtins/register/uniqueness_validator'
 
 require_relative 'builtins/register_block/base_address'
+require_relative 'builtins/register_block/block_model_constructor'
 require_relative 'builtins/register_block/byte_size'
 require_relative 'builtins/register_block/clock_reset'
 require_relative 'builtins/register_block/host_if'
