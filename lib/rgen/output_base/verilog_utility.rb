@@ -11,12 +11,12 @@ module RGen
         Declaration.new(declaration_type, attributes)
       end
 
-      def module_declaration(name, &body)
-        ModuleDeclaration.new(name, &body).to_code
+      def module_definition(name, &body)
+        ModuleDefinition.new(name, &body).to_code
       end
 
-      def function_declaration(name, &body)
-        SubroutineDeclaration.new(:function, name, &body).to_code
+      def function_definition(name, &body)
+        SubroutineDefinition.new(:function, name, &body).to_code
       end
 
       def argument(name, attributes)

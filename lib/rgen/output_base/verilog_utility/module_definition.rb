@@ -1,7 +1,7 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class ModuleDeclaration < StructureDeclaration
+      class ModuleDefinition < StructureDefinition
         def parameters(list)
           @parameters = list
         end

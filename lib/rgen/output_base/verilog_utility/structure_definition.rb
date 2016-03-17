@@ -1,7 +1,7 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class StructureDeclaration
+      class StructureDefinition
         include CodeUtility
 
         def initialize(name, &body)

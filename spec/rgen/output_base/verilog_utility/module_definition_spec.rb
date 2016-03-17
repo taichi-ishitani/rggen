@@ -1,7 +1,7 @@
 require_relative '../../../spec_helper'
 
 module RGen::OutputBase::VerilogUtility
-  describe ModuleDeclaration do
+  describe ModuleDefinition do
     before(:all) do
       @verilog  = Class.new {
         include RGen::OutputBase::VerilogUtility
@@ -9,7 +9,7 @@ module RGen::OutputBase::VerilogUtility
     end
 
     def module_declaration(name, &body)
-      ModuleDeclaration.new(name, &body).to_code.to_s
+      ModuleDefinition.new(name, &body).to_code.to_s
     end
 
     def port(attributes)

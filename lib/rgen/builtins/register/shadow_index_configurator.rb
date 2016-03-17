@@ -1,7 +1,7 @@
 simple_item :register, :shadow_index_configurator do
   ral do
     generate_code :reg_model_item do
-      function_declaration :configure_shadow_indexes do |f|
+      function_definition :configure_shadow_indexes do |f|
         f.return_type :void
         f.body { |code| function_body(code) }
       end if register.shadow?

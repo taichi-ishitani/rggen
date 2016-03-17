@@ -1,7 +1,7 @@
 simple_item :register, :reg_model_constructor do
   ral do
     generate_code :reg_model_item do
-      function_declaration :new do |f|
+      function_definition :new do |f|
         f.arguments [
           argument(:name, data_type: :string, default: string(register.name))
         ]

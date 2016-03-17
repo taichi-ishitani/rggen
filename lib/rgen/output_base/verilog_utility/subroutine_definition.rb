@@ -1,7 +1,7 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class SubroutineDeclaration < StructureDeclaration
+      class SubroutineDefinition < StructureDefinition
         def initialize(type, name, &body)
           @type = type
           super(name, &body)

@@ -1,9 +1,9 @@
 require_relative '../../../spec_helper'
 
 module RGen::OutputBase::VerilogUtility
-  describe StructureDeclaration do
+  describe StructureDefinition do
     before(:all) do
-      @structure_declaration  = Class.new(StructureDeclaration) do
+      @structure_declaration  = Class.new(StructureDefinition) do
         def header_code
           "function #{@name}();"
         end
