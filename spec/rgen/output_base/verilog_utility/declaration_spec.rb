@@ -1,17 +1,17 @@
 require_relative '../../../spec_helper'
 
 module RGen::OutputBase::VerilogUtility
-  describe VariableDeclaration do
+  describe Declaration do
     def variable_declaration(attributes)
-      VariableDeclaration.new(:variable, attributes).to_s
+      Declaration.new(:variable, attributes).to_s
     end
 
     def port_declaration(attributes)
-      VariableDeclaration.new(:port, attributes).to_s
+      Declaration.new(:port, attributes).to_s
     end
 
     def parameter_declaration(attributes)
-      VariableDeclaration.new(:parameter, attributes).to_s
+      Declaration.new(:parameter, attributes).to_s
     end
 
     it "変数宣言を行うコードを生成する" do

@@ -8,7 +8,7 @@ module RGen
       end
 
       def create_declaration(declaration_type, attributes)
-        VariableDeclaration.new(declaration_type, attributes)
+        Declaration.new(declaration_type, attributes)
       end
 
       def module_declaration(name, &body)

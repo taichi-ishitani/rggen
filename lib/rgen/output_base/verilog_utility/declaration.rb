@@ -1,7 +1,7 @@
 module RGen
   module OutputBase
     module VerilogUtility
-      class VariableDeclaration
+      class Declaration
         def initialize(declation_type, attributes)
           @declation_type = declation_type
           @attributes     = attributes

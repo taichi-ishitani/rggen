@@ -34,7 +34,7 @@ module RGen
   require_relative 'rgen/output_base/code_utility'
   require_relative 'rgen/output_base/template_utility'
   require_relative 'rgen/output_base/verilog_utility/identifier'
-  require_relative 'rgen/output_base/verilog_utility/variable_declaration'
+  require_relative 'rgen/output_base/verilog_utility/declaration'
   require_relative 'rgen/output_base/verilog_utility/structure_declaration'
   require_relative 'rgen/output_base/verilog_utility/module_declaration'
   require_relative 'rgen/output_base/verilog_utility/subroutine_declaration'

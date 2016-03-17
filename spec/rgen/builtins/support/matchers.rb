@@ -59,14 +59,14 @@ end
 
 RSpec::Matchers.define :have_port_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VerilogUtility::VariableDeclaration.new(:port, attributes).to_s
+    expectation = RGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
     component.port_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
 
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VerilogUtility::VariableDeclaration.new(:variable, attributes).to_s
+    expectation = RGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
     component.signal_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
