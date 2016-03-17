@@ -1,4 +1,4 @@
-define_simple_item :register_block, :module_declaration do
+define_simple_item :register_block, :module_definition do
   rtl do
     write_file '<%= register_block.name %>.sv' do
       module_definition register_block.name do |m|
