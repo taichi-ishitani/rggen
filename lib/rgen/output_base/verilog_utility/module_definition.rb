@@ -2,13 +2,8 @@ module RGen
   module OutputBase
     module VerilogUtility
       class ModuleDefinition < StructureDefinition
-        def parameters(list)
-          @parameters = list
-        end
-
-        def ports(list)
-          @ports  = list
-        end
+        attr_setter :parameters
+        attr_setter :ports
 
         private
 

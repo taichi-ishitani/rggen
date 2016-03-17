@@ -2,9 +2,7 @@ module RGen
   module OutputBase
     module VerilogUtility
       class ClassDefinition < StructureDefinition
-        def base(base_class)
-          @base = base_class
-        end
+        attr_setter :base
 
         private
 

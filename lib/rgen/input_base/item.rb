@@ -152,11 +152,12 @@ module RGen
       end
 
       def default_field_method(field_name, default_value)
-        if field_name =~ /\A([a-zA-Z0-9]\w*)\?\z/
-          variable_name = Regexp.last_match[1].variablize
-        else
-          variable_name = field_name.variablize
-        end
+        variable_name =
+          if field_name =~ /\A([a-zA-Z0-9]\w*)\?\z/
+            Regexp.last_match[1].variablize
+          else
+            field_name.variablize
+          end
 
         if instance_variable_defined?(variable_name)
           instance_variable_get(variable_name)

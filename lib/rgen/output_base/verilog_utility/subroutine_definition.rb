@@ -18,9 +18,7 @@ module RGen
           end
         end
 
-        def arguments(args)
-          @arguments  = args
-        end
+        attr_setter :arguments
 
         private
 
