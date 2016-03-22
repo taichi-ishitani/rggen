@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'bit_field/shadow_index_configurator' do
+describe 'register/shadow_index_configurator' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'

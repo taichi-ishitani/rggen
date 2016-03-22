@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'bit_field/reg_model_constructor' do
+describe 'register_block/reg_model_constructor' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
