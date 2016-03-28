@@ -15,6 +15,10 @@ module RGen
         ModuleDefinition.new(name, &body).to_code
       end
 
+      def package_definition(name, &body)
+        PackageDefinition.new(name, &body).to_code
+      end
+
       def class_definition(name, &body)
         ClassDefinition.new(name, &body).to_code
       end

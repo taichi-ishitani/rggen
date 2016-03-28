@@ -61,6 +61,18 @@ function foo();
   foo();
 endfunction
 CODE
+
+    expect(
+        structure_declaration(:foo) { |s|
+          s.body { |code| code << "foo();" }
+          s.body { |code| code << "bar();\n" }
+        }
+      ).to eq <<'CODE'
+function foo();
+  foo();
+  bar();
+endfunction
+CODE
     end
   end
 end
