@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe "register_block/module_declaration" do
+describe "register_block/module_definition" do
   include_context 'configuration common'
   include_context 'register_map common'
   include_context 'rtl common'
