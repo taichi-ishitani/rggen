@@ -2,6 +2,15 @@ require_relative '../spec_helper'
 
 module RGen
   describe Generator do
+    before(:all) do
+      @expected_rtl_code  = 2.times.map do |i|
+        File.read("#{RGEN_HOME}/sample/sample_#{i}.sv")
+      end
+      @expected_ral_code  = 2.times.map do |i|
+        File.read("#{RGEN_HOME}/sample/sample_#{i}_ral_pkg.sv")
+      end
+    end
+
     before do
       cache   = factory_cache
       plugin  = factory_plugin
@@ -122,6 +131,9 @@ HELP
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
         end
 
         it "デフォルトのセットアップが実行される" do
@@ -143,6 +155,9 @@ HELP
           expect(RGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
           expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
+          expect(RGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
         end
 
         after do
@@ -251,10 +266,12 @@ HELP
     end
 
     describe "ファイルの書き出し" do
-      let(:expected_code) do
-        2.times.map do |i|
-          File.read("#{RGEN_HOME}/sample/sample_#{i}.sv")
-        end
+      let(:expected_rtl_code) do
+        @expected_rtl_code
+      end
+
+      let(:expected_ral_code) do
+        @expected_ral_code
       end
 
       context "-o/--outputで出力ディレクトリの指定が無い場合" do
@@ -262,8 +279,10 @@ HELP
           expect {
             generator.run(['-c', sample_yaml, sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("./rtl/sample_0.sv", expected_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("./rtl/sample_1.sv", expected_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("./rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("./rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("./ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("./ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
         end
       end
 
@@ -272,15 +291,19 @@ HELP
           expect {
             generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_0.sv", expected_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_1.sv", expected_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("/foo/bar/ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("/foo/bar/ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
           clear_enabled_items
 
           expect {
             generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
           }.not_to raise_error
-          expect(File).to have_received(:write).with("../baz/rtl/sample_0.sv", expected_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("../baz/rtl/sample_1.sv", expected_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("../baz/rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("../baz/rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).with("../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
         end
       end
     end
