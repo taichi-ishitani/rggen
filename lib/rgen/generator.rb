@@ -14,6 +14,7 @@ module RGen
 
       attr_accessor :short
       attr_accessor :long
+      attr_accessor :class
       attr_writer   :default
       attr_writer   :description
       attr_writer   :body
@@ -26,7 +27,7 @@ module RGen
       end
 
       def args
-        [@short, @long, description].compact
+        [@short, @long, @class, description].compact
       end
 
       def description
@@ -79,6 +80,16 @@ module RGen
       option.long         = '--output DIR'
       option.default      = './'
       option.description  = 'Specify output directory'
+    end
+
+    add_option :except do |option|
+      option.long         = '--except [TYPE1,TYPE2,...]'
+      option.class        = Array
+      option.description  = 'Disable the given output file type(s)'
+      option.body         = proc do |value, options, kind|
+        options[kind] ||= []
+        options[kind].concat(value.map(&:to_sym))
+      end
     end
 
     add_option :version do |option|
@@ -157,10 +168,17 @@ module RGen
     end
 
     def file_generators(context)
-      RGen.builder.stored_output_components.map do |component|
+      available_output_components(context).map do |component|
         build_factory(component).create(
           context.configuration, context.register_map
         )
+      end
+    end
+
+    def available_output_components(context)
+      except  = context.options[:except]
+      RGen.builder.stored_output_components.select do |component|
+        except.nil? || except.exclude?(component)
       end
     end
   end

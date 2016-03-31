@@ -104,6 +104,7 @@ Usage: rgen [options] REGISTER_MAP
         --setup FILE                 Specify a setup file to set up RGen tool(default: #{RGen::RGEN_HOME}/setup/default.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: ./)
+        --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
     -v, --version                    Display the version
     -h, --help                       Display this message
 HELP
@@ -287,7 +288,7 @@ HELP
       end
 
       context "-o/--outputで出力ディレクトリの指定がある場合" do
-        it "カレントディレクトリにファイを書き出す" do
+        it "指定されたディレクトリにファイを書き出す" do
           expect {
             generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
           }.not_to raise_error
@@ -304,6 +305,24 @@ HELP
           expect(File).to have_received(:write).with("../baz/rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
           expect(File).to have_received(:write).with("../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
           expect(File).to have_received(:write).with("../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
+        end
+      end
+
+      context "--exceptで書き出し除外指定がある場合" do
+        it "除外されていない種類のファイルを書き出す" do
+          expect {
+            generator.run(['-c', sample_yaml, '--except', 'rtl', sample_register_maps[0]])
+          }.not_to raise_error
+          expect(File).to have_received(:write).with("./ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
+          expect(File).to have_received(:write).with("./ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
+          expect(File).to have_received(:write).twice
+          clear_enabled_items
+
+          expect(File).not_to receive(:write)
+          expect {
+            generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', sample_register_maps[0]])
+          }.not_to raise_error
+          clear_enabled_items
         end
       end
     end
