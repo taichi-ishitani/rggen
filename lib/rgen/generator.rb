@@ -1,5 +1,12 @@
 module RGen
   class Generator
+    Context = Struct.new(:options, :configuration, :register_map) do
+      def initialize
+        super
+        self.options  = {}
+      end
+    end
+
     class Option
       def initialize(kind)
         @kind = kind
@@ -95,19 +102,19 @@ module RGen
     end
 
     def run(argv)
-      options = parse_options(argv)
-      load_setup(options[:setup])
-      configuration = load_configuration(options[:configuration])
-      register_map  = load_register_map(configuration, argv.first)
-      write_files(configuration, register_map, options[:output])
+      Context.new.tap do |context|
+        parse_options(argv, context)
+        load_setup(context)
+        load_configuration(context)
+        load_register_map(context, argv.first)
+        write_files(context)
+      end
     end
 
     private
 
-    def parse_options(argv)
-      options = {}
-      option_parser(options).parse!(argv)
-      options
+    def parse_options(argv, context)
+      option_parser(context.options).parse!(argv)
     end
 
     def option_parser(options)
@@ -125,31 +132,35 @@ module RGen
       end
     end
 
-    def load_setup(file)
-      load(file)
+    def load_setup(context)
+      load(context.options[:setup])
     end
 
     def build_factory(component_name)
       RGen.builder.build_factory(component_name)
     end
 
-    def load_configuration(file)
-      build_factory(:configuration).create(file)
+    def load_configuration(context)
+      context.configuration =
+        build_factory(:configuration).create(context.options[:configuration])
     end
 
-    def load_register_map(configuration, file)
-      build_factory(:register_map).create(configuration, file)
+    def load_register_map(context, file)
+      context.register_map  =
+        build_factory(:register_map).create(context.configuration, file)
     end
 
-    def write_files(configuration, register_map, output)
-      file_generators(configuration, register_map).each do |generator|
-        generator.write_file(output)
+    def write_files(context)
+      file_generators(context).each do |generator|
+        generator.write_file(context.options[:output])
       end
     end
 
-    def file_generators(configuration, register_map)
+    def file_generators(context)
       RGen.builder.stored_output_components.map do |component|
-        build_factory(component).create(configuration, register_map)
+        build_factory(component).create(
+          context.configuration, context.register_map
+        )
       end
     end
   end
