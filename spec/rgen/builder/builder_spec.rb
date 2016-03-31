@@ -63,18 +63,23 @@ module RGen::Builder
       end
     end
 
-    describe "#stored_components" do
-      before do
-        builder.input_component_store(:configuration) do
-        end
-        builder.input_component_store(:register_map) do
-        end
-        builder.output_component_store(:rtl) do
-        end
-      end
-
-      it "登録されているコンポーネントの一覧を返す" do
-        expect(builder.stored_components).to match [:configuration, :register_map, :rtl]
+    describe "#stored_output_components" do
+      it "#output_component_storeで登録されて出力コンポーネントの一覧を返す" do
+        expect {
+          builder.input_component_store(:configuration) {}
+        }.not_to change { builder.stored_output_components }
+        expect {
+          builder.output_component_store(:rtl) {}
+        }.to change { builder.stored_output_components }.from(match([])).to(match([:rtl]))
+        expect {
+          builder.input_component_store(:register_map) {}
+        }.not_to change { builder.stored_output_components }
+        expect {
+          builder.output_component_store(:ral) {}
+        }.to change { builder.stored_output_components }.from(match([:rtl])).to(match([:rtl, :ral]))
+        expect {
+          builder.output_component_store(:rtl) {}
+        }.not_to change { builder.stored_output_components }
       end
     end
 

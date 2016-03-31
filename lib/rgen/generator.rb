@@ -148,10 +148,7 @@ module RGen
     end
 
     def file_generators(configuration, register_map)
-      output_components = RGen.builder.stored_components.reject do |component|
-        [:configuration, :register_map].include?(component)
-      end
-      output_components.map do |component|
+      RGen.builder.stored_output_components.map do |component|
         build_factory(component).create(configuration, register_map)
       end
     end

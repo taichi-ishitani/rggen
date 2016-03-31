@@ -30,8 +30,10 @@ module RGen
         component_store(OutputComponentStore, component_name, body)
       end
 
-      def stored_components
-        @stores.keys
+      def stored_output_components
+        @stores.keys.select do |component_name|
+          @stores[component_name].is_a?(OutputComponentStore)
+        end
       end
 
       def define_loader(component_name, type_or_types, &body)
