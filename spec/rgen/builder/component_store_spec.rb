@@ -98,6 +98,39 @@ module RGen::Builder
           end
         end
       end
+
+      context "引数で所属するカテゴリの指定が複数ある場合" do
+        it "指定されたカテゴリ分のエントリを生成する" do
+          component_store.entry([:register_block, :register]) do
+            component_class   RGen::Base::Component
+            component_factory RGen::Base::ComponentFactory
+          end
+
+          expect(component_entries.size).to eq(2).and eq(component_entries.map(&:object_id).uniq.size)
+        end
+
+        it "指定されたカテゴリに、生成したエントリのアイテムレジストリを追加する" do
+          categories.each do |name, category|
+            if [:register_block, :register].include?(name)
+              allow(category).to receive(:add_item_store)
+            else
+              expect(category).not_to receive(:add_item_store)
+            end
+          end
+
+          item_stores = []
+          component_store.entry([:register_block, :register]) do
+            component_class   RGen::Base::Component
+            component_factory RGen::Base::ComponentFactory
+            item_base         RGen::Base::Item
+            item_factory      RGen::Base::ItemFactory
+            item_stores << self.item_store
+          end
+
+          expect(categories[:register_block]).to have_received(:add_item_store).with(registry_name, item_stores[0])
+          expect(categories[:register      ]).to have_received(:add_item_store).with(registry_name, item_stores[1])
+        end
+      end
     end
 
     describe "#build_factory" do

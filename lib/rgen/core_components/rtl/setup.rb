@@ -6,21 +6,7 @@ module RGen
         component_factory OutputBase::ComponentFactory
       end
 
-      entry :register_block do
-        component_class   Component
-        component_factory OutputBase::ComponentFactory
-        item_base         Item
-        item_factory      OutputBase::ItemFactory
-      end
-
-      entry :register do
-        component_class   Component
-        component_factory OutputBase::ComponentFactory
-        item_base         Item
-        item_factory      OutputBase::ItemFactory
-      end
-
-      entry :bit_field do
+      entry [:register_block, :register, :bit_field] do
         component_class   Component
         component_factory OutputBase::ComponentFactory
         item_base         Item
