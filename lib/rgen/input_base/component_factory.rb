@@ -45,17 +45,13 @@ module RGen
       end
 
       def load_file(file)
-        loader  = find_loader(file)
-        loader.load_file(file) if loader
+        find_loader(file).load_file(file)
       end
 
       def find_loader(file)
         loader  = @loaders && @loaders.find { |l| l.acceptable?(file) }
-        if loader
-          loader.new
-        else
-          fail RGen::LoadError, "unsupported file type: #{File.ext(file)}"
-        end
+        return loader.new unless loader.nil?
+        fail RGen::LoadError, "unsupported file type: #{File.ext(file)}"
       end
     end
   end

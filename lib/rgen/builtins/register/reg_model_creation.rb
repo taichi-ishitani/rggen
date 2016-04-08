@@ -47,9 +47,9 @@ simple_item :register, :reg_model_creation do
     end
 
     def rights
-      return string("RO") if register.read_only?
-      return string("WO") if register.write_only?
-      string("RW")
+      return string(:RO) if register.read_only?
+      return string(:WO) if register.write_only?
+      string(:RW)
     end
 
     def unmapped
@@ -58,7 +58,7 @@ simple_item :register, :reg_model_creation do
 
     def loop_varibles
       return nil unless array?
-      @loop_varibles  ||= dimensions.size.times.map(&method(:loop_index))
+      @loop_varibles ||= Array.new(dimensions.size, &method(:loop_index))
     end
   end
 end

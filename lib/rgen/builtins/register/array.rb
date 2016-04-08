@@ -67,7 +67,7 @@ simple_item :register, :array do
 
     def loop_variables
       return nil unless register.array?
-      register.dimensions.size.times.map { |l| loop_variable(l) }
+      Array.new(register.dimensions.size) { |l| loop_variable(l) }
     end
 
     def loop_variable(level)

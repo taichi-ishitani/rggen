@@ -1,20 +1,22 @@
 module RGen
   module Base
     class ComponentFactory
+      def initialize
+        @root_factory = false
+      end
+
       attr_writer :target_component
       attr_writer :item_factories
       attr_writer :child_factory
 
       def create(*args)
-        parent  = (@root_factory) ? nil : args.shift
+        parent  = (child_factory? && args.shift) || nil
         sources = args
-
-        component = create_component(parent, *sources)
-        create_items(component, *sources) if @item_factories
-        parent.add_child(component) unless @root_factory
-        create_children(component, *sources) if @child_factory
-
-        component
+        create_component(parent, *sources).tap do |component|
+          create_items(component, *sources) if @item_factories
+          parent.add_child(component) unless @root_factory
+          create_children(component, *sources) if @child_factory
+        end
       end
 
       def root_factory
@@ -22,6 +24,10 @@ module RGen
       end
 
       private
+
+      def child_factory?
+        !@root_factory
+      end
 
       def create_component(parent, *_sources)
         @target_component.new(parent)
