@@ -21,7 +21,6 @@ class rgen_ral_shadow_reg extends rgen_ral_reg;
 
   extern protected virtual function void configure_shadow_indexes();
   extern protected function void set_shadow_index(string reg_name, string field_name, uvm_reg_data_t value);
-  extern protected virtual function void add_frontdoor_to_map(uvm_reg_map map);
 endclass
 
 function rgen_ral_shadow_reg::new(string name, int unsigned n_bits, int has_coverage);
@@ -64,8 +63,9 @@ endfunction
 
 class rgen_ral_shadow_reg_index;
   protected rgen_ral_shadow_reg shadow_reg;
-  protected reg_name            reg_name;
-  protected field_name          field_name;
+  protected string              reg_name;
+  protected string              field_name;
+  protected uvm_reg_data_t      value;
   protected uvm_reg_field       index_field;
 
   extern function new(
@@ -131,13 +131,13 @@ function uvm_reg_field rgen_ral_shadow_reg_index::get_index_field();
     index_reg = parent_block.get_reg_by_name(reg_name);
     if (index_reg == null) begin
       `uvm_fatal("rgen_ral_shadow_reg_index", $sformatf("Unable to locate index register: %s", reg_name))
-      return;
+      return null;
     end
 
     index_field = index_reg.get_field_by_name(field_name);
     if (index_field == null) begin
       `uvm_fatal("rgen_ral_shadow_reg_index", $sformatf("Unable to locate index field: %s", field_name))
-      return;
+      return null;
     end
   end
   return index_field;
@@ -173,12 +173,12 @@ task rgen_ral_shadow_reg_ftdr_seq::body();
     );
     if (status == UVM_NOT_OK) begin
       `uvm_warning("rgen_ral_shadow_reg_ftdr_seq", "Updating index field failed")
-      rw_info = status;
+      rw_info.status  = status;
       return;
     end
   end
 
-  if (rw.kind == UVM_WRITE) begin
+  if (rw_info.kind == UVM_WRITE) begin
     rw_info.local_map.do_write(rw_info);
   end
   else begin

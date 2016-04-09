@@ -8,7 +8,7 @@ class rgen_ral_map extends uvm_reg_map;
   extern virtual function void add_reg(
     uvm_reg           rg,
     uvm_reg_addr_t    offset,
-    string            right     = "RW",
+    string            rights    = "RW",
     bit               unmapped  = 0,
     uvm_reg_frontdoor frontdoor = null
   );
@@ -29,7 +29,7 @@ endfunction
 function void rgen_ral_map::add_reg(
   uvm_reg           rg,
   uvm_reg_addr_t    offset,
-  string            right,
+  string            rights,
   bit               unmapped,
   uvm_reg_frontdoor frontdoor
 );
@@ -42,7 +42,7 @@ function void rgen_ral_map::add_reg(
   if ($cast(rgen_shadow_reg, rg)) begin
     unmapped  = 1;
   end
-  super.add_reg(rg, offset, right, unmapped, frontdoor);
+  super.add_reg(rg, offset, rights, unmapped, frontdoor);
 endfunction
 
 function void rgen_ral_map::set_base_addr(uvm_reg_addr_t offset);
@@ -83,13 +83,17 @@ function uvm_reg rgen_ral_map::get_reg_by_offset(uvm_reg_addr_t offset, bit read
 endfunction
 
 function void rgen_ral_map::Xinit_shadow_reg_address_mapX();
-  uvm_reg_mem top_mem;
-  uvm_reg_mem submaps[$];
-  uvm_reg     regs[$];
+  uvm_reg_map   top_map;
+  rgen_ral_map  top_rgen_map;
+  uvm_reg_map   submaps[$];
+  uvm_reg       regs[$];
 
-  top_mem = get_root_map();
-  if (top_mem == this) begin
+  top_map = get_root_map();
+  if (top_map == this) begin
     m_shadow_regs_by_offset.delete();
+  end
+  if (!$cast(top_rgen_map, top_map)) begin
+    return;
   end
 
   get_submaps(submaps, UVM_NO_HIER);
@@ -109,10 +113,11 @@ function void rgen_ral_map::Xinit_shadow_reg_address_mapX();
       continue;
     end
 
-    map_info  = get_reg_map_info(shadow_reg);
+    map_info          = get_reg_map_info(shadow_reg);
+    map_info.unmapped = 0;
     void'(get_physical_addresses(map_info.offset, 0, shadow_reg.get_n_bytes(), map_info.addr));
     foreach (map_info.addr[j]) begin
-      top_mem.m_shadow_regs_by_offset[map_info.addr[j]].push_back(shadow_reg);
+      top_rgen_map.m_shadow_regs_by_offset[map_info.addr[j]].push_back(shadow_reg);
     end
   end
 endfunction

@@ -4,7 +4,7 @@
 `define rgen_ral_create_field_model(handle, name, width, lsb, access, volatile, reset, has_reset) \
 begin \
   handle  = new(name); \
-  handle.configuration(this.cfg, this, size, lsb, access, volatile, reset, has_reset, 1, 1); \
+  handle.configure(this.cfg, this, width, lsb, access, volatile, reset, has_reset, 1, 1); \
 end
 
 `define rgen_ral_create_reg_model(handle, base_naem, array_index, offset_address, rights, unmapped) \
