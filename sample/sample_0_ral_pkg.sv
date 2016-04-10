@@ -11,7 +11,7 @@ package sample_0_ral_pkg;
     endfunction
     function void create_fields();
       `rgen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 16, 16, "RW", 0, 16'h0000, 1)
-      `rgen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 16, 0, "RO", 0, 16'h0000, 0)
+      `rgen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 16, 0, "RW", 0, 16'h0000, 1)
     endfunction
   endclass
   class register_1_reg_model extends rgen_ral_reg;
@@ -65,7 +65,7 @@ package sample_0_ral_pkg;
       `rgen_ral_create_field_model(bit_field_5_1, "bit_field_5_1", 16, 0, "RW", 0, 16'h0000, 1)
     endfunction
     function void configure_shadow_indexes();
-      set_shadow_index("register_2", "bit_field_2_0", 1);
+      set_shadow_index("register_2", "bit_field_2_1", 1);
       set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
       set_shadow_index("register_0", "bit_field_0_1", indexes[1]);
     endfunction

@@ -12,7 +12,7 @@ module sample_0 (
   output [31:0] o_prdata,
   output o_pslverr,
   output [15:0] o_bit_field_0_0,
-  input [15:0] i_bit_field_0_1,
+  output [15:0] o_bit_field_0_1,
   output [31:0] o_bit_field_1_0,
   input i_bit_field_2_0,
   output o_bit_field_2_1,
@@ -116,7 +116,20 @@ module sample_0 (
     .i_write_mask     (write_mask[31:16]),
     .o_value          (bit_field_0_0_value)
   );
-  assign bit_field_0_1_value = i_bit_field_0_1;
+  assign o_bit_field_0_1 = bit_field_0_1_value;
+  rgen_bit_field_rw #(
+    .WIDTH          (16),
+    .INITIAL_VALUE  (16'h0000)
+  ) u_bit_field_0_1 (
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .i_command_valid  (command_valid),
+    .i_select         (register_select[0]),
+    .i_write          (write),
+    .i_write_data     (write_data[15:0]),
+    .i_write_mask     (write_mask[15:0]),
+    .o_value          (bit_field_0_1_value)
+  );
   rgen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
@@ -234,7 +247,7 @@ module sample_0 (
   end
   for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_5_0
     for (genvar g_j = 0;g_j < 4;g_j++) begin : gen_register_5_1
-      assign register_5_shadow_index[g_i][g_j] = {bit_field_2_0_value, bit_field_0_0_value, bit_field_0_1_value};
+      assign register_5_shadow_index[g_i][g_j] = {bit_field_2_1_value, bit_field_0_0_value, bit_field_0_1_value};
       rgen_address_decoder #(
         .READABLE           (1),
         .WRITABLE           (1),
