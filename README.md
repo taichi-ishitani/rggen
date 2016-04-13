@@ -1,7 +1,6 @@
-[![Build Status](https://travis-ci.org/taichi-ishitani/rgen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rgen)
-[![Code Climate](https://codeclimate.com/github/taichi-ishitani/rgen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rgen)
-[![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rgen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rgen/coverage)
-[![Gitter](https://badges.gitter.im/taichi-ishitani/rgen.svg)](https://gitter.im/taichi-ishitani/rgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://travis-ci.org/taichi-ishitani/rggen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rggen)
+[![Code Climate](https://codeclimate.com/github/taichi-ishitani/rggen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rggen)
+[![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rggen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rggen/coverage)
 
 # RgGen
 
@@ -23,7 +22,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/taichi-ishitani/rgen. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/taichi-ishitani/rggen. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
