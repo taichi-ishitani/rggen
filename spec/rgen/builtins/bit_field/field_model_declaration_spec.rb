@@ -38,9 +38,9 @@ describe 'bit_field/field_model_declaration' do
 
   describe "#generate_code" do
     it "ビットフィールドモデルを宣言するコードを生成する" do
-      expect(ral[0]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_0;\n")
-      expect(ral[1]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_1;\n")
-      expect(ral[2]).to generate_code(:field_model_declaration, :top_down, "rand rgen_ral_field bit_field_0_2;\n")
+      expect(ral[0]).to generate_code(:field_model_declaration, :top_down, "rand rggen_ral_field bit_field_0_0;\n")
+      expect(ral[1]).to generate_code(:field_model_declaration, :top_down, "rand rggen_ral_field bit_field_0_1;\n")
+      expect(ral[2]).to generate_code(:field_model_declaration, :top_down, "rand rggen_ral_field bit_field_0_2;\n")
     end
   end
 end

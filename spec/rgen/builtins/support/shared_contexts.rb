@@ -1,5 +1,5 @@
 shared_context 'configuration common' do
-  class ConfigurationDummyLoader < RGen::InputBase::Loader
+  class ConfigurationDummyLoader < RgGen::InputBase::Loader
     self.supported_types  = [:txt]
 
     def self.load_data(data = nil)
@@ -17,7 +17,7 @@ shared_context 'configuration common' do
   end
 
   def build_configuration_factory
-    f         = RGen.builder.build_factory(:configuration)
+    f         = RgGen.builder.build_factory(:configuration)
     f.loaders = [ConfigurationDummyLoader]
     f
   end
@@ -27,7 +27,7 @@ shared_context 'configuration common' do
   end
 
   def dummy_configuration
-    RGen::InputBase::Component.new(nil)
+    RgGen::InputBase::Component.new(nil)
   end
 
   def create_configuration(load_data = {})
@@ -41,7 +41,7 @@ shared_context 'configuration common' do
 end
 
 shared_context 'register_map common' do
-  class RegisterMapDummyLoader < RGen::InputBase::Loader
+  class RegisterMapDummyLoader < RgGen::InputBase::Loader
     self.supported_types  = [:txt]
 
     def self.load_data(data = nil)
@@ -59,7 +59,7 @@ shared_context 'register_map common' do
   end
 
   def build_register_map_factory
-    f         = RGen.builder.build_factory(:register_map)
+    f         = RgGen.builder.build_factory(:register_map)
     f.loaders = [RegisterMapDummyLoader]
     f
   end
@@ -69,7 +69,7 @@ shared_context 'register_map common' do
   end
 
   def position(sheet_name, row, column)
-    RGen::RegisterMap::GenericMap::Cell::Position.new(register_map_file, sheet_name, row, column)
+    RgGen::RegisterMap::GenericMap::Cell::Position.new(register_map_file, sheet_name, row, column)
   end
 
   def register_map_file
@@ -112,7 +112,7 @@ end
 
 shared_context 'rtl common' do
   def build_rtl_factory
-    RGen.builder.build_factory(:rtl)
+    RgGen.builder.build_factory(:rtl)
   end
 
   def have_input(*expectation)
@@ -139,6 +139,6 @@ end
 
 shared_context 'ral common' do
   def build_ral_factory
-    RGen.builder.build_factory(:ral)
+    RgGen.builder.build_factory(:ral)
   end
 end

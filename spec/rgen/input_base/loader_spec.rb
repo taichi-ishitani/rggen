@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::InputBase
+module RgGen::InputBase
   describe Loader do
     let(:loader) do
       Class.new(Loader)

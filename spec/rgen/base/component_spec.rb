@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Base
+module RgGen::Base
   describe Component do
     let(:component) do
       Component.new(nil)

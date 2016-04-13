@@ -7,19 +7,19 @@ describe "register_block/host_if" do
 
   before(:all) do
     [:Foo, :bar, :baz].each do |host_if|
-      RGen.list_item(:register_block, :host_if, host_if) do
+      RgGen.list_item(:register_block, :host_if, host_if) do
         rtl {
           define_method(:test) {host_if}
         }
       end
     end
 
-    RGen.enable(:global, :address_width)
-    RGen.enable(:global, :data_width   )
-    RGen.enable(:register_block, :name     )
-    RGen.enable(:register_block, :byte_size)
-    RGen.enable(:register_block, :host_if  )
-    RGen.enable(:register_block, :host_if, [:bar, :Foo, :qux])
+    RgGen.enable(:global, :address_width)
+    RgGen.enable(:global, :data_width   )
+    RgGen.enable(:register_block, :name     )
+    RgGen.enable(:register_block, :byte_size)
+    RgGen.enable(:register_block, :host_if  )
+    RgGen.enable(:register_block, :host_if, [:bar, :Foo, :qux])
 
     @configuration_factory  = build_configuration_factory
   end
@@ -51,7 +51,7 @@ describe "register_block/host_if" do
       end
 
       context "ロード結果のHashに:host_ifが含まれていて、有効にされたホストIFに含まれない場合" do
-        it "RGen::ConfigurationErrorを発生させる" do
+        it "RgGen::ConfigurationErrorを発生させる" do
           [:baz, :BAZ, "qux", "QUX"].each do |value|
             expect {
               configuration(host_if: value)

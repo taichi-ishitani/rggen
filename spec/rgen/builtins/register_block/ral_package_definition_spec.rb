@@ -62,37 +62,37 @@ describe "register_block/ral_package_definition" do
       <<'CODE'
 package block_0_ral_pkg;
   import uvm_pkg::*;
-  import rgen_ral_pkg::*;
+  import rggen_ral_pkg::*;
   `include "uvm_macros.svh"
-  `include "rgen_ral_macros.svh"
-  class register_0_reg_model extends rgen_ral_reg;
-    rand rgen_ral_field bit_field_0_0;
-    rand rgen_ral_field bit_field_0_1;
-    rand rgen_ral_field bit_field_0_2;
-    rand rgen_ral_field bit_field_0_3;
+  `include "rggen_ral_macros.svh"
+  class register_0_reg_model extends rggen_ral_reg;
+    rand rggen_ral_field bit_field_0_0;
+    rand rggen_ral_field bit_field_0_1;
+    rand rggen_ral_field bit_field_0_2;
+    rand rggen_ral_field bit_field_0_3;
     function new(string name = "register_0");
       super.new(name, 32, 0);
     endfunction
     function void create_fields();
-      `rgen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1)
-      `rgen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1)
-      `rgen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1)
-      `rgen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0)
+      `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1)
+      `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1)
+      `rggen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1)
+      `rggen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0)
     endfunction
   endclass
-  class register_1_reg_model extends rgen_ral_shadow_reg;
-    rand rgen_ral_field bit_field_1_0;
-    rand rgen_ral_field bit_field_1_1;
-    rand rgen_ral_field bit_field_1_2;
-    rand rgen_ral_field bit_field_1_3;
+  class register_1_reg_model extends rggen_ral_shadow_reg;
+    rand rggen_ral_field bit_field_1_0;
+    rand rggen_ral_field bit_field_1_1;
+    rand rggen_ral_field bit_field_1_2;
+    rand rggen_ral_field bit_field_1_3;
     function new(string name = "register_1");
       super.new(name, 16, 0);
     endfunction
     function void create_fields();
-      `rgen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 4, 12, "RO", 0, 4'h0, 0)
-      `rgen_ral_create_field_model(bit_field_1_1, "bit_field_1_1", 4, 8, "RO", 0, 4'h3, 1)
-      `rgen_ral_create_field_model(bit_field_1_2, "bit_field_1_2", 4, 4, "RW", 0, 4'h4, 1)
-      `rgen_ral_create_field_model(bit_field_1_3, "bit_field_1_3", 4, 0, "RW", 0, 4'h5, 1)
+      `rggen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 4, 12, "RO", 0, 4'h0, 0)
+      `rggen_ral_create_field_model(bit_field_1_1, "bit_field_1_1", 4, 8, "RO", 0, 4'h3, 1)
+      `rggen_ral_create_field_model(bit_field_1_2, "bit_field_1_2", 4, 4, "RW", 0, 4'h4, 1)
+      `rggen_ral_create_field_model(bit_field_1_3, "bit_field_1_3", 4, 0, "RW", 0, 4'h5, 1)
     endfunction
     function void configure_shadow_indexes();
       set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
@@ -101,16 +101,16 @@ package block_0_ral_pkg;
       set_shadow_index("register_0", "bit_field_0_3", 3);
     endfunction
   endclass
-  class block_0_block_model extends rgen_ral_block;
+  class block_0_block_model extends rggen_ral_block;
     rand register_0_reg_model register_0;
     rand register_1_reg_model register_1[2][4];
     function new(string name = "block_0");
       super.new(name);
     endfunction
     function void create_registers();
-      `rgen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+      `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
       foreach (register_1[i, j]) begin
-        `rgen_ral_create_reg_model(register_1[i][j], "register_1", '{i, j}, 8'h04, "RW", 1)
+        `rggen_ral_create_reg_model(register_1[i][j], "register_1", '{i, j}, 8'h04, "RW", 1)
       end
     endfunction
     function uvm_reg_map create_default_map();

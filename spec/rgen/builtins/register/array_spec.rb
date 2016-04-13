@@ -286,7 +286,7 @@ describe 'register/array' do
       context "レジスタが配列では無い場合" do
         let(:expected_code) do
           <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -303,7 +303,7 @@ rgen_address_decoder #(
   .o_select       (register_select[0])
 );
 assign o_bit_field_0_0 = bit_field_0_0_value;
-rgen_bit_field_rw #(
+rggen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
 ) u_bit_field_0_0 (
@@ -328,7 +328,7 @@ CODE
         let(:expected_code_0) do
           <<'CODE'
 for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
@@ -345,7 +345,7 @@ for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
     .o_select       (register_select[2+g_i])
   );
   assign o_bit_field_2_0[g_i] = bit_field_2_0_value[g_i];
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (32),
     .INITIAL_VALUE  (32'h00000000)
   ) u_bit_field_2_0 (
@@ -368,7 +368,7 @@ for (genvar g_i = 0;g_i < 1;g_i++) begin : gen_register_3_0
   for (genvar g_j = 0;g_j < 2;g_j++) begin : gen_register_3_1
     for (genvar g_k = 0;g_k < 3;g_k++) begin : gen_register_3_2
       assign register_3_shadow_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
-      rgen_address_decoder #(
+      rggen_address_decoder #(
         .READABLE           (1),
         .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
@@ -385,7 +385,7 @@ for (genvar g_i = 0;g_i < 1;g_i++) begin : gen_register_3_0
         .o_select       (register_select[4+6*g_i+3*g_j+g_k])
       );
       assign o_bit_field_3_0[g_i][g_j][g_k] = bit_field_3_0_value[g_i][g_j][g_k];
-      rgen_bit_field_rw #(
+      rggen_bit_field_rw #(
         .WIDTH          (32),
         .INITIAL_VALUE  (32'h00000000)
       ) u_bit_field_3_0 (

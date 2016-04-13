@@ -5,19 +5,19 @@ describe 'bit_field/reference' do
   include_context 'register_map common'
 
   before(:all) do
-    RGen.enable(:register_block, :name          )
-    RGen.enable(:register      , :name          )
-    RGen.enable(:bit_field     , :name          )
-    RGen.enable(:bit_field     , :reference     )
-    RGen.enable(:bit_field     , :type          )
-    RGen.enable(:bit_field     , :bit_assignment)
-    RGen.enable(:bit_field     , :initial_value )
-    RGen.enable(:bit_field     , :type     , [:rw, :reserved])
+    RgGen.enable(:register_block, :name          )
+    RgGen.enable(:register      , :name          )
+    RgGen.enable(:bit_field     , :name          )
+    RgGen.enable(:bit_field     , :reference     )
+    RgGen.enable(:bit_field     , :type          )
+    RgGen.enable(:bit_field     , :bit_assignment)
+    RgGen.enable(:bit_field     , :initial_value )
+    RgGen.enable(:bit_field     , :type     , [:rw, :reserved])
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    RGen.enable(:global, :data_width)
+    RgGen.enable(:global, :data_width)
     ConfigurationDummyLoader.load_data({})
     @configuration  = build_configuration_factory.create(configuration_file)
   end

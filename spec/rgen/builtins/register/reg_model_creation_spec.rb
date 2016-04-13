@@ -45,14 +45,14 @@ describe 'register/reg_model_creation' do
   describe "#generate_code" do
     let(:expected_code_0) do
       <<'CODE'
-`rgen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+`rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
 CODE
     end
 
     let(:expected_code_1) do
       <<'CODE'
 foreach (register_1[i]) begin
-  `rgen_ral_create_reg_model(register_1[i], "register_1", '{i}, 8'h04 + 4 * i, "RO", 0)
+  `rggen_ral_create_reg_model(register_1[i], "register_1", '{i}, 8'h04 + 4 * i, "RO", 0)
 end
 CODE
     end
@@ -60,7 +60,7 @@ CODE
     let(:expected_code_2) do
       <<'CODE'
 foreach (register_2[i]) begin
-  `rgen_ral_create_reg_model(register_2[i], "register_2", '{i}, 8'h0c, "WO", 1)
+  `rggen_ral_create_reg_model(register_2[i], "register_2", '{i}, 8'h0c, "WO", 1)
 end
 CODE
     end
@@ -68,7 +68,7 @@ CODE
     let(:expected_code_3) do
       <<'CODE'
 foreach (register_3[i, j]) begin
-  `rgen_ral_create_reg_model(register_3[i][j], "register_3", '{i, j}, 8'h10, "RW", 1)
+  `rggen_ral_create_reg_model(register_3[i][j], "register_3", '{i, j}, 8'h10, "RW", 1)
 end
 CODE
     end

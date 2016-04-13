@@ -4,9 +4,9 @@ describe 'bit_field/name' do
   include_context 'register_map common'
 
   before(:all) do
-    RGen.enable(:register_block, :name)
-    RGen.enable(:register      , :name)
-    RGen.enable(:bit_field     , :name)
+    RgGen.enable(:register_block, :name)
+    RgGen.enable(:register      , :name)
+    RgGen.enable(:bit_field     , :name)
     @factory  = build_register_map_factory
   end
 
@@ -15,7 +15,7 @@ describe 'bit_field/name' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new(nil)
+    RgGen::InputBase::Component.new(nil)
   end
 
   context "適切な入力が与えられた場合" do

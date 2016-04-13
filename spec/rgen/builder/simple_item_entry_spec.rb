@@ -1,13 +1,13 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe SimpleItemEntry do
     let(:item_base) do
-      RGen::InputBase::Item
+      RgGen::InputBase::Item
     end
 
     let(:factory) do
-      RGen::InputBase::ItemFactory
+      RgGen::InputBase::ItemFactory
     end
 
     let(:shared_context) do
@@ -15,7 +15,7 @@ module RGen::Builder
     end
 
     let(:component) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     def item_entry(context, &body)

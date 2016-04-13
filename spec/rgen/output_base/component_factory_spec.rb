@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe ComponentFactory do
     let(:configuration) do
       get_component_class(:configuration, 0).new(nil)

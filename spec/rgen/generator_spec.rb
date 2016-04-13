@@ -1,20 +1,20 @@
 require_relative '../spec_helper'
 
-module RGen
+module RgGen
   describe Generator do
     before(:all) do
       @expected_rtl_code  = 2.times.map do |i|
-        File.read("#{RGEN_HOME}/sample/sample_#{i}.sv")
+        File.read("#{RGGEN_HOME}/sample/sample_#{i}.sv")
       end
       @expected_ral_code  = 2.times.map do |i|
-        File.read("#{RGEN_HOME}/sample/sample_#{i}_ral_pkg.sv")
+        File.read("#{RGGEN_HOME}/sample/sample_#{i}_ral_pkg.sv")
       end
     end
 
     before do
       cache   = factory_cache
       plugin  = factory_plugin
-      allow(RGen.builder).to receive(:build_factory).and_wrap_original do |m, component_name|
+      allow(RgGen.builder).to receive(:build_factory).and_wrap_original do |m, component_name|
         f     = m.call(component_name)
         mock  = allow(f)
         if plugin.key?(component_name)
@@ -50,19 +50,19 @@ module RGen
     end
 
     let(:sample_setup) do
-      "#{RGEN_HOME}/sample/sample_setup.rb"
+      "#{RGGEN_HOME}/sample/sample_setup.rb"
     end
 
     let(:sample_yaml) do
-      "#{RGEN_HOME}/sample/sample.yaml"
+      "#{RGGEN_HOME}/sample/sample.yaml"
     end
 
     let(:sample_json) do
-      "#{RGEN_HOME}/sample/sample.json"
+      "#{RGGEN_HOME}/sample/sample.json"
     end
 
     let(:sample_register_maps) do
-      ["#{RGEN_HOME}/sample/sample.xls", "#{RGEN_HOME}/sample/sample.xlsx", "#{RGEN_HOME}/sample/sample.csv"]
+      ["#{RGGEN_HOME}/sample/sample.xls", "#{RGGEN_HOME}/sample/sample.xlsx", "#{RGGEN_HOME}/sample/sample.csv"]
     end
 
     describe "バージョンの出力" do
@@ -83,7 +83,7 @@ module RGen
         expect {
           generator.run(['--version'])
         }.to raise_error SystemExit
-        expect($stdout.string).to eq("rgen #{RGen::VERSION}\n" * 2)
+        expect($stdout.string).to eq("rggen #{RgGen::VERSION}\n" * 2)
       end
     end
 
@@ -100,8 +100,8 @@ module RGen
 
       let(:expected_message) do
         <<HELP
-Usage: rgen [options] REGISTER_MAP
-        --setup FILE                 Specify a setup file to set up RGen tool(default: #{RGen::RGEN_HOME}/setup/default.rb)
+Usage: rggen [options] REGISTER_MAP
+        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{RgGen::RGGEN_HOME}/setup/default.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: ./)
         --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
@@ -124,17 +124,17 @@ HELP
     describe "ジェネレータのセットアップ" do
       context "--setupでセットアップファイルの指定が無い場合" do
         before do
-          expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :reserved]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
         end
 
         it "デフォルトのセットアップが実行される" do
@@ -146,19 +146,19 @@ HELP
 
       context "--setupでセットアップファイルの指定がある場合" do
         before do
-          expect(RGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
-          expect(RGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
-          expect(RGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
+          expect(RgGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
+          expect(RgGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :accessibility, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :foo, :reserved]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:field_model_declaration, :field_model_creation]).and_call_original
         end
 
         after do

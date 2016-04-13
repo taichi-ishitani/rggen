@@ -26,7 +26,7 @@ end
 
 RSpec::Matchers.define :match_identifier do |expected_name|
   match do |identifier|
-    next false unless identifier.is_a?(RGen::OutputBase::VerilogUtility::Identifier)
+    next false unless identifier.is_a?(RgGen::OutputBase::VerilogUtility::Identifier)
     identifier.to_s == expected_name
   end
 end
@@ -59,14 +59,14 @@ end
 
 RSpec::Matchers.define :have_port_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
+    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
     component.port_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
 
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
-    expectation = RGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
     component.signal_declarations.any? { |declaration| declaration.to_s == expectation }
   end
 end
@@ -87,7 +87,7 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
   attr_reader :expected
 
   def generate_code(component, kind, mode)
-    buffer  = RGen::OutputBase::CodeBlock.new
+    buffer  = RgGen::OutputBase::CodeBlock.new
     component.generate_code(kind, mode, buffer)
     @actual = buffer.to_s
   end

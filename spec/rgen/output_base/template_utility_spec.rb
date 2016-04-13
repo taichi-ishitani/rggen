@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe TemplateUtility do
     def set_template_contents(template_contents)
       template_contents.each do |path, contents|

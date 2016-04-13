@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe Item do
     class FooItem < Item
       generate_pre_code :foo do |buffer|
@@ -123,11 +123,11 @@ module RGen::OutputBase
     end
 
     let(:configuration) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:register_map) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:component) do

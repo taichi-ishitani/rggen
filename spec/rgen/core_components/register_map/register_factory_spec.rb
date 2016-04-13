@@ -1,6 +1,6 @@
 require_relative  'spec_helper'
 
-module RGen::RegisterMap
+module RgGen::RegisterMap
   describe RegisterFactory do
     include_context 'bit_field sample factories'
     include_context 'register sample factories'

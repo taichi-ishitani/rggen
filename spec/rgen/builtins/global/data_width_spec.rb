@@ -4,7 +4,7 @@ describe "global/data_width" do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:global, :data_width)
+    RgGen.enable(:global, :data_width)
     @factory  = build_configuration_factory
   end
 
@@ -41,7 +41,7 @@ describe "global/data_width" do
       ["1.0", "foo", "0xGH", Object.new, []]
     end
 
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       load_data.each do |data|
         ConfigurationDummyLoader.load_data({data_width: data})
         m = "invalid value for data width: #{data.inspect}"
@@ -51,7 +51,7 @@ describe "global/data_width" do
   end
 
   context "入力が8未満のとき" do
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       ConfigurationDummyLoader.load_data({data_width: 4})
       m = "under 8/non-power of 2 data width is not allowed: 4"
       expect{@factory.create(configuration_file)}.to raise_configuration_error m
@@ -59,7 +59,7 @@ describe "global/data_width" do
   end
 
   context "入力が2のべき乗でないのとき" do
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       ConfigurationDummyLoader.load_data({data_width: 9})
       m = "under 8/non-power of 2 data width is not allowed: 9"
       expect{@factory.create(configuration_file)}.to raise_configuration_error m

@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe ComponentStore do
     let(:builder) do
       Builder.new
@@ -25,18 +25,18 @@ module RGen::Builder
     describe "#entry" do
       it "コンポーネントの登録を行う" do
         component_store.entry(:register_block) do
-          component_class   RGen::Base::Component
-          component_factory RGen::Base::ComponentFactory
-          item_base         RGen::Base::Item
-          item_factory      RGen::Base::ItemFactory
+          component_class   RgGen::Base::Component
+          component_factory RgGen::Base::ComponentFactory
+          item_base         RgGen::Base::Item
+          item_factory      RgGen::Base::ItemFactory
         end
 
         entry = component_entries.last
         aggregate_failures do
-          expect(entry.component_class  ).to be RGen::Base::Component
-          expect(entry.component_factory).to be RGen::Base::ComponentFactory
-          expect(entry.item_base        ).to be RGen::Base::Item
-          expect(entry.item_factory     ).to be RGen::Base::ItemFactory
+          expect(entry.component_class  ).to be RgGen::Base::Component
+          expect(entry.component_factory).to be RgGen::Base::ComponentFactory
+          expect(entry.item_base        ).to be RgGen::Base::Item
+          expect(entry.item_factory     ).to be RgGen::Base::ItemFactory
         end
       end
 
@@ -47,8 +47,8 @@ module RGen::Builder
           end
 
           component_store.entry do
-            component_class   RGen::Base::Component
-            component_factory RGen::Base::ComponentFactory
+            component_class   RgGen::Base::Component
+            component_factory RgGen::Base::ComponentFactory
           end
         end
       end
@@ -66,10 +66,10 @@ module RGen::Builder
 
             item_store = nil
             component_store.entry(:register_block) do
-              component_class   RGen::Base::Component
-              component_factory RGen::Base::ComponentFactory
-              item_base         RGen::Base::Item
-              item_factory      RGen::Base::ItemFactory
+              component_class   RgGen::Base::Component
+              component_factory RgGen::Base::ComponentFactory
+              item_base         RgGen::Base::Item
+              item_factory      RgGen::Base::ItemFactory
               item_store = self.item_store
             end
 
@@ -85,10 +85,10 @@ module RGen::Builder
 
             item_store = nil
             component_store.entry do
-              component_class   RGen::Base::Component
-              component_factory RGen::Base::ComponentFactory
-              item_base         RGen::Base::Item
-              item_factory      RGen::Base::ItemFactory
+              component_class   RgGen::Base::Component
+              component_factory RgGen::Base::ComponentFactory
+              item_base         RgGen::Base::Item
+              item_factory      RgGen::Base::ItemFactory
               item_store  = self.item_store
             end
 
@@ -102,8 +102,8 @@ module RGen::Builder
       context "引数で所属するカテゴリの指定が複数ある場合" do
         it "指定されたカテゴリ分のエントリを生成する" do
           component_store.entry([:register_block, :register]) do
-            component_class   RGen::Base::Component
-            component_factory RGen::Base::ComponentFactory
+            component_class   RgGen::Base::Component
+            component_factory RgGen::Base::ComponentFactory
           end
 
           expect(component_entries.size).to eq(2).and eq(component_entries.map(&:object_id).uniq.size)
@@ -120,10 +120,10 @@ module RGen::Builder
 
           item_stores = []
           component_store.entry([:register_block, :register]) do
-            component_class   RGen::Base::Component
-            component_factory RGen::Base::ComponentFactory
-            item_base         RGen::Base::Item
-            item_factory      RGen::Base::ItemFactory
+            component_class   RgGen::Base::Component
+            component_factory RgGen::Base::ComponentFactory
+            item_base         RgGen::Base::Item
+            item_factory      RgGen::Base::ItemFactory
             item_stores << self.item_store
           end
 
@@ -138,21 +138,21 @@ module RGen::Builder
         classes = factory_classes
 
         component_store.entry do
-          component_class   RGen::Base::Component
+          component_class   RgGen::Base::Component
 
-          component_factory RGen::Base::ComponentFactory do
+          component_factory RgGen::Base::ComponentFactory do
             classes << self
           end
         end
         component_store.entry(:register_block) do
-          component_class   RGen::Base::Component
-          component_factory RGen::Base::ComponentFactory do
+          component_class   RgGen::Base::Component
+          component_factory RgGen::Base::ComponentFactory do
             classes << self
           end
         end
         component_store.entry(:register) do
-          component_class   RGen::Base::Component
-          component_factory RGen::Base::ComponentFactory do
+          component_class   RgGen::Base::Component
+          component_factory RgGen::Base::ComponentFactory do
             classes << self
           end
         end

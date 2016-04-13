@@ -5,15 +5,15 @@ describe 'bit_field/initial_value' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:register_block , :name          )
-    RGen.enable(:register       , :name          )
-    RGen.enable(:bit_field      , :bit_assignment)
-    RGen.enable(:bit_field      , :initial_value )
+    RgGen.enable(:register_block , :name          )
+    RgGen.enable(:register       , :name          )
+    RgGen.enable(:bit_field      , :bit_assignment)
+    RgGen.enable(:bit_field      , :initial_value )
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    RGen.enable(:global, :data_width)
+    RgGen.enable(:global, :data_width)
     @configuration_factory  = build_configuration_factory
   end
 

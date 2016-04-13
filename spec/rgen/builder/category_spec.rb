@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe Category do
     let(:category) do
       Category.new
@@ -9,12 +9,12 @@ module RGen::Builder
     let(:item_stores) do
       {
         configuration: ItemStore.new(
-          RGen::InputBase::Item,
-          RGen::InputBase::ItemFactory
+          RgGen::InputBase::Item,
+          RgGen::InputBase::ItemFactory
         ),
         register_map: ItemStore.new(
-          RGen::InputBase::Item,
-          RGen::InputBase::ItemFactory
+          RgGen::InputBase::Item,
+          RgGen::InputBase::ItemFactory
         )
       }
     end

@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Base
+module RgGen::Base
   describe Item do
     describe "#owner" do
       it "オーナーコンポーネントを返す" do

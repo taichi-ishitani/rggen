@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Base
+module RgGen::Base
   describe HierarchicalItemAccessors do
     class TestItem < Item
       include HierarchicalItemAccessors

@@ -42,10 +42,10 @@ describe 'register/field_model_creator' do
     let(:expected_code) do
       <<'CODE'
 function void create_fields();
-  `rgen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 16, 16, "RW", 0, 16'h0123, 1)
-  `rgen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 2, 8, "RO", 0, 2'h0, 0)
-  `rgen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 1, 4, "RO", 0, 1'h1, 1)
-  `rgen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 1, 0, "RO", 0, 1'h0, 0)
+  `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 16, 16, "RW", 0, 16'h0123, 1)
+  `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 2, 8, "RO", 0, 2'h0, 0)
+  `rggen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 1, 4, "RO", 0, 1'h1, 1)
+  `rggen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 1, 0, "RO", 0, 1'h0, 0)
 endfunction
 CODE
     end

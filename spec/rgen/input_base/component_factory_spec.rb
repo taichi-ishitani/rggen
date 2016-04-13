@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::InputBase
+module RgGen::InputBase
   describe ComponentFactory do
     describe "#create" do
       describe "アイテムオブジェクトの生成" do

@@ -1,13 +1,13 @@
 require_relative  '../../../spec_helper'
 
-module RGen::Configuration
+module RgGen::Configuration
   describe RaiseError do
     describe "#error" do
       let(:message) do
         "some configuration error"
       end
 
-      it "入力されたメッセージで、RGen::ConfigurationErrorを発生さえる" do
+      it "入力されたメッセージで、RgGen::ConfigurationErrorを発生さえる" do
         m = message
         i = Class.new {
           include RaiseError

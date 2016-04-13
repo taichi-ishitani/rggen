@@ -9,7 +9,7 @@ describe 'bit_field/type' do
   before(:all) do
     items = {}
     [:foo, :bar, :baz].each do |item_name|
-      RGen.list_item(:bit_field, :type, item_name) do
+      RgGen.list_item(:bit_field, :type, item_name) do
         register_map {items[item_name] = self}
         rtl {}
         ral do
@@ -18,11 +18,11 @@ describe 'bit_field/type' do
       end
     end
 
-    RGen.enable(:global, [:data_width, :address_width])
-    RGen.enable(:register_block, [:name, :byte_size])
-    RGen.enable(:register, [:name, :offset_address, :array, :shadow])
-    RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
-    RGen.enable(:bit_field, :type, [:ro, :foo, :bar])
+    RgGen.enable(:global, [:data_width, :address_width])
+    RgGen.enable(:register_block, [:name, :byte_size])
+    RgGen.enable(:register, [:name, :offset_address, :array, :shadow])
+    RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
+    RgGen.enable(:bit_field, :type, [:ro, :foo, :bar])
 
     @items    = items
     @factory  = build_register_map_factory
@@ -185,7 +185,7 @@ describe 'bit_field/type' do
         end
 
         context "指定された以外の幅を持つビットフィールドで使用した場合" do
-          it "RGen::RegisterMapErrorを発生させる" do
+          it "RgGen::RegisterMapErrorを発生させる" do
             {2 => "[1:0]", 4 => "[3:0]"}.each do |width, assignment|
               set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil, nil]])
               expect {
@@ -213,7 +213,7 @@ describe 'bit_field/type' do
         end
 
         context "指定された以外の幅を持つビットフィールドで使用した場合" do
-          it "RGen::RegisterMapErrorを発生させる" do
+          it "RgGen::RegisterMapErrorを発生させる" do
             {1 => "[0]", 5 => "[4:0]"}.each do |width, assignment|
               set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil, nil]])
               expect {
@@ -239,7 +239,7 @@ describe 'bit_field/type' do
         end
 
         context "データ幅以外のビットフィールド使用した場合" do
-          it "RGen::RegisterMapErrorを発生させる" do
+          it "RgGen::RegisterMapErrorを発生させる" do
             {1 => "[0]", 31 => "[30:0]"}.each do |width, assignment|
               set_load_data([[nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assignment, "foo", nil, nil]])
               expect {
@@ -280,7 +280,7 @@ describe 'bit_field/type' do
         end
 
         context "初期値を持たないビットフィールドで使用した場合" do
-          it "RGen::RegisterMapErrorを発生させる" do
+          it "RgGen::RegisterMapErrorを発生させる" do
             set_load_data([
             [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[15:8]", "foo", nil, nil]
           ])
@@ -355,7 +355,7 @@ describe 'bit_field/type' do
           end
 
           context "参照信号を持たないビットフィールで使用した場合" do
-            it "RGen::RegisterMapErrorを発生させる" do
+            it "RgGen::RegisterMapErrorを発生させる" do
               set_load_data([
                 [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[7:4]", "foo", nil, nil]
               ])
@@ -384,7 +384,7 @@ describe 'bit_field/type' do
           end
 
           context "2ビット以上のビットフィールドを参照ビットフィールドに指定した場合" do
-            it "RGen::RegisterMapErrorを発生させる" do
+            it "RgGen::RegisterMapErrorを発生させる" do
               set_load_data([
                 [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[2:1]", "bar", nil, nil            ],
                 [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]"  , "foo", nil, "bit_field_0_0"]
@@ -412,7 +412,7 @@ describe 'bit_field/type' do
           end
 
           context "指定幅以外のビットフィールドを参照ビットフィールドに指定した場合" do
-            it "RGen::RegisterMapErrorを発生させる" do
+            it "RgGen::RegisterMapErrorを発生させる" do
               {3 => "[6:4]", 1 => "[4]"}.each do |width, assigment|
                 set_load_data([
                   [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assigment, "bar", nil, nil            ],
@@ -442,7 +442,7 @@ describe 'bit_field/type' do
           end
 
           context "違う幅のビットフィールドを参照ビットフィールドに指定した場合" do
-            it "RGen::RegisterMapErrorを発生させる" do
+            it "RgGen::RegisterMapErrorを発生させる" do
               {3 => "[6:4]", 1 => "[4]"}.each do |width, assigment|
                 set_load_data([
                   [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", assigment, "bar", nil, nil            ],

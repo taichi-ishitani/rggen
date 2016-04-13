@@ -1,13 +1,13 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe ItemStore do
     let(:item_base) do
-      RGen::InputBase::Item
+      RgGen::InputBase::Item
     end
 
     let(:item_factory) do
-      RGen::InputBase::ItemFactory
+      RgGen::InputBase::ItemFactory
     end
 
     let(:item_store) do
@@ -156,10 +156,10 @@ module RGen::Builder
             "undefined list item entry: #{list_name}"
           end
 
-          it "RGen::Builderエラーを発生させる" do
+          it "RgGen::Builderエラーを発生させる" do
             expect {
               item_store.define_list_item(shared_context, list_name, :foo) {}
-            }.to raise_error RGen::BuilderError, message
+            }.to raise_error RgGen::BuilderError, message
           end
         end
       end

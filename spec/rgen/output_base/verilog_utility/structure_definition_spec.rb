@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::OutputBase::VerilogUtility
+module RgGen::OutputBase::VerilogUtility
   describe StructureDefinition do
     before(:all) do
       @structure_declaration  = Class.new(StructureDefinition) do

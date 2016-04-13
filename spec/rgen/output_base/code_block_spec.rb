@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe CodeBlock do
     let(:code_block) do
       CodeBlock.new

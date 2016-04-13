@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::OutputBase::VerilogUtility
+module RgGen::OutputBase::VerilogUtility
   describe Identifier do
     let(:name) do
       "foo"

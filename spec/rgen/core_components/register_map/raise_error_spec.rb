@@ -1,6 +1,6 @@
 require_relative  'spec_helper'
 
-module RGen::RegisterMap
+module RgGen::RegisterMap
   describe RaiseError do
     let(:object) do
       Class.new {
@@ -27,7 +27,7 @@ module RGen::RegisterMap
           object.position = cell.position
         end
 
-        it "入力されたメッセージと自身が持つ位置情報で、RGen::RegisterMapErrorを発生させる" do
+        it "入力されたメッセージと自身が持つ位置情報で、RgGen::RegisterMapErrorを発生させる" do
           expect {
             object.send(:error, message)
           }.to raise_register_map_error(message, cell.position)
@@ -39,7 +39,7 @@ module RGen::RegisterMap
           object.position = cell.position
         end
 
-        it "入力されたメッセージと位置情報で、RGen::RegisterMapErrorを発生させる" do
+        it "入力されたメッセージと位置情報で、RgGen::RegisterMapErrorを発生させる" do
           expect {
             object.send(:error, message, position)
           }.to raise_register_map_error(message, position)
@@ -51,7 +51,7 @@ module RGen::RegisterMap
           object.position = position
         end
 
-        it "入力されたメッセージと入力セルが持つ位置情報で、RGen::RegisterMapErrorを発生させる" do
+        it "入力されたメッセージと入力セルが持つ位置情報で、RgGen::RegisterMapErrorを発生させる" do
           expect {
             object.send(:error, message, cell)
           }.to raise_register_map_error(message, position)

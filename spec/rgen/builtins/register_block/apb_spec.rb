@@ -6,13 +6,13 @@ describe "register_block/apb" do
   include_context 'rtl common'
 
   before(:all) do
-    RGen.enable(:global, :address_width)
-    RGen.enable(:global, :data_width   )
-    RGen.enable(:register_block, :name       )
-    RGen.enable(:register_block, :byte_size  )
-    RGen.enable(:register_block, :clock_reset)
-    RGen.enable(:register_block, :host_if    )
-    RGen.enable(:register_block, :host_if, [:apb])
+    RgGen.enable(:global, :address_width)
+    RgGen.enable(:global, :data_width   )
+    RgGen.enable(:register_block, :name       )
+    RgGen.enable(:register_block, :byte_size  )
+    RgGen.enable(:register_block, :clock_reset)
+    RgGen.enable(:register_block, :host_if    )
+    RgGen.enable(:register_block, :host_if, [:apb])
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(
@@ -58,7 +58,7 @@ describe "register_block/apb" do
   describe "#generate_code" do
     let(:expected_code) do
       <<'CODE'
-rgen_host_if_apb #(
+rggen_host_if_apb #(
   .DATA_WIDTH           (32),
   .HOST_ADDRESS_WIDTH   (16),
   .LOCAL_ADDRESS_WIDTH  (8)

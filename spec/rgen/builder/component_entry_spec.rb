@@ -1,21 +1,21 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe ComponentEntry do
     let(:component_base) do
-      RGen::InputBase::Component
+      RgGen::InputBase::Component
     end
 
     let(:component_base_factory) do
-      RGen::InputBase::ComponentFactory
+      RgGen::InputBase::ComponentFactory
     end
 
     let(:item_base_base) do
-      RGen::InputBase::Item
+      RgGen::InputBase::Item
     end
 
     let(:item_base_factory) do
-      RGen::InputBase::ItemFactory
+      RgGen::InputBase::ItemFactory
     end
 
     let(:modules) do

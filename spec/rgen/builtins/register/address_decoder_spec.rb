@@ -66,7 +66,7 @@ describe "register/address_decoder" do
     context "レジスタの属性が読み書き可能なとき" do
       let(:expected_code) do
         <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -97,7 +97,7 @@ CODE
     context "レジスタの属性が読み出し可能、書き込み不可なとき" do
       let(:expected_code) do
         <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (0),
   .ADDRESS_WIDTH      (6),
@@ -128,7 +128,7 @@ CODE
     context "レジスタの属性が読み出し不可、書き込み可能なとき" do
       let(:expected_code) do
         <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (0),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -159,7 +159,7 @@ CODE
     context "レジスタが複数アドレスにまたがる場合" do
       let(:expected_code) do
         <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -190,7 +190,7 @@ CODE
     context "対象レジスタが配列になっている場合" do
       let(:expected_code) do
         <<'CODE'
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
@@ -222,7 +222,7 @@ CODE
       let(:expected_code_0) do
         <<'CODE'
 assign register_5_shadow_index = {bit_field_10_0_value};
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -244,7 +244,7 @@ CODE
       let(:expected_code_1) do
         <<'CODE'
 assign register_6_shadow_index = {bit_field_10_0_value, bit_field_10_1_value};
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
@@ -266,7 +266,7 @@ CODE
       let(:expected_code_2) do
         <<'CODE'
   assign register_7_shadow_index[g_i] = {bit_field_10_0_value};
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
@@ -288,7 +288,7 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
     assign register_8_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value};
-    rgen_address_decoder #(
+    rggen_address_decoder #(
       .READABLE           (1),
       .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
@@ -310,7 +310,7 @@ CODE
       let(:expected_code_4) do
         <<'CODE'
     assign register_9_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value, bit_field_10_2_value, bit_field_10_3_value};
-    rgen_address_decoder #(
+    rggen_address_decoder #(
       .READABLE           (1),
       .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
@@ -345,7 +345,7 @@ CODE
     context "対象レジスタがリザーブドレジスタの場合" do
       let(:expected_code) do
         <<'CODE'
-rgen_address_decoder #(
+rggen_address_decoder #(
   .READABLE           (1),
   .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),

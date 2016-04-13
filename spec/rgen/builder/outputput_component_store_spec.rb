@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe OutputComponentStore do
     let(:builder) do
       Builder.new
@@ -22,18 +22,18 @@ module RGen::Builder
       before do
         component_store.output_directory(output_directory)
         component_store.entry do
-          component_class   RGen::OutputBase::Component
-          component_factory RGen::OutputBase::ComponentFactory do
+          component_class   RgGen::OutputBase::Component
+          component_factory RgGen::OutputBase::ComponentFactory do
           end
         end
         component_store.entry(:register_block) do
-          component_class   RGen::OutputBase::Component
-          component_factory RGen::OutputBase::ComponentFactory do
+          component_class   RgGen::OutputBase::Component
+          component_factory RgGen::OutputBase::ComponentFactory do
           end
         end
         component_store.entry(:register) do
-          component_class   RGen::OutputBase::Component
-          component_factory RGen::OutputBase::ComponentFactory do
+          component_class   RgGen::OutputBase::Component
+          component_factory RgGen::OutputBase::ComponentFactory do
           end
         end
       end

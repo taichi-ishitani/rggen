@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe Component do
     def create_component(parent)
       component = Component.new(parent, configuration, register_map)
@@ -43,11 +43,11 @@ module RGen::OutputBase
     end
 
     let(:configuration) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:register_map) do
-      r = RGen::InputBase::Component.new(nil)
+      r = RgGen::InputBase::Component.new(nil)
       allow(r).to receive(:fields).and_return [:baz, :qux]
       r
     end

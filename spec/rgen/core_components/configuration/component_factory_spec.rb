@@ -1,6 +1,6 @@
 require_relative  '../../../spec_helper'
 
-module RGen::Configuration
+module RgGen::Configuration
   describe "component_factory" do
     let(:factory) do
       f                   = get_component_factory(:configuration, 0).new
@@ -29,7 +29,7 @@ module RGen::Configuration
     end
 
     let(:loader) do
-      Class.new(RGen::InputBase::Loader) do
+      Class.new(RgGen::InputBase::Loader) do
         self.supported_types  = [:txt]
       end
     end

@@ -1,6 +1,6 @@
 require_relative  '../../../spec_helper'
 
-module RGen::Configuration
+module RgGen::Configuration
   describe "item_factory" do
     class FooItem < get_item_base(:configuration, 0)
       field :foo, default: :foo

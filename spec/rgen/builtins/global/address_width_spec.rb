@@ -4,7 +4,7 @@ describe 'global/address_width' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:global, :address_width)
+    RgGen.enable(:global, :address_width)
     @factory  = build_configuration_factory
   end
 
@@ -41,7 +41,7 @@ describe 'global/address_width' do
       ["1.0", "foo", "0xGH", Object.new, []]
     end
 
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       load_data.each do |data|
         ConfigurationDummyLoader.load_data({address_width: data})
         m = "invalid value for address width: #{data.inspect}"
@@ -51,7 +51,7 @@ describe 'global/address_width' do
   end
 
   context "入力がゼロのとき" do
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       ConfigurationDummyLoader.load_data({address_width: 0})
       m = "zero/negative address width is not allowed: 0"
       expect{@factory.create(configuration_file)}.to raise_configuration_error m
@@ -59,7 +59,7 @@ describe 'global/address_width' do
   end
 
   context "入力が負数のとき" do
-    it "RGen::ConfigurationErrorを発生させる" do
+    it "RgGen::ConfigurationErrorを発生させる" do
       ConfigurationDummyLoader.load_data({address_width: -1})
       m = "zero/negative address width is not allowed: -1"
       expect{@factory.create(configuration_file)}.to raise_configuration_error m

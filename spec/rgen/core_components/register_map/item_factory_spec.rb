@@ -1,8 +1,8 @@
 require_relative  'spec_helper'
 
-module RGen::RegisterMap
+module RgGen::RegisterMap
   describe ItemFactory do
-    class FooItem < RGen::RegisterMap::Item
+    class FooItem < RgGen::RegisterMap::Item
       field :foo
       build {|cell| @foo = cell}
     end
@@ -18,7 +18,7 @@ module RGen::RegisterMap
     end
 
     let(:component) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:value) do

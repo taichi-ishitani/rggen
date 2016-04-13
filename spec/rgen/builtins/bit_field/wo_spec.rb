@@ -5,11 +5,11 @@ describe 'bit_fields/type/wo' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:global, :data_width)
-    RGen.enable(:register_block, :name)
-    RGen.enable(:register, :name)
-    RGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
-    RGen.enable(:bit_field, :type, :wo)
+    RgGen.enable(:global, :data_width)
+    RgGen.enable(:register_block, :name)
+    RgGen.enable(:register, :name)
+    RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :reference])
+    RgGen.enable(:bit_field, :type, :wo)
 
     @configuration_factory  = build_configuration_factory
     @factory                = build_register_map_factory

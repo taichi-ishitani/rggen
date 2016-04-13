@@ -3,9 +3,9 @@
 [![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rgen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rgen/coverage)
 [![Gitter](https://badges.gitter.im/taichi-ishitani/rgen.svg)](https://gitter.im/taichi-ishitani/rgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# RGen
+# RgGen
 
-RGen is a code generation tool for SoC designers. You can automatically generate soruce code for control registers in a SoC design, e.g. RTL, UVM RAL model, from its register map document. You can also customize RGen, so you can build your specific generation tool.
+RgGen is a code generation tool for SoC designers. You can automatically generate soruce code for control registers in a SoC design, e.g. RTL, UVM RAL model, from its register map document. You can also customize RgGen, so you can build your specific generation tool.
 
 ## Installation
 

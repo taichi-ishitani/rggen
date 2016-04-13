@@ -1,4 +1,4 @@
 +incdir+${UVM_HOME}/src
-+incdir+${RGEN_HOME}/ral
++incdir+${RGGEN_HOME}/ral
 ${UVM_HOME}/src/uvm_pkg.sv
-${RGEN_HOME}/ral/rgen_ral_pkg.sv
+${RGGEN_HOME}/ral/rgen_ral_pkg.sv

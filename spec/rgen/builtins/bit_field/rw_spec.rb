@@ -6,13 +6,13 @@ describe 'bit_fields/type/rw' do
   include_context 'rtl common'
 
   before(:all) do
-    RGen.enable(:global, [:data_width, :address_width])
-    RGen.enable(:register_block, [:name, :byte_size])
-    RGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
-    RGen.enable(:register_block, :host_if, :apb)
-    RGen.enable(:register, [:name, :offset_address, :array, :shadow])
-    RGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
-    RGen.enable(:bit_field, :type, :rw)
+    RgGen.enable(:global, [:data_width, :address_width])
+    RgGen.enable(:register_block, [:name, :byte_size])
+    RgGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
+    RgGen.enable(:register_block, :host_if, :apb)
+    RgGen.enable(:register, [:name, :offset_address, :array, :shadow])
+    RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
+    RgGen.enable(:bit_field, :type, :rw)
 
     @factory  = build_register_map_factory
   end
@@ -70,7 +70,7 @@ describe 'bit_fields/type/rw' do
         build_bit_fields([
           [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rw", nil, nil]
         ])
-      }.to raise_error RGen::RegisterMapError
+      }.to raise_error RgGen::RegisterMapError
     end
 
     it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
@@ -116,7 +116,7 @@ describe 'bit_fields/type/rw' do
       let(:expected_code_0) do
         <<'CODE'
 assign o_bit_field_0_0 = bit_field_0_0_value;
-rgen_bit_field_rw #(
+rggen_bit_field_rw #(
   .WIDTH          (16),
   .INITIAL_VALUE  (16'habcd)
 ) u_bit_field_0_0 (
@@ -135,7 +135,7 @@ CODE
       let(:expected_code_1) do
         <<'CODE'
 assign o_bit_field_0_1 = bit_field_0_1_value;
-rgen_bit_field_rw #(
+rggen_bit_field_rw #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h1)
 ) u_bit_field_0_1 (
@@ -154,7 +154,7 @@ CODE
       let(:expected_code_2) do
         <<'CODE'
 assign o_bit_field_1_0[g_i] = bit_field_1_0_value[g_i];
-rgen_bit_field_rw #(
+rggen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
 ) u_bit_field_1_0 (
@@ -173,7 +173,7 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
 assign o_bit_field_2_0[g_i][g_j] = bit_field_2_0_value[g_i][g_j];
-rgen_bit_field_rw #(
+rggen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
 ) u_bit_field_2_0 (

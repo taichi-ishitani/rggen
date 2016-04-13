@@ -5,13 +5,13 @@ describe 'register_block/base_address' do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:register_block, :base_address)
+    RgGen.enable(:register_block, :base_address)
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    RGen.enable(:global, :address_width)
-    RGen.enable(:global, :data_width   )
+    RgGen.enable(:global, :address_width)
+    RgGen.enable(:global, :data_width   )
     @configuration_factory  = build_configuration_factory
   end
 

@@ -94,7 +94,7 @@ module block_0 (
   logic [32:0] register_3_shadow_index[2][4];
   logic [15:0] bit_field_3_0_value[2][4];
   logic [15:0] bit_field_3_1_value[2][4];
-  rgen_host_if_apb #(
+  rggen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
     .LOCAL_ADDRESS_WIDTH  (8)
@@ -121,7 +121,7 @@ module block_0 (
     .i_read_data      (read_data),
     .i_status         (status)
   );
-  rgen_response_mux #(
+  rggen_response_mux #(
     .DATA_WIDTH       (32),
     .TOTAL_REGISTERS  (12)
   ) u_response_mux (
@@ -135,7 +135,7 @@ module block_0 (
     .i_register_select    (register_select),
     .i_register_read_data (register_read_data)
   );
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
@@ -153,7 +153,7 @@ module block_0 (
   );
   assign register_read_data[0] = {15'h0000, bit_field_0_0_value, 15'h0000, bit_field_0_1_value};
   assign o_bit_field_0_0 = bit_field_0_0_value;
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (1),
     .INITIAL_VALUE  (1'h0)
   ) u_bit_field_0_0 (
@@ -167,7 +167,7 @@ module block_0 (
     .o_value          (bit_field_0_0_value)
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
@@ -186,7 +186,7 @@ module block_0 (
   assign register_read_data[1] = {bit_field_1_0_value, bit_field_1_1_value};
   assign bit_field_1_0_value = i_bit_field_1_0;
   assign o_bit_field_1_1 = bit_field_1_1_value;
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (16),
     .INITIAL_VALUE  (16'h0000)
   ) u_bit_field_1_1 (
@@ -200,7 +200,7 @@ module block_0 (
     .o_value          (bit_field_1_1_value)
   );
   for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
-    rgen_address_decoder #(
+    rggen_address_decoder #(
       .READABLE           (1),
       .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
@@ -219,7 +219,7 @@ module block_0 (
     assign register_read_data[2+g_i] = {bit_field_2_0_value[g_i], bit_field_2_1_value[g_i]};
     assign bit_field_2_0_value[g_i] = i_bit_field_2_0[g_i];
     assign o_bit_field_2_1[g_i] = bit_field_2_1_value[g_i];
-    rgen_bit_field_rw #(
+    rggen_bit_field_rw #(
       .WIDTH          (16),
       .INITIAL_VALUE  (16'h0000)
     ) u_bit_field_2_1 (
@@ -236,7 +236,7 @@ module block_0 (
   for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_3_0
     for (genvar g_j = 0;g_j < 4;g_j++) begin : gen_register_3_1
       assign register_3_shadow_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
-      rgen_address_decoder #(
+      rggen_address_decoder #(
         .READABLE           (1),
         .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
@@ -255,7 +255,7 @@ module block_0 (
       assign register_read_data[4+4*g_i+g_j] = {bit_field_3_0_value[g_i][g_j], bit_field_3_1_value[g_i][g_j]};
       assign bit_field_3_0_value[g_i][g_j] = i_bit_field_3_0[g_i][g_j];
       assign o_bit_field_3_1[g_i][g_j] = bit_field_3_1_value[g_i][g_j];
-      rgen_bit_field_rw #(
+      rggen_bit_field_rw #(
         .WIDTH          (16),
         .INITIAL_VALUE  (16'h0000)
       ) u_bit_field_3_1 (

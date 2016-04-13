@@ -1,6 +1,6 @@
 require_relative  'spec_helper'
 
-module RGen::RegisterMap
+module RgGen::RegisterMap
   describe RegisterMapFactory do
     include_context 'bit_field sample factories'
     include_context 'register sample factories'
@@ -17,7 +17,7 @@ module RGen::RegisterMap
 
     let(:valid_loader) do
       m = map
-      Class.new(RGen::InputBase::Loader) do
+      Class.new(RgGen::InputBase::Loader) do
         self.supported_types  = [:csv]
         define_method(:load_file) do |file|
           m
@@ -27,7 +27,7 @@ module RGen::RegisterMap
 
     let(:invalid_loader) do
       d = invalid_data
-      Class.new(RGen::InputBase::Loader) do
+      Class.new(RgGen::InputBase::Loader) do
         self.supported_types  = [:txt]
         define_method(:load_file) do |file|
           d

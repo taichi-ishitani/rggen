@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe InputComponentStore do
     let(:builder) do
       Builder.new
@@ -15,7 +15,7 @@ module RGen::Builder
     end
 
     let(:loader_base) do
-      RGen::InputBase::Loader
+      RgGen::InputBase::Loader
     end
 
     let(:loaders) do
@@ -25,10 +25,10 @@ module RGen::Builder
     describe "#define_loader" do
       before do
         component_store.entry do
-          component_class   RGen::InputBase::Component
-          component_factory RGen::InputBase::ComponentFactory
-          item_base         RGen::InputBase::Item
-          item_factory      RGen::InputBase::ItemFactory
+          component_class   RgGen::InputBase::Component
+          component_factory RgGen::InputBase::ComponentFactory
+          item_base         RgGen::InputBase::Item
+          item_factory      RgGen::InputBase::ItemFactory
         end
       end
 
@@ -68,18 +68,18 @@ module RGen::Builder
       before do
         component_store.loader_base(loader_base)
         component_store.entry do
-          component_class   RGen::InputBase::Component
-          component_factory RGen::InputBase::ComponentFactory do
+          component_class   RgGen::InputBase::Component
+          component_factory RgGen::InputBase::ComponentFactory do
           end
         end
         component_store.entry(:register_block) do
-          component_class   RGen::InputBase::Component
-          component_factory RGen::InputBase::ComponentFactory do
+          component_class   RgGen::InputBase::Component
+          component_factory RgGen::InputBase::ComponentFactory do
           end
         end
         component_store.entry(:register) do
-          component_class   RGen::InputBase::Component
-          component_factory RGen::InputBase::ComponentFactory do
+          component_class   RgGen::InputBase::Component
+          component_factory RgGen::InputBase::ComponentFactory do
           end
         end
       end

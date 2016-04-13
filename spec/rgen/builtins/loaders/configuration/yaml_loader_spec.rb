@@ -4,8 +4,8 @@ describe "yaml_loader" do
   include_context 'configuration common'
 
   before(:all) do
-    RGen.enable(:global, [:address_width, :data_width])
-    @factory  = RGen.builder.build_factory(:configuration)
+    RgGen.enable(:global, [:address_width, :data_width])
+    @factory  = RgGen.builder.build_factory(:configuration)
   end
 
   after(:all) do

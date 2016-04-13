@@ -2,9 +2,9 @@ require_relative '../../spec_helper'
 
 RSpec::Matchers.define :have_item do |file, sheet, row, column, field_values|
   match do |component|
-    return false unless component.kind_of?(RGen::InputBase::Component)
+    return false unless component.kind_of?(RgGen::InputBase::Component)
 
-    expected_position = RGen::RegisterMap::GenericMap::Cell::Position.new(file, sheet, row, column)
+    expected_position = RgGen::RegisterMap::GenericMap::Cell::Position.new(file, sheet, row, column)
     component.items.each do |item|
       actual_position   = item.instance_variable_get(:@position)
       next unless actual_position == expected_position

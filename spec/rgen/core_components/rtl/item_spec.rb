@@ -1,10 +1,10 @@
 require_relative '../../../spec_helper'
 
-module RGen::RTL
+module RgGen::RTL
   describe Item do
     let(:owner) do
-      configuration = RGen::InputBase::Component.new(nil)
-      register_map  = RGen::InputBase::Component.new(nil)
+      configuration = RgGen::InputBase::Component.new(nil)
+      register_map  = RgGen::InputBase::Component.new(nil)
       Component.new(nil, configuration, register_map)
     end
 
@@ -22,11 +22,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'w_baz'
       end
 
@@ -35,11 +35,11 @@ module RGen::RTL
       end
 
       it "wire宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[0].to_s).to eq "wire foo"
-        expect(item.signal_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[1].to_s).to eq "wire [1:0] bar[4]"
-        expect(item.signal_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[2].to_s).to eq "wire w_baz"
       end
     end
@@ -54,11 +54,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'r_baz'
       end
 
@@ -67,11 +67,11 @@ module RGen::RTL
       end
 
       it "reg宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[0].to_s).to eq "reg foo"
-        expect(item.signal_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[1].to_s).to eq "reg [1:0] bar[4]"
-        expect(item.signal_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[2].to_s).to eq "reg r_baz"
       end
     end
@@ -86,11 +86,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'l_baz'
       end
 
@@ -99,11 +99,11 @@ module RGen::RTL
       end
 
       it "logic宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[0].to_s).to eq "logic foo"
-        expect(item.signal_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[1].to_s).to eq "logic [1:0] bar[4]"
-        expect(item.signal_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.signal_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.signal_declarations[2].to_s).to eq "logic l_baz"
       end
     end
@@ -118,11 +118,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'i_baz'
       end
 
@@ -131,11 +131,11 @@ module RGen::RTL
       end
 
       it "input宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        expect(item.port_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[0].to_s).to eq "input foo"
-        expect(item.port_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[1].to_s).to eq "input [1:0] bar[4]"
-        expect(item.port_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[2].to_s).to eq "input i_baz"
       end
     end
@@ -150,11 +150,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'o_baz'
       end
 
@@ -163,11 +163,11 @@ module RGen::RTL
       end
 
       it "output宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        expect(item.port_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[0].to_s).to eq "output foo"
-        expect(item.port_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[1].to_s).to eq "output [1:0] bar[4]"
-        expect(item.port_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.port_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.port_declarations[2].to_s).to eq "output o_baz"
       end
     end
@@ -182,11 +182,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'p_baz'
       end
 
@@ -195,11 +195,11 @@ module RGen::RTL
       end
 
       it "parameter宣言用のVariableDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
-        expect(item.parameter_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.parameter_declarations[0].to_s).to eq "parameter foo = 0"
-        expect(item.parameter_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.parameter_declarations[1].to_s).to eq "parameter [1:0] bar[4] = '{0, 1, 2, 3}"
-        expect(item.parameter_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.parameter_declarations[2].to_s).to eq "parameter p_baz = 1"
       end
     end
@@ -214,11 +214,11 @@ module RGen::RTL
       end
 
       it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq 'foo'
-        expect(item.bar     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq 'bar'
-        expect(item.baz     ).to be_instance_of RGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq 'lp_baz'
       end
 
@@ -227,11 +227,11 @@ module RGen::RTL
       end
 
       it "localparam宣言用のVariableDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
-        expect(item.localparam_declarations[0]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.localparam_declarations[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.localparam_declarations[0].to_s).to eq "localparam foo = 0"
-        expect(item.localparam_declarations[1]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.localparam_declarations[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.localparam_declarations[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
-        expect(item.localparam_declarations[2]     ).to be_instance_of RGen::OutputBase::VerilogUtility::Declaration
+        expect(item.localparam_declarations[2]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
         expect(item.localparam_declarations[2].to_s).to eq "localparam lp_baz = 1"
       end
     end

@@ -61,7 +61,7 @@ describe "register_block/response_mux" do
   describe "#generate_code" do
     let(:expected_code) do
       <<'CODE'
-rgen_response_mux #(
+rggen_response_mux #(
   .DATA_WIDTH       (32),
   .TOTAL_REGISTERS  (12)
 ) u_response_mux (

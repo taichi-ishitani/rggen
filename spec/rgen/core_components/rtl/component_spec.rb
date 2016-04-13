@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::RTL
+module RgGen::RTL
   describe Component do
     def create_item(owner, &body)
       i = Class.new(Item, &body).new(owner)
@@ -9,11 +9,11 @@ module RGen::RTL
     end
 
     let(:configuration) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:register_map) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     let(:component) do

@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::OutputBase::VerilogUtility
+module RgGen::OutputBase::VerilogUtility
   describe PackageDefinition do
     def package_definition(name, &body)
       PackageDefinition.new(name, &body).to_code.to_s

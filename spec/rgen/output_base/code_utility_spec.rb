@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RGen::OutputBase
+module RgGen::OutputBase
   describe CodeUtility do
     before(:all) do
       @test_object  = Class.new {

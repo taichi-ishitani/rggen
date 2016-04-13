@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Base
+module RgGen::Base
   describe ItemFactory do
     let(:item_a) do
       Class.new(Item)

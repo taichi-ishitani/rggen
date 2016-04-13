@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::InputBase
+module RgGen::InputBase
   describe ItemFactory do
     let(:active_item) do
       Class.new(Item) { build {} }

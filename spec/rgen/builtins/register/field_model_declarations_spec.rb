@@ -40,9 +40,9 @@ describe 'register/field_model_declarations' do
   describe "#generate_code" do
     let(:expected_code) do
       <<'CODE'
-rand rgen_ral_field bit_field_0_0;
-rand rgen_ral_field bit_field_0_1;
-rand rgen_ral_field bit_field_0_2;
+rand rggen_ral_field bit_field_0_0;
+rand rggen_ral_field bit_field_0_1;
+rand rggen_ral_field bit_field_0_2;
 CODE
     end
 

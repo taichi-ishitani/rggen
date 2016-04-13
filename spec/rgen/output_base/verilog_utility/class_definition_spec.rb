@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-module RGen::OutputBase::VerilogUtility
+module RgGen::OutputBase::VerilogUtility
   describe ClassDefinition do
     def class_definition(name, &body)
       ClassDefinition.new(name, &body).to_code.to_s

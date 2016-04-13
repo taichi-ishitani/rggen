@@ -1,6 +1,6 @@
 def get_component_class(store_name, index)
   component_class = nil
-  RGen.builder.instance_eval do
+  RgGen.builder.instance_eval do
     @stores[store_name].instance_eval do
       component_class = @entries[index].component_class
     end
@@ -10,7 +10,7 @@ end
 
 def get_component_factory(store_name, index)
   component_factory = nil
-  RGen.builder.instance_eval do
+  RgGen.builder.instance_eval do
     @stores[store_name].instance_eval do
       component_factory = @entries[index].component_factory
     end
@@ -20,7 +20,7 @@ end
 
 def get_item_base(store_name, index)
   item_base = nil
-  RGen.builder.instance_eval do
+  RgGen.builder.instance_eval do
     @stores[store_name].instance_eval do
       item_base = @entries[index].item_base
     end
@@ -30,7 +30,7 @@ end
 
 def get_item_factory(store_name, index)
   item_factory  = nil
-  RGen.builder.instance_eval do
+  RgGen.builder.instance_eval do
     @stores[store_name].instance_eval do
       item_factory  = @entries[index].item_factory
     end
@@ -43,7 +43,7 @@ def create_cell(value, options = {})
   sheet   = options[:sheet]  || "foo"
   row     = options[:row]    || 0
   column  = options[:column] || 0
-  c       = RGen::RegisterMap::GenericMap::Cell.new(file, sheet, row, column)
+  c       = RgGen::RegisterMap::GenericMap::Cell.new(file, sheet, row, column)
   c.value = value
   c
 end
@@ -60,7 +60,7 @@ end
 def create_sheet(values, options = {})
   file        = options[:file]  || "foo.csv"
   sheet_name  = options[:sheet] || "foo"
-  sheet       = RGen::RegisterMap::GenericMap::Sheet.new(file, sheet_name)
+  sheet       = RgGen::RegisterMap::GenericMap::Sheet.new(file, sheet_name)
   values.each_with_index do |row, row_index|
     row.each_with_index do |value, column_index|
       sheet[row_index, column_index]  = value
@@ -70,7 +70,7 @@ def create_sheet(values, options = {})
 end
 
 def create_map(values, file_name = "foo.csv")
-  map = RGen::RegisterMap::GenericMap.new(file_name)
+  map = RgGen::RegisterMap::GenericMap.new(file_name)
   values.each do |sheet, table|
     sheet = map[sheet]
     table.each_with_index do |row, row_index|
@@ -83,7 +83,7 @@ def create_map(values, file_name = "foo.csv")
 end
 
 def clear_enabled_items
-  RGen.builder.categories.each_value do |category|
+  RgGen.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_stores).each_value do |item_store|
       item_store.instance_variable_get(:@enabled_entries).clear
       list_item_entries = item_store.instance_variable_get(:@list_item_entries)
@@ -95,7 +95,7 @@ def clear_enabled_items
 end
 
 def clear_dummy_list_items(list_name, items)
-  RGen.builder.categories.each_value do |category|
+  RgGen.builder.categories.each_value do |category|
     category.instance_variable_get(:@item_stores).each_value do |item_store|
       entry = item_store.instance_variable_get(:@list_item_entries)[list_name]
       next if entry.nil?

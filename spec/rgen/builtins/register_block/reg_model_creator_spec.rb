@@ -47,15 +47,15 @@ describe 'register_block/reg_model_creator' do
     let(:expected_code) do
       <<'CODE'
 function void create_registers();
-  `rgen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+  `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
   foreach (register_1[i]) begin
-    `rgen_ral_create_reg_model(register_1[i], "register_1", '{i}, 8'h04 + 4 * i, "RO", 0)
+    `rggen_ral_create_reg_model(register_1[i], "register_1", '{i}, 8'h04 + 4 * i, "RO", 0)
   end
   foreach (register_2[i]) begin
-    `rgen_ral_create_reg_model(register_2[i], "register_2", '{i}, 8'h0c, "WO", 1)
+    `rggen_ral_create_reg_model(register_2[i], "register_2", '{i}, 8'h0c, "WO", 1)
   end
   foreach (register_3[i, j]) begin
-    `rgen_ral_create_reg_model(register_3[i][j], "register_3", '{i, j}, 8'h10, "RW", 1)
+    `rggen_ral_create_reg_model(register_3[i][j], "register_3", '{i, j}, 8'h10, "RW", 1)
   end
 endfunction
 CODE

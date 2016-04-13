@@ -4,7 +4,7 @@ describe 'register_block/name' do
   include_context 'register_map common'
 
   before(:all) do
-    RGen.enable(:register_block, :name)
+    RgGen.enable(:register_block, :name)
     @factory  = build_register_map_factory
   end
 
@@ -13,7 +13,7 @@ describe 'register_block/name' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new(nil)
+    RgGen::InputBase::Component.new(nil)
   end
 
   context "適切な入力が与えられたとき" do

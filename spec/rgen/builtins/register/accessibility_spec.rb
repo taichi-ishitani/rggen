@@ -6,15 +6,15 @@ describe 'register/accessibility' do
 
   before(:all) do
 
-    RGen.enable(:register_block, :name)
-    RGen.enable(:register      , [:name, :accessibility])
-    RGen.enable(:bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference])
-    RGen.enable(:bit_field     , :type, [:rw, :ro, :wo, :reserved])
+    RgGen.enable(:register_block, :name)
+    RgGen.enable(:register      , [:name, :accessibility])
+    RgGen.enable(:bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference])
+    RgGen.enable(:bit_field     , :type, [:rw, :ro, :wo, :reserved])
     @factory  = build_register_map_factory
   end
 
   before(:all) do
-    RGen.enable(:global, :data_width)
+    RgGen.enable(:global, :data_width)
     ConfigurationDummyLoader.load_data({})
     @configuration  = build_configuration_factory.create(configuration_file)
   end

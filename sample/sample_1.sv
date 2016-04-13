@@ -33,7 +33,7 @@ module sample_1 (
   logic [31:0] bit_field_1_0_value;
   logic bit_field_2_0_value;
   logic bit_field_2_1_value;
-  rgen_host_if_apb #(
+  rggen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
     .LOCAL_ADDRESS_WIDTH  (7)
@@ -60,7 +60,7 @@ module sample_1 (
     .i_read_data      (read_data),
     .i_status         (status)
   );
-  rgen_response_mux #(
+  rggen_response_mux #(
     .DATA_WIDTH       (32),
     .TOTAL_REGISTERS  (3)
   ) u_response_mux (
@@ -74,7 +74,7 @@ module sample_1 (
     .i_register_select    (register_select),
     .i_register_read_data (register_read_data)
   );
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
@@ -92,7 +92,7 @@ module sample_1 (
   );
   assign register_read_data[0] = {bit_field_0_0_value, bit_field_0_1_value};
   assign o_bit_field_0_0 = bit_field_0_0_value;
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (16),
     .INITIAL_VALUE  (16'h0000)
   ) u_bit_field_0_0 (
@@ -106,7 +106,7 @@ module sample_1 (
     .o_value          (bit_field_0_0_value)
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
@@ -124,7 +124,7 @@ module sample_1 (
   );
   assign register_read_data[1] = {bit_field_1_0_value};
   assign o_bit_field_1_0 = bit_field_1_0_value;
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (32),
     .INITIAL_VALUE  (32'h00000000)
   ) u_bit_field_1_0 (
@@ -137,7 +137,7 @@ module sample_1 (
     .i_write_mask     (write_mask[31:0]),
     .o_value          (bit_field_1_0_value)
   );
-  rgen_address_decoder #(
+  rggen_address_decoder #(
     .READABLE           (1),
     .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
@@ -156,7 +156,7 @@ module sample_1 (
   assign register_read_data[2] = {15'h0000, bit_field_2_0_value, 15'h0000, bit_field_2_1_value};
   assign bit_field_2_0_value = i_bit_field_2_0;
   assign o_bit_field_2_1 = bit_field_2_1_value;
-  rgen_bit_field_rw #(
+  rggen_bit_field_rw #(
     .WIDTH          (1),
     .INITIAL_VALUE  (1'h0)
   ) u_bit_field_2_1 (

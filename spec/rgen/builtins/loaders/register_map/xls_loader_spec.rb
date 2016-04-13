@@ -2,10 +2,10 @@ require_relative 'spec_helper'
 
 describe 'xls_loader' do
   before(:all) do
-    RGen.enable(:register_block, :name)
-    RGen.enable(:register      , :name)
-    RGen.enable(:bit_field     , :name)
-    @factory  = RGen.builder.build_factory(:register_map)
+    RgGen.enable(:register_block, :name)
+    RgGen.enable(:register      , :name)
+    RgGen.enable(:bit_field     , :name)
+    @factory  = RgGen.builder.build_factory(:register_map)
   end
 
   after(:all) do
@@ -17,7 +17,7 @@ describe 'xls_loader' do
   end
 
   let(:configuration) do
-    RGen::InputBase::Component.new(nil)
+    RgGen::InputBase::Component.new(nil)
   end
 
   let(:register_map) do

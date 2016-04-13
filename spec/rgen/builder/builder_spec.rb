@@ -1,6 +1,6 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe Builder do
     let(:builder) do
       Builder.new
@@ -28,14 +28,14 @@ module RGen::Builder
         store = nil
         builder.input_component_store(:register_map) do
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
           end
           entry(:register_block) do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
-            item_base         RGen::InputBase::Item
-            item_factory      RGen::InputBase::ItemFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
+            item_base         RgGen::InputBase::Item
+            item_factory      RgGen::InputBase::ItemFactory
           end
           store = self
         end
@@ -50,10 +50,10 @@ module RGen::Builder
         store = nil
         builder.output_component_store(:rtl) do
           entry do
-            component_class   RGen::Base::Component
-            component_factory RGen::Base::ComponentFactory
-            item_base         RGen::Base::Item
-            item_factory      RGen::Base::ItemFactory
+            component_class   RgGen::Base::Component
+            component_factory RgGen::Base::ComponentFactory
+            item_base         RgGen::Base::Item
+            item_factory      RgGen::Base::ItemFactory
           end
           store = self
         end
@@ -86,10 +86,10 @@ module RGen::Builder
     describe "#define_loader" do
       before do
         builder.input_component_store(:register_map) do
-          loader_base RGen::InputBase::Loader
+          loader_base RgGen::InputBase::Loader
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
           end
         end
       end
@@ -105,10 +105,10 @@ module RGen::Builder
       end
 
       context "指定したコンポーネントが存在しない場合" do
-        it "RGen::Builderエラーを発生させる" do
+        it "RgGen::Builderエラーを発生させる" do
           expect {
             builder.define_loader(:foo, support_types) {}
-          }.to raise_error RGen::BuilderError, "unknown component: foo"
+          }.to raise_error RgGen::BuilderError, "unknown component: foo"
         end
       end
     end
@@ -117,14 +117,14 @@ module RGen::Builder
       before do
         builder.input_component_store(:register_map) do
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
           end
           entry(:register_block) do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
-            item_base         RGen::InputBase::Item
-            item_factory      RGen::InputBase::ItemFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
+            item_base         RgGen::InputBase::Item
+            item_factory      RgGen::InputBase::ItemFactory
           end
         end
       end
@@ -135,10 +135,10 @@ module RGen::Builder
       end
 
       context "指定したコンポーネントが存在しない場合" do
-        it "RGen::Builderエラーを発生させる" do
+        it "RgGen::Builderエラーを発生させる" do
           expect {
             builder.build_factory(:foo)
-          }.to raise_error RGen::BuilderError, "unknown component: foo"
+          }.to raise_error RgGen::BuilderError, "unknown component: foo"
         end
       end
     end
@@ -147,10 +147,10 @@ module RGen::Builder
       before do
         builder.input_component_store(:configuration) do
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
-            item_base         RGen::InputBase::Item
-            item_factory      RGen::InputBase::ItemFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
+            item_base         RgGen::InputBase::Item
+            item_factory      RgGen::InputBase::ItemFactory
           end
         end
       end
@@ -168,10 +168,10 @@ module RGen::Builder
       end
 
       context "指定したカテゴリが存在しない場合" do
-        it "RGen::Builderエラーを発生させる" do
+        it "RgGen::Builderエラーを発生させる" do
           expect {
             builder.define_simple_item(:foo, item_name) {}
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
         end
       end
     end
@@ -180,10 +180,10 @@ module RGen::Builder
       before do
         builder.input_component_store(:configuration) do
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
-            item_base         RGen::InputBase::Item
-            item_factory      RGen::InputBase::ItemFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
+            item_base         RgGen::InputBase::Item
+            item_factory      RgGen::InputBase::ItemFactory
           end
         end
       end
@@ -210,13 +210,13 @@ module RGen::Builder
       end
 
       context "指定したカテゴリが存在しない場合" do
-        it "RGen::Builderエラーを発生させる" do
+        it "RgGen::Builderエラーを発生させる" do
           expect {
             builder.define_list_item(:foo, list_name) {}
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
           expect {
             builder.define_list_item(:foo, list_name, item_name) {}
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
         end
       end
     end
@@ -226,10 +226,10 @@ module RGen::Builder
       before do
         builder.input_component_store(:configuration) do
           entry do
-            component_class   RGen::InputBase::Component
-            component_factory RGen::InputBase::ComponentFactory
-            item_base         RGen::InputBase::Item
-            item_factory      RGen::InputBase::ItemFactory
+            component_class   RgGen::InputBase::Component
+            component_factory RgGen::InputBase::ComponentFactory
+            item_base         RgGen::InputBase::Item
+            item_factory      RgGen::InputBase::ItemFactory
           end
         end
 
@@ -260,19 +260,19 @@ module RGen::Builder
       end
 
       context "指定したカテゴリが存在しない場合" do
-        it "RGen::Builderエラーを発生させる" do
+        it "RgGen::Builderエラーを発生させる" do
           expect {
             builder.enable(:foo, [:foo, :bar])
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
           expect {
             builder.enable(:foo, :qux)
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
           expect {
             builder.enable(:foo, :qux, :foo)
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
           expect {
             builder.enable(:foo, :qux, [:bar, :baz])
-          }.to raise_error RGen::BuilderError, "unknown category: foo"
+          }.to raise_error RgGen::BuilderError, "unknown category: foo"
         end
       end
     end

@@ -1,13 +1,13 @@
 require_relative  '../../spec_helper'
 
-module RGen::Builder
+module RgGen::Builder
   describe ListItemEntry do
     let(:item_base) do
-      RGen::InputBase::Item
+      RgGen::InputBase::Item
     end
 
     let(:factory_base) do
-      RGen::InputBase::ItemFactory
+      RgGen::InputBase::ItemFactory
     end
 
     let(:list_item_entry) do
@@ -27,7 +27,7 @@ module RGen::Builder
     end
 
     let(:component) do
-      RGen::InputBase::Component.new(nil)
+      RgGen::InputBase::Component.new(nil)
     end
 
     describe "#initialize" do
@@ -143,10 +143,10 @@ module RGen::Builder
         end
 
         context "ベースクラスが既に共有コンテキストを持つ場合" do
-          it "RGen::BuilderErrorを発生させる" do
+          it "RgGen::BuilderErrorを発生させる" do
             expect {
               list_item_entry_with_shared_context.define_list_item(:foo, shared_context) {}
-            }.to raise_error RGen::BuilderError, "base class already has #shared_context"
+            }.to raise_error RgGen::BuilderError, "base class already has #shared_context"
           end
         end
       end

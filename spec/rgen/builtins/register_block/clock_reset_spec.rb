@@ -6,8 +6,8 @@ describe "register_block/clock_reset" do
   include_context 'rtl common'
 
   before(:all) do
-    RGen.enable(:register_block, :name       )
-    RGen.enable(:register_block, :clock_reset)
+    RgGen.enable(:register_block, :name       )
+    RgGen.enable(:register_block, :clock_reset)
     configuration = dummy_configuration
     register_map  = create_register_map(
       @configuration,

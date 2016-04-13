@@ -1,6 +1,6 @@
 require_relative  'spec_helper'
 
-module RGen::RegisterMap
+module RgGen::RegisterMap
   describe GenericMap do
     let(:file) do
       "foo.csv"
@@ -63,7 +63,7 @@ module RGen::RegisterMap
       end
 
       def match_cell(row, column, value = nil)
-        be_kind_of(RGen::RegisterMap::GenericMap::Cell).and have_attributes(
+        be_kind_of(RgGen::RegisterMap::GenericMap::Cell).and have_attributes(
           value:    value,
           position: have_attributes(file: file, sheet: sheet_name, row: row, column: column)
         )

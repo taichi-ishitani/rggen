@@ -1,0 +1,16 @@
+rggen_address_decoder #(
+  .READABLE           (<%= readable %>),
+  .WRITABLE           (<%= writable %>),
+  .ADDRESS_WIDTH      (<%= local_address_width - address_lsb %>),
+  .START_ADDRESS      (<%= start_address%>),
+  .END_ADDRESS        (<%= end_address %>),
+  .USE_SHADOW_INDEX   (<%= use_shadow_index %>),
+  .SHADOW_INDEX_WIDTH (<%= shadow_index_width %>),
+  .SHADOW_INDEX_VALUE (<%= shadow_index_value %>)
+) u_<%= register.name%>_address_decoder (
+  .i_read         (<%= register_block.host_if.read %>),
+  .i_write        (<%= register_block.host_if.write %>),
+  .i_address      (<%= register_block.host_if.address[local_address_width - 1, address_lsb] %>),
+  .i_shadow_index (<%= (shadow? && shadow_index[loop_variables]) || shadow_index_value %>),
+  .o_select       (<%= register_block.register_select[register.index] %>)
+);
