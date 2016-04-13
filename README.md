@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/rggen.svg)](https://badge.fury.io/rb/rggen)
 [![Build Status](https://travis-ci.org/taichi-ishitani/rggen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rggen)
 [![Code Climate](https://codeclimate.com/github/taichi-ishitani/rggen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rggen)
 [![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rggen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rggen/coverage)
@@ -8,7 +9,17 @@ RgGen is a code generation tool for SoC designers. You can automatically generat
 
 ## Installation
 
-TODO: Write installation command here
+To install RgGen and required libraries, use the following command:
+
+    $ gem install rggen
+
+RgGen will be installed under your system root.
+
+If you want to install them on other location, you need to specify the install directory and set the **GEM_PATH** environment variable like below:
+
+    $ gem install --install-dir YOUR_INSTALL_DIRECTORY rggen
+    $ export GEM_PATH=YOUR_INSTALL_DIRECTORY
+
 
 ## Usage
 
