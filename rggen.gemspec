@@ -9,12 +9,13 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version  = '>= 2.0'
   spec.authors                = ['Taichi Ishitani']
   spec.email                  = ['taichi730@gmail.com']
+  spec.homepage               = 'https://github.com/taichi-ishitani/rggen'
 
   spec.summary        = 'Code generation tool for control registers in a SoC design.'
   spec.description    = <<-EOS
     RgGen is a code generation tool for SoC designers.
-    You can automatically generate soruce code for control registers in a SoC design, e.g. RTL, UVM RAL model, from its register map document.
-    You can also customize RgGen, so you can build your specific generation tool.
+    It will automatically generate source code for control registers in a SoC design, e.g. RLT, UVM RAL model, from its register map document.
+    Also RgGen is customizable so you can build your specific generate tool.
   EOS
   spec.homepage       = ''
   spec.license        = 'MIT'
