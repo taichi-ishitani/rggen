@@ -29,20 +29,21 @@ If you want to install them on other location, you need to specify the install d
 
 A configuration file is to describe attributes of your design, e.g. data bus width, address bus width, host interface protocol.
 RgGen supports YAML and JSON for its file format and allows to use Hash notation to describe attributes of your design like below.
+
 - YAML
-  ~~~YAML
-  address_width: 16
-  data_width: 32
-  host_if: apb
-  ~~~
+~~~YAML
+address_width: 16
+data_width: 32
+host_if: apb
+~~~
 - JSON
-  ~~~JSON
-  {
-    "address_width": 16,
-    "data_width": 32,
-    "host_if": "apb"
-  }
-  ~~~
+~~~JSON
+{
+  "address_width": 16,
+  "data_width": 32,
+  "host_if": "apb"
+}
+~~~
 
 These attributes have default values. If you use a default value, you don't specify its value.
 In addition, if you use default values for all of attributes, you don't need to write a configuration file.
@@ -52,18 +53,18 @@ In addition, if you use default values for all of attributes, you don't need to 
 RgGen allows to use a spreadsheet to input the register map of your design so you can directly input your register map document to RgGen.
 To do this, you need to write your register map document according to below table format.
 
-|  |A|B             |C            |D              |E                                |F             |G         |H   |I           |
-|:-|-|:-------------|:------------|:--------------|:--------------------------------|:-------------|:---------|:---|:-----------|
-|1 | |Block Name    |block_0      |               |                                 |              |          |    |            |
-|2 | |Byte Size     |256          |               |                                 |              |          |    |            |
-|3 | |              |             |               |                                 |              |          |    |            |
-|4 | |Offset Address|Register Name|Array Dimension|Shadow Index                     |Bit Assignment|Field Name|Type|Iitial Value|
-|5 | |0x00          |register_0   |               |                                 |[31:16]       |field_0_0 |rw  |0           |
-|6 | |              |             |               |                                 |[15:0]        |field_0_1 |rw  |0           |
-|7 | |0x04          |register_1   |               |                                 |[16]          |field_1_0 |rw  |0           |
-|8 | |              |             |               |                                 |[0]           |field_1_1 |ro  |            |
-|9 | |0x10 - 0x1F   |register_2   |[4]            |                                 |[7:0]         |field_2_0 |rw  |0           |
-|10| |0x20          |register_3   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|[7:0]         |field_3_0 |rw  |0           |
+|    |A   |B             |C            |D              |E                                |F             |G         |H   |I           |
+|:---|:---|:-------------|:------------|:--------------|:--------------------------------|:-------------|:---------|:---|:-----------|
+|1   |    |Block Name    |block_0      |               |                                 |              |          |    |            |
+|2   |    |Byte Size     |256          |               |                                 |              |          |    |            |
+|3   |    |              |             |               |                                 |              |          |    |            |
+|4   |    |Offset Address|Register Name|Array Dimension|Shadow Index                     |Bit Assignment|Field Name|Type|Iitial Value|
+|5   |    |0x00          |register_0   |               |                                 |[31:16]       |field_0_0 |rw  |0           |
+|6   |    |              |             |               |                                 |[15:0]        |field_0_1 |rw  |0           |
+|7   |    |0x04          |register_1   |               |                                 |[16]          |field_1_0 |rw  |0           |
+|8   |    |              |             |               |                                 |[0]           |field_1_1 |ro  |            |
+|9   |    |0x10 - 0x1F   |register_2   |[4]            |                                 |[7:0]         |field_2_0 |rw  |0           |
+|10  |    |0x20          |register_3   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|[7:0]         |field_3_0 |rw  |0           |
 
 By default, RgGen supports CSV, ODS, XLS and XLSX sparedsheet file types.
 
@@ -79,11 +80,10 @@ If you have a configuration file, you need to use `-c/--configuration` option:
 
 By default, RgGen will generate RTL SV code under `rtl` directory and UVM RAL model under `ral` dicrectory.
 In addition, file name of generated files is accoding to below rule.
-
-|File Type|Naming Rule                 |
-|:--------|:---------------------------|
-|RTL      |`your_block_name`.sv        |
-|RAL model|`your_block_name`_ral_pkg.sv|
+- RTL
+  - `your_block_name`.sv
+- RAL model
+  - `your_block_name`_ral_pkg.sv 
 
 ### Compile Your Design
 
