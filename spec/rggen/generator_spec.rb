@@ -80,7 +80,7 @@ module RgGen
         expect {
           generator.run(['--show-home'])
         }.to raise_error SystemExit
-        expect($stdout.string).to eq RgGen::RGGEN_HOME
+        expect($stdout.string).to eq "#{RgGen::RGGEN_HOME}\n"
       end
     end
 

@@ -96,7 +96,7 @@ module RgGen
       option.long         = '--show-home'
       option.description  = 'Display the path of RgGen tool home directory'
       option.body         = proc do
-        print RGGEN_HOME
+        puts RGGEN_HOME
         exit
       end
     end
