@@ -1,10 +1,10 @@
-`ifndef __RGEN_RAL_SHADOW_REG_SVH__
-`define __RGEN_RAL_SHADOW_REG_SVH__
-typedef class rgen_ral_shadow_reg_index;
-typedef class rgen_ral_shadow_reg_ftdr_seq;
+`ifndef __RGGEN_RAL_SHADOW_REG_SVH__
+`define __RGGEN_RAL_SHADOW_REG_SVH__
+typedef class rggen_ral_shadow_reg_index;
+typedef class rggen_ral_shadow_reg_ftdr_seq;
 
-class rgen_ral_shadow_reg extends rgen_ral_reg;
-  protected rgen_ral_shadow_reg_index shadow_reg_indexes[$];
+class rggen_ral_shadow_reg extends rggen_ral_reg;
+  protected rggen_ral_shadow_reg_index  shadow_reg_indexes[$];
 
   extern function new(string name, int unsigned n_bits, int has_coverage);
 
@@ -23,11 +23,11 @@ class rgen_ral_shadow_reg extends rgen_ral_reg;
   extern protected function void set_shadow_index(string reg_name, string field_name, uvm_reg_data_t value);
 endclass
 
-function rgen_ral_shadow_reg::new(string name, int unsigned n_bits, int has_coverage);
+function rggen_ral_shadow_reg::new(string name, int unsigned n_bits, int has_coverage);
   super.new(name, n_bits, has_coverage);
 endfunction
 
-function void rgen_ral_shadow_reg::configure(
+function void rggen_ral_shadow_reg::configure(
   uvm_object    cfg,
   uvm_reg_block blk_parent,
   uvm_reg_file  regfile_parent,
@@ -38,12 +38,12 @@ function void rgen_ral_shadow_reg::configure(
   configure_shadow_indexes();
 endfunction
 
-function uvm_reg_frontdoor rgen_ral_shadow_reg::create_frontdoor();
-  rgen_ral_shadow_reg_ftdr_seq  fd  = new(shadow_reg_indexes);
+function uvm_reg_frontdoor rggen_ral_shadow_reg::create_frontdoor();
+  rggen_ral_shadow_reg_ftdr_seq fd  = new(shadow_reg_indexes);
   return fd;
 endfunction
 
-function bit rgen_ral_shadow_reg::is_active();
+function bit rggen_ral_shadow_reg::is_active();
   foreach (shadow_reg_indexes[i]) begin
     if (!shadow_reg_indexes[i].is_matched()) begin
       return 0;
@@ -52,27 +52,27 @@ function bit rgen_ral_shadow_reg::is_active();
   return 1;
 endfunction
 
-function void rgen_ral_shadow_reg::configure_shadow_indexes();
+function void rggen_ral_shadow_reg::configure_shadow_indexes();
 endfunction
 
-function void rgen_ral_shadow_reg::set_shadow_index(string reg_name, string field_name, uvm_reg_data_t value);
-  rgen_ral_shadow_reg_index shadow_reg_index;
+function void rggen_ral_shadow_reg::set_shadow_index(string reg_name, string field_name, uvm_reg_data_t value);
+  rggen_ral_shadow_reg_index shadow_reg_index;
   shadow_reg_index  = new(this, reg_name, field_name, value);
   shadow_reg_indexes.push_back(shadow_reg_index);
 endfunction
 
-class rgen_ral_shadow_reg_index;
-  protected rgen_ral_shadow_reg shadow_reg;
-  protected string              reg_name;
-  protected string              field_name;
-  protected uvm_reg_data_t      value;
-  protected uvm_reg_field       index_field;
+class rggen_ral_shadow_reg_index;
+  protected rggen_ral_shadow_reg  shadow_reg;
+  protected string                reg_name;
+  protected string                field_name;
+  protected uvm_reg_data_t        value;
+  protected uvm_reg_field         index_field;
 
   extern function new(
-    rgen_ral_shadow_reg shadow_reg,
-    string              reg_name,
-    string              field_name,
-    uvm_reg_data_t      value
+    rggen_ral_shadow_reg  shadow_reg,
+    string                reg_name,
+    string                field_name,
+    uvm_reg_data_t        value
   );
 
   extern virtual function bit is_matched();
@@ -90,11 +90,11 @@ class rgen_ral_shadow_reg_index;
   extern protected virtual function uvm_reg_field get_index_field();
 endclass
 
-function rgen_ral_shadow_reg_index::new(
-  rgen_ral_shadow_reg shadow_reg,
-  string              reg_name,
-  string              field_name,
-  uvm_reg_data_t      value
+function rggen_ral_shadow_reg_index::new(
+  rggen_ral_shadow_reg  shadow_reg,
+  string                reg_name,
+  string                field_name,
+  uvm_reg_data_t        value
 );
   this.shadow_reg = shadow_reg;
   this.reg_name   = reg_name;
@@ -102,12 +102,12 @@ function rgen_ral_shadow_reg_index::new(
   this.value      = value;
 endfunction
 
-function bit rgen_ral_shadow_reg_index::is_matched();
+function bit rggen_ral_shadow_reg_index::is_matched();
   uvm_reg_field field = get_index_field();
   return (field.value == value) ? 1 : 0;
 endfunction
 
-task rgen_ral_shadow_reg_index::update(
+task rggen_ral_shadow_reg_index::update(
   output  uvm_status_e      status,
   input   uvm_path_e        path,
   input   uvm_reg_map       map,
@@ -123,42 +123,42 @@ task rgen_ral_shadow_reg_index::update(
   parent_reg.update(status, path, map, parent, prior, extension, fname, lineno);
 endtask
 
-function uvm_reg_field rgen_ral_shadow_reg_index::get_index_field();
+function uvm_reg_field rggen_ral_shadow_reg_index::get_index_field();
   if (index_field == null) begin
     uvm_reg_block parent_block  = shadow_reg.get_parent();
     uvm_reg       index_reg;
 
     index_reg = parent_block.get_reg_by_name(reg_name);
     if (index_reg == null) begin
-      `uvm_fatal("rgen_ral_shadow_reg_index", $sformatf("Unable to locate index register: %s", reg_name))
+      `uvm_fatal("rggen_ral_shadow_reg_index", $sformatf("Unable to locate index register: %s", reg_name))
       return null;
     end
 
     index_field = index_reg.get_field_by_name(field_name);
     if (index_field == null) begin
-      `uvm_fatal("rgen_ral_shadow_reg_index", $sformatf("Unable to locate index field: %s", field_name))
+      `uvm_fatal("rggen_ral_shadow_reg_index", $sformatf("Unable to locate index field: %s", field_name))
       return null;
     end
   end
   return index_field;
 endfunction
 
-class rgen_ral_shadow_reg_ftdr_seq extends uvm_reg_frontdoor;
-  protected rgen_ral_shadow_reg_index shadow_indexes[$];
+class rggen_ral_shadow_reg_ftdr_seq extends uvm_reg_frontdoor;
+  protected rggen_ral_shadow_reg_index  shadow_indexes[$];
 
-  extern function new(ref rgen_ral_shadow_reg_index shadow_indexes[$]);
+  extern function new(ref rggen_ral_shadow_reg_index shadow_indexes[$]);
 
   extern virtual task body();
 endclass
 
-function rgen_ral_shadow_reg_ftdr_seq::new(ref rgen_ral_shadow_reg_index shadow_indexes[$]);
-  super.new("rgen_ral_shadow_reg_ftdr_seq");
+function rggen_ral_shadow_reg_ftdr_seq::new(ref rggen_ral_shadow_reg_index shadow_indexes[$]);
+  super.new("rggen_ral_shadow_reg_ftdr_seq");
   foreach (shadow_indexes[i]) begin
     this.shadow_indexes.push_back(shadow_indexes[i]);
   end
 endfunction
 
-task rgen_ral_shadow_reg_ftdr_seq::body();
+task rggen_ral_shadow_reg_ftdr_seq::body();
   foreach (shadow_indexes[i]) begin
     uvm_status_e  status;
     shadow_indexes[i].update(
@@ -172,7 +172,7 @@ task rgen_ral_shadow_reg_ftdr_seq::body();
       rw_info.lineno
     );
     if (status == UVM_NOT_OK) begin
-      `uvm_warning("rgen_ral_shadow_reg_ftdr_seq", "Updating index field failed")
+      `uvm_warning("rggen_ral_shadow_reg_ftdr_seq", "Updating index field failed")
       rw_info.status  = status;
       return;
     end
