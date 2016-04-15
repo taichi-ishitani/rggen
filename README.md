@@ -9,6 +9,12 @@ RgGen is a code generation tool for SoC designers.
 It will automatically generate source code for control registers in a SoC design, e.g. RLT, UVM RAL model, from its register map document.
 Also RgGen is customizable so you can build your specific generate tool.
 
+## Ruby
+
+RgGen is written in the [*Ruby*](https://www.ruby-lang.org/en/about/) programing language and supports version 2.0 or later.
+If you don't have above version of Ruby, you need to install the Ruby at first.
+To install the Ruby, see [this page](https://www.ruby-lang.org/en/downloads/).
+
 ## Installation
 
 To install RgGen and required libraries, use the following command:
@@ -22,10 +28,9 @@ If you want to install them on other location, you need to specify the install d
     $ gem install --install-dir YOUR_INSTALL_DIRECTORY rggen
     $ export GEM_PATH=YOUR_INSTALL_DIRECTORY
 
-
 ## Usage
 
-### Write Configuration File
+### Writing Configuration File
 
 A configuration file is to describe attributes of your design, e.g. data bus width, address bus width, host interface protocol.
 RgGen supports YAML and JSON for its file format and allows to use Hash notation to describe attributes of your design like below.
@@ -48,7 +53,7 @@ host_if: apb
 These attributes have default values. If you use a default value, you don't specify its value.
 In addition, if you use default values for all of attributes, you don't need to write a configuration file.
 
-### Write Register Map Document
+### Writing Register Map Document
 
 RgGen allows to use a spreadsheet to input the register map of your design so you can directly input your register map document to RgGen.
 To do this, you need to write your register map document according to below table format.
@@ -68,7 +73,7 @@ To do this, you need to write your register map document according to below tabl
 
 By default, RgGen supports CSV, ODS, XLS and XLSX sparedsheet file types.
 
-### Generate Source Code
+### Generating Source Code
 
 To generate soruce code from your register map document, use the following command:
 
@@ -83,22 +88,31 @@ In addition, file name of generated files is accoding to below rule.
 - RTL
   - `your_block_name`.sv
 - RAL model
-  - `your_block_name`_ral_pkg.sv 
+  - `your_block_name`_ral_pkg.sv
 
-### Compile Your Design
+### Compiling Your Design
 
-RgGen has base RTL modules and RAL model classes to build RTL and UVM RAL model.
-Therefore, when you compile your design, you need to add these base modules and classes like below.
+RgGen has base RTL modules and RAL model package (the base library) to build generated RTL and UVM RAL models.
+Therefore, To compile your design with the base library, you need followins steps:
+
+1. Set the RGGEN_HOME environment variable
+2. Link the base library with you design
+
+**RGGEN_HOME** environement variable is to show the install direcoty.
+To set the variable, you can use `--show-home` option like below:
+
+    $ export RGGEN_HOME=`rggen --show-home`
+
+To link the base library with your design, RgGen has file lists for the base library.
+By using the lists, you can compile your design and the base library like below:
 
     $ simulator \
-        +libext+.sv \
-        -y $RGGEN_INSTALL_DIRECTORY/rtl/register_block \
-        -y $RGGEN_INSTALL_DIRECTORY/rtl/register \
-        -y $RGGEN_INSTALL_DIRECTORY/rtl/bit_field \
-        -f $RGGEN_INSTALL_DIRECTORY/ral/compile.f \
-        rtl/your_register_block.sv \
-        ral/your_register_block_ral_pkg.sv \
-        your_design.v
+      -f $RGGEN_HOME/rtl/compile.f \
+      -f $RGGEN_HOME/ral/compile.f \
+      rtl/your_register_block.sv \
+      ral/your_register_block_ral_pkg.sv \
+      your_test_bench.sv \
+      your_design.v
 
 ### Note
 
@@ -114,7 +128,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/taichi-ishitani/rggen. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
 
 ## License
 

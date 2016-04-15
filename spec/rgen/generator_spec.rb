@@ -65,6 +65,25 @@ module RgGen
       ["#{RGGEN_HOME}/sample/sample.xls", "#{RGGEN_HOME}/sample/sample.xlsx", "#{RGGEN_HOME}/sample/sample.csv"]
     end
 
+    describe "RgGenホームディレクトリの表示" do
+      before do
+        $stdout = StringIO.new
+        $stderr = StringIO.new
+      end
+
+      after do
+        $stdout = STDOUT
+        $stderr = STDERR
+      end
+
+      it "RgGenのホームディレクトリを表示し、そのまま終了する" do
+        expect {
+          generator.run(['--show-home'])
+        }.to raise_error SystemExit
+        expect($stdout.string).to eq RgGen::RGGEN_HOME
+      end
+    end
+
     describe "バージョンの出力" do
       before do
         $stdout = StringIO.new
@@ -105,6 +124,7 @@ Usage: rggen [options] REGISTER_MAP
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: ./)
         --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
+        --show-home                  Display the path of RgGen tool home directory
     -v, --version                    Display the version
     -h, --help                       Display this message
 HELP
