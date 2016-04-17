@@ -4,7 +4,7 @@ module RgGen
       entry do
         component_class   InputBase::Component
         component_factory ConfigurationFactory
-        item_base         InputBase::Item, include: RaiseError
+        item_base         Item
         item_factory      ItemFactory
       end
 

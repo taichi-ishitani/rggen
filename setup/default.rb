@@ -4,7 +4,7 @@ enable :register      , [:offset_address, :name, :array, :shadow, :accessibility
 enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :reference]
 enable :bit_field     , :type, [:rw, :ro, :reserved]
 enable :register_block, [:module_definition, :signal_declarations, :clock_reset, :host_if, :response_mux]
-enable :register_block, :host_if, [:apb]
+enable :register_block, :host_if, [:apb, :axi4lite]
 enable :register      , [:address_decoder, :read_data]
 enable :register_block, [:ral_package_definition, :block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]
 enable :register      , [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]

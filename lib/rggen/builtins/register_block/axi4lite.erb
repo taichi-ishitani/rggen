@@ -1,0 +1,38 @@
+rggen_host_if_axi4lite #(
+  .DATA_WIDTH           (<%= data_width %>),
+  .HOST_ADDRESS_WIDTH   (<%= address_width %>),
+  .LOCAL_ADDRESS_WIDTH  (<%= local_address_width %>),
+  .WRITE_PRIORITY       (<%= write_priority %>)
+) u_host_if (
+  .clk              (<%= clock %>),
+  .rst_n            (<%= reset %>),
+  .i_awvalid        (<%= axi4lite.awvalid %>),
+  .o_awready        (<%= axi4lite.awready %>),
+  .i_awaddr         (<%= axi4lite.awaddr %>),
+  .i_awprot         (<%= axi4lite.awprot %>),
+  .i_wvalid         (<%= axi4lite.wvalid %>),
+  .o_wready         (<%= axi4lite.wready %>),
+  .i_wdata          (<%= axi4lite.wdata %>),
+  .i_wstrb          (<%= axi4lite.wstrb %>),
+  .o_bvalid         (<%= axi4lite.bvalid %>),
+  .i_bready         (<%= axi4lite.bready %>),
+  .o_bresp          (<%= axi4lite.bresp %>),
+  .i_arvalid        (<%= axi4lite.arvalid %>),
+  .o_arready        (<%= axi4lite.arready %>),
+  .i_araddr         (<%= axi4lite.araddr %>),
+  .i_arprot         (<%= axi4lite.arprot %>),
+  .o_rvalid         (<%= axi4lite.rvalid %>),
+  .i_rready         (<%= axi4lite.rready %>),
+  .o_rdata          (<%= axi4lite.rdata %>),
+  .o_rresp          (<%= axi4lite.rresp %>),
+  .o_command_valid  (<%= host_if.command_valid %>),
+  .o_write          (<%= host_if.write %>),
+  .o_read           (<%= host_if.read %>),
+  .o_address        (<%= host_if.address %>),
+  .o_write_data     (<%= host_if.write_data %>),
+  .o_write_mask     (<%= host_if.write_mask %>),
+  .i_response_ready (<%= host_if.response_ready %>),
+  .i_read_data      (<%= host_if.read_data %>),
+  .i_status         (<%= host_if.status %>)
+);
+

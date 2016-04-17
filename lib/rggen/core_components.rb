@@ -1,4 +1,5 @@
 require_relative 'core_components/configuration/raise_error'
+require_relative 'core_components/configuration/item'
 require_relative 'core_components/configuration/configuration_factory'
 require_relative 'core_components/configuration/item_factory'
 require_relative 'core_components/configuration/setup'

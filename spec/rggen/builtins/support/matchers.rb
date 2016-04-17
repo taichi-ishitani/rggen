@@ -71,6 +71,13 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
   end
 end
 
+RSpec::Matchers.define :have_parameter_declaration do |attributes|
+  match do |component|
+    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:parameter, attributes).to_s
+    component.parameter_declarations.any? { |declaration| declaration.to_s == expectation }
+  end
+end
+
 RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
   diffable
 

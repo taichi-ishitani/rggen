@@ -115,6 +115,13 @@ shared_context 'rtl common' do
     RgGen.builder.build_factory(:rtl)
   end
 
+  def have_parameter(*expectation)
+    handle_name, attributes = expectation.last(2)
+    attributes[:name     ]  ||= handle_name.to_s
+    attributes[:parameter_type] = :parameter
+    have_identifier(*expectation).and have_parameter_declaration(attributes)
+  end
+
   def have_input(*expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name     ]  ||= handle_name.to_s
