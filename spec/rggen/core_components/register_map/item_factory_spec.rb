@@ -3,7 +3,7 @@ require_relative  'spec_helper'
 module RgGen::RegisterMap
   describe ItemFactory do
     class FooItem < RgGen::RegisterMap::Item
-      field :foo
+      field :foo, default: :foo
       build {|cell| @foo = cell}
     end
 
@@ -22,22 +22,48 @@ module RgGen::RegisterMap
     end
 
     let(:value) do
-      :foo
+      :bar
     end
 
     let(:cell) do
       create_cell(value)
     end
 
+    let(:position) do
+      cell.position
+    end
+
     describe "#create" do
-      it "アイテムオブジェクトの生成とビルドを行う" do
+       it "アイテムオブジェクトの生成とビルドを行う" do
         i = factory.create(component, configuration, cell)
-        expect(i).to be_kind_of(FooItem).and have_attributes(foo: value)
+        expect(i).to be_kind_of(FooItem).and have_attributes(foo: value, position: position)
       end
 
-      it "componentとcellを引数として、#create_itemを呼び出す" do
-        expect(factory).to receive(:create_item).with(component, cell).and_call_original
-        factory.create(component, configuration, cell)
+      context "#convertがオーバーライドされている場合" do
+        before do
+          def factory.convert(value)
+            value.to_s.upcase
+          end
+        end
+
+        it "#convertの戻り値でアイテムオブジェクトの生成とビルドを行う" do
+          i = factory.create(component, configuration, cell)
+          expect(i).to be_kind_of(FooItem).and have_attributes(foo: value.to_s.upcase, position: position)
+        end
+      end
+
+      context "入力セルがnilまたは空セルの場合" do
+        before do
+          expect(factory).not_to receive(:convert)
+        end
+
+        it "#convertでの値変換を行わない" do
+          factory.create(component, configuration, nil )
+          cell.value  = ''
+          factory.create(component, configuration, cell)
+          cell.value  = nil
+          factory.create(component, configuration, cell)
+        end
       end
     end
   end

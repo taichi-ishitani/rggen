@@ -4,9 +4,16 @@ module RgGen
       include RaiseError
 
       def create(configuration, data = nil)
-        item  = create_item(configuration, data)
-        item.build(data) unless data.nil?
-        item
+        data  &&= convert(data)
+        create_item(configuration, data).tap do |item|
+          item.build(data) unless data.nil?
+        end
+      end
+
+      private
+
+      def convert(data)
+        data
       end
     end
   end

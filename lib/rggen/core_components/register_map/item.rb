@@ -14,8 +14,10 @@ module RgGen
 
       def build(configuration, cell)
         @configuration  = configuration
-        @position       = cell.position
-        super(cell.value)
+        unless cell.nil?
+          @position = cell.position
+          super(cell.value)
+        end
       end
     end
   end

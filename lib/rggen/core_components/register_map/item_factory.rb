@@ -4,9 +4,22 @@ module RgGen
       include RaiseError
 
       def create(component, configuration, cell = nil)
-        item  = create_item(component, cell)
-        item.build(configuration, cell) unless cell.nil?
-        item
+        convert_cell_value(cell)
+        create_item(component, cell).tap do |item|
+          item.build(configuration, cell)
+        end
+      end
+
+      private
+
+      def convert_cell_value(cell)
+        return if cell.nil?
+        return if cell.empty?
+        cell.value  = convert(cell.value)
+      end
+
+      def convert(cell)
+        cell
       end
     end
   end

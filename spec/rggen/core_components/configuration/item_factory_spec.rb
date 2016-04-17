@@ -27,12 +27,25 @@ module RgGen::Configuration
           i = factory.create(configuration, data)
           expect(i).to be_kind_of(FooItem).and have_attributes(foo: data)
         end
+
+        context "#convertがオーバーライドされている場合" do
+          before do
+            def factory.convert(value)
+              value.to_s.upcase
+            end
+          end
+
+          it "#convertの戻り値でアイテムオブジェクトの生成とビルドを行う" do
+            i = factory.create(configuration, data)
+            expect(i).to be_kind_of(FooItem).and have_attributes(foo: data.to_s.upcase)
+          end
+        end
       end
 
       context "入力データがnilのとき" do
         it "アイテムオブジェクトの生成のみ行う" do
+          expect(factory).not_to receive(:convert)
           i = factory.create(configuration, nil)
-          # ビルドを行わないのでデフォルト値のままになっている
           expect(i).to be_kind_of(FooItem).and have_attributes(foo: :foo)
         end
       end
