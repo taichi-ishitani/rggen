@@ -86,7 +86,7 @@ list_item :bit_field, :type do
       class_delegator :same_width
 
       build do |cell|
-        @type = cell.to_sym.downcase
+        @type = cell
       end
 
       validate do
@@ -146,9 +146,14 @@ list_item :bit_field, :type do
 
     factory do
       def select_target_item(cell)
-        type  = cell.value.to_sym.downcase
-        @target_items.fetch(type) do
-          error "unknown bit field type: #{type}", cell
+        @target_items.fetch(cell.value) do
+          error "unknown bit field type: #{cell.value}", cell
+        end
+      end
+
+      def convert(cell)
+        @target_items.keys.find(proc { cell }) do |type|
+          type.to_sym.casecmp(cell.to_sym) == 0
         end
       end
     end
