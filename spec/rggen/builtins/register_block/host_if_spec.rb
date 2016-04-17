@@ -8,6 +8,8 @@ describe "register_block/host_if" do
   before(:all) do
     [:Foo, :bar, :baz].each do |host_if|
       RgGen.list_item(:register_block, :host_if, host_if) do
+        configuration {} if host_if == :Foo
+
         rtl {
           define_method(:test) {host_if}
         }
@@ -49,14 +51,23 @@ describe "register_block/host_if" do
           end
         end
       end
+    end
 
-      context "ロード結果のHashに:host_ifが含まれていて、有効にされたホストIFに含まれない場合" do
-        it "RgGen::ConfigurationErrorを発生させる" do
-          [:baz, :BAZ, "qux", "QUX"].each do |value|
-            expect {
-              configuration(host_if: value)
-            }.to raise_configuration_error "unknown host interface: #{value}"
-          end
+    it "アイテムクラスの定義の有無に関わらず、使用できる" do
+      expect {
+        configuration(host_if: :Foo)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :bar)
+      }.not_to raise_error
+    end
+
+    context "ロード結果のHashに:host_ifが含まれていて、有効にされたホストIFに含まれない場合" do
+      it "RgGen::ConfigurationErrorを発生させる" do
+        [:baz, :BAZ, "qux", "QUX"].each do |value|
+          expect {
+            configuration(host_if: value)
+          }.to raise_configuration_error "unknown host interface: #{value}"
         end
       end
     end

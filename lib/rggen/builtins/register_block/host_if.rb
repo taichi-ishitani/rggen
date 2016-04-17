@@ -4,16 +4,34 @@ list_item :register_block, :host_if do
   end
 
   configuration do
-    item_class do
+    item_base do
       field :host_if do
         @host_if || shared_context.enabled_host_ifs.first
       end
 
       build do |value|
-        @host_if  = shared_context.enabled_host_ifs.find do |host_if|
+        @host_if  = value
+      end
+    end
+
+    default_item do
+    end
+
+    factory do
+      def select_target_item(value)
+        @target_items[value]
+      end
+
+      def convert(value)
+        find_host_if(value) do
+          error "unknown host interface: #{value}"
+        end
+      end
+
+      def find_host_if(value, &ifnone)
+        shared_context.enabled_host_ifs.find(ifnone) do |host_if|
           host_if.to_sym.casecmp(value.to_sym) == 0
         end
-        error "unknown host interface: #{value}" if @host_if.nil?
       end
     end
   end
