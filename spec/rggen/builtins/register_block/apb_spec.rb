@@ -13,51 +13,104 @@ describe "register_block/apb" do
     RgGen.enable(:register_block, :clock_reset)
     RgGen.enable(:register_block, :host_if    )
     RgGen.enable(:register_block, :host_if, [:apb])
-
-    configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
-    register_map  = create_register_map(
-      configuration,
-      "block_0" => [
-        [nil, nil, "block_0"],
-        [nil, nil, 256      ]
-      ]
-    )
-
-    @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks[0]
   end
 
   after(:all) do
     clear_enabled_items
   end
 
-  let(:rtl) do
-    @rtl
+  describe 'configuration' do
+    before(:all) do
+      @factory  = build_configuration_factory
+    end
+
+    let(:factory) do
+      @factory
+    end
+
+    def configuration(load_data = {})
+      ConfigurationDummyLoader.load_data(load_data)
+      @factory.create(configuration_file)
+    end
+
+    it "apb選択時、アドレス幅は32ビット以下で使用できる" do
+      expect {
+        configuration(host_if: :apb, address_width: 8)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, address_width: 16)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, address_width: 32)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, address_width: 33)
+      }.to raise_configuration_error 'apb supports 32 or less bits address width only: 33'
+      expect {
+        configuration(host_if: :apb, address_width: 64)
+      }.to raise_configuration_error 'apb supports 32 or less bits address width only: 64'
+    end
+
+    it "apb選択時、データ幅は32ビット以下で使用できる" do
+      expect {
+        configuration(host_if: :apb, data_width: 8)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, data_width: 16)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, data_width: 32)
+      }.not_to raise_error
+      expect {
+        configuration(host_if: :apb, data_width: 64)
+      }.to raise_configuration_error 'apb supports 32 or less bits data width only: 64'
+      expect {
+        configuration(host_if: :apb, data_width: 128)
+      }.to raise_configuration_error 'apb supports 32 or less bits data width only: 128'
+    end
   end
 
-  let(:data_width) do
-    32
-  end
+  describe 'rtl' do
+    before(:all) do
+      configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
+      register_map  = create_register_map(
+        configuration,
+        "block_0" => [
+          [nil, nil, "block_0"],
+          [nil, nil, 256      ]
+        ]
+      )
+      @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks[0]
+    end
 
-  let(:host_address_width) do
-    16
-  end
+    let(:rtl) do
+      @rtl
+    end
 
-  it "APB用の入出出力を持つ" do
-    expect(rtl).to  have_input(:apb, :paddr  , name: "i_paddr"  , width: host_address_width)
-    expect(rtl).to  have_input(:apb, :pprot  , name: "i_pprot"  , width: 3                 )
-    expect(rtl).to  have_input(:apb, :psel   , name: "i_psel"   , width: 1                 )
-    expect(rtl).to  have_input(:apb, :penable, name: "i_penable", width: 1                 )
-    expect(rtl).to  have_input(:apb, :pwrite , name: "i_pwrite" , width: 1                 )
-    expect(rtl).to  have_input(:apb, :pwdata , name: "i_pwdata" , width: data_width        )
-    expect(rtl).to  have_input(:apb, :pstrb  , name: "i_pstrb"  , width: data_width / 8    )
-    expect(rtl).to have_output(:apb, :pready , name: "o_pready" , width: 1                 )
-    expect(rtl).to have_output(:apb, :prdata , name: "o_prdata" , width: data_width        )
-    expect(rtl).to have_output(:apb, :pslverr, name: "o_pslverr", width: 1                 )
-  end
+    let(:data_width) do
+      32
+    end
 
-  describe "#generate_code" do
-    let(:expected_code) do
-      <<'CODE'
+    let(:host_address_width) do
+      16
+    end
+
+    it "APB用の入出出力を持つ" do
+      expect(rtl).to  have_input(:apb, :paddr  , name: "i_paddr"  , width: host_address_width)
+      expect(rtl).to  have_input(:apb, :pprot  , name: "i_pprot"  , width: 3                 )
+      expect(rtl).to  have_input(:apb, :psel   , name: "i_psel"   , width: 1                 )
+      expect(rtl).to  have_input(:apb, :penable, name: "i_penable", width: 1                 )
+      expect(rtl).to  have_input(:apb, :pwrite , name: "i_pwrite" , width: 1                 )
+      expect(rtl).to  have_input(:apb, :pwdata , name: "i_pwdata" , width: data_width        )
+      expect(rtl).to  have_input(:apb, :pstrb  , name: "i_pstrb"  , width: data_width / 8    )
+      expect(rtl).to have_output(:apb, :pready , name: "o_pready" , width: 1                 )
+      expect(rtl).to have_output(:apb, :prdata , name: "o_prdata" , width: data_width        )
+      expect(rtl).to have_output(:apb, :pslverr, name: "o_pslverr", width: 1                 )
+    end
+
+    describe "#generate_code" do
+      let(:expected_code) do
+        <<'CODE'
 rggen_host_if_apb #(
   .DATA_WIDTH           (32),
   .HOST_ADDRESS_WIDTH   (16),
@@ -86,10 +139,11 @@ rggen_host_if_apb #(
   .i_status         (status)
 );
 CODE
-    end
+      end
 
-    it "APB用のホストIFモジュールをインスタンスするコードを出力する" do
-      expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+      it "APB用のホストIFモジュールをインスタンスするコードを出力する" do
+        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+      end
     end
   end
 end
