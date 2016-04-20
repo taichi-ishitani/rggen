@@ -199,77 +199,83 @@ module block_0 (
     .i_write_mask     (write_mask[15:0]),
     .o_value          (bit_field_1_1_value)
   );
-  for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_2_0
-    rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
-      .ADDRESS_WIDTH      (6),
-      .START_ADDRESS      (6'h02 + g_i),
-      .END_ADDRESS        (6'h02 + g_i),
-      .USE_SHADOW_INDEX   (0),
-      .SHADOW_INDEX_WIDTH (1),
-      .SHADOW_INDEX_VALUE (1'h0)
-    ) u_register_2_address_decoder (
-      .i_read         (read),
-      .i_write        (write),
-      .i_address      (address[7:2]),
-      .i_shadow_index (1'h0),
-      .o_select       (register_select[2+g_i])
-    );
-    assign register_read_data[2+g_i] = {bit_field_2_0_value[g_i], bit_field_2_1_value[g_i]};
-    assign bit_field_2_0_value[g_i] = i_bit_field_2_0[g_i];
-    assign o_bit_field_2_1[g_i] = bit_field_2_1_value[g_i];
-    rggen_bit_field_rw #(
-      .WIDTH          (16),
-      .INITIAL_VALUE  (16'h0000)
-    ) u_bit_field_2_1 (
-      .clk              (clk),
-      .rst_n            (rst_n),
-      .i_command_valid  (command_valid),
-      .i_select         (register_select[2+g_i]),
-      .i_write          (write),
-      .i_write_data     (write_data[15:0]),
-      .i_write_mask     (write_mask[15:0]),
-      .o_value          (bit_field_2_1_value[g_i])
-    );
-  end
-  for (genvar g_i = 0;g_i < 2;g_i++) begin : gen_register_3_0
-    for (genvar g_j = 0;g_j < 4;g_j++) begin : gen_register_3_1
-      assign register_3_shadow_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
+  generate if (1) begin : g_register_2
+    genvar g_i;
+    for (g_i = 0;g_i < 2;g_i++) begin : g
       rggen_address_decoder #(
         .READABLE           (1),
         .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
-        .START_ADDRESS      (6'h04),
-        .END_ADDRESS        (6'h04),
-        .USE_SHADOW_INDEX   (1),
-        .SHADOW_INDEX_WIDTH (33),
-        .SHADOW_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
-      ) u_register_3_address_decoder (
+        .START_ADDRESS      (6'h02 + g_i),
+        .END_ADDRESS        (6'h02 + g_i),
+        .USE_SHADOW_INDEX   (0),
+        .SHADOW_INDEX_WIDTH (1),
+        .SHADOW_INDEX_VALUE (1'h0)
+      ) u_register_2_address_decoder (
         .i_read         (read),
         .i_write        (write),
         .i_address      (address[7:2]),
-        .i_shadow_index (register_3_shadow_index[g_i][g_j]),
-        .o_select       (register_select[4+4*g_i+g_j])
+        .i_shadow_index (1'h0),
+        .o_select       (register_select[2+g_i])
       );
-      assign register_read_data[4+4*g_i+g_j] = {bit_field_3_0_value[g_i][g_j], bit_field_3_1_value[g_i][g_j]};
-      assign bit_field_3_0_value[g_i][g_j] = i_bit_field_3_0[g_i][g_j];
-      assign o_bit_field_3_1[g_i][g_j] = bit_field_3_1_value[g_i][g_j];
+      assign register_read_data[2+g_i] = {bit_field_2_0_value[g_i], bit_field_2_1_value[g_i]};
+      assign bit_field_2_0_value[g_i] = i_bit_field_2_0[g_i];
+      assign o_bit_field_2_1[g_i] = bit_field_2_1_value[g_i];
       rggen_bit_field_rw #(
         .WIDTH          (16),
         .INITIAL_VALUE  (16'h0000)
-      ) u_bit_field_3_1 (
+      ) u_bit_field_2_1 (
         .clk              (clk),
         .rst_n            (rst_n),
         .i_command_valid  (command_valid),
-        .i_select         (register_select[4+4*g_i+g_j]),
+        .i_select         (register_select[2+g_i]),
         .i_write          (write),
         .i_write_data     (write_data[15:0]),
         .i_write_mask     (write_mask[15:0]),
-        .o_value          (bit_field_3_1_value[g_i][g_j])
+        .o_value          (bit_field_2_1_value[g_i])
       );
     end
-  end
+  end endgenerate
+  generate if (1) begin : g_register_3
+    genvar g_i, g_j;
+    for (g_i = 0;g_i < 2;g_i++) begin : g
+      for (g_j = 0;g_j < 4;g_j++) begin : g
+        assign register_3_shadow_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
+        rggen_address_decoder #(
+          .READABLE           (1),
+          .WRITABLE           (1),
+          .ADDRESS_WIDTH      (6),
+          .START_ADDRESS      (6'h04),
+          .END_ADDRESS        (6'h04),
+          .USE_SHADOW_INDEX   (1),
+          .SHADOW_INDEX_WIDTH (33),
+          .SHADOW_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
+        ) u_register_3_address_decoder (
+          .i_read         (read),
+          .i_write        (write),
+          .i_address      (address[7:2]),
+          .i_shadow_index (register_3_shadow_index[g_i][g_j]),
+          .o_select       (register_select[4+4*g_i+g_j])
+        );
+        assign register_read_data[4+4*g_i+g_j] = {bit_field_3_0_value[g_i][g_j], bit_field_3_1_value[g_i][g_j]};
+        assign bit_field_3_0_value[g_i][g_j] = i_bit_field_3_0[g_i][g_j];
+        assign o_bit_field_3_1[g_i][g_j] = bit_field_3_1_value[g_i][g_j];
+        rggen_bit_field_rw #(
+          .WIDTH          (16),
+          .INITIAL_VALUE  (16'h0000)
+        ) u_bit_field_3_1 (
+          .clk              (clk),
+          .rst_n            (rst_n),
+          .i_command_valid  (command_valid),
+          .i_select         (register_select[4+4*g_i+g_j]),
+          .i_write          (write),
+          .i_write_data     (write_data[15:0]),
+          .i_write_mask     (write_mask[15:0]),
+          .o_value          (bit_field_3_1_value[g_i][g_j])
+        );
+      end
+    end
+  end endgenerate
 endmodule
 CODE
     end

@@ -57,26 +57,27 @@ module rggen_response_mux #(
   assign  o_read_data = read_data;
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n)  begin
-      read_data <= {DATA_WIDTH{1'b0}};
+      read_data <= '0;
     end
     else if (response_valid && i_read) begin
-      read_data <= selected_data;
+      read_data <= select_read_data(
+        .select     (i_register_select    ),
+        .read_data  (i_register_read_data )
+      );
     end
     else begin
-      read_data <= {DATA_WIDTH{1'b0}};
+      read_data <= '0;
     end
   end
 
-  if (TOTAL_REGISTERS > 1) begin
-    for (genvar i = 0;i < DATA_WIDTH;i++) begin
-      logic [TOTAL_REGISTERS-1:0] temp;
-      assign  selected_data[i]  = |temp;
-      for (genvar j = 0;j < TOTAL_REGISTERS;j++) begin
-        assign  temp[j] = i_register_select[j] & i_register_read_data[j][i];
-      end
+  function automatic logic [DATA_WIDTH-1:0] select_read_data(
+    input logic [TOTAL_REGISTERS-1:0] select,
+    input logic [DATA_WIDTH-1:0]      read_data[TOTAL_REGISTERS]
+  );
+    logic [DATA_WIDTH-1:0]  masked_read_data[TOTAL_REGISTERS];
+    for (int i = 0;i < TOTAL_REGISTERS;i++) begin
+      masked_read_data[i] = {DATA_WIDTH{select[i]}} & read_data[i];
     end
-  end
-  else begin
-    assign  selected_data = i_register_read_data[0];
-  end
+    return masked_read_data.or();
+  endfunction
 endmodule

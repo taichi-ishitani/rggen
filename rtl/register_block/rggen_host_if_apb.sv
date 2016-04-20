@@ -25,6 +25,8 @@ module rggen_host_if_apb #(
   input   [DATA_WIDTH-1:0]          i_read_data,
   input   [1:0]                     i_status
 );
+  `include "rggen_host_if_common.svh"
+
   assign  o_pready  = i_response_ready;
   assign  o_prdata  = i_read_data;
   assign  o_pslverr = i_status[0];
@@ -34,7 +36,5 @@ module rggen_host_if_apb #(
   assign  o_read          = ~i_pwrite;
   assign  o_address       = i_paddr[LOCAL_ADDRESS_WIDTH-1:0];
   assign  o_write_data    = i_pwdata;
-  for (genvar i = 0;i < DATA_WIDTH / 8;i++) begin
-    assign  o_write_mask[i*8+:8]  = {8{i_pstrb[i]}};
-  end
+  assign  o_write_mask    = get_write_mask(i_pstrb);
 endmodule

@@ -35,6 +35,8 @@ module rggen_host_if_axi4lite #(
   input   [DATA_WIDTH-1:0]          i_read_data,
   input   [1:0]                     i_status
 );
+  `include "rggen_host_if_common.svh"
+
   typedef enum logic [5:0] {
     IDLE              = 6'b000001,
     WAIT_WDATA        = 6'b000010,
@@ -149,20 +151,22 @@ module rggen_host_if_axi4lite #(
   assign  arack = i_arvalid & arready;
   assign  rack  = rvalid    & i_rready;
 
-  if (WRITE_PRIORITY) begin
-    assign  awready = state[0];
-    assign  wready  = (state[0] || state[1]) ? 1'b1 : 1'b0;
-    assign  bvalid  = state[3];
-    assign  arready = (state[0] && (!i_awvalid)) ? 1'b1 : 1'b0;
-    assign  rvalid  = state[5];
-  end
-  else begin
-    assign  awready = (state[0] && (!i_arvalid)) ? 1'b1 : 1'b0;
-    assign  wready  = ((state[0] && (!i_arvalid)) || state[1]) ? 1'b1 : 1'b0;
-    assign  bvalid  = state[3];
-    assign  arready = state[0];
-    assign  rvalid  = state[5];
-  end
+  generate
+    if (WRITE_PRIORITY) begin
+      assign  awready = state[0];
+      assign  wready  = (state[0] || state[1]) ? 1'b1 : 1'b0;
+      assign  bvalid  = state[3];
+      assign  arready = (state[0] && (!i_awvalid)) ? 1'b1 : 1'b0;
+      assign  rvalid  = state[5];
+    end
+    else begin
+      assign  awready = (state[0] && (!i_arvalid)) ? 1'b1 : 1'b0;
+      assign  wready  = ((state[0] && (!i_arvalid)) || state[1]) ? 1'b1 : 1'b0;
+      assign  bvalid  = state[3];
+      assign  arready = state[0];
+      assign  rvalid  = state[5];
+    end
+  endgenerate
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
@@ -233,26 +237,15 @@ module rggen_host_if_axi4lite #(
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       write_data  <= '0;
+      write_mask  <= '0;
     end
     else if (wack) begin
       write_data  <= i_wdata;
+      write_mask  <= get_write_mask(i_wstrb);
     end
     else if (local_done) begin
       write_data  <= '0;
-    end
-  end
-
-  for (genvar i = 0;i < DATA_WIDTH / 8;i++) begin
-    always_ff @(posedge clk or negedge rst_n) begin
-      if (!rst_n) begin
-        write_mask[8*i+:8]  <= '0;
-      end
-      else if (wack) begin
-        write_mask[8*i+:8]  <= {8{i_wstrb[i]}};
-      end
-      else if (local_done) begin
-        write_mask[8*i+:8]  <= '0;
-      end
+      write_mask  <= '0;
     end
   end
 endmodule
