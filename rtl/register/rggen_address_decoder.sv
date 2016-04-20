@@ -23,27 +23,35 @@ module rggen_address_decoder #(
 
   assign  match = (match_address && match_shadow_index) ? 1'b1 : 1'b0;
 
-  if (START_ADDRESS == END_ADDRESS) begin
-    assign  match_address = (i_address == START_ADDRESS) ? 1'b1 : 1'b0;
-  end
-  else begin
-    assign  match_address = (i_address inside {[START_ADDRESS:END_ADDRESS]}) ? 1'b1 : 1'b0;
-  end
+  generate
+    if (START_ADDRESS == END_ADDRESS) begin
+      assign  match_address = (i_address == START_ADDRESS) ? 1'b1 : 1'b0;
+    end
+    else begin
+      assign  match_address = (
+        (i_address >= START_ADDRESS) && (i_address <= END_ADDRESS)
+      ) ? 1'b1 : 1'b0;
+    end
+  endgenerate
 
-  if (USE_SHADOW_INDEX) begin
-    assign  match_shadow_index  = (i_shadow_index == SHADOW_INDEX_VALUE) ? 1'b1 : 1'b0;
-  end
-  else begin
-    assign  match_shadow_index  = 1'b1;
-  end
+  generate
+    if (USE_SHADOW_INDEX) begin
+      assign  match_shadow_index  = (i_shadow_index == SHADOW_INDEX_VALUE) ? 1'b1 : 1'b0;
+    end
+    else begin
+      assign  match_shadow_index  = 1'b1;
+    end
+  endgenerate
 
-  if (READ_ONLY) begin
-    assign  o_select  = (match && i_read) ? 1'b1 : 1'b0;
-  end
-  else if (WRITE_ONLY) begin
-    assign  o_select  = (match && i_write) ? 1'b1 : 1'b0;
-  end
-  else begin
-    assign  o_select  = match;
-  end
+  generate
+    if (READ_ONLY) begin
+      assign  o_select  = (match && i_read) ? 1'b1 : 1'b0;
+    end
+    else if (WRITE_ONLY) begin
+      assign  o_select  = (match && i_write) ? 1'b1 : 1'b0;
+    end
+    else begin
+      assign  o_select  = match;
+    end
+  endgenerate
 endmodule

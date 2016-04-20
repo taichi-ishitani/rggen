@@ -190,22 +190,22 @@ CODE
     context "対象レジスタが配列になっている場合" do
       let(:expected_code) do
         <<'CODE'
-  rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h0c + g_i),
-    .END_ADDRESS        (6'h0c + g_i),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
-  ) u_register_4_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
-    .i_address      (address[7:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[4+g_i])
-  );
+    rggen_address_decoder #(
+      .READABLE           (1),
+      .WRITABLE           (1),
+      .ADDRESS_WIDTH      (6),
+      .START_ADDRESS      (6'h0c + g_i),
+      .END_ADDRESS        (6'h0c + g_i),
+      .USE_SHADOW_INDEX   (0),
+      .SHADOW_INDEX_WIDTH (1),
+      .SHADOW_INDEX_VALUE (1'h0)
+    ) u_register_4_address_decoder (
+      .i_read         (read),
+      .i_write        (write),
+      .i_address      (address[7:2]),
+      .i_shadow_index (1'h0),
+      .o_select       (register_select[4+g_i])
+    );
 CODE
       end
 
@@ -265,67 +265,67 @@ CODE
 
       let(:expected_code_2) do
         <<'CODE'
-  assign register_7_shadow_index[g_i] = {bit_field_10_0_value};
-  rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h11),
-    .END_ADDRESS        (6'h11),
-    .USE_SHADOW_INDEX   (1),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE ({g_i[0]})
-  ) u_register_7_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
-    .i_address      (address[7:2]),
-    .i_shadow_index (register_7_shadow_index[g_i]),
-    .o_select       (register_select[10+g_i])
-  );
+    assign register_7_shadow_index[g_i] = {bit_field_10_0_value};
+    rggen_address_decoder #(
+      .READABLE           (1),
+      .WRITABLE           (1),
+      .ADDRESS_WIDTH      (6),
+      .START_ADDRESS      (6'h11),
+      .END_ADDRESS        (6'h11),
+      .USE_SHADOW_INDEX   (1),
+      .SHADOW_INDEX_WIDTH (1),
+      .SHADOW_INDEX_VALUE ({g_i[0]})
+    ) u_register_7_address_decoder (
+      .i_read         (read),
+      .i_write        (write),
+      .i_address      (address[7:2]),
+      .i_shadow_index (register_7_shadow_index[g_i]),
+      .o_select       (register_select[10+g_i])
+    );
 CODE
       end
 
       let(:expected_code_3) do
         <<'CODE'
-    assign register_8_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value};
-    rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
-      .ADDRESS_WIDTH      (6),
-      .START_ADDRESS      (6'h12),
-      .END_ADDRESS        (6'h12),
-      .USE_SHADOW_INDEX   (1),
-      .SHADOW_INDEX_WIDTH (3),
-      .SHADOW_INDEX_VALUE ({g_i[0], g_j[1:0]})
-    ) u_register_8_address_decoder (
-      .i_read         (read),
-      .i_write        (write),
-      .i_address      (address[7:2]),
-      .i_shadow_index (register_8_shadow_index[g_i][g_j]),
-      .o_select       (register_select[12+4*g_i+g_j])
-    );
+      assign register_8_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value};
+      rggen_address_decoder #(
+        .READABLE           (1),
+        .WRITABLE           (1),
+        .ADDRESS_WIDTH      (6),
+        .START_ADDRESS      (6'h12),
+        .END_ADDRESS        (6'h12),
+        .USE_SHADOW_INDEX   (1),
+        .SHADOW_INDEX_WIDTH (3),
+        .SHADOW_INDEX_VALUE ({g_i[0], g_j[1:0]})
+      ) u_register_8_address_decoder (
+        .i_read         (read),
+        .i_write        (write),
+        .i_address      (address[7:2]),
+        .i_shadow_index (register_8_shadow_index[g_i][g_j]),
+        .o_select       (register_select[12+4*g_i+g_j])
+      );
 CODE
       end
 
       let(:expected_code_4) do
         <<'CODE'
-    assign register_9_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value, bit_field_10_2_value, bit_field_10_3_value};
-    rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
-      .ADDRESS_WIDTH      (6),
-      .START_ADDRESS      (6'h13),
-      .END_ADDRESS        (6'h13),
-      .USE_SHADOW_INDEX   (1),
-      .SHADOW_INDEX_WIDTH (15),
-      .SHADOW_INDEX_VALUE ({1'h0, g_i[1:0], 4'h1, g_j[7:0]})
-    ) u_register_9_address_decoder (
-      .i_read         (read),
-      .i_write        (write),
-      .i_address      (address[7:2]),
-      .i_shadow_index (register_9_shadow_index[g_i][g_j]),
-      .o_select       (register_select[20+4*g_i+g_j])
-    );
+      assign register_9_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value, bit_field_10_2_value, bit_field_10_3_value};
+      rggen_address_decoder #(
+        .READABLE           (1),
+        .WRITABLE           (1),
+        .ADDRESS_WIDTH      (6),
+        .START_ADDRESS      (6'h13),
+        .END_ADDRESS        (6'h13),
+        .USE_SHADOW_INDEX   (1),
+        .SHADOW_INDEX_WIDTH (15),
+        .SHADOW_INDEX_VALUE ({1'h0, g_i[1:0], 4'h1, g_j[7:0]})
+      ) u_register_9_address_decoder (
+        .i_read         (read),
+        .i_write        (write),
+        .i_address      (address[7:2]),
+        .i_shadow_index (register_9_shadow_index[g_i][g_j]),
+        .o_select       (register_select[20+4*g_i+g_j])
+      );
 CODE
       end
 

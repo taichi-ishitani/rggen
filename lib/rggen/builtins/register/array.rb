@@ -96,38 +96,48 @@ simple_item :register, :array do
       register_block.registers.take_while { |r| !register.equal?(r) }
     end
 
-    generate_pre_code :module_item do |buffer|
+    generate_pre_code :module_item do |code|
+      if register.array?
+        generate_header(code)
+        generate_for_headers(code)
+      end
+    end
+
+    generate_post_code :module_item do |code|
+      if register.array?
+        generate_for_footers(code)
+        generate_footer(code)
+      end
+    end
+
+    def generate_header(code)
+      code << "generate if (1) begin : g_#{register.name}" << nl
+      code.indent += 2
+      code << "genvar #{loop_variables.join(', ')};" << nl
+    end
+
+    def generate_for_headers(code)
       register.dimensions.each_with_index do |dimension, level|
-        generate_for_begin_code(dimension, level, buffer)
-      end if register.array?
-    end
-
-    generate_post_code :module_item do |buffer|
-      register.dimensions.size.times do
-        generate_for_end_code(buffer)
-      end if register.array?
-    end
-
-    def generate_for_begin_code(dimension, level, buffer)
-      buffer << generate_for_header(dimension, level)
-      buffer << ' begin : '
-      buffer << block_name(level)
-      buffer << nl
-      buffer.indent += 2
-    end
-
-    def generate_for_end_code(buffer)
-      buffer.indent -= 2
-      buffer << 'end' << nl
+        code << generate_for_header(dimension, level) << nl
+        code.indent += 2
+      end
     end
 
     def generate_for_header(dimension, level)
-      genvar  = loop_variable(level)
-      "for (genvar #{genvar} = 0;#{genvar} < #{dimension};#{genvar}++)"
+      gv  = loop_variable(level)
+      "for (#{gv} = 0;#{gv} < #{dimension};#{gv}++) begin : g"
     end
 
-    def block_name(level)
-      "gen_#{register.name}_#{level}"
+    def generate_for_footers(code)
+      register.dimensions.size.times do
+        code.indent -= 2
+        code << :end << nl
+      end
+    end
+
+    def generate_footer(code)
+      code.indent -= 2
+      code << :end << space << :endgenerate << nl
     end
   end
 end
