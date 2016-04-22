@@ -93,7 +93,7 @@ In addition, file name of generated files is accoding to below rule.
 ### Compiling Your Design
 
 RgGen has base RTL modules and RAL model package (the base library) to build generated RTL and UVM RAL models.
-Therefore, To compile your design with the base library, you need followins steps:
+Therefore, to compile your design with the base library, you need followins steps:
 
 1. Set the RGGEN_HOME environment variable
 2. Link the base library with you design
