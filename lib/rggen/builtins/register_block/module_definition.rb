@@ -4,6 +4,7 @@ define_simple_item :register_block, :module_definition do
       module_definition register_block.name do |m|
         m.parameters register_block.parameter_declarations
         m.ports      register_block.port_declarations
+        m.signals    register_block.signal_declarations
         m.body do |code|
           register_block.generate_code(:module_item, :top_down, code)
         end
