@@ -36,6 +36,12 @@ module RgGen
         code_block.indent -= indent_size
       end
 
+      def wrap(code_block, head, tail, &block)
+        code_block << head
+        block.call if block_given?
+        code_block << tail
+      end
+
       def loop_index(level)
         level.times.with_object('i') { |_, index| index.next! }
       end
