@@ -11,7 +11,7 @@ describe 'register/field_model_creator' do
     enable :register, :name
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :reserved]
-    enable :bit_field, :field_model_creation
+    enable :bit_field, :field_model
     enable :register , :field_model_creator
 
     configuration = create_configuration

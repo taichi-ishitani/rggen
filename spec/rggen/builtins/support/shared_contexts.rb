@@ -148,4 +148,8 @@ shared_context 'ral common' do
   def build_ral_factory
     RgGen.builder.build_factory(:ral)
   end
+
+  def have_sub_model(model_class, name, attributes = {})
+    have_sub_model_declaration(attributes.merge(data_type: model_class, name: name, random: true))
+  end
 end

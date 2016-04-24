@@ -11,8 +11,8 @@ describe 'register/reg_model_definition' do
     enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro]
-    enable :register , [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator]
-    enable :bit_field, [:field_model_declaration, :field_model_creation]
+    enable :register , [:reg_model_definition, :reg_model_constructor, :field_model_creator, :shadow_index_configurator]
+    enable :bit_field, :field_model
 
     configuration = create_configuration
     register_map  = create_register_map(

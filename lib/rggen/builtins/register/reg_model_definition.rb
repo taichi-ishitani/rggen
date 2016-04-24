@@ -4,10 +4,9 @@ simple_item :register, :reg_model_definition do
 
     generate_code :package_item do
       class_definition model_name do |c|
-        c.base base_model
-        c.body do |buffer|
-          register.generate_code(:reg_model_item, :top_down, buffer)
-        end
+        c.base      base_model
+        c.variables register.sub_model_declarations
+        c.body { |code| body_code(code) }
       end
     end
 
@@ -17,6 +16,10 @@ simple_item :register, :reg_model_definition do
 
     def base_model
       (register.shadow? && :rggen_ral_shadow_reg) || :rggen_ral_reg
+    end
+
+    def body_code(code)
+      register.generate_code(:reg_model_item, :top_down, code)
     end
   end
 end

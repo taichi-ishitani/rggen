@@ -1,9 +1,15 @@
-simple_item :bit_field, :field_model_creation do
+simple_item :bit_field, :field_model do
   ral do
+    export :model_creation
+
     delegate [:name, :width, :lsb, :access] => :bit_field
 
-    generate_code :field_model_creation do
-      "`rggen_ral_create_field_model(#{arguments.join(', ')})\n"
+    build do
+      model_declaration :rggen_ral_field, name
+    end
+
+    def model_creation(code)
+      code << "`rggen_ral_create_field_model(#{arguments.join(', ')})" << nl
     end
 
     def arguments
