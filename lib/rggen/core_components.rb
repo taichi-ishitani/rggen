@@ -20,5 +20,6 @@ require_relative 'core_components/rtl/component'
 require_relative 'core_components/rtl/item'
 require_relative 'core_components/rtl/setup'
 
+require_relative 'core_components/ral/component'
 require_relative 'core_components/ral/item'
 require_relative 'core_components/ral/setup'
