@@ -1,4 +1,4 @@
-simple_item :register_block, :block_model_definition do
+simple_item :register_block, :block_model do
   ral do
     generate_code :package_item do
       class_definition model_name do |c|

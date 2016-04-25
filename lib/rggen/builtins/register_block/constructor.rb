@@ -1,4 +1,4 @@
-simple_item :register_block, :block_model_constructor do
+simple_item :register_block, :constructor do
   ral do
     delegate [:name] => :register_block
 

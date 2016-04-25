@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'register/reg_model_constructor' do
+describe 'register/constructor' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -11,7 +11,7 @@ describe 'register/reg_model_constructor' do
     enable :register, :name
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw]
-    enable :register , :reg_model_constructor
+    enable :register , :constructor
 
     configuration = create_configuration
     register_map  = create_register_map(
