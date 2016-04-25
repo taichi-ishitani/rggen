@@ -1,4 +1,4 @@
-simple_item :register_block, :ral_package_definition do
+simple_item :register_block, :ral_package do
   ral do
     delegate :name => :register_block
 

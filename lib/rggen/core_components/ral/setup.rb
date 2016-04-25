@@ -7,7 +7,7 @@ module RgGen
       end
 
       entry [:register_block, :register, :bit_field] do
-        component_class   OutputBase::Component
+        component_class   Component
         component_factory OutputBase::ComponentFactory
         item_base         Item
         item_factory      OutputBase::ItemFactory

@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'register_block/reg_model_constructor' do
+describe 'register_block/default_map_creator' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -8,7 +8,7 @@ describe 'register_block/reg_model_constructor' do
   before(:all) do
     enable :global, :data_width
     enable :register_block, :name
-    enable :register_block, :block_model_default_map_creator
+    enable :register_block, :default_map_creator
   end
 
   after(:all) do

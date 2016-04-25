@@ -1,4 +1,4 @@
-simple_item :register_block, :block_model_default_map_creator do
+simple_item :register_block, :default_map_creator do
   ral do
     generate_code :block_model_item do
       function_definition :create_default_map do |f|

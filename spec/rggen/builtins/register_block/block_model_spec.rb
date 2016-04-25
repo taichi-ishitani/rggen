@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'register_block/block_model_definition' do
+describe 'register_block/block_model' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -11,8 +11,8 @@ describe 'register_block/block_model_definition' do
     enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo]
-    enable :register , [:reg_model_definition, :reg_model_declaration, :reg_model_creation]
-    enable :register_block, [:block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]
+    enable :register , :reg_model
+    enable :register_block, [:block_model, :constructor, :reg_model_creator, :default_map_creator]
 
     configuration = create_configuration
     register_map  = create_register_map(

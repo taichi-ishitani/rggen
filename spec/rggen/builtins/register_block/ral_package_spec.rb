@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe "register_block/ral_package_definition" do
+describe "register_block/ral_package" do
   include_context 'configuration common'
   include_context 'register_map common'
   include_context 'ral common'
@@ -11,10 +11,10 @@ describe "register_block/ral_package_definition" do
     enable :register      , [:name, :offset_address, :array, :shadow, :accessibility]
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field     , :type, [:rw, :ro, :wo]
-    enable :bit_field     , [:field_model_declaration, :field_model_creation]
-    enable :register      , [:reg_model_definition, :field_model_declarations, :reg_model_constructor, :field_model_creator, :shadow_index_configurator, :reg_model_declaration, :reg_model_creation]
-    enable :register_block, [:block_model_definition, :reg_model_declarations, :block_model_constructor, :reg_model_creator, :block_model_default_map_creator]
-    enable :register_block, :ral_package_definition
+    enable :bit_field     , :field_model
+    enable :register      , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator]
+    enable :register_block, [:block_model, :constructor, :reg_model_creator, :default_map_creator]
+    enable :register_block, :ral_package
 
     configuration = create_configuration
     register_map  = create_register_map(

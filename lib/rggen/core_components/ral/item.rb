@@ -6,7 +6,7 @@ module RgGen
       private
 
       def model_declaration(model_class, name, attributes = {})
-        create_declaration(
+        owner.parent.sub_model_declarations << create_declaration(
           :variable,
           attributes.merge(data_type: model_class, name: name, random: true)
         )

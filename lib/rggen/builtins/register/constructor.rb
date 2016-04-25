@@ -1,4 +1,4 @@
-simple_item :register, :reg_model_constructor do
+simple_item :register, :constructor do
   ral do
     generate_code :reg_model_item do
       function_definition :new do |f|

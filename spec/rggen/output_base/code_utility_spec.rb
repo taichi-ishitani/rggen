@@ -92,6 +92,30 @@ CODE
       end
     end
 
+    describe "#wrap" do
+      let(:code) do
+        test_object.send(:code_block) do |buffer|
+          buffer << :foo
+          test_object.send(:wrap, buffer, '(', ')') do
+            buffer << :bar << :newline
+            buffer << :baz
+          end
+          buffer << :foobar << :newline
+        end
+      end
+
+      let(:expected_code) do
+        <<'CODE'
+foo(bar
+baz)foobar
+CODE
+      end
+
+      it "ブロック内で入力されたコードを、head、tailで与えた文字列囲む" do
+        expect(code.to_s).to eq expected_code
+      end
+    end
+
     describe "#loop_index" do
       it "ネストの深さに応じたループ変数名を返す" do
         expect(test_object.send(:loop_index, 0)).to eq "i"
