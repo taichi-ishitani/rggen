@@ -7,9 +7,9 @@ module RgGen::OutputBase
     end
 
     let(:register_map) do
-      m = get_component_class(:register_map, 0).new(nil)
+      m = get_component_class(:register_map, 0).new(nil, configuration)
       2.times do
-        b = get_component_class(:register_map, 1).new(m)
+        b = get_component_class(:register_map, 1).new(m, configuration)
         m.add_child(b)
       end
       m

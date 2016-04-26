@@ -4,7 +4,6 @@ module RgGen
       include Base::HierarchicalItemAccessors
       include RaiseError
 
-      attr_reader :configuration
       attr_reader :position
 
       def initialize(owner)
@@ -12,12 +11,15 @@ module RgGen
         define_hierarchical_item_accessors
       end
 
-      def build(configuration, cell)
-        @configuration  = configuration
-        unless cell.nil?
-          @position = cell.position
-          super(cell.value)
-        end
+      def build(cell)
+        @position = cell.position
+        super(cell.value)
+      end
+
+      private
+
+      def configuration
+        @owner.configuration
       end
     end
   end

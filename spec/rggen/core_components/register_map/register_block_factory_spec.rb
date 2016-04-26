@@ -11,7 +11,7 @@ module RgGen::RegisterMap
     end
 
     let(:register_map) do
-      get_component_class(:register_map, 0).new(nil)
+      get_component_class(:register_map, 0).new(nil, configuration)
     end
 
     let(:sheet) do

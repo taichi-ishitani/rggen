@@ -6,7 +6,7 @@ module RgGen
       def create(component, configuration, cell = nil)
         convert_cell_value(cell)
         create_item(component, cell).tap do |item|
-          item.build(configuration, cell)
+          item.build(cell) unless cell.nil?
         end
       end
 

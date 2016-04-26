@@ -1,6 +1,6 @@
 module RgGen
   module RegisterMap
-    class RegisterMapFactory < InputBase::ComponentFactory
+    class RegisterMapFactory < ComponentFactory
       def create_children(register_map, configuration, map)
         map.sheets.each do |sheet|
           create_child(register_map, configuration, sheet)
