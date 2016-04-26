@@ -52,7 +52,6 @@ module rggen_response_mux #(
 
   //  Read data
   logic [DATA_WIDTH-1:0]  read_data;
-  logic [DATA_WIDTH-1:0]  selected_data;
 
   assign  o_read_data = read_data;
   always_ff @(posedge clk or negedge rst_n) begin
