@@ -28,10 +28,30 @@ module RgGen::Base
       end
     end
 
+    describe "#need_children?" do
+      it "子コンポーネントが必要かを返す" do
+        expect(component.need_children?).to be true
+        component.need_no_children
+        expect(component.need_children?).to be false
+      end
+    end
+
     describe "#add_child" do
       it "子オブジェクトを#childrenの末尾に追加する" do
         parent.add_child(child)
         expect(parent.children.last).to eql child
+      end
+
+      context "子コンポーネントを必要としない場合" do
+        before do
+          component.need_no_children
+        end
+
+        it "子コンポーネントの追加を行わない" do
+          expect {
+            component.add_child(child)
+          }.not_to change { component.children }
+        end
       end
     end
 

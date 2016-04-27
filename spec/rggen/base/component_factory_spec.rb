@@ -11,9 +11,9 @@ module RgGen::Base
     end
 
     def create_factory(&body)
-      f = Class.new(ComponentFactory, &body).new
-      f.target_component  = component_class
-      f
+      Class.new(ComponentFactory, &body).new.tap do |f|
+        f.target_component  = component_class
+      end
     end
 
     describe "#create" do
@@ -50,17 +50,35 @@ module RgGen::Base
       end
 
       context "子コンポーネントファクトリが登録されているとき" do
-        it "子コンポーネントを含むコンポーネントオブジェクトを生成する" do
-          child_factory = create_factory
-          factory       = create_factory do
+        let(:child_factory) do
+          create_factory
+        end
+
+        let(:factory) do
+          create_factory {
             def create_children(component, *args)
               create_child(component, *args)
             end
-          end
-          factory.child_factory = child_factory
+          }.tap { |f| f.child_factory = child_factory }
+        end
 
+        it "子コンポーネントを含むコンポーネントオブジェクトを生成する" do
           component = factory.create(parent)
           expect(component.children).to match [kind_of(component_class)]
+        end
+
+        context "生成したコンポーネントの#need_children?が偽を返す場合" do
+          before do
+            allow(factory).to receive(:create_component).and_wrap_original do |m, *args|
+              m.call(*args).tap { |c| c.need_no_children }
+            end
+            expect(child_factory).not_to receive(:create)
+          end
+
+          it "子コンポーネントを含まないコンポーネントオブジェクトを生成する" do
+            component = factory.create(parent)
+            expect(component.children).to be_empty
+          end
         end
       end
 

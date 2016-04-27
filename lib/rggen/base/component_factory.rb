@@ -13,9 +13,9 @@ module RgGen
         parent  = (child_factory? && args.shift) || nil
         sources = args
         create_component(parent, *sources).tap do |component|
-          create_items(component, *sources) if @item_factories
-          parent.add_child(component) unless @root_factory
-          create_children(component, *sources) if @child_factory
+          create_items(component, *sources) if create_items?
+          parent.add_child(component) if child_factory?
+          create_children(component, *sources) if create_children?(component)
         end
       end
 
@@ -27,6 +27,14 @@ module RgGen
 
       def child_factory?
         !@root_factory
+      end
+
+      def create_items?
+        @item_factories.not_nil?
+      end
+
+      def create_children?(component)
+        @child_factory.not_nil? && component.need_children?
       end
 
       def create_component(parent, *_sources)

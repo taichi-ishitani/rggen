@@ -4,10 +4,11 @@ module RgGen
       include SingleForwardable
 
       def initialize(parent)
-        @parent   = parent
-        @children = []
-        @level    = (parent && parent.level + 1) || 0
-        @items    = []
+        @parent         = parent
+        @children       = []
+        @level          = (parent && parent.level + 1) || 0
+        @items          = []
+        @need_children  = true
       end
 
       attr_reader :parent
@@ -15,8 +16,16 @@ module RgGen
       attr_reader :level
       attr_reader :items
 
+      def need_no_children
+        @need_children  = false
+      end
+
+      def need_children?
+        @need_children
+      end
+
       def add_child(child)
-        @children << child
+        @children << child if need_children?
       end
 
       def add_item(item)
