@@ -15,7 +15,11 @@ module RgGen::Builder
     end
 
     let(:item_base_factory) do
-      RgGen::InputBase::ItemFactory
+      Class.new(RgGen::InputBase::ItemFactory) do
+        def create(*args)
+          create_item(*args)
+        end
+      end
     end
 
     let(:modules) do

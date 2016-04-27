@@ -23,21 +23,25 @@ module RgGen::InputBase
         end
 
         let(:active_item_factory) do
-          f = ItemFactory.new
-          f.target_item = active_item
-          f
+          ItemFactory.new.tap do |f|
+            f.target_item = active_item
+            def f.create(*args)
+              create_item(*args)
+            end
+          end
         end
 
         let(:passive_item_factory) do
-          f = ItemFactory.new
-          f.target_item = passive_item
-          f
+          ItemFactory.new.tap do |f|
+            f.target_item = passive_item
+            def f.create(*args)
+              create_item(*args)
+            end
+          end
         end
 
         let(:factory) do
-          c = component
           f = Class.new(ComponentFactory) {
-            define_method(:create_component) {|*args| c}
             def create_active_items(component, *args)
               active_item_factories.each_value.with_index do |f, i|
                 create_item(f, component, *args[0..-2], args[-1][i])
@@ -46,6 +50,7 @@ module RgGen::InputBase
           }.new
           f.target_component  = Component
           f.item_factories    = {foo: active_item_factory, bar: passive_item_factory, baz:passive_item_factory, qux: active_item_factory}
+          allow(f).to receive(:create_component).and_return(component)
           f
         end
 
@@ -95,50 +100,33 @@ module RgGen::InputBase
           end
         end
 
-        let(:bar_loader) do
-          Class.new(Loader) do
-            self.supported_types  = [:bar]
-          end
-        end
-
-        context "入力ファイルに対応するローダが登録されている場合" do
-          let(:factory) do
-            f = ComponentFactory.new
+        let(:factory) do
+          ComponentFactory.new.tap do |f|
             f.target_component  = Component
             f.loaders           = [foo_loader]
             f.root_factory
-            f
           end
+        end
 
+        it "生成したコンポーネントオブジェクトの#validateを呼び出す" do
+          component = Component.new(nil)
+          allow(factory).to receive(:create_component).and_return(component)
+          expect(component).to receive(:validate).with(no_args)
+          factory.create(file_name)
+        end
+
+        context "入力ファイルに対応するローダが登録されている場合" do
           it "ローダの#load_fileを呼び出す" do
             loader  = double("loader")
-            foo_loader.define_singleton_method(:new) do
-              loader
-            end
-
+            allow(foo_loader).to receive(:new).and_return(loader)
             expect(loader).to receive(:load_file).with(file_name)
-            factory.create(file_name)
-          end
-
-          it "生成したコンポーネントオブジェクトの#validateを呼び出す" do
-            component = Component.new(nil)
-            factory.define_singleton_method(:create_component) do |*args|
-              component
-            end
-
-            expect(component).to receive(:validate).with(no_args)
             factory.create(file_name)
           end
         end
 
         context "入力ファイルに対応するローダが登録されていない場合" do
           it "LoadErrorを発生させる" do
-            f = ComponentFactory.new
-            f.target_component  = Component
-            f.loaders           = [bar_loader]
-            f.root_factory
-
-            expect {f.create(file_name)}.to raise_load_error "unsupported file type: foo"
+            expect {factory.create("test.bar")}.to raise_load_error "unsupported file type: bar"
           end
         end
       end
@@ -148,17 +136,19 @@ module RgGen::InputBase
           Component.new(nil)
         end
 
+        let(:component) do
+          Component.new(parent)
+        end
+
+        let(:factory) do
+          ComponentFactory.new.tap do |f|
+            allow(f).to receive(:create_component).and_return(component)
+          end
+        end
+
         it "生成したコンポーネントオブジェクトの#validateを呼び出さない" do
-          component = Component.new(parent)
-
-          f = Class.new(ComponentFactory) {
-            define_method(:create_component) do |*args|
-              component
-            end
-          }.new
-
           expect(component).not_to receive(:validate)
-          f.create(parent)
+          factory.create(parent)
         end
       end
     end

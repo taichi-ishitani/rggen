@@ -34,8 +34,7 @@ module RgGen
       end
 
       def create_item(item_factory, component, *sources)
-        item  = item_factory.create(component, *sources)
-        component.add_item(item)
+        item_factory.create(component, *sources)
       end
 
       def create_child(component, *sources)

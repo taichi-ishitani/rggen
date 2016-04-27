@@ -5,7 +5,7 @@ module RgGen
 
       def create(configuration, data = nil)
         data  &&= convert(data)
-        create_item(configuration, data).tap do |item|
+        create_item(configuration, data) do |item|
           item.build(data) unless data.nil?
         end
       end

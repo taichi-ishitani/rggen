@@ -7,7 +7,11 @@ module RgGen::Builder
     end
 
     let(:factory) do
-      RgGen::InputBase::ItemFactory
+      Class.new(RgGen::InputBase::ItemFactory) do
+        def create(*args)
+          create_item(*args)
+        end
+      end
     end
 
     let(:shared_context) do
@@ -50,8 +54,8 @@ module RgGen::Builder
       end
 
       let(:item) do
-        f = entry.build_factory
-        f.create(component)
+        entry.build_factory.create(component)
+        component.items.first
       end
 
       it "定義したアイテムクラスを生成するファクトリオブジェクトを返す" do

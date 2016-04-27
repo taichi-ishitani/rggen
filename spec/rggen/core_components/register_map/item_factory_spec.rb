@@ -8,9 +8,9 @@ module RgGen::RegisterMap
     end
 
     let(:factory) do
-      f             = ItemFactory.new
-      f.target_item = FooItem
-      f
+      ItemFactory.new.tap do |f|
+        f.target_item = FooItem
+      end
     end
 
     let(:configuration) do
@@ -19,6 +19,10 @@ module RgGen::RegisterMap
 
     let(:component) do
       RgGen::RegisterMap::Component.new(nil, configuration)
+    end
+
+    let(:item) do
+      component.items.first
     end
 
     let(:value) do
@@ -36,8 +40,8 @@ module RgGen::RegisterMap
     describe "#create" do
       context "入力セルがnilではない場合" do
         it "アイテムオブジェクトの生成とビルドを行う" do
-          i = factory.create(component, configuration, cell)
-          expect(i).to be_kind_of(FooItem).and have_attributes(foo: value, position: position)
+          factory.create(component, configuration, cell)
+          expect(item).to be_kind_of(FooItem).and have_attributes(foo: value, position: position)
         end
 
         context "#convertがオーバーライドされている場合" do
@@ -48,16 +52,16 @@ module RgGen::RegisterMap
           end
 
           it "#convertの戻り値でアイテムオブジェクトの生成とビルドを行う" do
-            i = factory.create(component, configuration, cell)
-            expect(i).to be_kind_of(FooItem).and have_attributes(foo: value.to_s.upcase, position: position)
+            factory.create(component, configuration, cell)
+            expect(item).to be_kind_of(FooItem).and have_attributes(foo: value.to_s.upcase, position: position)
           end
         end
       end
 
       context "入力セルがnilの場合" do
         it "アイテムオブジェクトの生成のみ行う" do
-          i = factory.create(component, configuration, nil)
-          expect(i).to be_kind_of(FooItem).and have_attributes(foo: :foo, position: nil)
+          factory.create(component, configuration, nil)
+          expect(item).to be_kind_of(FooItem).and have_attributes(foo: :foo, position: nil)
         end
       end
 

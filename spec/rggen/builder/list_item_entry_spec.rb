@@ -7,7 +7,11 @@ module RgGen::Builder
     end
 
     let(:factory_base) do
-      RgGen::InputBase::ItemFactory
+      Class.new(RgGen::InputBase::ItemFactory) do
+        def create(*args)
+          create_item(*args)
+        end
+      end
     end
 
     let(:list_item_entry) do
@@ -185,9 +189,12 @@ module RgGen::Builder
         end
 
         specify "ファクトリオブジェクトは#enableで有効になったアイテムを生成する" do
-          expect(factory.create(nil, :foo)).to be_kind_of items[:foo]
-          expect(factory.create(nil, :baz)).to be_kind_of items[:baz]
-          expect(factory.create(nil, :qux)).to be_kind_of items[:qux]
+          factory.create(component, :foo)
+          expect(component.items.last).to be_kind_of items[:foo]
+          factory.create(component, :baz)
+          expect(component.items.last).to be_kind_of items[:baz]
+          factory.create(component, :qux)
+          expect(component.items.last).to be_kind_of items[:qux]
         end
 
         specify "ファクトリオブジェクトは#enableで有効にされなかったアイテムは生成できない" do
@@ -213,7 +220,8 @@ module RgGen::Builder
         end
 
         specify "ファクトリオブジェクトは#item_classで定義されたクラスをデフォルトのアイテムとして生成する" do
-          expect(factory.create(nil, :bar)).to be_kind_of list_item_entry.item_class
+          factory.create(component, :bar)
+          expect(component.items.last).to be_kind_of list_item_entry.item_class
         end
       end
     end

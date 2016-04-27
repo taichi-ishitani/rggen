@@ -11,10 +11,14 @@ module RgGen::Configuration
       get_component_class(:configuration, 0).new(nil)
     end
 
+    let(:item) do
+      configuration.items.first
+    end
+
     let(:factory) do
-      f             = get_item_factory(:configuration, 0).new
-      f.target_item = FooItem
-      f
+      get_item_factory(:configuration, 0).new.tap do |f|
+        f.target_item = FooItem
+      end
     end
 
     describe "#create" do
@@ -24,8 +28,8 @@ module RgGen::Configuration
         end
 
         it "アイテムオブジェクトの生成とビルドを行う" do
-          i = factory.create(configuration, data)
-          expect(i).to be_kind_of(FooItem).and have_attributes(foo: data)
+          factory.create(configuration, data)
+          expect(item).to be_kind_of(FooItem).and have_attributes(foo: data)
         end
 
         context "#convertがオーバーライドされている場合" do
@@ -36,8 +40,8 @@ module RgGen::Configuration
           end
 
           it "#convertの戻り値でアイテムオブジェクトの生成とビルドを行う" do
-            i = factory.create(configuration, data)
-            expect(i).to be_kind_of(FooItem).and have_attributes(foo: data.to_s.upcase)
+            factory.create(configuration, data)
+            expect(item).to be_kind_of(FooItem).and have_attributes(foo: data.to_s.upcase)
           end
         end
       end
@@ -45,8 +49,8 @@ module RgGen::Configuration
       context "入力データがnilのとき" do
         it "アイテムオブジェクトの生成のみ行う" do
           expect(factory).not_to receive(:convert)
-          i = factory.create(configuration, nil)
-          expect(i).to be_kind_of(FooItem).and have_attributes(foo: :foo)
+          factory.create(configuration, nil)
+          expect(item).to be_kind_of(FooItem).and have_attributes(foo: :foo)
         end
       end
     end

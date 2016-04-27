@@ -73,10 +73,17 @@ module RgGen::Base
           :item
         end
 
-        it "アイテムを含むコンポーネントオブジェクトを生成する" do
-          item_factory              = ItemFactory.new
-          item_factory.target_item  = item_class
+        let(:item_factory) do
+          f = Class.new(ItemFactory) {
+            def create(owner, *args)
+              create_item(owner, *args)
+            end
+          }.new
+          f.target_item = item_class
+          f
+        end
 
+        it "アイテムを含むコンポーネントオブジェクトを生成する" do
           factory = create_factory do
             def create_items(component, *args)
               @item_factories.each_value do|f|
@@ -84,36 +91,10 @@ module RgGen::Base
               end
             end
           end
-          factory.item_factories  = {item_name => item_factory}
+          factory.item_factories  = { item_name => item_factory }
 
           component = factory.create(parent)
           expect(component.items).to match [kind_of(item_class)]
-        end
-
-        it "Component#add_itemを呼び出して、アイテムオブジェクトを登録する" do
-          component     = component_class.new(parent)
-          item          = item_class.new(component)
-
-          item_factory  = Class.new(ItemFactory) {
-            define_method(:create_item) do |owner, *args|
-              item
-            end
-          }.new
-
-          factory = create_factory do
-            define_method(:create_component) do |parent, *args|
-              component
-            end
-            def create_items(component, *args)
-              @item_factories.each_value do|f|
-                create_item(f, component, *args)
-              end
-            end
-          end
-          factory.item_factories  = {item_name => item_factory}
-
-          expect(component).to receive(:add_item).with(item)
-          factory.create(parent)
         end
       end
     end
