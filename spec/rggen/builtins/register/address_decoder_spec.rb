@@ -11,7 +11,7 @@ describe "register/address_decoder" do
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
-    enable :register, [:name, :offset_address, :array, :shadow, :accessibility, :address_decoder]
+    enable :register, [:name, :offset_address, :array, :shadow, :accessibility, :address_decoder, :index]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
 

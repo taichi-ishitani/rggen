@@ -12,7 +12,7 @@ describe 'register/array' do
     enable :bit_field     , :type, [:rw]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
-    enable :register      , :address_decoder
+    enable :register      , [:address_decoder, :index]
   end
 
   before(:all) do
@@ -218,32 +218,6 @@ describe 'register/array' do
 
     let(:rtl) do
       @rtl
-    end
-
-    describe "#index" do
-      it "自身が属するレジスタブロック内でのインデックスを返す" do
-        expect(rtl.registers.map(&:index)).to match [
-          0        , "1+g_i", "2+g_i", "4+6*g_i+3*g_j+g_k", 10,
-          "0+g_i", 1        , "2+g_i", 4
-        ]
-      end
-    end
-
-    describe "#local_index" do
-      context "レジスタが配列では無い場合" do
-        it "nilを返す" do
-          expect(rtl.registers[0].local_index).to be_nil
-          expect(rtl.registers[4].local_index).to be_nil
-        end
-      end
-
-      context "レジスタが配列の場合" do
-        it "generate for文内でのインデックスを返す" do
-          expect(rtl.registers[1].local_index).to eq "g_i"
-          expect(rtl.registers[2].local_index).to eq "g_i"
-          expect(rtl.registers[3].local_index).to eq "6*g_i+3*g_j+g_k"
-        end
-      end
     end
 
     describe "#loop_variables" do

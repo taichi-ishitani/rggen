@@ -6,13 +6,14 @@ describe 'bit_fields/type/rw' do
   include_context 'rtl common'
 
   before(:all) do
-    RgGen.enable(:global, [:data_width, :address_width])
-    RgGen.enable(:register_block, [:name, :byte_size])
-    RgGen.enable(:register_block, [:clock_reset, :host_if, :response_mux])
-    RgGen.enable(:register_block, :host_if, :apb)
-    RgGen.enable(:register, [:name, :offset_address, :array, :shadow])
-    RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
-    RgGen.enable(:bit_field, :type, :rw)
+    enable :global, [:data_width, :address_width]
+    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, :host_if, :apb
+    enable :register, [:name, :offset_address, :array, :shadow]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :register, :index
+    enable :bit_field, :type, :rw
 
     @factory  = build_register_map_factory
   end

@@ -14,6 +14,7 @@ describe "register_block/response_mux" do
     enable :register, [:name, :offset_address, :array, :shadow]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, :rw
+    enable :register , :index
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(
