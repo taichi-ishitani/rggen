@@ -2,6 +2,18 @@ require_relative  '../../spec_helper'
 
 module RgGen::InputBase
   describe Component do
+    describe "#need_no_children?" do
+      let(:component) do
+        Component.new(nil)
+      end
+
+      it "子コンポーネントが不必要であることを設定する" do
+        expect {
+          component.need_no_children
+        }.to change { component.need_children? }.from(be true).to(be false)
+      end
+    end
+
     describe "#add_item" do
       let(:owner) do
         Component.new(nil)

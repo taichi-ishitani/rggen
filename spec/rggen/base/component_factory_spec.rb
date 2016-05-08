@@ -3,11 +3,20 @@ require_relative  '../../spec_helper'
 module RgGen::Base
   describe ComponentFactory do
     let(:component_class) do
-      Class.new(Component)
+      Class.new(Component) do
+        def initialize(parent)
+          super(parent)
+          @need_children  = true
+        end
+
+        def need_no_children
+          @need_children  = false
+        end
+      end
     end
 
     let(:parent) do
-      Component.new(nil)
+      component_class.new(nil)
     end
 
     def create_factory(&body)
@@ -67,7 +76,7 @@ module RgGen::Base
           expect(component.children).to match [kind_of(component_class)]
         end
 
-        context "生成したコンポーネントの#need_children?が偽を返す場合" do
+        context "生成したコンポーネントが子コンポーネントを必要としない場合" do
           before do
             allow(factory).to receive(:create_component).and_wrap_original do |m, *args|
               m.call(*args).tap { |c| c.need_no_children }

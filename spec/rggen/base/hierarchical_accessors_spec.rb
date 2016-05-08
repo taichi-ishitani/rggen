@@ -7,6 +7,7 @@ module RgGen::Base
 
       def initialize(parent)
         super(parent)
+        @need_children  = true
         parent.add_child(self) unless parent.nil?
         define_hierarchical_accessors
       end

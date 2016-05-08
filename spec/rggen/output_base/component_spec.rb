@@ -20,26 +20,20 @@ module RgGen::OutputBase
       component
     end
 
-    before do
-      @component        = create_component(nil)
-      @child_components = 2.times.map do
-        create_component(@component)
-      end
-      @grandchild_components  = 4.times.map do |i|
-        create_component(@child_components[i / 2])
-      end
-    end
-
     let(:component) do
-      @component
+      create_component(nil)
     end
 
     let(:child_components) do
-      @child_components
+      2.times.map do
+        create_component(component)
+      end
     end
 
     let(:grandchild_components) do
-      @grandchild_components
+      4.times.map do |i|
+        create_component(child_components[i / 2])
+      end
     end
 
     let(:configuration) do
@@ -47,9 +41,9 @@ module RgGen::OutputBase
     end
 
     let(:register_map) do
-      r = RgGen::InputBase::Component.new(nil)
-      allow(r).to receive(:fields).and_return [:baz, :qux]
-      r
+      RgGen::InputBase::Component.new(nil).tap do |r|
+        allow(r).to receive(:fields).and_return [:baz, :qux]
+      end
     end
 
     it "階層アクセッサを持つ" do
@@ -70,6 +64,24 @@ module RgGen::OutputBase
       expect(register_map).to receive(:qux)
       component.baz
       component.qux
+    end
+
+    describe "#need_children?" do
+      context "レジスタマップオブジェクトが子コンポーネントを必要とする場合" do
+        it "同様に子コンポーネントを必要とする" do
+          expect(component.need_children?).to be true
+        end
+      end
+
+      context "レジスタマップオブジェクトが子コンポーネントを必要としない場合" do
+        before do
+          register_map.need_no_children
+        end
+
+        it "同様に子コンポーネントを必要としない" do
+          expect(component.need_children?).to be false
+        end
+      end
     end
 
     describe "#configuration" do
@@ -101,6 +113,12 @@ module RgGen::OutputBase
     end
 
     describe "#generate_code" do
+      before do
+        component
+        child_components
+        grandchild_components
+      end
+
       let(:buffer) do
         CodeBlock.new
       end

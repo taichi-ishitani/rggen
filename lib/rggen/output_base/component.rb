@@ -8,6 +8,7 @@ module RgGen
         define_hierarchical_accessors
         @configuration  = configuration
         @register_map   = register_map
+        @need_children  = register_map.need_children?
         def_delegators(:@register_map, *@register_map.fields)
       end
 
