@@ -1,10 +1,14 @@
 simple_item :register, :shadow_index_configurator do
   ral do
+    available? do
+      register.shadow?
+    end
+
     generate_code :reg_model_item do
       function_definition :configure_shadow_indexes do |f|
         f.return_type :void
         f.body { |code| function_body(code) }
-      end if register.shadow?
+      end
     end
 
     def function_body(code)
