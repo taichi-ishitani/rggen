@@ -8,7 +8,7 @@ module RgGen
 
       def create_item(owner, *args, &block)
         item  = create_item_object(owner, *args)
-        if item.valid?
+        if item.available?
           block.call(item) if block_given?
           owner.add_item(item)
         end

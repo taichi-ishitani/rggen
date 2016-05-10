@@ -15,7 +15,7 @@ module RgGen::Base
     end
 
     let(:item_c) do
-      Item.new(owner).tap { |item| allow(item).to receive(:valid?).and_return(false) }
+      Class.new(Item) { available? { false } }.new(owner)
     end
 
     let(:item_class_a) do
@@ -87,7 +87,7 @@ module RgGen::Base
         end
       end
 
-      context "生成したアイテムオブジェクトが有効ではない(Item#valid?がfalseを返す)場合" do
+      context "生成したアイテムオブジェクトが使用不可(Item#available?がfalseを返す)場合" do
         before do
           test_factory.target_items = { item_c: item_class_c }
         end

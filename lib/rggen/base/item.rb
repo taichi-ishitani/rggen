@@ -8,6 +8,10 @@ module RgGen
           singleton_class.class_exec(&body) if block_given?
         end
 
+        def available?(&body)
+          define_method(:available?, &body)
+        end
+
         def inherit_class_instance_variable(variable_name, klass, &block)
           return unless klass.instance_variable_defined?(variable_name)
           v = klass.instance_variable_get(variable_name)
@@ -22,7 +26,7 @@ module RgGen
 
       attr_reader :owner
 
-      def valid?
+      def available?
         true
       end
     end
