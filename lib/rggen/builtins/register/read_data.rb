@@ -1,5 +1,9 @@
 simple_item :register, :read_data do
   rtl do
+    available? do
+      !register.external?
+    end
+
     generate_code :module_item do |buffer|
       buffer  << assign(register_read_data, read_data) << nl
     end

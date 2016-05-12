@@ -94,8 +94,17 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
     actual.include?(expected)
   end
 
-  failure_message do |component|
-    "#{component} does not generate expected code."
+  failure_message do |actual|
+    "#{actual} is not expected code."
+  end
+
+  match_when_negated do |component|
+    generate_code(component, kind, mode)
+    actual.empty?
+  end
+
+  failure_message_when_negated do |actual|
+    "No generated code is expected\nactual: #{actual}"
   end
 
   attr_reader :expected
