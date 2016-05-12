@@ -24,4 +24,16 @@ simple_item :register, :external do
       end
     end
   end
+
+  rtl do
+    export :external_index
+
+    def external_index
+      external_registers.index(&register.method(:equal?))
+    end
+
+    def external_registers
+      register_block.registers.select(&:external?)
+    end
+  end
 end
