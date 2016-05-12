@@ -15,7 +15,7 @@ enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :referen
 enable :bit_field     , :type, [:rw, :ro, :foo, :reserved]
 enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux]
 enable :register_block, :host_if, [:apb, :bar]
-enable :register      , [:address_decoder, :index, :read_data]
+enable :register      , [:address_decoder, :read_data]
 enable :register_block, [:ral_package, :block_model, :constructor, :reg_model_creator, :default_map_creator]
 enable :register      , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator]
 enable :bit_field     , :field_model

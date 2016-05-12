@@ -11,7 +11,7 @@ describe "register_block/top_module" do
     enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :shadow, :accessibility]
-    enable :register, [:address_decoder, :index, :read_data]
+    enable :register, [:address_decoder, :read_data]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro]
 

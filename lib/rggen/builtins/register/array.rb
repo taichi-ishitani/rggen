@@ -51,33 +51,64 @@ simple_item :register, :array do
   end
 
   rtl do
+    delegate [:array?, :dimensions] => :register
+
+    export :index
+    export :local_index
     export :loop_variables
     export :loop_variable
 
-    def loop_variables
-      return nil unless register.array?
-      Array.new(register.dimensions.size) { |l| loop_variable(l) }
-    end
-
-    def loop_variable(level)
-      return nil unless register.array? && level < register.dimensions.size
-      @loop_variables ||= Hash.new do |h, l|
-        h[l]  = create_identifier("g_#{loop_index(l)}")
-      end
-      @loop_variables[level]
-    end
-
     generate_pre_code :module_item do |code|
-      if register.array?
+      if array?
         generate_header(code)
         generate_for_headers(code)
       end
     end
 
     generate_post_code :module_item do |code|
-      if register.array?
+      if array?
         generate_for_footers(code)
         generate_footer(code)
+      end
+    end
+
+    def index
+      (array? && "#{base_index}+#{local_index}") || base_index
+    end
+
+    def local_index
+      return nil unless array?
+      local_index_terms(0).join('+')
+    end
+
+    def loop_variables
+      return nil unless array?
+      Array.new(dimensions.size) { |l| loop_variable(l) }
+    end
+
+    def loop_variable(level)
+      return nil unless array? && level < dimensions.size
+      @loop_variables ||= Hash.new do |h, l|
+        h[l]  = create_identifier("g_#{loop_index(l)}")
+      end
+      @loop_variables[level]
+    end
+
+    def base_index
+      former_registers.map(&:count).sum(0)
+    end
+
+    def former_registers
+      register_block.registers.take_while { |r| !register.equal?(r) }
+    end
+
+    def local_index_terms(level)
+      if level < (dimensions.size - 1)
+        partial_count = dimensions[(level + 1)..-1].inject(:*)
+        term          = [partial_count, '*', loop_variable(level)].join
+        local_index_terms(level + 1).unshift(term)
+      else
+        [loop_variable(level)]
       end
     end
 
@@ -88,7 +119,7 @@ simple_item :register, :array do
     end
 
     def generate_for_headers(code)
-      register.dimensions.each_with_index do |dimension, level|
+      dimensions.each_with_index do |dimension, level|
         code << generate_for_header(dimension, level) << nl
         code.indent += 2
       end
@@ -100,7 +131,7 @@ simple_item :register, :array do
     end
 
     def generate_for_footers(code)
-      register.dimensions.size.times do
+      dimensions.size.times do
         code.indent -= 2
         code << :end << nl
       end
