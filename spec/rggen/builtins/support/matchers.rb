@@ -43,10 +43,14 @@ RSpec::Matchers.define :have_identifier do |*expectation|
       attributes  = expectation[1]
     end
 
-    identifier  = get_identifier(component, group, handle_name)
-    return false if identifier.nil?
-    return false if identifier.to_s != (attributes[:name] || handle_name).to_s
+    @actual = get_identifier(component, group, handle_name)
+    return false if actual.nil?
+    return false if actual.to_s != (attributes[:name] || handle_name).to_s
     return true
+  end
+
+  failure_message do
+    "expected identifer(#{expected_identifier}) is not defined."
   end
 
   def get_identifier(component, group_name, handle_name)
@@ -55,33 +59,86 @@ RSpec::Matchers.define :have_identifier do |*expectation|
     return nil unless context.respond_to?(handle_name)
     context.__send__(handle_name)
   end
+
+  define_method(:expected_identifier) do
+    if expectation.size == 3
+      group       = expectation[0]
+      handle_name = expectation[1]
+      attributes  = expectation[2]
+    else
+      group       = nil
+      handle_name = expectation[0]
+      attributes  = expectation[1]
+    end
+    if attributes.key?(:name)
+      "#{[group, handle_name].compact.join('.')}(name: #{attributes[:name]}))"
+    else
+      "#{[group, handle_name].compact.join('.')}"
+    end
+  end
 end
 
 RSpec::Matchers.define :have_port_declaration do |attributes|
   match do |component|
-    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
-    component.port_declarations.any? { |declaration| declaration.to_s == expectation }
+    @actual = component.port_declarations
+    actual.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "port(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
   end
 end
 
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
-    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
-    component.signal_declarations.any? { |declaration| declaration.to_s == expectation }
+    @actual = component.signal_declarations
+    actual.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "signal(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
   end
 end
 
 RSpec::Matchers.define :have_parameter_declaration do |attributes|
   match do |component|
-    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:parameter, attributes).to_s
+    @actual = component.parameter_declarations
     component.parameter_declarations.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "parameter(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::OutputBase::VerilogUtility::Declaration.new(:parameter, attributes).to_s
   end
 end
 
 RSpec::Matchers.define :have_sub_model_declaration do |attributes|
   match do |component|
-    expectation = RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    @actual = component.sub_model_declarations
     component.sub_model_declarations.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "sub-model(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
   end
 end
 
@@ -115,3 +172,4 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
     @actual = buffer.to_s
   end
 end
+
