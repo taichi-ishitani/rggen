@@ -1,0 +1,27 @@
+rggen_bus_exporter #(
+  .LOCAL_ADDRESS_WIDTH    (<%= register_block.local_address_width %>),
+  .EXTERNAL_ADDRESS_WIDTH (<%= address_width %>),
+  .START_ADDRESS          (<%= start_address %>)
+) u_<%= name %>_bus_exporter (
+  .clk          (<%= register_block.clock %>),
+  .rst_n        (<%= register_block.reset %>),
+  .i_valid      (<%= register_block.host_if.command_valid %>),
+  .i_select     (<%= register_block.register_select[index] %>),
+  .i_write      (<%= register_block.host_if.write %>),
+  .i_read       (<%= register_block.host_if.read %>),
+  .i_address    (<%= register_block.host_if.address %>),
+  .i_strobe     (<%= register_block.host_if.strobe %>),
+  .i_write_data (<%= register_block.host_if.write_data %>),
+  .o_ready      (<%= register_block.external_register_ready[external_index] %>),
+  .o_read_data  (<%= register_block.register_read_data[index] %>),
+  .o_status     (<%= register_block.external_register_status[external_index] %>),
+  .o_valid      (<%= valid %>),
+  .o_write      (<%= write %>),
+  .o_read       (<%= read %>),
+  .o_address    (<%= address %>),
+  .o_strobe     (<%= strobe %>),
+  .o_write_data (<%= write_data %>),
+  .i_ready      (<%= ready %>),
+  .i_read_data  (<%= read_data %>),
+  .i_status     (<%= status %>)
+);

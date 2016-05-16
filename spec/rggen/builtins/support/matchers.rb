@@ -1,3 +1,37 @@
+RSpec::Matchers.define :have_item do |*expectation|
+  match do |component|
+    @actual = component.items
+    actual.any? do |item|
+      item.is_a? expected_item
+    end
+  end
+
+  failure_message do
+    "Component is expected to have the item(#{expectation.join(', ')}) but does not have it."
+  end
+
+  failure_message_when_negated do
+    "Component is expected not to have the item(#{expectation.join(', ')}) but has it."
+  end
+
+  define_method(:expected_item) do
+    @expected_item  ||=
+      RgGen.builder.instance_eval do
+        @categories[expectation[0]].instance_eval do
+          @item_stores[expectation[1]].instance_eval do
+            if expectation.size == 4
+              @list_item_entries[expectation[2]].instance_eval do
+                @items[expectation[3]]
+              end
+            else
+              @simple_item_entries[expectation[2]].item_class
+            end
+          end
+        end
+      end
+  end
+end
+
 RSpec::Matchers.define :match_access do |expected_access|
   match do |bit_field|
     case expected_access
