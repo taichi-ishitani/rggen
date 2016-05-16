@@ -1,11 +1,11 @@
 simple_item :register, :accessibility do
   register_map do
     field :readable? do
-      register.bit_fields.any?(&:readable?)
+      register.external? || register.bit_fields.any?(&:readable?)
     end
 
     field :writable? do
-      register.bit_fields.any?(&:writable?)
+      register.external? || register.bit_fields.any?(&:writable?)
     end
 
     field :read_only? do
@@ -17,7 +17,7 @@ simple_item :register, :accessibility do
     end
 
     field :reserved? do
-      register.bit_fields.all?(&:reserved?)
+      !register.external? && register.bit_fields.all?(&:reserved?)
     end
   end
 end
