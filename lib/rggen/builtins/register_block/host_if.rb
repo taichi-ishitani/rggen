@@ -46,6 +46,7 @@ list_item :register_block, :host_if do
           logic :write         , width: 1
           logic :read          , width: 1
           logic :address       , width: register_block.local_address_width
+          logic :strobe        , width: configuration.byte_width
           logic :write_data    , width: configuration.data_width
           logic :write_mask    , width: configuration.data_width
           logic :response_ready, width: 1

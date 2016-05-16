@@ -29,6 +29,7 @@ rggen_host_if_axi4lite #(
   .o_write          (<%= host_if.write %>),
   .o_read           (<%= host_if.read %>),
   .o_address        (<%= host_if.address %>),
+  .o_strobe         (<%= host_if.strobe %>),
   .o_write_data     (<%= host_if.write_data %>),
   .o_write_mask     (<%= host_if.write_mask %>),
   .i_response_ready (<%= host_if.response_ready %>),

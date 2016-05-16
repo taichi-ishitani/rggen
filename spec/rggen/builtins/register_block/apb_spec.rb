@@ -132,6 +132,7 @@ rggen_host_if_apb #(
   .o_write          (write),
   .o_read           (read),
   .o_address        (address),
+  .o_strobe         (strobe),
   .o_write_data     (write_data),
   .o_write_mask     (write_mask),
   .i_response_ready (response_ready),
