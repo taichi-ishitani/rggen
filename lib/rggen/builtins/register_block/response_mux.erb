@@ -1,14 +1,18 @@
 rggen_response_mux #(
-  .DATA_WIDTH       (<%= data_width %>),
-  .TOTAL_REGISTERS  (<%= total_registers %>)
+  .DATA_WIDTH               (<%= configuration.data_width %>),
+  .TOTAL_REGISTERS          (<%= total_registers %>),
+  .TOTAL_EXTERNAL_REGISTERS (<%= total_external_registers %>)
 ) u_response_mux (
-  .clk                  (<%= register_block.clock %>),
-  .rst_n                (<%= register_block.reset %>),
-  .i_command_valid      (<%= register_block.host_if.command_valid %>),
-  .i_read               (<%= register_block.host_if.read %>),
-  .o_response_ready     (<%= register_block.host_if.response_ready %>),
-  .o_read_data          (<%= register_block.host_if.read_data %>),
-  .o_status             (<%= register_block.host_if.status %>),
-  .i_register_select    (<%= register_select %>),
-  .i_register_read_data (<%= register_read_data %>)
+  .clk                        (<%= register_block.clock %>),
+  .rst_n                      (<%= register_block.reset %>),
+  .i_command_valid            (<%= register_block.host_if.command_valid %>),
+  .i_read                     (<%= register_block.host_if.read %>),
+  .o_response_ready           (<%= register_block.host_if.response_ready %>),
+  .o_read_data                (<%= register_block.host_if.read_data %>),
+  .o_status                   (<%= register_block.host_if.status %>),
+  .i_register_select          (<%= register_select %>),
+  .i_register_read_data       (<%= register_read_data %>),
+  .i_external_register_select (<%= actual_external_register_select %>),
+  .i_external_register_ready  (<%= actual_external_register_ready %>),
+  .i_external_register_status (<%= actual_external_register_status %>)
 );
