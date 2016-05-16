@@ -95,7 +95,7 @@ simple_item :register, :array do
     end
 
     def base_index
-      former_registers.map(&:count).sum(0)
+      former_registers.sum(0, &:count)
     end
 
     def former_registers

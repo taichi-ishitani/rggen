@@ -61,7 +61,7 @@ simple_item :register, :address_decoder do
 
     def shadow_index_width
       return 1 unless shadow?
-      shadow_index_fields.map(&:width).sum(0)
+      shadow_index_fields.sum(0, &:width)
     end
 
     def shadow_index_value
