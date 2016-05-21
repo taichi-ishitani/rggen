@@ -160,14 +160,14 @@ RSpec::Matchers.define :have_parameter_declaration do |attributes|
   end
 end
 
-RSpec::Matchers.define :have_sub_model_declaration do |attributes|
+RSpec::Matchers.define :have_variable_declaration do |domain, attributes|
   match do |component|
-    @actual = component.sub_model_declarations
-    component.sub_model_declarations.any? { |declaration| declaration.to_s == expectation }
+    @actual = component.variable_declarations(domain)
+    @actual.any? { |declaration| declaration.to_s == expectation }
   end
 
   failure_message do
-    "sub-model(#{expectation}) is not declared.\n" \
+    "expected variable(#{expectation}) is not declared.\n" \
     "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
   end
 

@@ -5,7 +5,10 @@ simple_item :bit_field, :field_model do
     delegate [:name, :width, :lsb, :access] => :bit_field
 
     build do
-      model_declaration :rggen_ral_field, name
+      variable :reg_model, :field_model,
+               data_type: :rggen_ral_field,
+               name:      name,
+               random:    true
     end
 
     def model_creation(code)

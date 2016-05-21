@@ -33,20 +33,16 @@ describe 'bit_field/field_model' do
     clear_enabled_items
   end
 
-  let(:registers) do
-    @ral.registers
-  end
-
   let(:bit_fields) do
     @ral.bit_fields
   end
 
   describe "#build" do
-    it "親コンポーネントに自身の宣言を追加する" do
-      expect(registers[0]).to have_sub_model(:rggen_ral_field, 'bit_field_0_0')
-      expect(registers[1]).to have_sub_model(:rggen_ral_field, 'bit_field_1_0')
-      expect(registers[1]).to have_sub_model(:rggen_ral_field, 'bit_field_1_1')
-      expect(registers[1]).to have_sub_model(:rggen_ral_field, 'bit_field_1_2')
+    it "所有者コンポーネントに自身の宣言を追加する" do
+      expect(bit_fields[0]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_0_0', random: true)
+      expect(bit_fields[1]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_1_0', random: true)
+      expect(bit_fields[2]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_1_1', random: true)
+      expect(bit_fields[3]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_1_2', random: true)
     end
   end
 

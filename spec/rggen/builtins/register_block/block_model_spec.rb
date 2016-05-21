@@ -8,7 +8,7 @@ describe 'register_block/block_model' do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
+    enable :register , [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo]
     enable :register , :reg_model
@@ -18,18 +18,18 @@ describe 'register_block/block_model' do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil, "block_0"                                                                                               ],
-        [nil, nil, 256                                                                                                     ],
-        [                                                                                                                  ],
-        [                                                                                                                  ],
-        [nil, "register_0", "0x00"     , nil     , nil                           , "bit_field_0_0", "[31:16]", "rw", 0, nil],
-        [nil, nil         , nil        , nil     , nil                           , "bit_field_0_1", "[15: 0]", "rw", 0, nil],
-        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , "bit_field_1_0", "[31:16]", "ro", 0, nil],
-        [nil, nil         , nil        , nil     , nil                           , "bit_field_1_1", "[15: 0]", "ro", 0, nil],
-        [nil, "register_2", "0x0C"     , "[2]"   , "bit_field_0_0"               , "bit_field_2_0", "[31:16]", "wo", 0, nil],
-        [nil, nil         , nil        , nil     , nil                           , "bit_field_2_1", "[15: 0]", "wo", 0, nil],
-        [nil, "register_3", "0x10"     , "[2, 4]", "bit_field_0_0, bit_field_0_1", "bit_field_3_0", "[31:16]", "rw", 0, nil],
-        [nil, nil         , nil        , nil     , nil                           , "bit_field_3_1", "[15: 0]", "rw", 0, nil]
+        [nil, nil, "block_0"                                                                                                    ],
+        [nil, nil, 256                                                                                                          ],
+        [                                                                                                                       ],
+        [                                                                                                                       ],
+        [nil, "register_0", "0x00"     , nil     , nil                           , nil, "bit_field_0_0", "[31:16]", "rw", 0, nil],
+        [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_0_1", "[15: 0]", "rw", 0, nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , nil, "bit_field_1_0", "[31:16]", "ro", 0, nil],
+        [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_1_1", "[15: 0]", "ro", 0, nil],
+        [nil, "register_2", "0x0C"     , "[2]"   , "bit_field_0_0"               , nil, "bit_field_2_0", "[31:16]", "wo", 0, nil],
+        [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_2_1", "[15: 0]", "wo", 0, nil],
+        [nil, "register_3", "0x10"     , "[2, 4]", "bit_field_0_0, bit_field_0_1", nil, "bit_field_3_0", "[31:16]", "rw", 0, nil],
+        [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_3_1", "[15: 0]", "rw", 0, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).register_blocks[0]

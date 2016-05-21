@@ -149,7 +149,8 @@ shared_context 'ral common' do
     RgGen.builder.build_factory(:ral)
   end
 
-  def have_sub_model(model_class, name, attributes = {})
-    have_sub_model_declaration(attributes.merge(data_type: model_class, name: name, random: true))
+  def have_variable(domain, handle_name, attributes = {})
+    attributes[:name] ||= handle_name
+    have_identifier(handle_name, attributes).and have_variable_declaration(domain, attributes)
   end
 end

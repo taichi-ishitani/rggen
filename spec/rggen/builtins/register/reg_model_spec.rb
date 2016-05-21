@@ -8,7 +8,7 @@ describe 'register/reg_model' do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
+    enable :register , [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo]
     enable :register , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator]
@@ -18,20 +18,20 @@ describe 'register/reg_model' do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         ,"block_0"                                                                                                                           ],
-        [nil, nil         , 256                                                                                                                                ],
-        [                                                                                                                                                      ],
-        [                                                                                                                                                      ],
-        [nil, "register_0", "0x00"     , nil     , nil                                                             , "bit_field_0_0", "[31:24]", "rw", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_0_1", "[23:16]", "rw", 1  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_0_2", "[15: 8]", "ro", 2  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_0_3", "[ 7: 0]", "ro", nil, nil],
-        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                                             , "bit_field_1_0", "[31:16]", "rw", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_1_1", "[15: 0]", "rw", 0  , nil],
-        [nil, "register_2", "0x10"     , "[4]"   , "bit_field_0_0"                                                 , "bit_field_2_0", "[15: 8]", "ro", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_2_1", "[ 7: 0]", "ro", 0  , nil],
-        [nil, "register_3", "0x14"     , "[2, 4]", "bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", "bit_field_3_0", "[ 7: 4]", "wo", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , "bit_field_3_1", "[ 3: 0]", "wo", 0  , nil]
+        [nil, nil         ,"block_0"                                                                                                                                ],
+        [nil, nil         , 256                                                                                                                                     ],
+        [                                                                                                                                                           ],
+        [                                                                                                                                                           ],
+        [nil, "register_0", "0x00"     , nil     , nil                                                             , nil, "bit_field_0_0", "[31:24]", "rw", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_0_1", "[23:16]", "rw", 1  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_0_2", "[15: 8]", "ro", 2  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_0_3", "[ 7: 0]", "ro", nil, nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                                             , nil, "bit_field_1_0", "[31:16]", "rw", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_1_1", "[15: 0]", "rw", 0  , nil],
+        [nil, "register_2", "0x10"     , "[4]"   , "bit_field_0_0"                                                 , nil, "bit_field_2_0", "[15: 8]", "ro", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_2_1", "[ 7: 0]", "ro", 0  , nil],
+        [nil, "register_3", "0x14"     , "[2, 4]", "bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", nil, "bit_field_3_0", "[ 7: 4]", "wo", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil, "bit_field_3_1", "[ 3: 0]", "wo", 0  , nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map)
@@ -41,20 +41,16 @@ describe 'register/reg_model' do
     clear_enabled_items
   end
 
-  let(:register_block) do
-    @ral.register_blocks[0]
-  end
-
   let(:registers) do
     @ral.registers
   end
 
   describe "#build" do
-    it "親コンポーネントに自身の宣言を追加する" do
-      expect(register_block).to have_sub_model('register_0_reg_model', 'register_0')
-      expect(register_block).to have_sub_model('register_1_reg_model', 'register_1', dimensions: [2   ])
-      expect(register_block).to have_sub_model('register_2_reg_model', 'register_2', dimensions: [4   ])
-      expect(register_block).to have_sub_model('register_3_reg_model', 'register_3', dimensions: [2, 4])
+    it "所有者コンポーネントに自身の宣言を追加する" do
+      expect(registers[0]).to have_variable(:block_model, :reg_model, data_type: 'register_0_reg_model', name: 'register_0', random: true)
+      expect(registers[1]).to have_variable(:block_model, :reg_model, data_type: 'register_1_reg_model', name: 'register_1', random: true, dimensions: [2   ])
+      expect(registers[2]).to have_variable(:block_model, :reg_model, data_type: 'register_2_reg_model', name: 'register_2', random: true, dimensions: [4   ])
+      expect(registers[3]).to have_variable(:block_model, :reg_model, data_type: 'register_3_reg_model', name: 'register_3', random: true, dimensions: [2, 4])
     end
   end
 

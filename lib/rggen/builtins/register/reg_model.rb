@@ -7,13 +7,17 @@ simple_item :register, :reg_model do
     delegate [:name, :dimensions, :array?, :shadow?] => :register
 
     build do
-      model_declaration model_name, name, dimensions: dimensions
+      variable :block_model, :reg_model,
+               data_type:  model_name,
+               name:       name,
+               dimensions: dimensions,
+               random:     true
     end
 
     generate_code :package_item do
       class_definition model_name do |c|
         c.base      base_model
-        c.variables register.sub_model_declarations
+        c.variables register.variable_declarations(:reg_model)
         c.body { |code| body_code(code) }
       end
     end
