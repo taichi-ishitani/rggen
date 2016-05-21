@@ -60,9 +60,9 @@ describe 'register/external' do
       end
 
       specify "当該レジスタは内部レジスタである" do
-        expect(registers[0]).not_to be_external
-        expect(registers[1]).not_to be_external
-        expect(registers[2]).not_to be_external
+        expect(registers[0]).to be_internal
+        expect(registers[1]).to be_internal
+        expect(registers[2]).to be_internal
       end
 
       specify "当該レジスタはビットフィールドを持つ" do
@@ -83,10 +83,10 @@ describe 'register/external' do
       end
 
       specify "当該レジスタは内部レジスタである" do
-        expect(registers[0]).not_to be_external
-        expect(registers[1]).not_to be_external
-        expect(registers[2]).not_to be_external
-        expect(registers[3]).not_to be_external
+        expect(registers[0]).to be_internal
+        expect(registers[1]).to be_internal
+        expect(registers[2]).to be_internal
+        expect(registers[3]).to be_internal
       end
 
       specify "当該レジスタはビットフィールドを持つ" do

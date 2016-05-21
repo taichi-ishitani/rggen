@@ -1,6 +1,9 @@
 simple_item :register, :external do
   register_map do
     field :external?
+    field :internal? do
+      !external?
+    end
 
     input_pattern %r{(true)|(false)|()}i, convert_to_string: true
 

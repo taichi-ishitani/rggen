@@ -6,6 +6,8 @@ simple_item :register, :reg_model do
     delegate [:local_address_width] => :register_block
     delegate [:name, :dimensions, :array?, :shadow?] => :register
 
+    available? { register.internal? }
+
     build do
       variable :block_model, :reg_model,
                data_type:  model_name,
