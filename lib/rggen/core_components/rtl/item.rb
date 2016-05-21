@@ -25,7 +25,7 @@ module RgGen
 
         def define_declaration_method(method_name)
           define_method(method_name) do |handle_name, attributes = {}|
-            attributes[:name] ||= handle_name.to_s
+            attributes[:name] ||= handle_name
             add_identifier(handle_name, attributes[:name])
             add_declaration(method_name, attributes)
           end
