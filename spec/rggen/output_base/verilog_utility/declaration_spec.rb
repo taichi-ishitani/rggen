@@ -59,6 +59,7 @@ module RgGen::OutputBase::VerilogUtility
       expect(parameter_declaration(name: "FOO", parameter_type: :parameter ,                               dimensions: [2   ], default: "'{0, 1}"      )).to eq "parameter FOO[2] = '{0, 1}"
       expect(parameter_declaration(name: "FOO", parameter_type: :parameter ,                               dimensions: [2, 1], default: "'{'{0}, '{1}}")).to eq "parameter FOO[2][1] = '{'{0}, '{1}}"
       expect(parameter_declaration(name: "FOO", parameter_type: :parameter , data_type: :logic, width: 2 , dimensions: [2   ], default: "'{0, 1}"      )).to eq "parameter logic [1:0] FOO[2] = '{0, 1}"
+      expect(parameter_declaration(name: "FOO"                             , data_type: :logic,                                default: 0              )).to eq "logic FOO = 0"
     end
   end
 end

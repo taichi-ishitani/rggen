@@ -30,7 +30,7 @@ module RgGen
           when :port
             @attributes[:direction] || ''
           when :parameter
-            @attributes[:parameter_type]
+            @attributes[:parameter_type] || ''
           end
         end
 
