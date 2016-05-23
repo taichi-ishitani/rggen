@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-RSpec::Matchers.define :have_item do |file, sheet, row, column, field_values|
+RSpec::Matchers.define :have_cell do |file, sheet, row, column, field_values|
   match do |component|
     return false unless component.kind_of?(RgGen::InputBase::Component)
 

@@ -47,16 +47,16 @@ describe 'csv_loader' do
 
     it "#{file_format}フォーマットのファイルをロードする" do
       expect(register_blocks).to match([
-        have_item(file, sheet, 0, 2, name: 'block_0')
+        have_cell(file, sheet, 0, 2, name: 'block_0')
       ])
       expect(registers).to match([
-        have_item(file, sheet, 3, 1, name: 'register_0'),
-        have_item(file, sheet, 5, 1, name: 'register_1')
+        have_cell(file, sheet, 3, 1, name: 'register_0'),
+        have_cell(file, sheet, 5, 1, name: 'register_1')
       ])
       expect(bit_fields).to match([
-        have_item(file, sheet, 3, 2, name: 'bit_field_0_0'),
-        have_item(file, sheet, 4, 2, name: 'bit_field_0_1'),
-        have_item(file, sheet, 5, 2, name: 'bit_field_1_0')
+        have_cell(file, sheet, 3, 2, name: 'bit_field_0_0'),
+        have_cell(file, sheet, 4, 2, name: 'bit_field_0_1'),
+        have_cell(file, sheet, 5, 2, name: 'bit_field_1_0')
       ])
     end
   end

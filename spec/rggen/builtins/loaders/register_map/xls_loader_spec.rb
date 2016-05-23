@@ -38,22 +38,22 @@ describe 'xls_loader' do
 
   it "拡張子がxlsのExcel(2003以前)フォーマットのファイルをロードする" do
     expect(register_blocks).to match([
-      have_item(file, 'sheet_0', 0, 2, name: 'block_0'),
-      have_item(file, 'sheet_2', 0, 2, name: 'block_2')
+      have_cell(file, 'sheet_0', 0, 2, name: 'block_0'),
+      have_cell(file, 'sheet_2', 0, 2, name: 'block_2')
     ])
     expect(registers).to match([
-      have_item(file, 'sheet_0', 3, 1, name: 'register_0'),
-      have_item(file, 'sheet_0', 5, 1, name: 'register_1'),
-      have_item(file, 'sheet_2', 3, 1, name: 'register_0'),
-      have_item(file, 'sheet_2', 4, 1, name: 'register_1')
+      have_cell(file, 'sheet_0', 3, 1, name: 'register_0'),
+      have_cell(file, 'sheet_0', 5, 1, name: 'register_1'),
+      have_cell(file, 'sheet_2', 3, 1, name: 'register_0'),
+      have_cell(file, 'sheet_2', 4, 1, name: 'register_1')
     ])
     expect(bit_fields).to match([
-      have_item(file, 'sheet_0', 3, 2, name: 'bit_field_0_0'),
-      have_item(file, 'sheet_0', 4, 2, name: 'bit_field_0_1'),
-      have_item(file, 'sheet_0', 5, 2, name: 'bit_field_1_0'),
-      have_item(file, 'sheet_2', 3, 2, name: 'bit_field_0_0'),
-      have_item(file, 'sheet_2', 4, 2, name: 'bit_field_1_0'),
-      have_item(file, 'sheet_2', 5, 2, name: 'bit_field_1_1')
+      have_cell(file, 'sheet_0', 3, 2, name: 'bit_field_0_0'),
+      have_cell(file, 'sheet_0', 4, 2, name: 'bit_field_0_1'),
+      have_cell(file, 'sheet_0', 5, 2, name: 'bit_field_1_0'),
+      have_cell(file, 'sheet_2', 3, 2, name: 'bit_field_0_0'),
+      have_cell(file, 'sheet_2', 4, 2, name: 'bit_field_1_0'),
+      have_cell(file, 'sheet_2', 5, 2, name: 'bit_field_1_1')
     ])
   end
 end
