@@ -21,6 +21,7 @@ module sample_1 (
   logic write;
   logic read;
   logic [6:0] address;
+  logic [3:0] strobe;
   logic [31:0] write_data;
   logic [31:0] write_mask;
   logic response_ready;
@@ -54,6 +55,7 @@ module sample_1 (
     .o_write          (write),
     .o_read           (read),
     .o_address        (address),
+    .o_strobe         (strobe),
     .o_write_data     (write_data),
     .o_write_mask     (write_mask),
     .i_response_ready (response_ready),
@@ -61,18 +63,22 @@ module sample_1 (
     .i_status         (status)
   );
   rggen_response_mux #(
-    .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (3)
+    .DATA_WIDTH               (32),
+    .TOTAL_REGISTERS          (3),
+    .TOTAL_EXTERNAL_REGISTERS (0)
   ) u_response_mux (
-    .clk                  (clk),
-    .rst_n                (rst_n),
-    .i_command_valid      (command_valid),
-    .i_read               (read),
-    .o_response_ready     (response_ready),
-    .o_read_data          (read_data),
-    .o_status             (status),
-    .i_register_select    (register_select),
-    .i_register_read_data (register_read_data)
+    .clk                        (clk),
+    .rst_n                      (rst_n),
+    .i_command_valid            (command_valid),
+    .i_read                     (read),
+    .o_response_ready           (response_ready),
+    .o_read_data                (read_data),
+    .o_status                   (status),
+    .i_register_select          (register_select),
+    .i_register_read_data       (register_read_data),
+    .i_external_register_select (1'b0),
+    .i_external_register_ready  (1'b0),
+    .i_external_register_status ('{2'b00})
   );
   rggen_address_decoder #(
     .READABLE           (1),

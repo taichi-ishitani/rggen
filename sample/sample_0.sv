@@ -20,19 +20,32 @@ module sample_0 (
   input [15:0] i_bit_field_4_0[4],
   output [15:0] o_bit_field_4_1[4],
   input [15:0] i_bit_field_5_0[2][4],
-  output [15:0] o_bit_field_5_1[2][4]
+  output [15:0] o_bit_field_5_1[2][4],
+  output o_register_6_valid,
+  output o_register_6_write,
+  output o_register_6_read,
+  output [6:0] o_register_6_address,
+  output [3:0] o_register_6_strobe,
+  output [31:0] o_register_6_write_data,
+  input i_register_6_ready,
+  input [1:0] i_register_6_status,
+  input [31:0] i_register_6_read_data
 );
   logic command_valid;
   logic write;
   logic read;
   logic [7:0] address;
+  logic [3:0] strobe;
   logic [31:0] write_data;
   logic [31:0] write_mask;
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [15:0] register_select;
-  logic [31:0] register_read_data[16];
+  logic [16:0] register_select;
+  logic [31:0] register_read_data[17];
+  logic external_register_select;
+  logic external_register_ready;
+  logic [1:0] external_register_status[1];
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;
   logic [31:0] bit_field_1_0_value;
@@ -65,6 +78,7 @@ module sample_0 (
     .o_write          (write),
     .o_read           (read),
     .o_address        (address),
+    .o_strobe         (strobe),
     .o_write_data     (write_data),
     .o_write_mask     (write_mask),
     .i_response_ready (response_ready),
@@ -72,18 +86,22 @@ module sample_0 (
     .i_status         (status)
   );
   rggen_response_mux #(
-    .DATA_WIDTH       (32),
-    .TOTAL_REGISTERS  (16)
+    .DATA_WIDTH               (32),
+    .TOTAL_REGISTERS          (17),
+    .TOTAL_EXTERNAL_REGISTERS (1)
   ) u_response_mux (
-    .clk                  (clk),
-    .rst_n                (rst_n),
-    .i_command_valid      (command_valid),
-    .i_read               (read),
-    .o_response_ready     (response_ready),
-    .o_read_data          (read_data),
-    .o_status             (status),
-    .i_register_select    (register_select),
-    .i_register_read_data (register_read_data)
+    .clk                        (clk),
+    .rst_n                      (rst_n),
+    .i_command_valid            (command_valid),
+    .i_read                     (read),
+    .o_response_ready           (response_ready),
+    .o_read_data                (read_data),
+    .o_status                   (status),
+    .i_register_select          (register_select),
+    .i_register_read_data       (register_read_data),
+    .i_external_register_select (external_register_select),
+    .i_external_register_ready  (external_register_ready),
+    .i_external_register_status (external_register_status)
   );
   rggen_address_decoder #(
     .READABLE           (1),
@@ -288,4 +306,48 @@ module sample_0 (
       end
     end
   end endgenerate
+  rggen_address_decoder #(
+    .READABLE           (1),
+    .WRITABLE           (1),
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h20),
+    .END_ADDRESS        (6'h3f),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
+  ) u_register_6_address_decoder (
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[16])
+  );
+  assign external_register_select[0] = register_select[16];
+  rggen_bus_exporter #(
+    .LOCAL_ADDRESS_WIDTH    (8),
+    .EXTERNAL_ADDRESS_WIDTH (7),
+    .START_ADDRESS          (8'h80)
+  ) u_register_6_bus_exporter (
+    .clk          (clk),
+    .rst_n        (rst_n),
+    .i_valid      (command_valid),
+    .i_select     (register_select[16]),
+    .i_write      (write),
+    .i_read       (read),
+    .i_address    (address),
+    .i_strobe     (strobe),
+    .i_write_data (write_data),
+    .o_ready      (external_register_ready[0]),
+    .o_read_data  (register_read_data[16]),
+    .o_status     (external_register_status[0]),
+    .o_valid      (o_register_6_valid),
+    .o_write      (o_register_6_write),
+    .o_read       (o_register_6_read),
+    .o_address    (o_register_6_address),
+    .o_strobe     (o_register_6_strobe),
+    .o_write_data (o_register_6_write_data),
+    .i_ready      (i_register_6_ready),
+    .i_read_data  (i_register_6_read_data),
+    .i_status     (i_register_6_status)
+  );
 endmodule

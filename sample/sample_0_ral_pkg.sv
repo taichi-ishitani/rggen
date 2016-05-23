@@ -70,17 +70,20 @@ package sample_0_ral_pkg;
       set_shadow_index("register_0", "bit_field_0_1", indexes[1]);
     endfunction
   endclass
-  class sample_0_block_model extends rggen_ral_block;
+  class sample_0_block_model#(
+    type REGISTER_6 = rggen_ral_block
+  ) extends rggen_ral_block;
     rand register_0_reg_model register_0;
     rand register_1_reg_model register_1;
     rand register_2_reg_model register_2;
     rand register_3_reg_model register_3;
     rand register_4_reg_model register_4[4];
     rand register_5_reg_model register_5[2][4];
+    rand REGISTER_6 register_6;
     function new(string name = "sample_0");
       super.new(name);
     endfunction
-    function void create_registers();
+    function void create_sub_models();
       `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
       `rggen_ral_create_reg_model(register_1, "register_1", '{}, 8'h04, "RW", 0)
       `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0)
@@ -91,6 +94,7 @@ package sample_0_ral_pkg;
       foreach (register_5[i, j]) begin
         `rggen_ral_create_reg_model(register_5[i][j], "register_5", '{i, j}, 8'h20, "RW", 1)
       end
+      `rggen_ral_create_block_model(register_6, "register_6", 8'h80)
     endfunction
     function uvm_reg_map create_default_map();
       return create_map("default_map", 0, 4, UVM_LITTLE_ENDIAN, 1);

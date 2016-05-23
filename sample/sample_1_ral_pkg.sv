@@ -41,7 +41,7 @@ package sample_1_ral_pkg;
     function new(string name = "sample_1");
       super.new(name);
     endfunction
-    function void create_registers();
+    function void create_sub_models();
       `rggen_ral_create_reg_model(register_0, "register_0", '{}, 7'h00, "RW", 0)
       `rggen_ral_create_reg_model(register_1, "register_1", '{}, 7'h04, "RW", 0)
       `rggen_ral_create_reg_model(register_2, "register_2", '{}, 7'h08, "RW", 0)
