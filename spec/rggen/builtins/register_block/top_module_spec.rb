@@ -313,6 +313,7 @@ module block_0 (
   );
   assign external_register_select[0] = register_select[12];
   rggen_bus_exporter #(
+    .DATA_WIDTH             (32),
     .LOCAL_ADDRESS_WIDTH    (8),
     .EXTERNAL_ADDRESS_WIDTH (4),
     .START_ADDRESS          (8'h14)

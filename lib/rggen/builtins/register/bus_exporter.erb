@@ -1,4 +1,5 @@
 rggen_bus_exporter #(
+  .DATA_WIDTH             (<%= configuration.data_width %>),
   .LOCAL_ADDRESS_WIDTH    (<%= register_block.local_address_width %>),
   .EXTERNAL_ADDRESS_WIDTH (<%= address_width %>),
   .START_ADDRESS          (<%= start_address %>)

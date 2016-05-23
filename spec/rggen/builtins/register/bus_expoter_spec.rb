@@ -92,6 +92,7 @@ describe "register/bus_exporter" do
         <<'CODE'
 assign external_register_select[0] = register_select[1];
 rggen_bus_exporter #(
+  .DATA_WIDTH             (32),
   .LOCAL_ADDRESS_WIDTH    (8),
   .EXTERNAL_ADDRESS_WIDTH (2),
   .START_ADDRESS          (8'h04)
@@ -125,6 +126,7 @@ CODE
         <<'CODE'
 assign external_register_select[1] = register_select[2];
 rggen_bus_exporter #(
+  .DATA_WIDTH             (32),
   .LOCAL_ADDRESS_WIDTH    (8),
   .EXTERNAL_ADDRESS_WIDTH (3),
   .START_ADDRESS          (8'h08)
@@ -158,6 +160,7 @@ CODE
         <<'CODE'
 assign external_register_select[2] = register_select[3];
 rggen_bus_exporter #(
+  .DATA_WIDTH             (32),
   .LOCAL_ADDRESS_WIDTH    (8),
   .EXTERNAL_ADDRESS_WIDTH (4),
   .START_ADDRESS          (8'h10)
