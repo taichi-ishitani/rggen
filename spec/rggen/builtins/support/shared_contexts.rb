@@ -119,7 +119,7 @@ shared_context 'rtl common' do
     handle_name, attributes = expectation.last(2)
     attributes[:name     ]  ||= handle_name.to_s
     attributes[:parameter_type] = :parameter
-    have_identifier(*expectation).and have_parameter_declaration(attributes)
+    have_identifier(*expectation).and have_parameter_declaration(nil, attributes)
   end
 
   def have_input(*expectation)
@@ -152,5 +152,10 @@ shared_context 'ral common' do
   def have_variable(domain, handle_name, attributes = {})
     attributes[:name] ||= handle_name
     have_identifier(handle_name, attributes).and have_variable_declaration(domain, attributes)
+  end
+
+  def have_parameter(domain, handle_name, attributes = {})
+    attributes[:name] ||= handle_name
+    have_identifier(handle_name, attributes).and have_parameter_declaration(domain, attributes)
   end
 end

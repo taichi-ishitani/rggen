@@ -144,10 +144,10 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
   end
 end
 
-RSpec::Matchers.define :have_parameter_declaration do |attributes|
+RSpec::Matchers.define :have_parameter_declaration do |domain, attributes|
   match do |component|
-    @actual = component.parameter_declarations
-    component.parameter_declarations.any? { |declaration| declaration.to_s == expectation }
+    @actual = (domain && component.parameter_declarations(domain)) || component.parameter_declarations
+    @actual.any? { |declaration| declaration.to_s == expectation }
   end
 
   failure_message do
