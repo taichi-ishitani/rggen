@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/taichi-ishitani/rggen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rggen)
 [![Code Climate](https://codeclimate.com/github/taichi-ishitani/rggen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rggen)
 [![Test Coverage](https://codeclimate.com/github/taichi-ishitani/rggen/badges/coverage.svg)](https://codeclimate.com/github/taichi-ishitani/rggen/coverage)
+[![Join the chat at https://gitter.im/taichi-ishitani/rggen](https://badges.gitter.im/taichi-ishitani/rggen.svg)](https://gitter.im/taichi-ishitani/rggen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # RgGen
 
@@ -58,18 +59,19 @@ In addition, if you use default values for all of attributes, you don't need to 
 RgGen allows to use a spreadsheet to input the register map of your design so you can directly input your register map document to RgGen.
 To do this, you need to write your register map document according to below table format.
 
-|    |A   |B             |C            |D              |E                                |F             |G         |H   |I           |
-|:---|:---|:-------------|:------------|:--------------|:--------------------------------|:-------------|:---------|:---|:-----------|
-|1   |    |Block Name    |block_0      |               |                                 |              |          |    |            |
-|2   |    |Byte Size     |256          |               |                                 |              |          |    |            |
-|3   |    |              |             |               |                                 |              |          |    |            |
-|4   |    |Offset Address|Register Name|Array Dimension|Shadow Index                     |Bit Assignment|Field Name|Type|Iitial Value|
-|5   |    |0x00          |register_0   |               |                                 |[31:16]       |field_0_0 |rw  |0           |
-|6   |    |              |             |               |                                 |[15:0]        |field_0_1 |rw  |0           |
-|7   |    |0x04          |register_1   |               |                                 |[16]          |field_1_0 |rw  |0           |
-|8   |    |              |             |               |                                 |[0]           |field_1_1 |ro  |            |
-|9   |    |0x10 - 0x1F   |register_2   |[4]            |                                 |[7:0]         |field_2_0 |rw  |0           |
-|10  |    |0x20          |register_3   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|[7:0]         |field_3_0 |rw  |0           |
+|    |A   |B             |C            |D              |E                                |F       |G             |H         |I   |J           |
+|:---|:---|:-------------|:------------|:--------------|:--------------------------------|:-------|:-------------|:---------|:---|:-----------|
+|1   |    |Block Name    |block_0      |               |                                 |        |              |          |    |            |
+|2   |    |Byte Size     |256          |               |                                 |        |              |          |    |            |
+|3   |    |              |             |               |                                 |        |              |          |    |            |
+|4   |    |Offset Address|Register Name|Array Dimension|Shadow Index                     |External|Bit Assignment|Field Name|Type|Iitial Value|
+|5   |    |0x00          |register_0   |               |                                 |        |[31:16]       |field_0_0 |rw  |0           |
+|6   |    |              |             |               |                                 |        |[15:0]        |field_0_1 |rw  |0           |
+|7   |    |0x04          |register_1   |               |                                 |        |[16]          |field_1_0 |rw  |0           |
+|8   |    |              |             |               |                                 |        |[0]           |field_1_1 |ro  |            |
+|9   |    |0x10 - 0x1F   |register_2   |[4]            |                                 |        |[7:0]         |field_2_0 |rw  |0           |
+|10  |    |0x20 - 0x3F   |register_3   |               |                                 |true    |              |          |    |            |
+|11  |    |0x40          |register_4   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|        |[7:0]         |field_4_0 |rw  |0           |
 
 By default, RgGen supports CSV, ODS, XLS and XLSX sparedsheet file types.
 
@@ -125,11 +127,19 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Contact
+
+If you have any questions, problems, ideas or somethings, you can post them on the following ways:
+
+1. [Issue tracker](https://github.com/taichi-ishitani/rggen/issues)
+2. [Chat room](https://gitter.im/taichi-ishitani/rggen)
+3. [Mail](mailto:taichi730@gmail.com)
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/taichi-ishitani/rggen. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
-Copyright &copy; 2015-2016 [Taichi Ishitani](mailto:taichi730@gmail.com).
-RgGen is available as open source under the terms of the [MIT License](LICENSE.txt).
+Copyright &copy; 2015-2016 Taichi Ishitani.
+RgGen is available as open source under the terms of [the MIT License](LICENSE.txt).
