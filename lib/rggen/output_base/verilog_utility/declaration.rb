@@ -39,9 +39,7 @@ module RgGen
         end
 
         def width
-          return '' if @attributes[:width].nil?
-          return '' if (variable? || port?) && @attributes[:width] == 1
-          "[#{@attributes[:width] - 1}:0]"
+          (vector? && "[#{(@attributes[:width] || 1) - 1}:0]") || ''
         end
 
         def identifier
@@ -63,6 +61,15 @@ module RgGen
 
         def port?
           @declation_type == :port
+        end
+
+        def parameter?
+          @declation_type == :parameter
+        end
+
+        def vector?
+          return true if @attributes[:vector]
+          @attributes[:width] && (parameter? || (@attributes[:width] > 1))
         end
       end
     end
