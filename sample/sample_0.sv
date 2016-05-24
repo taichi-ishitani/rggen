@@ -43,8 +43,8 @@ module sample_0 (
   logic [1:0] status;
   logic [16:0] register_select;
   logic [31:0] register_read_data[17];
-  logic external_register_select;
-  logic external_register_ready;
+  logic [0:0] external_register_select;
+  logic [0:0] external_register_ready;
   logic [1:0] external_register_status[1];
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;

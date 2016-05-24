@@ -19,6 +19,7 @@ module rggen_host_if_apb #(
   output                            o_write,
   output                            o_read,
   output  [LOCAL_ADDRESS_WIDTH-1:0] o_address,
+  output  [DATA_WIDTH/8-1:0]        o_strobe,
   output  [DATA_WIDTH-1:0]          o_write_data,
   output  [DATA_WIDTH-1:0]          o_write_mask,
   input                             i_response_ready,
@@ -35,6 +36,7 @@ module rggen_host_if_apb #(
   assign  o_write         = i_pwrite;
   assign  o_read          = ~i_pwrite;
   assign  o_address       = i_paddr[LOCAL_ADDRESS_WIDTH-1:0];
+  assign  o_strobe        = i_pstrb;
   assign  o_write_data    = i_pwdata;
   assign  o_write_mask    = get_write_mask(i_pstrb);
 endmodule

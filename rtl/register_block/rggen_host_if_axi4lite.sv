@@ -29,6 +29,7 @@ module rggen_host_if_axi4lite #(
   output                            o_write,
   output                            o_read,
   output  [LOCAL_ADDRESS_WIDTH-1:0] o_address,
+  output  [DATA_WIDTH/8-1:0]        o_strobe,
   output  [DATA_WIDTH-1:0]          o_write_data,
   output  [DATA_WIDTH-1:0]          o_write_mask,
   input                             i_response_ready,
@@ -78,6 +79,7 @@ module rggen_host_if_axi4lite #(
   logic                           command_valid;
   logic                           local_done;
   logic [LOCAL_ADDRESS_WIDTH-1:0] address;
+  logic [DATA_WIDTH/8-1:0]        strobe;
   logic [DATA_WIDTH-1:0]          write_data;
   logic [DATA_WIDTH-1:0]          write_mask;
 
@@ -199,9 +201,10 @@ module rggen_host_if_axi4lite #(
 // Local bus
 //--------------------------------------------------------------
   assign  o_command_valid = command_valid;
-  assign  o_address       = address;
   assign  o_write         = state[2];
   assign  o_read          = state[4];
+  assign  o_address       = address;
+  assign  o_strobe        = strobe;
   assign  o_write_data    = write_data;
   assign  o_write_mask    = write_mask;
 
@@ -236,14 +239,17 @@ module rggen_host_if_axi4lite #(
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
+      strobe      <= '0;
       write_data  <= '0;
       write_mask  <= '0;
     end
     else if (wack) begin
+      strobe      <= i_wstrb;
       write_data  <= i_wdata;
       write_mask  <= get_write_mask(i_wstrb);
     end
     else if (local_done) begin
+      strobe      <= '0;
       write_data  <= '0;
       write_mask  <= '0;
     end

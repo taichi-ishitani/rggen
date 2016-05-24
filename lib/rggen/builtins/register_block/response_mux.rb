@@ -6,8 +6,12 @@ simple_item :register_block, :response_mux do
             width:      configuration.data_width,
             dimensions: [total_registers]
       if external_registers?
-        logic :external_register_select, width: total_external_registers
-        logic :external_register_ready , width: total_external_registers
+        logic :external_register_select,
+              width:  total_external_registers,
+              vector: true
+        logic :external_register_ready ,
+              width:  total_external_registers,
+              vector: true
         logic :external_register_status,
               width:      2,
               dimensions: [total_external_registers]

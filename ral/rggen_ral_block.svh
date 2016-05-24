@@ -18,8 +18,7 @@ class rggen_ral_block extends uvm_reg_block;
 
   extern protected virtual function void set_cfg(uvm_object cfg);
   extern protected virtual function uvm_reg_map create_default_map();
-  extern protected virtual function void create_blocks();
-  extern protected virtual function void create_registers();
+  extern protected virtual function void create_sub_models();
 endclass
 
 function rggen_ral_block::new(string name, int has_coverage);
@@ -32,8 +31,7 @@ function void rggen_ral_block::configure(uvm_object cfg, uvm_reg_block parent, s
   if (default_map == null) begin
     default_map = create_default_map();
   end
-  create_blocks();
-  create_registers();
+  create_sub_models();
 endfunction
 
 function uvm_reg_map rggen_ral_block::create_map(
@@ -76,9 +74,6 @@ endfunction
 function uvm_reg_map rggen_ral_block::create_default_map();
 endfunction
 
-function void rggen_ral_block::create_blocks();
-endfunction
-
-function void rggen_ral_block::create_registers();
+function void rggen_ral_block::create_sub_models();
 endfunction
 `endif

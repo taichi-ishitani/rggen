@@ -19,4 +19,11 @@ begin \
   default_map.add_reg(handle, offset_address, rights, unmapped); \
 end
 
+`define rggen_ral_create_block_model(handle, name, offset_address) \
+begin \
+  handle  = new(name); \
+  handle.configure(this.cfg, this, ""); \
+  default_map.add_submap(handle.default_map, offset_address); \
+end
+
 `endif
