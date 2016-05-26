@@ -81,8 +81,6 @@ module sample_1 (
     .i_external_register_status ('{2'b00})
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
     .START_ADDRESS      (5'h00),
     .END_ADDRESS        (5'h00),
@@ -113,8 +111,6 @@ module sample_1 (
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
     .START_ADDRESS      (5'h01),
     .END_ADDRESS        (5'h01),
@@ -144,8 +140,6 @@ module sample_1 (
     .o_value          (bit_field_1_0_value)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (5),
     .START_ADDRESS      (5'h02),
     .END_ADDRESS        (5'h02),

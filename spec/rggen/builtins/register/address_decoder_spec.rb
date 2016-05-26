@@ -13,31 +13,30 @@ describe "register/address_decoder" do
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :shadow, :external, :accessibility, :address_decoder]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
-    enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
+    enable :bit_field, :type, [:rw, :ro, :wo]
 
     configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil          , "block_0"                                                                                                                                      ],
-        [nil, nil          , 256                                                                                                                                            ],
-        [nil, nil          , nil                                                                                                                                            ],
-        [nil, nil          , nil                                                                                                                                            ],
-        [nil, "register_0" , "0x10"      , nil     , nil                                                                 , nil, "bit_field_0_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_1" , "0x14"      , nil     , nil                                                                 , nil, "bit_field_1_0" , "[31:0]" , "ro"      , "0"],
-        [nil, "register_2" , "0x18"      , nil     , nil                                                                 , nil, "bit_field_2_0" , "[31:0]" , "wo"      , "0"],
-        [nil, "register_3" , "0x20-0x02F", nil     , nil                                                                 , nil, "bit_field_3_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_4" , "0x30-0x03F", "[4]"   , nil                                                                 , nil, "bit_field_4_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_5" , "0x40"      , nil     , "bit_field_10_0:0"                                                  , nil, "bit_field_5_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_6" , "0x40"      , nil     , "bit_field_10_0:1, bit_field_10_1:2"                                , nil, "bit_field_6_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_7" , "0x44"      , "[2]"   , "bit_field_10_0"                                                    , nil, "bit_field_7_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_8" , "0x48"      , "[2, 4]", "bit_field_10_0, bit_field_10_1"                                    , nil, "bit_field_8_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_9" , "0x4C"      , "[2, 4]", "bit_field_10_0:0, bit_field_10_1, bit_field_10_2:1, bit_field_10_3", nil, "bit_field_9_0" , "[31:0]" , "rw"      , "0"],
-        [nil, "register_10", "0x50"      , nil     , nil                                                                 , nil, "bit_field_10_0", "[24]"   , "rw"      , "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_1", "[17:16]", "rw"      , "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_2", "[11:8]" , "rw"      , "0"],
-        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_3", "[7:0]"  , "rw"      , "0"],
-        [nil, "register_11", "0x54"      , nil     , nil                                                                 , nil, "bit_field_11_0", "[31:0]" , "reserved", "0"]
+        [nil, nil          , "block_0"                                                                                                                                ],
+        [nil, nil          , 256                                                                                                                                      ],
+        [nil, nil          , nil                                                                                                                                      ],
+        [nil, nil          , nil                                                                                                                                      ],
+        [nil, "register_0" , "0x10"      , nil     , nil                                                                 , nil, "bit_field_0_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_1" , "0x14"      , nil     , nil                                                                 , nil, "bit_field_1_0" , "[31:0]" , "ro", "0"],
+        [nil, "register_2" , "0x18"      , nil     , nil                                                                 , nil, "bit_field_2_0" , "[31:0]" , "wo", "0"],
+        [nil, "register_3" , "0x20-0x02F", nil     , nil                                                                 , nil, "bit_field_3_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_4" , "0x30-0x03F", "[4]"   , nil                                                                 , nil, "bit_field_4_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_5" , "0x40"      , nil     , "bit_field_10_0:0"                                                  , nil, "bit_field_5_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_6" , "0x40"      , nil     , "bit_field_10_0:1, bit_field_10_1:2"                                , nil, "bit_field_6_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_7" , "0x44"      , "[2]"   , "bit_field_10_0"                                                    , nil, "bit_field_7_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_8" , "0x48"      , "[2, 4]", "bit_field_10_0, bit_field_10_1"                                    , nil, "bit_field_8_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_9" , "0x4C"      , "[2, 4]", "bit_field_10_0:0, bit_field_10_1, bit_field_10_2:1, bit_field_10_3", nil, "bit_field_9_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_10", "0x50"      , nil     , nil                                                                 , nil, "bit_field_10_0", "[24]"   , "rw", "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_1", "[17:16]", "rw", "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_2", "[11:8]" , "rw", "0"],
+        [nil, nil          , nil         , nil     , nil                                                                 , nil, "bit_field_10_3", "[7:0]"  , "rw", "0"]
       ]
     )
 
@@ -63,12 +62,10 @@ describe "register/address_decoder" do
   end
 
   describe "#generate_code" do
-    context "レジスタの属性が読み書き可能なとき" do
-      let(:expected_code) do
+    context "レジスタが通常の単一レジスタの場合" do
+      let(:expected_code_0) do
         <<'CODE'
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h04),
   .END_ADDRESS        (6'h04),
@@ -85,21 +82,9 @@ rggen_address_decoder #(
 CODE
       end
 
-      let(:rtl) do
-        @rtl.registers[0]
-      end
-
-      it "読み書き可能に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
-      end
-    end
-
-    context "レジスタの属性が読み出し可能、書き込み不可なとき" do
-      let(:expected_code) do
+      let(:expected_code_1) do
         <<'CODE'
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (0),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h05),
   .END_ADDRESS        (6'h05),
@@ -116,21 +101,9 @@ rggen_address_decoder #(
 CODE
       end
 
-      let(:rtl) do
-        @rtl.registers[1]
-      end
-
-      it "読み出し可能、書き込み不可に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
-      end
-    end
-
-    context "レジスタの属性が読み出し不可、書き込み可能なとき" do
-      let(:expected_code) do
+      let(:expected_code_2) do
         <<'CODE'
 rggen_address_decoder #(
-  .READABLE           (0),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h06),
   .END_ADDRESS        (6'h06),
@@ -148,11 +121,13 @@ CODE
       end
 
       let(:rtl) do
-        @rtl.registers[2]
+        @rtl.registers[0..2]
       end
 
-      it "読み出し不可、書き込み可能に対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+      it "単一レジスタに対応したアドレスデコーダモジュールをインスタンスするコードを出力する" do
+        expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
       end
     end
 
@@ -160,8 +135,6 @@ CODE
       let(:expected_code) do
         <<'CODE'
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h08),
   .END_ADDRESS        (6'h0b),
@@ -191,8 +164,6 @@ CODE
       let(:expected_code) do
         <<'CODE'
     rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
       .START_ADDRESS      (6'h0c + g_i),
       .END_ADDRESS        (6'h0c + g_i),
@@ -223,8 +194,6 @@ CODE
         <<'CODE'
 assign register_5_shadow_index = {bit_field_10_0_value};
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h10),
   .END_ADDRESS        (6'h10),
@@ -245,8 +214,6 @@ CODE
         <<'CODE'
 assign register_6_shadow_index = {bit_field_10_0_value, bit_field_10_1_value};
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h10),
   .END_ADDRESS        (6'h10),
@@ -267,8 +234,6 @@ CODE
         <<'CODE'
     assign register_7_shadow_index[g_i] = {bit_field_10_0_value};
     rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
       .START_ADDRESS      (6'h11),
       .END_ADDRESS        (6'h11),
@@ -289,8 +254,6 @@ CODE
         <<'CODE'
       assign register_8_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value};
       rggen_address_decoder #(
-        .READABLE           (1),
-        .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
         .START_ADDRESS      (6'h12),
         .END_ADDRESS        (6'h12),
@@ -311,8 +274,6 @@ CODE
         <<'CODE'
       assign register_9_shadow_index[g_i][g_j] = {bit_field_10_0_value, bit_field_10_1_value, bit_field_10_2_value, bit_field_10_3_value};
       rggen_address_decoder #(
-        .READABLE           (1),
-        .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
         .START_ADDRESS      (6'h13),
         .END_ADDRESS        (6'h13),
@@ -339,37 +300,6 @@ CODE
         expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
         expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
         expect(rtl[4]).to generate_code(:module_item, :top_down, expected_code_4)
-      end
-    end
-
-    context "対象レジスタがリザーブドレジスタの場合" do
-      let(:expected_code) do
-        <<'CODE'
-rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
-  .ADDRESS_WIDTH      (6),
-  .START_ADDRESS      (6'h15),
-  .END_ADDRESS        (6'h15),
-  .USE_SHADOW_INDEX   (0),
-  .SHADOW_INDEX_WIDTH (1),
-  .SHADOW_INDEX_VALUE (1'h0)
-) u_register_11_address_decoder (
-  .i_read         (read),
-  .i_write        (write),
-  .i_address      (address[7:2]),
-  .i_shadow_index (1'h0),
-  .o_select       (register_select[29])
-);
-CODE
-      end
-
-      let(:rtl) do
-        @rtl.registers[11]
-      end
-
-      it "読み書き可能レジスタとしてアドレスデコーダモジュールをインスタンスするコードを出力する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
       end
     end
   end

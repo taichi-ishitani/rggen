@@ -289,8 +289,6 @@ describe 'register/array' do
         let(:expected_code) do
           <<'CODE'
 rggen_address_decoder #(
-  .READABLE           (1),
-  .WRITABLE           (1),
   .ADDRESS_WIDTH      (6),
   .START_ADDRESS      (6'h00),
   .END_ADDRESS        (6'h00),
@@ -333,8 +331,6 @@ generate if (1) begin : g_register_2
   genvar g_i;
   for (g_i = 0;g_i < 2;g_i++) begin : g
     rggen_address_decoder #(
-      .READABLE           (1),
-      .WRITABLE           (1),
       .ADDRESS_WIDTH      (6),
       .START_ADDRESS      (6'h02 + g_i),
       .END_ADDRESS        (6'h02 + g_i),
@@ -376,8 +372,6 @@ generate if (1) begin : g_register_3
       for (g_k = 0;g_k < 3;g_k++) begin : g
         assign register_3_shadow_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
         rggen_address_decoder #(
-          .READABLE           (1),
-          .WRITABLE           (1),
           .ADDRESS_WIDTH      (6),
           .START_ADDRESS      (6'h04),
           .END_ADDRESS        (6'h04),

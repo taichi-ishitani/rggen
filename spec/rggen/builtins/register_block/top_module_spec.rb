@@ -155,8 +155,6 @@ module block_0 (
     .i_external_register_status (external_register_status)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h00),
     .END_ADDRESS        (6'h00),
@@ -187,8 +185,6 @@ module block_0 (
   );
   assign bit_field_0_1_value = i_bit_field_0_1;
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h01),
     .END_ADDRESS        (6'h01),
@@ -222,8 +218,6 @@ module block_0 (
     genvar g_i;
     for (g_i = 0;g_i < 2;g_i++) begin : g
       rggen_address_decoder #(
-        .READABLE           (1),
-        .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
         .START_ADDRESS      (6'h02 + g_i),
         .END_ADDRESS        (6'h02 + g_i),
@@ -261,8 +255,6 @@ module block_0 (
       for (g_j = 0;g_j < 4;g_j++) begin : g
         assign register_3_shadow_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
         rggen_address_decoder #(
-          .READABLE           (1),
-          .WRITABLE           (1),
           .ADDRESS_WIDTH      (6),
           .START_ADDRESS      (6'h04),
           .END_ADDRESS        (6'h04),
@@ -296,8 +288,6 @@ module block_0 (
     end
   end endgenerate
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h05),
     .END_ADDRESS        (6'h07),

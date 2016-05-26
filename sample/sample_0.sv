@@ -104,8 +104,6 @@ module sample_0 (
     .i_external_register_status (external_register_status)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h00),
     .END_ADDRESS        (6'h00),
@@ -149,8 +147,6 @@ module sample_0 (
     .o_value          (bit_field_0_1_value)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h01),
     .END_ADDRESS        (6'h01),
@@ -180,8 +176,6 @@ module sample_0 (
     .o_value          (bit_field_1_0_value)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h02),
     .END_ADDRESS        (6'h02),
@@ -212,8 +206,6 @@ module sample_0 (
     .o_value          (bit_field_2_1_value)
   );
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (0),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h03),
     .END_ADDRESS        (6'h03),
@@ -233,8 +225,6 @@ module sample_0 (
     genvar g_i;
     for (g_i = 0;g_i < 4;g_i++) begin : g
       rggen_address_decoder #(
-        .READABLE           (1),
-        .WRITABLE           (1),
         .ADDRESS_WIDTH      (6),
         .START_ADDRESS      (6'h04 + g_i),
         .END_ADDRESS        (6'h04 + g_i),
@@ -272,8 +262,6 @@ module sample_0 (
       for (g_j = 0;g_j < 4;g_j++) begin : g
         assign register_5_shadow_index[g_i][g_j] = {bit_field_2_1_value, bit_field_0_0_value, bit_field_0_1_value};
         rggen_address_decoder #(
-          .READABLE           (1),
-          .WRITABLE           (1),
           .ADDRESS_WIDTH      (6),
           .START_ADDRESS      (6'h08),
           .END_ADDRESS        (6'h08),
@@ -307,8 +295,6 @@ module sample_0 (
     end
   end endgenerate
   rggen_address_decoder #(
-    .READABLE           (1),
-    .WRITABLE           (1),
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h20),
     .END_ADDRESS        (6'h3f),

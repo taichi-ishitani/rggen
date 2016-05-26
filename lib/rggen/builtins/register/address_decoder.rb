@@ -17,14 +17,6 @@ simple_item :register, :address_decoder do
     delegate [:array?, :shadow?, :multiple?] => :register
     delegate [:shadow_indexes, :loop_variables] => :register
 
-    def readable
-      ((register.readable? || register.reserved?) && 1) || 0
-    end
-
-    def writable
-      ((register.writable? || register.reserved?) && 1) || 0
-    end
-
     def address_lsb
       Math.clog2(configuration.byte_width)
     end
