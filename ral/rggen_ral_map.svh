@@ -61,7 +61,7 @@ function void rggen_ral_map::set_submap_offset(uvm_reg_map submap, uvm_reg_addr_
   super.set_submap_offset(submap, offset);
   if ((submap != null) && locked) begin
     uvm_reg_map   root_map  = get_root_map();
-    rggen_ral_map  rggen_map;
+    rggen_ral_map rggen_map;
     if ($cast(rggen_map, root_map)) begin
       rggen_map.Xinit_shadow_reg_address_mapX();
     end
@@ -84,7 +84,7 @@ endfunction
 
 function void rggen_ral_map::Xinit_shadow_reg_address_mapX();
   uvm_reg_map   top_map;
-  rggen_ral_map  top_rggen_map;
+  rggen_ral_map top_rggen_map;
   uvm_reg_map   submaps[$];
   uvm_reg       regs[$];
 
@@ -98,7 +98,7 @@ function void rggen_ral_map::Xinit_shadow_reg_address_mapX();
 
   get_submaps(submaps, UVM_NO_HIER);
   foreach (submaps[i]) begin
-    rggen_ral_map  rggen_map;
+    rggen_ral_map rggen_map;
     if ($cast(rggen_map, submaps[i])) begin
       rggen_map.Xinit_shadow_reg_address_mapX();
     end
