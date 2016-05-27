@@ -11,12 +11,23 @@ module RgGen
         define_definition_method(component_name)
       end
 
-      def define_simple_item(item_name, &body)
-        do_definition(:define_simple_item, item_name, &body)
+      def define_simple_item(item_name_or_names, &body)
+        Array(item_name_or_names).each do |item_name|
+          do_definition(:define_simple_item, item_name, &body)
+        end
       end
 
-      def define_list_item(list_name, item_name = nil, &body)
-        do_definition(:define_list_item, list_name, item_name, &body)
+      def define_list_item(list_name_or_names, item_name_or_names = nil, &body)
+        if item_name_or_names.nil?
+          Array(list_name_or_names).each do |list_name|
+            do_definition(:define_list_item, list_name, nil, &body)
+          end
+        else
+          list_name = list_name_or_names
+          Array(item_name_or_names).each do |item_name|
+            do_definition(:define_list_item, list_name, item_name, &body)
+          end
+        end
       end
 
       def shared_context(&body)

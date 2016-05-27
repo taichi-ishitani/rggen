@@ -37,9 +37,9 @@ module RgGen::Builder
       end
 
       it "引数で与えた名前で、ブロック内で指定した対象シンプルアイテムの定義を行う" do
-        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :foo)
-        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :bar)
-        expect(item_stores[:register_map ]).to receive(:define_simple_item).with(nil, :foo)
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :foo).and_call_original
+        expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :bar).and_call_original
+        expect(item_stores[:register_map ]).to receive(:define_simple_item).with(nil, :foo).and_call_original
 
         category.define_simple_item(:foo) do
           configuration do
@@ -62,7 +62,6 @@ module RgGen::Builder
           allow(item_stores[:configuration]).to receive(:define_simple_item).and_call_original
           allow(item_stores[:register_map ]).to receive(:define_simple_item).and_call_original
 
-
           context = nil
           category.define_simple_item(:foo) do
             shared_context do
@@ -76,6 +75,27 @@ module RgGen::Builder
 
           expect(item_stores[:configuration]).to have_received(:define_simple_item).with(context, :foo)
           expect(item_stores[:register_map ]).to have_received(:define_simple_item).with(context, :foo)
+        end
+      end
+
+      context "複数のアイテム名を与えた場合" do
+        it "与えたアイテム名分のシンプルアイテムの定義を行う" do
+          expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :foo).and_call_original
+          expect(item_stores[:configuration]).to receive(:define_simple_item).with(nil, :bar).and_call_original
+
+          category.define_simple_item([:foo, :bar]) do
+            configuration {}
+          end
+        end
+
+        specify "それぞれのシンプルアイテムは、別々の共有コンテキストを持つ" do
+          contexts  = []
+          category.define_simple_item([:foo, :bar]) do
+            shared_context {}
+            configuration {}
+            contexts  << @shared_context
+          end
+          expect(contexts[0]).not_to equal(contexts[1])
         end
       end
     end
@@ -153,6 +173,40 @@ module RgGen::Builder
           expect(item_stores[:register_map ]).to have_received(:define_list_item).with(nil        , :bar, nil )
           expect(item_stores[:configuration]).to have_received(:define_list_item).with(contexts[1], :bar, :baz)
           expect(item_stores[:register_map ]).to have_received(:define_list_item).with(contexts[1], :bar, :baz)
+        end
+      end
+
+      context "複数のリスト名、または、アイテム名を与えた場合" do
+        it "与えたリスト名分、アイテム名分のリストアイテムの定義を行う" do
+          expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :foo, nil ).and_call_original
+          expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :bar, nil ).and_call_original
+          expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :foo, :foo).and_call_original
+          expect(item_stores[:configuration]).to receive(:define_list_item).with(nil, :foo, :bar).and_call_original
+          category.define_list_item([:foo, :bar]) do
+            configuration {}
+          end
+          category.define_list_item(:foo, [:foo, :bar]) do
+            configuration {}
+          end
+        end
+
+        specify "それぞれのリストアイテムは、別々の共有コンテキストを持つ" do
+          contexts  = []
+          category.define_list_item([:foo, :bar]) do
+            shared_context {}
+            configuration {}
+            contexts  << @shared_context
+          end
+          category.define_list_item(:baz) do
+            configuration {}
+          end
+          category.define_list_item(:baz, [:foo, :bar]) do
+            shared_context {}
+            configuration {}
+            contexts  << @shared_context
+          end
+          expect(contexts[0]).not_to equal(contexts[1])
+          expect(contexts[2]).not_to equal(contexts[3])
         end
       end
     end
