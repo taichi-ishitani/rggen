@@ -71,15 +71,17 @@ describe 'bit_fields/type/w0c_w1c' do
       }.not_to raise_error
     end
 
-    it "初期値の有無に関わらず使用できる" do
+    it "初期値を必要とする" do
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "w0c", '0', nil],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "w0c", nil, nil],
-          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]", "w1c", '0', nil],
-          [nil, "register_3", "0x0c", nil, nil, nil, "bit_field_3_0", "[0]", "w1c", nil, nil]
+          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "w0c", nil, nil]
         ])
-      }.not_to raise_error
+      }.to raise_error RgGen::RegisterMapError
+      expect {
+        build_bit_fields([
+          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "w1c", nil, nil]
+        ])
+      }.to raise_error RgGen::RegisterMapError
     end
 
     it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
@@ -105,14 +107,14 @@ describe 'bit_fields/type/w0c_w1c' do
           [nil, nil         , nil                                                                                                         ],
           [nil, "register_0", "0x00"     , nil     , nil                           , nil, "bit_field_0_0", "[31:16]", "w0c", "0x0123", nil],
           [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_0_1", "[0]"    , "w0c", "0x0"   , nil],
-          [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , nil, "bit_field_1_0", "[0]"    , "w0c", nil     , nil],
-          [nil, "register_2", "0x0C"     , "[2, 2]", "bit_field_6_0, bit_field_6_1", nil, "bit_field_2_0", "[0]"    , "w0c", nil     , nil],
+          [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , nil, "bit_field_1_0", "[0]"    , "w0c", "0x0"   , nil],
+          [nil, "register_2", "0x0C"     , "[2, 2]", "bit_field_6_0, bit_field_6_1", nil, "bit_field_2_0", "[0]"    , "w0c", "0x0"   , nil],
           [nil, "register_3", "0x10"     , nil     , nil                           , nil, "bit_field_3_0", "[31:16]", "w1c", "0x4567", nil],
           [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_3_1", "[0]"    , "w1c", "0x0"   , nil],
-          [nil, "register_4", "0x14-0x1B", "[2]"   , nil                           , nil, "bit_field_4_0", "[0]"    , "w1c", nil     , nil],
-          [nil, "register_5", "0x1C"     , "[2, 2]", "bit_field_6_0, bit_field_6_1", nil, "bit_field_5_0", "[0]"    , "w1c", nil     , nil],
-          [nil, "register_6", "0x20"     , nil     , nil                           , nil, "bit_field_6_0", "[3:2]"  , "rw" , "0"     , nil],
-          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_6_1", "[1:0]"  , "rw" , "0"     , nil]
+          [nil, "register_4", "0x14-0x1B", "[2]"   , nil                           , nil, "bit_field_4_0", "[0]"    , "w1c", "0x0"   , nil],
+          [nil, "register_5", "0x1C"     , "[2, 2]", "bit_field_6_0, bit_field_6_1", nil, "bit_field_5_0", "[0]"    , "w1c", "0x0"   , nil],
+          [nil, "register_6", "0x20"     , nil     , nil                           , nil, "bit_field_6_0", "[3:2]"  , "rw" , "0x0"   , nil],
+          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_6_1", "[1:0]"  , "rw" , "0x0"   , nil]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields

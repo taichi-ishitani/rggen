@@ -1,6 +1,7 @@
 list_item :bit_field, :type, [:w0c, :w1c] do
   register_map do
     read_write
+    need_initial_value
   end
 
   rtl do
@@ -13,7 +14,7 @@ list_item :bit_field, :type, [:w0c, :w1c] do
     generate_code_from_template :module_item
 
     def initial_value
-      (bit_field.initial_value? && bit_field.initial_value) || 0
+      hex(bit_field.initial_value, width)
     end
 
     def clear_value

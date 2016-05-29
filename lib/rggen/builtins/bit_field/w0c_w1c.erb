@@ -1,6 +1,6 @@
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (<%= width %>),
-  .INITIAL_VALUE  (<%= hex(initial_value, width) %>),
+  .INITIAL_VALUE  (<%= initial_value %>),
   .CLEAR_VALUE    (<%= clear_value %>)
 ) u_<%= name%> (
   .clk              (<%= register_block.clock %>),
