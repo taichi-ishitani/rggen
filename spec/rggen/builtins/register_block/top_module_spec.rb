@@ -13,25 +13,27 @@ describe "register_block/top_module" do
     enable :register, [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :register, [:address_decoder, :read_data, :bus_exporter]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field, :type, [:rw, :ro]
+    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c]
 
     configuration = create_configuration(address_width: 16)
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                                                                              ],
-        [nil, nil         , 256                                                                                                                    ],
-        [                                                                                                                                          ],
-        [                                                                                                                                          ],
-        [nil, "register_0", "0x00"     , nil     , nil                                           , nil , "bit_field_0_0", "[16]"   , "rw", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_0_1", "[0]"    , "ro", 0  , nil],
-        [nil, "register_1", "0x04"     , nil     , nil                                           , nil , "bit_field_1_0", "[31:16]", "ro", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_1_1", "[15:0]" , "rw", 0  , nil],
-        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                           , nil , "bit_field_2_0", "[31:16]", "ro", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_2_1", "[15:0]" , "rw", 0  , nil],
-        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0:1, bit_field_1_0, bit_field_1_1", nil , "bit_field_3_0", "[31:16]", "ro", 0  , nil],
-        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_3_1", "[15:0]" , "rw", 0  , nil],
-        [nil, "register_4", "0x14-0x1F", nil    , nil                                            , true, nil            , nil      , nil , nil, nil]
+        [nil, nil         , "block_0"                                                                                                               ],
+        [nil, nil         , 256                                                                                                                     ],
+        [                                                                                                                                           ],
+        [                                                                                                                                           ],
+        [nil, "register_0", "0x00"     , nil     , nil                                           , nil , "bit_field_0_0", "[16]"   , "rw" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_0_1", "[0]"    , "ro" , 0  , nil],
+        [nil, "register_1", "0x04"     , nil     , nil                                           , nil , "bit_field_1_0", "[31:16]", "ro" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_1_1", "[15:0]" , "rw" , 0  , nil],
+        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                           , nil , "bit_field_2_0", "[31:16]", "ro" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_2_1", "[15:0]" , "rw" , 0  , nil],
+        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0:1, bit_field_1_0, bit_field_1_1", nil , "bit_field_3_0", "[31:16]", "ro" , 0  , nil],
+        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_3_1", "[15:0]" , "rw" , 0  , nil],
+        [nil, "register_4", "0x14"     , nil    , nil                                            , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , nil],
+        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , nil],
+        [nil, "register_5", "0x20-0x2F", nil    , nil                                            , true, nil            , nil      , nil  , nil, nil]
       ]
     )
 
@@ -74,15 +76,17 @@ module block_0 (
   output [15:0] o_bit_field_2_1[2],
   input [15:0] i_bit_field_3_0[2][4],
   output [15:0] o_bit_field_3_1[2][4],
-  output o_register_4_valid,
-  output o_register_4_write,
-  output o_register_4_read,
-  output [3:0] o_register_4_address,
-  output [3:0] o_register_4_strobe,
-  output [31:0] o_register_4_write_data,
-  input i_register_4_ready,
-  input [1:0] i_register_4_status,
-  input [31:0] i_register_4_read_data
+  input i_bit_field_4_0_set,
+  input i_bit_field_4_1_set,
+  output o_register_5_valid,
+  output o_register_5_write,
+  output o_register_5_read,
+  output [3:0] o_register_5_address,
+  output [3:0] o_register_5_strobe,
+  output [31:0] o_register_5_write_data,
+  input i_register_5_ready,
+  input [1:0] i_register_5_status,
+  input [31:0] i_register_5_read_data
 );
   logic command_valid;
   logic write;
@@ -94,8 +98,8 @@ module block_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [12:0] register_select;
-  logic [31:0] register_read_data[13];
+  logic [13:0] register_select;
+  logic [31:0] register_read_data[14];
   logic [0:0] external_register_select;
   logic [0:0] external_register_ready;
   logic [1:0] external_register_status[1];
@@ -108,6 +112,8 @@ module block_0 (
   logic [32:0] register_3_shadow_index[2][4];
   logic [15:0] bit_field_3_0_value[2][4];
   logic [15:0] bit_field_3_1_value[2][4];
+  logic bit_field_4_0_value;
+  logic bit_field_4_1_value;
   rggen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -138,7 +144,7 @@ module block_0 (
   );
   rggen_response_mux #(
     .DATA_WIDTH               (32),
-    .TOTAL_REGISTERS          (13),
+    .TOTAL_REGISTERS          (14),
     .TOTAL_EXTERNAL_REGISTERS (1)
   ) u_response_mux (
     .clk                        (clk),
@@ -290,7 +296,7 @@ module block_0 (
   rggen_address_decoder #(
     .ADDRESS_WIDTH      (6),
     .START_ADDRESS      (6'h05),
-    .END_ADDRESS        (6'h07),
+    .END_ADDRESS        (6'h05),
     .USE_SHADOW_INDEX   (0),
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
@@ -301,34 +307,79 @@ module block_0 (
     .i_shadow_index (1'h0),
     .o_select       (register_select[12])
   );
-  assign external_register_select[0] = register_select[12];
+  assign register_read_data[12] = {23'h000000, bit_field_4_0_value, 7'h00, bit_field_4_1_value};
+  rggen_bit_field_w0c_w1c #(
+    .WIDTH          (1),
+    .INITIAL_VALUE  (1'h0),
+    .CLEAR_VALUE    (0)
+  ) u_bit_field_4_0 (
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .i_set            (i_bit_field_4_0_set),
+    .i_command_valid  (command_valid),
+    .i_select         (register_select[12]),
+    .i_write          (write),
+    .i_write_data     (write_data[8]),
+    .i_write_mask     (write_mask[8]),
+    .o_value          (bit_field_4_0_value)
+  );
+  rggen_bit_field_w0c_w1c #(
+    .WIDTH          (1),
+    .INITIAL_VALUE  (1'h0),
+    .CLEAR_VALUE    (1)
+  ) u_bit_field_4_1 (
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .i_set            (i_bit_field_4_1_set),
+    .i_command_valid  (command_valid),
+    .i_select         (register_select[12]),
+    .i_write          (write),
+    .i_write_data     (write_data[0]),
+    .i_write_mask     (write_mask[0]),
+    .o_value          (bit_field_4_1_value)
+  );
+  rggen_address_decoder #(
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h08),
+    .END_ADDRESS        (6'h0b),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
+  ) u_register_5_address_decoder (
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[13])
+  );
+  assign external_register_select[0] = register_select[13];
   rggen_bus_exporter #(
     .DATA_WIDTH             (32),
     .LOCAL_ADDRESS_WIDTH    (8),
     .EXTERNAL_ADDRESS_WIDTH (4),
-    .START_ADDRESS          (8'h14)
-  ) u_register_4_bus_exporter (
+    .START_ADDRESS          (8'h20)
+  ) u_register_5_bus_exporter (
     .clk          (clk),
     .rst_n        (rst_n),
     .i_valid      (command_valid),
-    .i_select     (register_select[12]),
+    .i_select     (register_select[13]),
     .i_write      (write),
     .i_read       (read),
     .i_address    (address),
     .i_strobe     (strobe),
     .i_write_data (write_data),
     .o_ready      (external_register_ready[0]),
-    .o_read_data  (register_read_data[12]),
+    .o_read_data  (register_read_data[13]),
     .o_status     (external_register_status[0]),
-    .o_valid      (o_register_4_valid),
-    .o_write      (o_register_4_write),
-    .o_read       (o_register_4_read),
-    .o_address    (o_register_4_address),
-    .o_strobe     (o_register_4_strobe),
-    .o_write_data (o_register_4_write_data),
-    .i_ready      (i_register_4_ready),
-    .i_read_data  (i_register_4_read_data),
-    .i_status     (i_register_4_status)
+    .o_valid      (o_register_5_valid),
+    .o_write      (o_register_5_write),
+    .o_read       (o_register_5_read),
+    .o_address    (o_register_5_address),
+    .o_strobe     (o_register_5_strobe),
+    .o_write_data (o_register_5_write_data),
+    .i_ready      (i_register_5_ready),
+    .i_read_data  (i_register_5_read_data),
+    .i_status     (i_register_5_status)
   );
 endmodule
 CODE

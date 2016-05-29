@@ -10,7 +10,7 @@ describe 'register/reg_model' do
     enable :register_block, [:name, :byte_size]
     enable :register , [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field, :type, [:rw, :ro, :wo]
+    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c, :wo]
     enable :register , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator]
     enable :bit_field, :field_model
 
@@ -18,21 +18,23 @@ describe 'register/reg_model' do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         ,"block_0"                                                                                                                                 ],
-        [nil, nil         , 256                                                                                                                                      ],
-        [                                                                                                                                                            ],
-        [                                                                                                                                                            ],
-        [nil, "register_0", "0x00"     , nil     , nil                                                             , nil , "bit_field_0_0", "[31:24]", "rw", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_1", "[23:16]", "rw", 1  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_2", "[15: 8]", "ro", 2  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_3", "[ 7: 0]", "ro", nil, nil],
-        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                                             , nil , "bit_field_1_0", "[31:16]", "rw", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_1", "[15: 0]", "rw", 0  , nil],
-        [nil, "register_2", "0x10"     , "[4]"   , "bit_field_0_0"                                                 , nil , "bit_field_2_0", "[15: 8]", "ro", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_2_1", "[ 7: 0]", "ro", 0  , nil],
-        [nil, "register_3", "0x14"     , "[2, 4]", "bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", nil , "bit_field_3_0", "[ 7: 4]", "wo", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_3_1", "[ 3: 0]", "wo", 0  , nil],
-        [nil, "register_4", "0x18"     , nil     , nil                                                             , true, nil            , nil      , nil , nil, nil]
+        [nil, nil         ,"block_0"                                                                                                                                  ],
+        [nil, nil         , 256                                                                                                                                       ],
+        [                                                                                                                                                             ],
+        [                                                                                                                                                             ],
+        [nil, "register_0", "0x00"     , nil     , nil                                                             , nil , "bit_field_0_0", "[31:24]", "rw" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_1", "[23:16]", "rw" , 1  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_2", "[15: 8]", "ro" , 2  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_3", "[ 7: 0]", "ro" , nil, nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                                             , nil , "bit_field_1_0", "[31:16]", "rw" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_1", "[15: 0]", "rw" , 0  , nil],
+        [nil, "register_2", "0x10"     , "[4]"   , "bit_field_0_0"                                                 , nil , "bit_field_2_0", "[15: 8]", "ro" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_2_1", "[ 7: 0]", "ro" , 0  , nil],
+        [nil, "register_3", "0x14"     , "[2, 4]", "bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", nil , "bit_field_3_0", "[ 7: 4]", "wo" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_3_1", "[ 3: 0]", "wo" , 0  , nil],
+        [nil, "register_4", "0x18"     , nil     , nil                                                             , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , nil],
+        [nil, "register_5", "0x1C"     , nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map)
@@ -44,7 +46,7 @@ describe 'register/reg_model' do
 
   context "レジスタが内部レジスタの場合" do
     let(:registers) do
-      @ral.registers[0..3]
+      @ral.registers[0..4]
     end
 
     it "有効なアイテムである" do
@@ -57,6 +59,7 @@ describe 'register/reg_model' do
         expect(registers[1]).to have_variable(:block_model, :reg_model, data_type: 'register_1_reg_model', name: 'register_1', random: true, dimensions: [2   ])
         expect(registers[2]).to have_variable(:block_model, :reg_model, data_type: 'register_2_reg_model', name: 'register_2', random: true, dimensions: [4   ])
         expect(registers[3]).to have_variable(:block_model, :reg_model, data_type: 'register_3_reg_model', name: 'register_3', random: true, dimensions: [2, 4])
+        expect(registers[4]).to have_variable(:block_model, :reg_model, data_type: 'register_4_reg_model', name: 'register_4', random: true)
       end
     end
 
@@ -72,7 +75,7 @@ describe 'register/reg_model' do
       end
 
       let(:expected_code) do
-        [expected_code_0, expected_code_1, expected_code_2, expected_code_3].join
+        [expected_code_0, expected_code_1, expected_code_2, expected_code_3, expected_code_4].join
       end
 
       let(:expected_code_0) do
@@ -102,6 +105,12 @@ CODE
 foreach (register_3[i, j]) begin
   `rggen_ral_create_reg_model(register_3[i][j], "register_3", '{i, j}, 8'h14, "WO", 1)
 end
+CODE
+      end
+
+      let(:expected_code_4) do
+        <<'CODE'
+`rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0)
 CODE
       end
 
@@ -188,18 +197,35 @@ endclass
 CODE
       end
 
+      let(:expected_code_4) do
+        <<'CODE'
+class register_4_reg_model extends rggen_ral_reg;
+  rand rggen_ral_field bit_field_4_0;
+  rand rggen_ral_field bit_field_4_1;
+  function new(string name = "register_4");
+    super.new(name, 16, 0);
+  endfunction
+  function void create_fields();
+    `rggen_ral_create_field_model(bit_field_4_0, "bit_field_4_0", 1, 8, "W0C", 0, 1'h0, 1)
+    `rggen_ral_create_field_model(bit_field_4_1, "bit_field_4_1", 1, 0, "W1C", 0, 1'h0, 1)
+  endfunction
+endclass
+CODE
+      end
+
       it "レジスタモデルの定義を生成する" do
         expect(registers[0]).to generate_code(:package_item, :top_down, expected_code_0)
         expect(registers[1]).to generate_code(:package_item, :top_down, expected_code_1)
         expect(registers[2]).to generate_code(:package_item, :top_down, expected_code_2)
         expect(registers[3]).to generate_code(:package_item, :top_down, expected_code_3)
+        expect(registers[4]).to generate_code(:package_item, :top_down, expected_code_4)
       end
     end
   end
 
   context "レジスタが外部レジスタの場合" do
     let(:register) do
-      @ral.registers[4]
+      @ral.registers[5]
     end
 
     it "有効なアイテムではない" do

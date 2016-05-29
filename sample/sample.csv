@@ -12,4 +12,6 @@
 ,,,,,,[15:0],bit_field_4_1,rw,0,
 ,0x20,register_5,"[2,4]","bit_field_2_1:1, bit_field_0_0, bit_field_0_1",,[31:16],bit_field_5_0,ro,,
 ,,,,,,[15:0],bit_field_5_1,rw,0,
-,0x80-0xFF,register_6,,,true,,,,,
+,0x24,register_6,,,,[8],bit_field_6_0,w0c,0,
+,,,,,,[0],bit_field_6_1,w1c,0,
+,0x80-0xFF,register_7,,,TRUE,,,,,
