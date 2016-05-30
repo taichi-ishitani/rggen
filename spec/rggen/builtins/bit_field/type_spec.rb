@@ -468,6 +468,35 @@ describe 'bit_field/type' do
         end
       end
     end
+
+    describe "#irq?" do
+      let(:load_data) do
+        [
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[8]", "foo", nil, nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", "foo", nil, nil]
+        ]
+      end
+
+      context "通常の場合" do
+        it "割り込み要求ではないことを示す" do
+          expect(bit_fields[0]).not_to be_irq
+          expect(bit_fields[1]).not_to be_irq
+        end
+      end
+
+      context ".irq?で#irq?が再定義された場合" do
+        before do
+          define_item(:foo) do
+            irq? { bit_field.name == "bit_field_0_0" }
+          end
+        end
+
+        it ".irq?に与えたブロックの評価結果を返す" do
+          expect(bit_fields[0]).to be_irq
+          expect(bit_fields[1]).not_to be_irq
+        end
+      end
+    end
   end
 
   describe "rtl" do
