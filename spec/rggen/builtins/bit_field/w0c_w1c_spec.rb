@@ -84,15 +84,65 @@ describe 'bit_fields/type/w0c_w1c' do
       }.to raise_error RgGen::RegisterMapError
     end
 
-    it "参照ビットフィールドの指定に有無にかかわらず使用できる" do
-      expect {
+    context "参照ビットフィールドの指定がない場合" do
+      let(:bit_fields) do
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]" , "w0c", '0', nil            ],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]" , "w0c", '0', "bit_field_0_0"],
-          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]" , "w1c", '0', nil            ],
-          [nil, "register_3", "0x0c", nil, nil, nil, "bit_field_3_0", "[0]" , "w1c", '0', "bit_field_2_0"]
+          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', nil],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', nil],
+          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', nil],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', nil]
         ])
-      }.not_to raise_error
+      end
+
+      it "エラーなく使用できる" do
+        expect { bit_fields }.not_to raise_error
+      end
+
+      it "割り込み要求ではない" do
+        expect(bit_fields[0]).not_to be_irq
+        expect(bit_fields[1]).not_to be_irq
+        expect(bit_fields[2]).not_to be_irq
+        expect(bit_fields[3]).not_to be_irq
+      end
+    end
+
+    context "同一幅の参照ビットフィールドの指定がある場合" do
+      let(:bit_fields) do
+        build_bit_fields([
+          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', "bit_field_2_0"],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', "bit_field_2_1"],
+          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', "bit_field_2_0"],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', "bit_field_2_1"],
+          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[4]"  , "rw" , '0', nil            ],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_2_1", "[3:0]", "rw" , '0', nil            ]
+        ])
+      end
+
+      it "エラーなく使用できる" do
+        expect {bit_fields}.not_to raise_error
+      end
+
+      it "割り込み要求である" do
+        expect(bit_fields[0]).to be_irq
+        expect(bit_fields[1]).to be_irq
+        expect(bit_fields[2]).to be_irq
+        expect(bit_fields[3]).to be_irq
+      end
+    end
+
+    context "ビット幅が異なる参照ビットフィールドの指定がある場合" do
+      it "RgGen::RegisterMapErrorを発生させる" do
+        expect {
+          build_bit_fields([
+            [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', "bit_field_2_0"],
+            [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', "bit_field_2_1"],
+            [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', "bit_field_2_0"],
+            [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', "bit_field_2_1"],
+            [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[7:4]", "rw" , '0', nil            ],
+            [nil, nil         , nil   , nil, nil, nil, "bit_field_2_1", "[0]"  , "rw" , '0', nil            ]
+          ])
+        }.to raise_error RgGen::RegisterMapError
+      end
     end
   end
 
