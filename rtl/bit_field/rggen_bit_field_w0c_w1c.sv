@@ -1,7 +1,7 @@
 module rggen_bit_field_w0c_w1c #(
   parameter WIDTH         = 1,
   parameter INITIAL_VALUE = 1'b0,
-  parameter CLEAR_VALUE   = 0
+  parameter CLEAR_VALUE   = 1'b0
 )(
   input               clk,
   input               rst_n,
@@ -27,17 +27,10 @@ module rggen_bit_field_w0c_w1c #(
         if (i_set[i]) begin
           value[i]  <= 1'b1;
         end
-        else if (write_valid && clear(i_write_mask[i], i_write_data[i])) begin
+        else if (write_valid && i_write_mask[i] && (i_write_data[i] == CLEAR_VALUE)) begin
           value[i]  <= 1'b0;
         end
       end
     end
   end
-
-  function automatic clear(input mask, input data);
-    logic clear_value;
-    clear_value = (CLEAR_VALUE == 1) ? 1'b1 : 1'b0;
-    return (mask && (data == clear_value)) ? 1'b1 : 1'b0;
-  endfunction
 endmodule
-

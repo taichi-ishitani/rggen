@@ -316,7 +316,7 @@ module sample_0 (
   rggen_bit_field_w0c_w1c #(
     .WIDTH          (1),
     .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (0)
+    .CLEAR_VALUE    (1'b0)
   ) u_bit_field_6_0 (
     .clk              (clk),
     .rst_n            (rst_n),
@@ -331,7 +331,7 @@ module sample_0 (
   rggen_bit_field_w0c_w1c #(
     .WIDTH          (1),
     .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (1)
+    .CLEAR_VALUE    (1'b1)
   ) u_bit_field_6_1 (
     .clk              (clk),
     .rst_n            (rst_n),

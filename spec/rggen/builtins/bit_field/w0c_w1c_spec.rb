@@ -141,7 +141,7 @@ describe 'bit_fields/type/w0c_w1c' do
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (16),
   .INITIAL_VALUE  (16'h0123),
-  .CLEAR_VALUE    (0)
+  .CLEAR_VALUE    (1'b0)
 ) u_bit_field_0_0 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -161,7 +161,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (0)
+  .CLEAR_VALUE    (1'b0)
 ) u_bit_field_0_1 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -181,7 +181,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (0)
+  .CLEAR_VALUE    (1'b0)
 ) u_bit_field_1_0 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -201,7 +201,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (0)
+  .CLEAR_VALUE    (1'b0)
 ) u_bit_field_2_0 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -221,7 +221,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (16),
   .INITIAL_VALUE  (16'h4567),
-  .CLEAR_VALUE    (1)
+  .CLEAR_VALUE    (1'b1)
 ) u_bit_field_3_0 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -241,7 +241,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1)
+  .CLEAR_VALUE    (1'b1)
 ) u_bit_field_3_1 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -261,7 +261,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1)
+  .CLEAR_VALUE    (1'b1)
 ) u_bit_field_4_0 (
   .clk              (clk),
   .rst_n            (rst_n),
@@ -281,7 +281,7 @@ CODE
 rggen_bit_field_w0c_w1c #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1)
+  .CLEAR_VALUE    (1'b1)
 ) u_bit_field_5_0 (
   .clk              (clk),
   .rst_n            (rst_n),

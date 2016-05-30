@@ -18,7 +18,7 @@ list_item :bit_field, :type, [:w0c, :w1c] do
     end
 
     def clear_value
-      ((type == :w0c) && 0) || 1
+      bin({ w0c: 0, w1c: 1 }[type], 1)
     end
   end
 end
