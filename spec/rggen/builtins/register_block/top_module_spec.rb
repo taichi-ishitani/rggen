@@ -8,7 +8,7 @@ describe "register_block/top_module" do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux]
+    enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :register, [:address_decoder, :read_data, :bus_exporter]
@@ -19,21 +19,21 @@ describe "register_block/top_module" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                                                                               ],
-        [nil, nil         , 256                                                                                                                     ],
-        [                                                                                                                                           ],
-        [                                                                                                                                           ],
-        [nil, "register_0", "0x00"     , nil     , nil                                           , nil , "bit_field_0_0", "[16]"   , "rw" , 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_0_1", "[0]"    , "ro" , 0  , nil],
-        [nil, "register_1", "0x04"     , nil     , nil                                           , nil , "bit_field_1_0", "[31:16]", "ro" , 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_1_1", "[15:0]" , "rw" , 0  , nil],
-        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                           , nil , "bit_field_2_0", "[31:16]", "ro" , 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_2_1", "[15:0]" , "rw" , 0  , nil],
-        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0:1, bit_field_1_0, bit_field_1_1", nil , "bit_field_3_0", "[31:16]", "ro" , 0  , nil],
-        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_3_1", "[15:0]" , "rw" , 0  , nil],
-        [nil, "register_4", "0x14"     , nil    , nil                                            , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , nil],
-        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , nil],
-        [nil, "register_5", "0x20-0x2F", nil    , nil                                            , true, nil            , nil      , nil  , nil, nil]
+        [nil, nil         , "block_0"                                                                                                                           ],
+        [nil, nil         , 256                                                                                                                                 ],
+        [                                                                                                                                                       ],
+        [                                                                                                                                                       ],
+        [nil, "register_0", "0x00"     , nil     , nil                                           , nil , "bit_field_0_0", "[16]"   , "rw" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_0_1", "[0]"    , "ro" , 0  , nil            ],
+        [nil, "register_1", "0x04"     , nil     , nil                                           , nil , "bit_field_1_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_1_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                           , nil , "bit_field_2_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_2_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0:1, bit_field_1_0, bit_field_1_1", nil , "bit_field_3_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_3_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_4", "0x14"     , nil    , nil                                            , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , "bit_field_0_0"],
+        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , "bit_field_0_0"],
+        [nil, "register_5", "0x20-0x2F", nil    , nil                                            , true, nil            , nil      , nil  , nil, nil            ]
       ]
     )
 
@@ -68,6 +68,7 @@ module block_0 (
   output o_pready,
   output [31:0] o_prdata,
   output o_pslverr,
+  output o_irq,
   output o_bit_field_0_0,
   input i_bit_field_0_1,
   input [15:0] i_bit_field_1_0,
@@ -103,6 +104,8 @@ module block_0 (
   logic [0:0] external_register_select;
   logic [0:0] external_register_ready;
   logic [1:0] external_register_status[1];
+  logic [1:0] ier;
+  logic [1:0] isr;
   logic bit_field_0_0_value;
   logic bit_field_0_1_value;
   logic [15:0] bit_field_1_0_value;
@@ -159,6 +162,17 @@ module block_0 (
     .i_external_register_select (external_register_select),
     .i_external_register_ready  (external_register_ready),
     .i_external_register_status (external_register_status)
+  );
+  assign ier = {bit_field_0_0_value, bit_field_0_0_value};
+  assign isr = {bit_field_4_0_value, bit_field_4_1_value};
+  rggen_irq_controller #(
+    .TOTAL_INTERRUPTS (2)
+  ) u_irq_controller (
+    .clk    (clk),
+    .rst_n  (rst_n),
+    .i_ier  (ier),
+    .i_isr  (isr),
+    .o_irq  (o_irq)
   );
   rggen_address_decoder #(
     .ADDRESS_WIDTH      (6),

@@ -90,6 +90,12 @@ module RgGen::OutputBase
       end
     end
 
+    describe "#source" do
+      it "与えられたレジスタマップオブジェクトを返す" do
+        expect(component.source).to eql register_map
+      end
+    end
+
     describe "#build" do
       before do
         component.items.each do |item|

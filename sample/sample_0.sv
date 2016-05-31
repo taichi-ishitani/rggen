@@ -11,6 +11,7 @@ module sample_0 (
   output o_pready,
   output [31:0] o_prdata,
   output o_pslverr,
+  output o_irq,
   output [15:0] o_bit_field_0_0,
   output [15:0] o_bit_field_0_1,
   output [31:0] o_bit_field_1_0,
@@ -48,6 +49,8 @@ module sample_0 (
   logic [0:0] external_register_select;
   logic [0:0] external_register_ready;
   logic [1:0] external_register_status[1];
+  logic [1:0] ier;
+  logic [1:0] isr;
   logic [15:0] bit_field_0_0_value;
   logic [15:0] bit_field_0_1_value;
   logic [31:0] bit_field_1_0_value;
@@ -106,6 +109,17 @@ module sample_0 (
     .i_external_register_select (external_register_select),
     .i_external_register_ready  (external_register_ready),
     .i_external_register_status (external_register_status)
+  );
+  assign ier = {bit_field_2_1_value, bit_field_2_1_value};
+  assign isr = {bit_field_6_0_value, bit_field_6_1_value};
+  rggen_irq_controller #(
+    .TOTAL_INTERRUPTS (2)
+  ) u_irq_controller (
+    .clk    (clk),
+    .rst_n  (rst_n),
+    .i_ier  (ier),
+    .i_isr  (isr),
+    .o_irq  (o_irq)
   );
   rggen_address_decoder #(
     .ADDRESS_WIDTH      (6),

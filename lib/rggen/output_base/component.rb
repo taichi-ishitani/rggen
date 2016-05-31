@@ -3,16 +3,17 @@ module RgGen
     class Component < Base::Component
       include Base::HierarchicalAccessors
 
-      def initialize(parent, configuration, register_map)
+      def initialize(parent, configuration, source)
         super(parent)
         define_hierarchical_accessors
         @configuration  = configuration
-        @register_map   = register_map
-        @need_children  = register_map.need_children?
-        def_delegators(:@register_map, *@register_map.fields)
+        @source         = source
+        @need_children  = source.need_children?
+        def_delegators(:source, *source.fields)
       end
 
       attr_reader :configuration
+      attr_reader :source
       attr_writer :output_directory
 
       def add_item(item)
