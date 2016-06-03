@@ -208,7 +208,12 @@ module sample_0 (
     .o_select       (register_select[2])
   );
   assign register_read_data[2] = {15'h0000, bit_field_2_0_value, 15'h0000, bit_field_2_1_value};
-  assign bit_field_2_0_value = i_bit_field_2_0;
+  rggen_bit_field_ro #(
+    .WIDTH  (1)
+  ) u_bit_field_2_0 (
+    .i_value  (i_bit_field_2_0),
+    .o_value  (bit_field_2_0_value)
+  );
   assign o_bit_field_2_1 = bit_field_2_1_value;
   rggen_bit_field_rw #(
     .WIDTH          (1),
@@ -238,7 +243,12 @@ module sample_0 (
     .o_select       (register_select[3])
   );
   assign register_read_data[3] = {bit_field_3_0_value};
-  assign bit_field_3_0_value = i_bit_field_3_0;
+  rggen_bit_field_ro #(
+    .WIDTH  (32)
+  ) u_bit_field_3_0 (
+    .i_value  (i_bit_field_3_0),
+    .o_value  (bit_field_3_0_value)
+  );
   generate if (1) begin : g_register_4
     genvar g_i;
     for (g_i = 0;g_i < 4;g_i++) begin : g
@@ -257,7 +267,12 @@ module sample_0 (
         .o_select       (register_select[4+g_i])
       );
       assign register_read_data[4+g_i] = {bit_field_4_0_value[g_i], bit_field_4_1_value[g_i]};
-      assign bit_field_4_0_value[g_i] = i_bit_field_4_0[g_i];
+      rggen_bit_field_ro #(
+        .WIDTH  (16)
+      ) u_bit_field_4_0 (
+        .i_value  (i_bit_field_4_0[g_i]),
+        .o_value  (bit_field_4_0_value[g_i])
+      );
       assign o_bit_field_4_1[g_i] = bit_field_4_1_value[g_i];
       rggen_bit_field_rw #(
         .WIDTH          (16),
@@ -294,7 +309,12 @@ module sample_0 (
           .o_select       (register_select[8+4*g_i+g_j])
         );
         assign register_read_data[8+4*g_i+g_j] = {bit_field_5_0_value[g_i][g_j], bit_field_5_1_value[g_i][g_j]};
-        assign bit_field_5_0_value[g_i][g_j] = i_bit_field_5_0[g_i][g_j];
+        rggen_bit_field_ro #(
+          .WIDTH  (16)
+        ) u_bit_field_5_0 (
+          .i_value  (i_bit_field_5_0[g_i][g_j]),
+          .o_value  (bit_field_5_0_value[g_i][g_j])
+        );
         assign o_bit_field_5_1[g_i][g_j] = bit_field_5_1_value[g_i][g_j];
         rggen_bit_field_rw #(
           .WIDTH          (16),

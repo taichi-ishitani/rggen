@@ -100,11 +100,55 @@ describe 'bit_fields/type/ro' do
     end
 
     describe "#generate_code" do
-      it "#valueと#value_inを接続するコードを生成する" do
-        expect(rtl[0]).to generate_code(:module_item, :top_down, "assign bit_field_0_0_value[g_i] = i_bit_field_0_0[g_i];\n")
-        expect(rtl[1]).to generate_code(:module_item, :top_down, "assign bit_field_1_0_value = i_bit_field_1_0;\n")
-        expect(rtl[2]).to generate_code(:module_item, :top_down, "assign bit_field_1_1_value = i_bit_field_1_1;\n")
-        expect(rtl[3]).to generate_code(:module_item, :top_down, "assign bit_field_2_0_value[g_i][g_j] = i_bit_field_2_0[g_i][g_j];\n")
+      let(:expected_code_0) do
+        <<'CODE'
+rggen_bit_field_ro #(
+  .WIDTH  (32)
+) u_bit_field_0_0 (
+  .i_value  (i_bit_field_0_0[g_i]),
+  .o_value  (bit_field_0_0_value[g_i])
+);
+CODE
+      end
+
+      let(:expected_code_1) do
+        <<'CODE'
+rggen_bit_field_ro #(
+  .WIDTH  (16)
+) u_bit_field_1_0 (
+  .i_value  (i_bit_field_1_0),
+  .o_value  (bit_field_1_0_value)
+);
+CODE
+      end
+
+      let(:expected_code_2) do
+        <<'CODE'
+rggen_bit_field_ro #(
+  .WIDTH  (1)
+) u_bit_field_1_1 (
+  .i_value  (i_bit_field_1_1),
+  .o_value  (bit_field_1_1_value)
+);
+CODE
+      end
+
+      let(:expected_code_3) do
+        <<'CODE'
+rggen_bit_field_ro #(
+  .WIDTH  (32)
+) u_bit_field_2_0 (
+  .i_value  (i_bit_field_2_0[g_i][g_j]),
+  .o_value  (bit_field_2_0_value[g_i][g_j])
+);
+CODE
+      end
+
+      it "ROビットフィールドモジュールをインスタンスするコードを生成する" do
+        expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
       end
     end
   end

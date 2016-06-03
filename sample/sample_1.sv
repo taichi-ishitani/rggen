@@ -109,7 +109,12 @@ module sample_1 (
     .i_write_mask     (write_mask[31:16]),
     .o_value          (bit_field_0_0_value)
   );
-  assign bit_field_0_1_value = i_bit_field_0_1;
+  rggen_bit_field_ro #(
+    .WIDTH  (16)
+  ) u_bit_field_0_1 (
+    .i_value  (i_bit_field_0_1),
+    .o_value  (bit_field_0_1_value)
+  );
   rggen_address_decoder #(
     .ADDRESS_WIDTH      (5),
     .START_ADDRESS      (5'h01),
@@ -154,7 +159,12 @@ module sample_1 (
     .o_select       (register_select[2])
   );
   assign register_read_data[2] = {15'h0000, bit_field_2_0_value, 15'h0000, bit_field_2_1_value};
-  assign bit_field_2_0_value = i_bit_field_2_0;
+  rggen_bit_field_ro #(
+    .WIDTH  (1)
+  ) u_bit_field_2_0 (
+    .i_value  (i_bit_field_2_0),
+    .o_value  (bit_field_2_0_value)
+  );
   assign o_bit_field_2_1 = bit_field_2_1_value;
   rggen_bit_field_rw #(
     .WIDTH          (1),

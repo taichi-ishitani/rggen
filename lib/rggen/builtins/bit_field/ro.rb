@@ -5,15 +5,12 @@ list_item :bit_field, :type, :ro do
 
   rtl do
     build do
-      input :value_in, name: port_name, width: width, dimensions: dimensions
+      input :value_in,
+            name:       "i_#{bit_field.name}",
+            width:      width,
+            dimensions: dimensions
     end
 
-    generate_code :module_item do |buffer|
-      buffer << assign(value[loop_variables], value_in[loop_variables]) << nl
-    end
-
-    def port_name
-      "i_#{bit_field.name}"
-    end
+    generate_code_from_template :module_item
   end
 end
