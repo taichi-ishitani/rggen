@@ -13,7 +13,9 @@ simple_item :register, :shadow_index_configurator do
 
     def function_body(code)
       register.shadow_indexes.each do |shadow_index|
-        code << "set_shadow_index(#{arguments(shadow_index)});" << nl
+        code << subroutine_call(:set_shadow_index, arguments(shadow_index))
+        code << semicolon
+        code << nl
       end
     end
 
@@ -22,7 +24,7 @@ simple_item :register, :shadow_index_configurator do
         parent_name(shadow_index),
         index_name(shadow_index),
         index_value(shadow_index)
-      ].join(', ')
+      ]
     end
 
     def parent_name(shadow_index)

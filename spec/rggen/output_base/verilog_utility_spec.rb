@@ -61,6 +61,15 @@ module RgGen::OutputBase
       end
     end
 
+    describe "#subroutine_call" do
+      it "サブルーチン呼び出しのコード片を返す" do
+        expect(verilog.send(:subroutine_call, :foo               )).to eq "foo()"
+        expect(verilog.send(:subroutine_call, :foo, :bar         )).to eq "foo(bar)"
+        expect(verilog.send(:subroutine_call, :foo, [:bar       ])).to eq "foo(bar)"
+        expect(verilog.send(:subroutine_call, :foo, [:bar, "baz"])).to eq "foo(bar, baz)"
+      end
+    end
+
     describe "#concat" do
       let(:expressions) do
         ["4'b0000", VerilogUtility::Identifier.new('foo'), VerilogUtility::Identifier.new('bar')]

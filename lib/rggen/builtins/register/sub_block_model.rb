@@ -20,7 +20,7 @@ simple_item :register, :sub_block_model do
     end
 
     def model_creation(code)
-      code << "`rggen_ral_create_block_model(#{arguments.join(', ')})" << nl
+      code << subroutine_call('`rggen_ral_create_block_model', arguments) << nl
     end
 
     def arguments

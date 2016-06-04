@@ -12,7 +12,7 @@ simple_item :bit_field, :field_model do
     end
 
     def model_creation(code)
-      code << "`rggen_ral_create_field_model(#{arguments.join(', ')})" << nl
+      code << subroutine_call('`rggen_ral_create_field_model', arguments) << nl
     end
 
     def arguments

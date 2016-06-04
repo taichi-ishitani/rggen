@@ -26,7 +26,7 @@ simple_item :register, :reg_model do
 
     def model_creation(code)
       foreach_header(code) if array?
-      code << "`rggen_ral_create_reg_model(#{arguments.join(', ')})" << nl
+      code << subroutine_call('`rggen_ral_create_reg_model', arguments) << nl
       foreach_footer(code) if array?
     end
 

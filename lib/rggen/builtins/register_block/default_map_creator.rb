@@ -6,7 +6,7 @@ simple_item :register_block, :default_map_creator do
         f.body do |code|
           code << :return
           code << space
-          code << "create_map(#{arguments.join(', ')})"
+          code << subroutine_call(:create_map, arguments)
           code << semicolon
         end
       end
