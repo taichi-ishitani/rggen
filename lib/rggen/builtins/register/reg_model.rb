@@ -41,11 +41,19 @@ simple_item :register, :reg_model do
     end
 
     def arguments
-      [handle, string(name), array_index, offset_address, rights, unmapped]
+      [handle, instance_name, array_index, offset_address, rights, unmapped]
     end
 
     def handle
       create_identifier(name)[loop_varibles]
+    end
+
+    def instance_name
+      return string(name) unless array?
+      subroutine_call '$sformatf', [
+        string(name + '[%0d]' * loop_varibles.size),
+        *loop_varibles
+      ]
     end
 
     def array_index

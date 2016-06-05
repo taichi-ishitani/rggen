@@ -120,7 +120,7 @@ package block_0_ral_pkg;
     function void create_sub_models();
       `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
       foreach (register_1[i, j]) begin
-        `rggen_ral_create_reg_model(register_1[i][j], "register_1", '{i, j}, 8'h04, "RW", 1)
+        `rggen_ral_create_reg_model(register_1[i][j], $sformatf("register_1[%0d][%0d]", i, j), '{i, j}, 8'h04, "RW", 1)
       end
       `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0)
       `rggen_ral_create_block_model(register_3, "register_3", 8'h10)
