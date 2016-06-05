@@ -5,5 +5,6 @@ list_item :bit_field, :type, :reserved  do
 
   ral do
     access :ro
+    hdl_path { '' }
   end
 end

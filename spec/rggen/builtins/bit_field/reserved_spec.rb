@@ -85,5 +85,11 @@ describe 'bit_fields/type/reserved' do
         expect(ral.access).to eq "\"RO\""
       end
     end
+
+    describe "#hdl_path" do
+      it "空文字を返す" do
+        expect(ral.hdl_path).to eq ""
+      end
+    end
   end
 end

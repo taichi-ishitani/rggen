@@ -16,7 +16,7 @@ simple_item :bit_field, :field_model do
     end
 
     def arguments
-      [name, string(name), width, lsb, access, volatile, reset, has_reset]
+      [name, string(name), width, lsb, access, volatile, reset, has_reset, hdl_path]
     end
 
     def volatile
@@ -29,6 +29,10 @@ simple_item :bit_field, :field_model do
 
     def has_reset
       (bit_field.initial_value? && 1) || 0
+    end
+
+    def hdl_path
+      string(bit_field.hdl_path)
     end
   end
 end

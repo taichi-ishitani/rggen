@@ -193,13 +193,22 @@ list_item :bit_field, :type do
   ral do
     item_base do
       export :access
+      export :hdl_path
 
       define_helpers do
         attr_setter :access
+
+        def hdl_path(&body)
+          define_method(:hdl_path, &body)
+        end
       end
 
       def access
         string((self.class.access || bit_field.type).to_s.upcase)
+      end
+
+      def hdl_path
+        "u_#{bit_field.name}.value"
       end
     end
 

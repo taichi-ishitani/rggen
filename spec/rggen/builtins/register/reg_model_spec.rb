@@ -80,14 +80,14 @@ describe 'register/reg_model' do
 
       let(:expected_code_0) do
         <<'CODE'
-`rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+`rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
 CODE
       end
 
       let(:expected_code_1) do
         <<'CODE'
 foreach (register_1[i]) begin
-  `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RW", 0)
+  `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RW", 0, $sformatf("g_register_1.g[%0d]", i))
 end
 CODE
       end
@@ -95,7 +95,7 @@ CODE
       let(:expected_code_2) do
         <<'CODE'
 foreach (register_2[i]) begin
-  `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h10, "RO", 1)
+  `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h10, "RO", 1, $sformatf("g_register_2.g[%0d]", i))
 end
 CODE
       end
@@ -103,14 +103,14 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
 foreach (register_3[i, j]) begin
-  `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h14, "WO", 1)
+  `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h14, "WO", 1, $sformatf("g_register_3.g[%0d].g[%0d]", i, j))
 end
 CODE
       end
 
       let(:expected_code_4) do
         <<'CODE'
-`rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0)
+`rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0, "")
 CODE
       end
 
@@ -131,10 +131,10 @@ class register_0_reg_model extends rggen_ral_reg;
     super.new(name, 32, 0);
   endfunction
   function void create_fields();
-    `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1)
-    `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1)
-    `rggen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1)
-    `rggen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0)
+    `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 8, 24, "RW", 0, 8'h00, 1, "u_bit_field_0_0.value")
+    `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 8, 16, "RW", 0, 8'h01, 1, "u_bit_field_0_1.value")
+    `rggen_ral_create_field_model(bit_field_0_2, "bit_field_0_2", 8, 8, "RO", 0, 8'h02, 1, "u_bit_field_0_2.i_value")
+    `rggen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0, "u_bit_field_0_3.i_value")
   endfunction
 endclass
 CODE
@@ -149,8 +149,8 @@ class register_1_reg_model extends rggen_ral_reg;
     super.new(name, 32, 0);
   endfunction
   function void create_fields();
-    `rggen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 16, 16, "RW", 0, 16'h0000, 1)
-    `rggen_ral_create_field_model(bit_field_1_1, "bit_field_1_1", 16, 0, "RW", 0, 16'h0000, 1)
+    `rggen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 16, 16, "RW", 0, 16'h0000, 1, "u_bit_field_1_0.value")
+    `rggen_ral_create_field_model(bit_field_1_1, "bit_field_1_1", 16, 0, "RW", 0, 16'h0000, 1, "u_bit_field_1_1.value")
   endfunction
 endclass
 CODE
@@ -165,8 +165,8 @@ class register_2_reg_model extends rggen_ral_shadow_reg;
     super.new(name, 16, 0);
   endfunction
   function void create_fields();
-    `rggen_ral_create_field_model(bit_field_2_0, "bit_field_2_0", 8, 8, "RO", 0, 8'h00, 1)
-    `rggen_ral_create_field_model(bit_field_2_1, "bit_field_2_1", 8, 0, "RO", 0, 8'h00, 1)
+    `rggen_ral_create_field_model(bit_field_2_0, "bit_field_2_0", 8, 8, "RO", 0, 8'h00, 1, "u_bit_field_2_0.i_value")
+    `rggen_ral_create_field_model(bit_field_2_1, "bit_field_2_1", 8, 0, "RO", 0, 8'h00, 1, "u_bit_field_2_1.i_value")
   endfunction
   function void configure_shadow_indexes();
     set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
@@ -184,8 +184,8 @@ class register_3_reg_model extends rggen_ral_shadow_reg;
     super.new(name, 8, 0);
   endfunction
   function void create_fields();
-    `rggen_ral_create_field_model(bit_field_3_0, "bit_field_3_0", 4, 4, "WO", 0, 4'h0, 1)
-    `rggen_ral_create_field_model(bit_field_3_1, "bit_field_3_1", 4, 0, "WO", 0, 4'h0, 1)
+    `rggen_ral_create_field_model(bit_field_3_0, "bit_field_3_0", 4, 4, "WO", 0, 4'h0, 1, "u_bit_field_3_0.value")
+    `rggen_ral_create_field_model(bit_field_3_1, "bit_field_3_1", 4, 0, "WO", 0, 4'h0, 1, "u_bit_field_3_1.value")
   endfunction
   function void configure_shadow_indexes();
     set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
@@ -206,8 +206,8 @@ class register_4_reg_model extends rggen_ral_reg;
     super.new(name, 16, 0);
   endfunction
   function void create_fields();
-    `rggen_ral_create_field_model(bit_field_4_0, "bit_field_4_0", 1, 8, "W0C", 0, 1'h0, 1)
-    `rggen_ral_create_field_model(bit_field_4_1, "bit_field_4_1", 1, 0, "W1C", 0, 1'h0, 1)
+    `rggen_ral_create_field_model(bit_field_4_0, "bit_field_4_0", 1, 8, "W0C", 0, 1'h0, 1, "u_bit_field_4_0.value")
+    `rggen_ral_create_field_model(bit_field_4_1, "bit_field_4_1", 1, 0, "W1C", 0, 1'h0, 1, "u_bit_field_4_1.value")
   endfunction
 endclass
 CODE

@@ -73,15 +73,15 @@ class block_0_block_model#(
     super.new(name);
   endfunction
   function void create_sub_models();
-    `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+    `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
     foreach (register_1[i]) begin
-      `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RO", 0)
+      `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RO", 0, $sformatf("g_register_1.g[%0d]", i))
     end
     foreach (register_2[i]) begin
-      `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h0c, "WO", 1)
+      `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h0c, "WO", 1, $sformatf("g_register_2.g[%0d]", i))
     end
     foreach (register_3[i, j]) begin
-      `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h10, "RW", 1)
+      `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h10, "RW", 1, $sformatf("g_register_3.g[%0d].g[%0d]", i, j))
     end
     `rggen_ral_create_block_model(register_4, "register_4", 8'h20)
   endfunction
@@ -103,15 +103,15 @@ class block_1_block_model extends rggen_ral_block;
     super.new(name);
   endfunction
   function void create_sub_models();
-    `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0)
+    `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
     foreach (register_1[i]) begin
-      `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RO", 0)
+      `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RO", 0, $sformatf("g_register_1.g[%0d]", i))
     end
     foreach (register_2[i]) begin
-      `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h0c, "WO", 1)
+      `rggen_ral_create_reg_model(register_2[i], $sformatf("register_2[%0d]", i), '{i}, 8'h0c, "WO", 1, $sformatf("g_register_2.g[%0d]", i))
     end
     foreach (register_3[i, j]) begin
-      `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h10, "RW", 1)
+      `rggen_ral_create_reg_model(register_3[i][j], $sformatf("register_3[%0d][%0d]", i, j), '{i, j}, 8'h10, "RW", 1, $sformatf("g_register_3.g[%0d].g[%0d]", i, j))
     end
   endfunction
   function uvm_reg_map create_default_map();

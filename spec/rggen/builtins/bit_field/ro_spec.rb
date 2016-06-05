@@ -4,6 +4,7 @@ describe 'bit_fields/type/ro' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'rtl common'
+  include_context 'ral common'
 
   before(:all) do
     RgGen.enable(:global, [:data_width, :address_width])
@@ -30,7 +31,7 @@ describe 'bit_fields/type/ro' do
     @configuration
   end
 
-  describe "#register_map" do
+  describe "register_map" do
     describe "#type" do
       it ":roを返す" do
         bit_fields  = build_bit_fields([
@@ -70,7 +71,7 @@ describe 'bit_fields/type/ro' do
     end
   end
 
-  describe "#rtl" do
+  describe "rtl" do
     before(:all) do
       register_map  = create_register_map(
         @configuration,
@@ -149,6 +150,36 @@ CODE
         expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
         expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
         expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
+      end
+    end
+  end
+
+  describe "ral" do
+    before(:all) do
+      register_map  = create_register_map(
+        @configuration,
+        "block_0" => [
+          [nil, nil, "block_0"                                                           ],
+          [nil, nil, 256                                                                 ],
+          [nil, nil, nil                                                                 ],
+          [nil, nil, nil                                                                 ],
+          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[31:0]", "ro", nil],
+          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[1]"   , "ro", nil],
+          [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[0]"   , "ro", nil]
+        ]
+      )
+      @ral  = build_ral_factory.create(@configuration, register_map).bit_fields
+    end
+
+    let(:ral) do
+      @ral
+    end
+
+    describe "#hdl_path" do
+      it "ROビットフィールド特有の階層パスを返す" do
+        expect(ral[0].hdl_path).to eq "u_bit_field_0_0.i_value"
+        expect(ral[1].hdl_path).to eq "u_bit_field_1_0.i_value"
+        expect(ral[2].hdl_path).to eq "u_bit_field_1_1.i_value"
       end
     end
   end

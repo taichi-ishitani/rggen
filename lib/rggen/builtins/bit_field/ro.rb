@@ -13,4 +13,8 @@ list_item :bit_field, :type, :ro do
 
     generate_code_from_template :module_item
   end
+
+  ral do
+    hdl_path { "u_#{bit_field.name}.i_value" }
+  end
 end

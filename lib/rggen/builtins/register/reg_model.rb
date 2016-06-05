@@ -41,7 +41,7 @@ simple_item :register, :reg_model do
     end
 
     def arguments
-      [handle, instance_name, array_index, offset_address, rights, unmapped]
+      [handle, instance_name, array_index, offset_address, rights, unmapped, hdl_path]
     end
 
     def handle
@@ -78,6 +78,14 @@ simple_item :register, :reg_model do
 
     def unmapped
       (shadow? && 1) || 0
+    end
+
+    def hdl_path
+      return string('') unless array?
+      subroutine_call '$sformatf', [
+        string("g_#{name}" + '.g[%0d]' * loop_varibles.size),
+        *loop_varibles
+      ]
     end
 
     def loop_varibles

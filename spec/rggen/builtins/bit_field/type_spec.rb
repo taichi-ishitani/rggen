@@ -13,7 +13,10 @@ describe 'bit_field/type' do
         register_map {items[item_name] = self}
         rtl {}
         ral do
-          access :rw if item_name == :BAR
+          if item_name == :BAR
+            access :rw
+            hdl_path { "u_#{bit_field.name}.bar_value" }
+          end
         end
       end
     end
@@ -22,7 +25,7 @@ describe 'bit_field/type' do
     RgGen.enable(:register_block, [:name, :byte_size])
     RgGen.enable(:register, [:name, :offset_address, :array, :shadow])
     RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
-    RgGen.enable(:bit_field, :type, [:ro, :foo, :BAR])
+    RgGen.enable(:bit_field, :type, [:rw, :ro, :foo, :BAR])
 
     @items    = items
     @factory  = build_register_map_factory
@@ -570,7 +573,7 @@ describe 'bit_field/type' do
   describe "ral" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[31:0]", "ro" , nil, nil],
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[31:0]", "rw" , 0  , nil],
         [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[31:0]", "foo", nil, nil],
         [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[31:0]", "BAR", nil, nil]
       ])
@@ -584,7 +587,7 @@ describe 'bit_field/type' do
     describe "#access" do
       context ".accessでモデルのアクセス権設定されていない場合" do
         it "大文字化したタイプ名を返す" do
-          expect(ral[0].access).to eq '"RO"'
+          expect(ral[0].access).to eq '"RW"'
           expect(ral[1].access).to eq '"FOO"'
         end
       end
@@ -592,6 +595,21 @@ describe 'bit_field/type' do
       context ".accessでモデルのアクセス権設定された場合" do
         it "設定したアクセス権を大文字に化して返す" do
           expect(ral[2].access).to eq '"RW"'
+        end
+      end
+    end
+
+    describe "#hdl_path" do
+      context "通常の場合" do
+        it "デフォルトの階層パスを返す" do
+          expect(ral[0].hdl_path).to eq "u_bit_field_0_0.value"
+          expect(ral[1].hdl_path).to eq "u_bit_field_1_0.value"
+        end
+      end
+
+      context ".hdl_pathで階層パスの設定がされた場合" do
+        it ".hdl_pathで設定された階層パスを返す" do
+          expect(ral[2].hdl_path).to eq "u_bit_field_2_0.bar_value"
         end
       end
     end
