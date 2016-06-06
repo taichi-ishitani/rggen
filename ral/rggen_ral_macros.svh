@@ -15,6 +15,7 @@ end
 begin \
   handle  = new(name); \
   handle.configure(this.cfg, this, null, array_index, hdl_path); \
+  handle.build(); \
   default_map.add_reg(handle, offset_address, rights, unmapped); \
 end
 
@@ -22,6 +23,7 @@ end
 begin \
   handle  = new(name); \
   handle.configure(this.cfg, this, ""); \
+  handle.build(); \
   default_map.add_submap(handle.default_map, offset_address); \
 end
 

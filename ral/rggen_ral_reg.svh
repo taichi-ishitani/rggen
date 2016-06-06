@@ -13,6 +13,7 @@ class rggen_ral_reg extends uvm_reg;
     int           indexes[$],
     string        hdl_path = ""
   );
+  extern virtual function void build();
 
   extern virtual function uvm_reg_frontdoor create_frontdoor();
 
@@ -36,6 +37,9 @@ function void rggen_ral_reg::configure(
   end
   set_cfg(cfg);
   super.configure(blk_parent, regfile_parent, hdl_path);
+endfunction
+
+function void rggen_ral_reg::build();
   create_fields();
 endfunction
 

@@ -14,6 +14,7 @@ class rggen_ral_block extends uvm_reg_block;
     uvm_endianness_e  endian,
     bit               byte_addressing = 1
   );
+  extern virtual function void build();
   extern virtual function void lock_model();
 
   extern protected virtual function void set_cfg(uvm_object cfg);
@@ -28,6 +29,9 @@ endfunction
 function void rggen_ral_block::configure(uvm_object cfg, uvm_reg_block parent, string hdl_path);
   set_cfg(cfg);
   super.configure(parent, hdl_path);
+endfunction
+
+function void rggen_ral_block::build();
   if (default_map == null) begin
     default_map = create_default_map();
   end
