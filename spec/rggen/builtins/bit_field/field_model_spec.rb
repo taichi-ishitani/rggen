@@ -10,7 +10,7 @@ describe 'bit_field/field_model' do
     enable :register_block, :name
     enable :register, :name
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c, :reserved]
+    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :reserved]
     enable :bit_field, :field_model
 
     configuration = create_configuration
@@ -25,7 +25,9 @@ describe 'bit_field/field_model' do
         [nil, nil         , "bit_field_1_1", "[4]"   , "ro"      , 1       , nil],
         [nil, nil         , "bit_field_1_2", "[0]"   , "reserved", nil     , nil],
         [nil, "register_2", "bit_field_2_0", "[8]"   , "w0c"     , 0       , nil],
-        [nil, nil         , "bit_field_2_1", "[0]"   , "w1c"     , 0       , nil]
+        [nil, nil         , "bit_field_2_1", "[0]"   , "w1c"     , 0       , nil],
+        [nil, "register_3", "bit_field_3_0", "[8]"   , "w0s"     , 0       , nil],
+        [nil, nil         , "bit_field_3_1", "[0]"   , "w1s"     , 0       , nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map)
@@ -47,6 +49,8 @@ describe 'bit_field/field_model' do
       expect(bit_fields[3]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_1_2', random: true)
       expect(bit_fields[4]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_2_0', random: true)
       expect(bit_fields[5]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_2_1', random: true)
+      expect(bit_fields[6]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_3_0', random: true)
+      expect(bit_fields[7]).to have_variable(:reg_model, :field_model, data_type: :rggen_ral_field, name: 'bit_field_3_1', random: true)
     end
   end
 
@@ -68,7 +72,9 @@ describe 'bit_field/field_model' do
         "`rggen_ral_create_field_model(bit_field_1_1, \"bit_field_1_1\", 1, 4, \"RO\", 0, 1'h1, 1, \"u_bit_field_1_1.i_value\")\n",
         "`rggen_ral_create_field_model(bit_field_1_2, \"bit_field_1_2\", 1, 0, \"RO\", 0, 1'h0, 0, \"\")\n",
         "`rggen_ral_create_field_model(bit_field_2_0, \"bit_field_2_0\", 1, 8, \"W0C\", 0, 1'h0, 1, \"u_bit_field_2_0.value\")\n",
-        "`rggen_ral_create_field_model(bit_field_2_1, \"bit_field_2_1\", 1, 0, \"W1C\", 0, 1'h0, 1, \"u_bit_field_2_1.value\")\n"
+        "`rggen_ral_create_field_model(bit_field_2_1, \"bit_field_2_1\", 1, 0, \"W1C\", 0, 1'h0, 1, \"u_bit_field_2_1.value\")\n",
+        "`rggen_ral_create_field_model(bit_field_3_0, \"bit_field_3_0\", 1, 8, \"W0S\", 0, 1'h0, 1, \"u_bit_field_3_0.value\")\n",
+        "`rggen_ral_create_field_model(bit_field_3_1, \"bit_field_3_1\", 1, 0, \"W1S\", 0, 1'h0, 1, \"u_bit_field_3_1.value\")\n"
       ].join
     end
 

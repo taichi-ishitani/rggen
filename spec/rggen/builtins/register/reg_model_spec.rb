@@ -10,7 +10,7 @@ describe 'register/reg_model' do
     enable :register_block, [:name, :byte_size]
     enable :register , [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c, :wo]
+    enable :bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :wo]
     enable :register , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator]
     enable :bit_field, :field_model
 
@@ -34,7 +34,9 @@ describe 'register/reg_model' do
         [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_3_1", "[ 3: 0]", "wo" , 0  , nil],
         [nil, "register_4", "0x18"     , nil     , nil                                                             , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , nil],
         [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , nil],
-        [nil, "register_5", "0x1C"     , nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
+        [nil, "register_5", "0x1C"     , nil     , nil                                                             , nil , "bit_field_5_0", "[8]"    , "w0s", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_5_1", "[0]"    , "w1s", 0  , nil],
+        [nil, "register_6", "0x20"     , nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map)
@@ -46,7 +48,7 @@ describe 'register/reg_model' do
 
   context "レジスタが内部レジスタの場合" do
     let(:registers) do
-      @ral.registers[0..4]
+      @ral.registers[0..5]
     end
 
     it "有効なアイテムである" do
@@ -60,6 +62,7 @@ describe 'register/reg_model' do
         expect(registers[2]).to have_variable(:block_model, :reg_model, data_type: 'register_2_reg_model', name: 'register_2', random: true, dimensions: [4   ])
         expect(registers[3]).to have_variable(:block_model, :reg_model, data_type: 'register_3_reg_model', name: 'register_3', random: true, dimensions: [2, 4])
         expect(registers[4]).to have_variable(:block_model, :reg_model, data_type: 'register_4_reg_model', name: 'register_4', random: true)
+        expect(registers[5]).to have_variable(:block_model, :reg_model, data_type: 'register_5_reg_model', name: 'register_5', random: true)
       end
     end
 
@@ -75,7 +78,7 @@ describe 'register/reg_model' do
       end
 
       let(:expected_code) do
-        [expected_code_0, expected_code_1, expected_code_2, expected_code_3, expected_code_4].join
+        [expected_code_0, expected_code_1, expected_code_2, expected_code_3, expected_code_4, expected_code_5].join
       end
 
       let(:expected_code_0) do
@@ -111,6 +114,12 @@ CODE
       let(:expected_code_4) do
         <<'CODE'
 `rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0, "")
+CODE
+      end
+
+      let(:expected_code_5) do
+        <<'CODE'
+`rggen_ral_create_reg_model(register_5, "register_5", '{}, 8'h1c, "RW", 0, "")
 CODE
       end
 
@@ -213,6 +222,22 @@ endclass
 CODE
       end
 
+      let(:expected_code_5) do
+        <<'CODE'
+class register_5_reg_model extends rggen_ral_reg;
+  rand rggen_ral_field bit_field_5_0;
+  rand rggen_ral_field bit_field_5_1;
+  function new(string name = "register_5");
+    super.new(name, 16, 0);
+  endfunction
+  function void create_fields();
+    `rggen_ral_create_field_model(bit_field_5_0, "bit_field_5_0", 1, 8, "W0S", 0, 1'h0, 1, "u_bit_field_5_0.value")
+    `rggen_ral_create_field_model(bit_field_5_1, "bit_field_5_1", 1, 0, "W1S", 0, 1'h0, 1, "u_bit_field_5_1.value")
+  endfunction
+endclass
+CODE
+      end
+
       it "レジスタモデルの定義を生成する" do
         expect(registers[0]).to generate_code(:package_item, :top_down, expected_code_0)
         expect(registers[1]).to generate_code(:package_item, :top_down, expected_code_1)
@@ -225,7 +250,7 @@ CODE
 
   context "レジスタが外部レジスタの場合" do
     let(:register) do
-      @ral.registers[5]
+      @ral.registers[6]
     end
 
     it "有効なアイテムではない" do

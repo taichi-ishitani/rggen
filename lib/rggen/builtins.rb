@@ -16,6 +16,7 @@ require_relative 'builtins/bit_field/type'
 require_relative 'builtins/bit_field/rw'
 require_relative 'builtins/bit_field/ro'
 require_relative 'builtins/bit_field/w0c_w1c'
+require_relative 'builtins/bit_field/w0s_w1s'
 require_relative 'builtins/bit_field/wo'
 require_relative 'builtins/bit_field/reserved'
 

@@ -10,7 +10,7 @@ describe "register_block/ral_package" do
     enable :register_block, [:name, :byte_size]
     enable :register      , [:name, :offset_address, :array, :shadow, :external, :accessibility]
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :wo]
+    enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :wo]
     enable :bit_field     , :field_model
     enable :register      , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]
     enable :register_block, [:block_model, :constructor, :sub_model_creator, :default_map_creator]
@@ -34,7 +34,9 @@ describe "register_block/ral_package" do
         [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_3", "[ 3: 0]", "rw" , 5  , nil],
         [nil, "register_2", "0x08"     , nil     , nil                                                             , nil , "bit_field_2_0", "[8]"    , "w0c", 0  , nil],
         [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_2_1", "[0]"    , "w1c", 0  , nil],
-        [nil, "register_3", "0x10-0x1F", nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
+        [nil, "register_3", "0x0C"     , nil     , nil                                                             , nil , "bit_field_3_0", "[8]"    , "w0s", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_3_1", "[0]"    , "w1s", 0  , nil],
+        [nil, "register_4", "0x10-0x1F", nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).register_blocks[0]
@@ -107,13 +109,25 @@ package block_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_2_1, "bit_field_2_1", 1, 0, "W1C", 0, 1'h0, 1, "u_bit_field_2_1.value")
     endfunction
   endclass
+  class register_3_reg_model extends rggen_ral_reg;
+    rand rggen_ral_field bit_field_3_0;
+    rand rggen_ral_field bit_field_3_1;
+    function new(string name = "register_3");
+      super.new(name, 16, 0);
+    endfunction
+    function void create_fields();
+      `rggen_ral_create_field_model(bit_field_3_0, "bit_field_3_0", 1, 8, "W0S", 0, 1'h0, 1, "u_bit_field_3_0.value")
+      `rggen_ral_create_field_model(bit_field_3_1, "bit_field_3_1", 1, 0, "W1S", 0, 1'h0, 1, "u_bit_field_3_1.value")
+    endfunction
+  endclass
   class block_0_block_model#(
-    type REGISTER_3 = rggen_ral_block
+    type REGISTER_4 = rggen_ral_block
   ) extends rggen_ral_block;
     rand register_0_reg_model register_0;
     rand register_1_reg_model register_1[2][4];
     rand register_2_reg_model register_2;
-    rand REGISTER_3 register_3;
+    rand register_3_reg_model register_3;
+    rand REGISTER_4 register_4;
     function new(string name = "block_0");
       super.new(name);
     endfunction
@@ -123,7 +137,8 @@ package block_0_ral_pkg;
         `rggen_ral_create_reg_model(register_1[i][j], $sformatf("register_1[%0d][%0d]", i, j), '{i, j}, 8'h04, "RW", 1, $sformatf("g_register_1.g[%0d].g[%0d]", i, j))
       end
       `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0, "")
-      `rggen_ral_create_block_model(register_3, "register_3", 8'h10)
+      `rggen_ral_create_reg_model(register_3, "register_3", '{}, 8'h0c, "RW", 0, "")
+      `rggen_ral_create_block_model(register_4, "register_4", 8'h10)
     endfunction
     function uvm_reg_map create_default_map();
       return create_map("default_map", 0, 4, UVM_LITTLE_ENDIAN, 1);

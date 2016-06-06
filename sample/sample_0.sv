@@ -24,15 +24,19 @@ module sample_0 (
   output [15:0] o_bit_field_5_1[2][4],
   input i_bit_field_6_0_set,
   input i_bit_field_6_1_set,
-  output o_register_7_valid,
-  output o_register_7_write,
-  output o_register_7_read,
-  output [6:0] o_register_7_address,
-  output [3:0] o_register_7_strobe,
-  output [31:0] o_register_7_write_data,
-  input i_register_7_ready,
-  input [1:0] i_register_7_status,
-  input [31:0] i_register_7_read_data
+  output o_bit_field_7_0,
+  input i_bit_field_7_0_clear,
+  output o_bit_field_7_1,
+  input i_bit_field_7_1_clear,
+  output o_register_8_valid,
+  output o_register_8_write,
+  output o_register_8_read,
+  output [6:0] o_register_8_address,
+  output [3:0] o_register_8_strobe,
+  output [31:0] o_register_8_write_data,
+  input i_register_8_ready,
+  input [1:0] i_register_8_status,
+  input [31:0] i_register_8_read_data
 );
   logic command_valid;
   logic write;
@@ -44,8 +48,8 @@ module sample_0 (
   logic response_ready;
   logic [31:0] read_data;
   logic [1:0] status;
-  logic [17:0] register_select;
-  logic [31:0] register_read_data[18];
+  logic [18:0] register_select;
+  logic [31:0] register_read_data[19];
   logic [0:0] external_register_select;
   logic [0:0] external_register_ready;
   logic [1:0] external_register_status[1];
@@ -64,6 +68,8 @@ module sample_0 (
   logic [15:0] bit_field_5_1_value[2][4];
   logic bit_field_6_0_value;
   logic bit_field_6_1_value;
+  logic bit_field_7_0_value;
+  logic bit_field_7_1_value;
   rggen_host_if_apb #(
     .DATA_WIDTH           (32),
     .HOST_ADDRESS_WIDTH   (16),
@@ -94,7 +100,7 @@ module sample_0 (
   );
   rggen_response_mux #(
     .DATA_WIDTH               (32),
-    .TOTAL_REGISTERS          (18),
+    .TOTAL_REGISTERS          (19),
     .TOTAL_EXTERNAL_REGISTERS (1)
   ) u_response_mux (
     .clk                        (clk),
@@ -379,8 +385,8 @@ module sample_0 (
   );
   rggen_address_decoder #(
     .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h20),
-    .END_ADDRESS        (6'h3f),
+    .START_ADDRESS      (6'h0a),
+    .END_ADDRESS        (6'h0a),
     .USE_SHADOW_INDEX   (0),
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
@@ -391,33 +397,80 @@ module sample_0 (
     .i_shadow_index (1'h0),
     .o_select       (register_select[17])
   );
-  assign external_register_select[0] = register_select[17];
+  assign register_read_data[17] = {23'h000000, bit_field_7_0_value, 7'h00, bit_field_7_1_value};
+  assign o_bit_field_7_0 = bit_field_7_0_value;
+  rggen_bit_field_w0s_w1s #(
+    .WIDTH          (1),
+    .INITIAL_VALUE  (1'h0),
+    .SET_VALUE      (1'b0)
+  ) u_bit_field_7_0 (
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .i_clear          (i_bit_field_7_0_clear),
+    .i_command_valid  (command_valid),
+    .i_select         (register_select[17]),
+    .i_write          (write),
+    .i_write_data     (write_data[8]),
+    .i_write_mask     (write_mask[8]),
+    .o_value          (bit_field_7_0_value)
+  );
+  assign o_bit_field_7_1 = bit_field_7_1_value;
+  rggen_bit_field_w0s_w1s #(
+    .WIDTH          (1),
+    .INITIAL_VALUE  (1'h0),
+    .SET_VALUE      (1'b1)
+  ) u_bit_field_7_1 (
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .i_clear          (i_bit_field_7_1_clear),
+    .i_command_valid  (command_valid),
+    .i_select         (register_select[17]),
+    .i_write          (write),
+    .i_write_data     (write_data[0]),
+    .i_write_mask     (write_mask[0]),
+    .o_value          (bit_field_7_1_value)
+  );
+  rggen_address_decoder #(
+    .ADDRESS_WIDTH      (6),
+    .START_ADDRESS      (6'h20),
+    .END_ADDRESS        (6'h3f),
+    .USE_SHADOW_INDEX   (0),
+    .SHADOW_INDEX_WIDTH (1),
+    .SHADOW_INDEX_VALUE (1'h0)
+  ) u_register_8_address_decoder (
+    .i_read         (read),
+    .i_write        (write),
+    .i_address      (address[7:2]),
+    .i_shadow_index (1'h0),
+    .o_select       (register_select[18])
+  );
+  assign external_register_select[0] = register_select[18];
   rggen_bus_exporter #(
     .DATA_WIDTH             (32),
     .LOCAL_ADDRESS_WIDTH    (8),
     .EXTERNAL_ADDRESS_WIDTH (7),
     .START_ADDRESS          (8'h80)
-  ) u_register_7_bus_exporter (
+  ) u_register_8_bus_exporter (
     .clk          (clk),
     .rst_n        (rst_n),
     .i_valid      (command_valid),
-    .i_select     (register_select[17]),
+    .i_select     (register_select[18]),
     .i_write      (write),
     .i_read       (read),
     .i_address    (address),
     .i_strobe     (strobe),
     .i_write_data (write_data),
     .o_ready      (external_register_ready[0]),
-    .o_read_data  (register_read_data[17]),
+    .o_read_data  (register_read_data[18]),
     .o_status     (external_register_status[0]),
-    .o_valid      (o_register_7_valid),
-    .o_write      (o_register_7_write),
-    .o_read       (o_register_7_read),
-    .o_address    (o_register_7_address),
-    .o_strobe     (o_register_7_strobe),
-    .o_write_data (o_register_7_write_data),
-    .i_ready      (i_register_7_ready),
-    .i_read_data  (i_register_7_read_data),
-    .i_status     (i_register_7_status)
+    .o_valid      (o_register_8_valid),
+    .o_write      (o_register_8_write),
+    .o_read       (o_register_8_read),
+    .o_address    (o_register_8_address),
+    .o_strobe     (o_register_8_strobe),
+    .o_write_data (o_register_8_write_data),
+    .i_ready      (i_register_8_ready),
+    .i_read_data  (i_register_8_read_data),
+    .i_status     (i_register_8_status)
   );
 endmodule
