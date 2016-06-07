@@ -59,19 +59,23 @@ In addition, if you use default values for all of attributes, you don't need to 
 RgGen allows to use a spreadsheet to input the register map of your design so you can directly input your register map document to RgGen.
 To do this, you need to write your register map document according to below table format.
 
-|    |A   |B             |C            |D              |E                                |F       |G             |H         |I   |J           |
-|:---|:---|:-------------|:------------|:--------------|:--------------------------------|:-------|:-------------|:---------|:---|:-----------|
-|1   |    |Block Name    |block_0      |               |                                 |        |              |          |    |            |
-|2   |    |Byte Size     |256          |               |                                 |        |              |          |    |            |
-|3   |    |              |             |               |                                 |        |              |          |    |            |
-|4   |    |Offset Address|Register Name|Array Dimension|Shadow Index                     |External|Bit Assignment|Field Name|Type|Iitial Value|
-|5   |    |0x00          |register_0   |               |                                 |        |[31:16]       |field_0_0 |rw  |0           |
-|6   |    |              |             |               |                                 |        |[15:0]        |field_0_1 |rw  |0           |
-|7   |    |0x04          |register_1   |               |                                 |        |[16]          |field_1_0 |rw  |0           |
-|8   |    |              |             |               |                                 |        |[0]           |field_1_1 |ro  |            |
-|9   |    |0x10 - 0x1F   |register_2   |[4]            |                                 |        |[7:0]         |field_2_0 |rw  |0           |
-|10  |    |0x20 - 0x3F   |register_3   |               |                                 |true    |              |          |    |            |
-|11  |    |0x40          |register_4   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|        |[7:0]         |field_4_0 |rw  |0           |
+|    |A   |B             |C            |D              |E                                |F       |G             |H         |I   |J           |K        |
+|:---|:---|:-------------|:------------|:--------------|:--------------------------------|:-------|:-------------|:---------|:---|:-----------|:--------|
+|1   |    |Block Name    |block_0      |               |                                 |        |              |          |    |            |         |
+|2   |    |Byte Size     |256          |               |                                 |        |              |          |    |            |         |
+|3   |    |              |             |               |                                 |        |              |          |    |            |         |
+|4   |    |Offset Address|Register Name|Array Dimension|Shadow Index                     |External|Bit Assignment|Field Name|Type|Iitial Value|Reference|
+|5   |    |0x00          |register_0   |               |                                 |        |[31:16]       |field_0_0 |rw  |0           |         |
+|6   |    |              |             |               |                                 |        |[15:0]        |field_0_1 |rw  |0           |         |
+|7   |    |0x04          |register_1   |               |                                 |        |[16]          |field_1_0 |rw  |0           |         |
+|8   |    |              |             |               |                                 |        |[0]           |field_1_1 |ro  |            |         |
+|9   |    |0x10 - 0x1F   |register_2   |[4]            |                                 |        |[7:0]         |field_2_0 |rw  |0           |         |
+|10  |    |0x20 - 0x3F   |register_3   |               |                                 |true    |              |          |    |            |         |
+|11  |    |0x40          |register_4   |[2, 4]         |field_1_0:1, field_0_0, field_0_1|        |[7:0]         |field_4_0 |rw  |0           |         |
+|12  |    |0x44          |register_5   |               |                                 |        |[8]           |field_5_0 |w0s |0           |         |
+|13  |    |              |             |               |                                 |        |[0]           |field_5_1 |w1s |0           |         |
+|14  |    |0x48          |register_6   |               |                                 |        |[8]           |field_6_0 |w0c |0           |field_1_0|
+|15  |    |              |             |               |                                 |        |[0]           |field_6_1 |w1c |0           |field_1_0|
 
 By default, RgGen supports CSV, ODS, XLS and XLSX sparedsheet file types.
 
