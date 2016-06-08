@@ -58,23 +58,19 @@ module RgGen::InputBase
           Object.new
         end
 
-        let(:common_arguments) do
-          [component, other_argument]
-        end
-
         describe "active_itemオブジェクトの生成" do
-          specify "#buildの末尾の引数を各アイテム向けの引数、それ以外の引数を共通引数として、アイテムの生成を行う" do
-            expect(active_item_factory).to receive(:create).with(*common_arguments, :foo).and_call_original
-            expect(active_item_factory).to receive(:create).with(*common_arguments, :qux).and_call_original
-            factory.create(parent, other_argument, [:foo, :qux])
+          specify "所有者コンポーネントと#buildの末尾の引数を用いてアイテムの生成を行う" do
+            expect(active_item_factory).to receive(:create).with(component, :foo).and_call_original
+            expect(active_item_factory).to receive(:create).with(component, :bar).and_call_original
+            factory.create(parent, other_argument, [:foo, :bar])
           end
         end
 
         describe "#passive_itemオブジェクトの生成" do
           specify "#buildの末尾以外の引数を共通引数として、アイテムの生成を行う" do
-            expect(passive_item_factory).to receive(:create).with(*common_arguments).and_call_original
-            expect(passive_item_factory).to receive(:create).with(*common_arguments).and_call_original
-            factory.create(parent, other_argument, [:foo, :qux])
+            expect(passive_item_factory).to receive(:create).with(component).and_call_original
+            expect(passive_item_factory).to receive(:create).with(component).and_call_original
+            factory.create(parent, other_argument, [:foo, :bar])
           end
         end
 
@@ -83,7 +79,7 @@ module RgGen::InputBase
           expect(active_item_factory ).to receive(:create).ordered.and_call_original
           expect(passive_item_factory).to receive(:create).ordered.and_call_original
           expect(passive_item_factory).to receive(:create).ordered.and_call_original
-          factory.create(parent, other_argument, [:foo, :qux])
+          factory.create(parent, other_argument, [:foo, :bar])
         end
       end
 

@@ -20,13 +20,13 @@ module RgGen
       private
 
       def create_items(component, *sources)
-        create_active_items(component, *sources)
-        create_passive_items(component, *sources[0..-2])
+        create_active_items(component, sources.last)
+        create_passive_items(component)
       end
 
-      def create_passive_items(component, *sources)
+      def create_passive_items(component)
         passive_item_factories.each do |factory|
-          create_item(factory, component, *sources)
+          create_item(factory, component)
         end
       end
 

@@ -3,7 +3,7 @@ module RgGen
     class ItemFactory < InputBase::ItemFactory
       include RaiseError
 
-      def create(component, configuration, cell = nil)
+      def create(component, cell = nil)
         convert_cell_value(cell)
         create_item(component, cell) do |item|
           item.build(cell) unless cell.nil?

@@ -40,7 +40,7 @@ module RgGen::RegisterMap
     describe "#create" do
       context "入力セルがnilではない場合" do
         it "アイテムオブジェクトの生成とビルドを行う" do
-          factory.create(component, configuration, cell)
+          factory.create(component, cell)
           expect(item).to be_kind_of(FooItem).and have_attributes(foo: value, position: position)
         end
 
@@ -52,7 +52,7 @@ module RgGen::RegisterMap
           end
 
           it "#convertの戻り値でアイテムオブジェクトの生成とビルドを行う" do
-            factory.create(component, configuration, cell)
+            factory.create(component, cell)
             expect(item).to be_kind_of(FooItem).and have_attributes(foo: value.to_s.upcase, position: position)
           end
         end
@@ -60,7 +60,7 @@ module RgGen::RegisterMap
 
       context "入力セルがnilの場合" do
         it "アイテムオブジェクトの生成のみ行う" do
-          factory.create(component, configuration, nil)
+          factory.create(component, nil)
           expect(item).to be_kind_of(FooItem).and have_attributes(foo: :foo, position: nil)
         end
       end
@@ -71,11 +71,11 @@ module RgGen::RegisterMap
         end
 
         it "#convertでの値変換を行わない" do
-          factory.create(component, configuration, nil )
+          factory.create(component, nil )
           cell.value  = ''
-          factory.create(component, configuration, cell)
+          factory.create(component, cell)
           cell.value  = nil
-          factory.create(component, configuration, cell)
+          factory.create(component, cell)
         end
       end
     end
