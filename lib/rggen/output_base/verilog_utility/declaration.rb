@@ -55,14 +55,6 @@ module RgGen
           (@attributes[:default].nil? && '') || "= #{@attributes[:default]}"
         end
 
-        def variable?
-          @declation_type == :variable
-        end
-
-        def port?
-          @declation_type == :port
-        end
-
         def parameter?
           @declation_type == :parameter
         end
