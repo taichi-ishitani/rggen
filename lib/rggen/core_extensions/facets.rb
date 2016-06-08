@@ -4,6 +4,7 @@ require 'facets/file/ext'
 require 'facets/hash/symbolize_keys'
 require 'facets/integer/multiple'
 require 'facets/kernel/attr_singleton'
+require 'facets/kernel/itself' unless Object.public_method_defined?(:itself)
 require 'facets/kernel/not'
 require 'facets/kernel/not_nil'
 require 'facets/module/attr_setter'

@@ -20,26 +20,24 @@ module RgGen
             width,
             identifier,
             default_value_assignment
-          ].reject(&:empty?)
+          ].select(&:itself)
         end
 
         def random_or_direction_or_parameter_type
-          case @declation_type
-          when :variable
-            (@attributes[:random] && 'rand') || ''
-          when :port
-            @attributes[:direction] || ''
-          when :parameter
-            @attributes[:parameter_type] || ''
-          end
+          {
+            variable:  @attributes[:random] && :rand,
+            port:      @attributes[:direction],
+            parameter: @attributes[:parameter_type]
+          }[@declation_type]
         end
 
         def data_type
-          @attributes[:data_type] || ''
+          @attributes[:data_type]
         end
 
         def width
-          (vector? && "[#{(@attributes[:width] || 1) - 1}:0]") || ''
+          return unless vector?
+          "[#{(@attributes[:width] || 1) - 1}:0]"
         end
 
         def identifier
@@ -47,12 +45,13 @@ module RgGen
         end
 
         def dimensions
-          return '' if @attributes[:dimensions].nil?
+          return if @attributes[:dimensions].nil?
           @attributes[:dimensions].map { |dimension| "[#{dimension}]" }.join
         end
 
         def default_value_assignment
-          (@attributes[:default].nil? && '') || "= #{@attributes[:default]}"
+          return if @attributes[:default].nil?
+          "= #{@attributes[:default]}"
         end
 
         def parameter?
