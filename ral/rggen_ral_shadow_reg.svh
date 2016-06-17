@@ -66,6 +66,7 @@ class rggen_ral_shadow_reg_index;
   protected string                reg_name;
   protected string                field_name;
   protected uvm_reg_data_t        value;
+  protected uvm_reg               index_reg;
   protected uvm_reg_field         index_field;
 
   extern function new(
@@ -76,18 +77,9 @@ class rggen_ral_shadow_reg_index;
   );
 
   extern virtual function bit is_matched();
-  extern virtual task update(
-    output  uvm_status_e      status,
-    input   uvm_path_e        path      = UVM_DEFAULT_PATH,
-    input   uvm_reg_map       map       = null,
-    input   uvm_sequence_base parent    = null,
-    input   int               prior     = -1,
-    input   uvm_object        extension = null,
-    input   string            fname     = "",
-    input   int               lineno    = 0
-  );
-
-  extern protected virtual function uvm_reg_field get_index_field();
+  extern virtual function void set(string fname = "", int lineno = 0);
+  extern virtual function uvm_reg get_index_reg();
+  extern virtual function uvm_reg_field get_index_field();
 endclass
 
 function rggen_ral_shadow_reg_index::new(
@@ -103,37 +95,31 @@ function rggen_ral_shadow_reg_index::new(
 endfunction
 
 function bit rggen_ral_shadow_reg_index::is_matched();
-  uvm_reg_field field = get_index_field();
-  return (field.value == value) ? 1 : 0;
+  void'(get_index_field());
+  return (index_field.value == value) ? 1 : 0;
 endfunction
 
-task rggen_ral_shadow_reg_index::update(
-  output  uvm_status_e      status,
-  input   uvm_path_e        path,
-  input   uvm_reg_map       map,
-  input   uvm_sequence_base parent,
-  input   int               prior,
-  input   uvm_object        extension,
-  input   string            fname,
-  input   int               lineno
-);
-  uvm_reg_field field       = get_index_field();
-  uvm_reg       parent_reg  = field.get_parent();
-  field.set(value);
-  parent_reg.update(status, path, map, parent, prior, extension, fname, lineno);
-endtask
+function void rggen_ral_shadow_reg_index::set(string fname = "", int lineno = 0);
+  void'(get_index_field());
+  index_field.set(value, fname, lineno);
+endfunction
 
-function uvm_reg_field rggen_ral_shadow_reg_index::get_index_field();
-  if (index_field == null) begin
-    uvm_reg_block parent_block  = shadow_reg.get_parent();
-    uvm_reg       index_reg;
-
-    index_reg = parent_block.get_reg_by_name(reg_name);
+function uvm_reg rggen_ral_shadow_reg_index::get_index_reg();
+  if (index_reg == null) begin
+    uvm_reg_block parent_block;
+    parent_block  = shadow_reg.get_parent();
+    index_reg     = parent_block.get_reg_by_name(reg_name);
     if (index_reg == null) begin
       `uvm_fatal("rggen_ral_shadow_reg_index", $sformatf("Unable to locate index register: %s", reg_name))
       return null;
     end
+  end
+  return index_reg;
+endfunction
 
+function uvm_reg_field rggen_ral_shadow_reg_index::get_index_field();
+  if (index_field == null) begin
+    void'(get_index_reg());
     index_field = index_reg.get_field_by_name(field_name);
     if (index_field == null) begin
       `uvm_fatal("rggen_ral_shadow_reg_index", $sformatf("Unable to locate index field: %s", field_name))
@@ -145,10 +131,12 @@ endfunction
 
 class rggen_ral_shadow_reg_ftdr_seq extends uvm_reg_frontdoor;
   protected rggen_ral_shadow_reg_index  shadow_indexes[$];
+  protected bit                         index_regs[uvm_reg];
 
   extern function new(ref rggen_ral_shadow_reg_index shadow_indexes[$]);
 
   extern virtual task body();
+  extern task update_index_regs(ref uvm_status_e status);
 endclass
 
 function rggen_ral_shadow_reg_ftdr_seq::new(ref rggen_ral_shadow_reg_index shadow_indexes[$]);
@@ -159,9 +147,35 @@ function rggen_ral_shadow_reg_ftdr_seq::new(ref rggen_ral_shadow_reg_index shado
 endfunction
 
 task rggen_ral_shadow_reg_ftdr_seq::body();
+  uvm_status_e  status;
+  update_index_regs(status);
+  if (status == UVM_NOT_OK) begin
+    `uvm_warning("rggen_ral_shadow_reg_ftdr_seq", "Updating index registers failed")
+    rw_info.status  = status;
+    return;
+  end
+  if (rw_info.kind == UVM_WRITE) begin
+    rw_info.local_map.do_write(rw_info);
+  end
+  else begin
+    rw_info.local_map.do_read(rw_info);
+  end
+endtask
+
+task rggen_ral_shadow_reg_ftdr_seq::update_index_regs(ref uvm_status_e status);
+  if (index_regs.size() == 0) begin
+    foreach (shadow_indexes[i]) begin
+      uvm_reg index_reg = shadow_indexes[i].get_index_reg();
+      if (!index_regs.exists(index_reg)) begin
+        index_regs[index_reg] = 1;
+      end
+    end
+  end
   foreach (shadow_indexes[i]) begin
-    uvm_status_e  status;
-    shadow_indexes[i].update(
+    shadow_indexes[i].set(rw_info.fname, rw_info.lineno);
+  end
+  foreach (index_regs[index_reg]) begin
+    index_reg.update(
       status,
       rw_info.path,
       rw_info.map,
@@ -172,17 +186,8 @@ task rggen_ral_shadow_reg_ftdr_seq::body();
       rw_info.lineno
     );
     if (status == UVM_NOT_OK) begin
-      `uvm_warning("rggen_ral_shadow_reg_ftdr_seq", "Updating index field failed")
-      rw_info.status  = status;
       return;
     end
-  end
-
-  if (rw_info.kind == UVM_WRITE) begin
-    rw_info.local_map.do_write(rw_info);
-  end
-  else begin
-    rw_info.local_map.do_read(rw_info);
   end
 endtask
 `endif
