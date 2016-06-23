@@ -1,23 +1,5 @@
 simple_item :register, :shadow do
   register_map do
-    define_helpers do
-      def shadow_index_entry(name, value)
-        @shadow_index_entry ||= Struct.new(:name, :value) do
-          def initialize(name, value)
-            self.name   = name
-            self.value  = value && Integer(value)
-          end
-
-          def ==(other)
-            return false unless name == other.name
-            return true if [value, other.value].any?(&:nil?)
-            value == other.value
-          end
-        end
-        @shadow_index_entry.new(name, value)
-      end
-    end
-
     field :shadow?
     field :shadow_indexes
 
@@ -37,13 +19,24 @@ simple_item :register, :shadow do
       check_specific_value_index_values
     end
 
-    class_delegator :shadow_index_entry
+    define_struct :shadow_index_entry, [:name, :value] do
+      def initialize(name, value)
+        self.name   = name
+        self.value  = value && Integer(value)
+      end
+
+      def ==(other)
+        return false unless name == other.name
+        return true if [value, other.value].any?(&:nil?)
+        value == other.value
+      end
+    end
 
     def parse_shadow_indexes(cell)
       return nil if cell.nil? || cell.empty?
       cell.split(/[,\n]/).map do |entry|
         if pattern_match(entry)
-          shadow_index_entry(captures[0], captures[1])
+          shadow_index_entry.new(captures[0], captures[1])
         else
           error "invalid value for shadow index: #{cell.inspect}"
         end

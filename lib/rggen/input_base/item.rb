@@ -88,6 +88,7 @@ module RgGen
       end
 
       def self.inherited(subclass)
+        super(subclass)
         [:@fields, :@builders, :@validators].each do |v|
           subclass.inherit_class_instance_variable(v, self, &:dup)
         end

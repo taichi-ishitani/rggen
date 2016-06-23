@@ -17,6 +17,7 @@ module RgGen
 
   require_relative 'rggen/base/hierarchical_accessors'
   require_relative 'rggen/base/hierarchical_item_accessors'
+  require_relative 'rggen/base/internal_struct'
   require_relative 'rggen/base/component'
   require_relative 'rggen/base/item'
   require_relative 'rggen/base/component_factory'

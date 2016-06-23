@@ -2,6 +2,7 @@ module RgGen
   module Base
     class Item
       extend Forwardable
+      extend InternalStruct
 
       class << self
         def define_helpers(&body)
