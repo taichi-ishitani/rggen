@@ -31,7 +31,7 @@ If you want to install them on other location, you need to specify the install d
 
 ## Usage
 
-See [this page](wiki/Getting-Started)
+See [this page](https://github.com/taichi-ishitani/rggen/wiki/Getting-Started)
 
 ## Development
 
