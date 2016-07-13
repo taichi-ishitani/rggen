@@ -193,10 +193,15 @@ list_item :bit_field, :type do
   ral do
     item_base do
       export :access
+      export :model_name
       export :hdl_path
 
       define_helpers do
         attr_setter :access
+
+        def model_name(&body)
+          define_method(:model_name, &body)
+        end
 
         def hdl_path(&body)
           define_method(:hdl_path, &body)
@@ -205,6 +210,10 @@ list_item :bit_field, :type do
 
       def access
         string((self.class.access || bit_field.type).to_s.upcase)
+      end
+
+      def model_name
+        :rggen_ral_field
       end
 
       def hdl_path

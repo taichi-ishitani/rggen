@@ -92,8 +92,19 @@ package sample_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_7_1, "bit_field_7_1", 1, 0, "W1S", 0, 1'h0, 1, "u_bit_field_7_1.value")
     endfunction
   endclass
+  class register_8_reg_model extends rggen_ral_reg;
+    rand rggen_ral_field_rwl#("register_2", "bit_field_2_1") bit_field_8_0;
+    rand rggen_ral_field_rwe#("register_2", "bit_field_2_1") bit_field_8_1;
+    function new(string name = "register_8");
+      super.new(name, 32, 0);
+    endfunction
+    function void create_fields();
+      `rggen_ral_create_field_model(bit_field_8_0, "bit_field_8_0", 16, 16, "RWL", 0, 16'h0000, 1, "u_bit_field_8_0.value")
+      `rggen_ral_create_field_model(bit_field_8_1, "bit_field_8_1", 16, 0, "RWE", 0, 16'h0000, 1, "u_bit_field_8_1.value")
+    endfunction
+  endclass
   class sample_0_block_model#(
-    type REGISTER_8 = rggen_ral_block
+    type REGISTER_9 = rggen_ral_block
   ) extends rggen_ral_block;
     rand register_0_reg_model register_0;
     rand register_1_reg_model register_1;
@@ -103,7 +114,8 @@ package sample_0_ral_pkg;
     rand register_5_reg_model register_5[2][4];
     rand register_6_reg_model register_6;
     rand register_7_reg_model register_7;
-    rand REGISTER_8 register_8;
+    rand register_8_reg_model register_8;
+    rand REGISTER_9 register_9;
     function new(string name = "sample_0");
       super.new(name);
     endfunction
@@ -120,7 +132,8 @@ package sample_0_ral_pkg;
       end
       `rggen_ral_create_reg_model(register_6, "register_6", '{}, 8'h24, "RW", 0, "")
       `rggen_ral_create_reg_model(register_7, "register_7", '{}, 8'h28, "RW", 0, "")
-      `rggen_ral_create_block_model(register_8, "register_8", 8'h80)
+      `rggen_ral_create_reg_model(register_8, "register_8", '{}, 8'h2c, "RW", 0, "")
+      `rggen_ral_create_block_model(register_9, "register_9", 8'h80)
     endfunction
     function uvm_reg_map create_default_map();
       return create_map("default_map", 0, 4, UVM_LITTLE_ENDIAN, 1);

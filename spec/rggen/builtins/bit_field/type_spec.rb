@@ -15,6 +15,7 @@ describe 'bit_field/type' do
         ral do
           if item_name == :BAR
             access :rw
+            model_name { :field_bar }
             hdl_path { "u_#{bit_field.name}.bar_value" }
           end
         end
@@ -595,6 +596,21 @@ describe 'bit_field/type' do
       context ".accessでモデルのアクセス権設定された場合" do
         it "設定したアクセス権を大文字に化して返す" do
           expect(ral[2].access).to eq '"RW"'
+        end
+      end
+    end
+
+    describe "#model_name" do
+      context "通常の場合" do
+        it "デフォルトのモデル名を返す" do
+          expect(ral[0].model_name).to eq :rggen_ral_field
+          expect(ral[1].model_name).to eq :rggen_ral_field
+        end
+      end
+
+      context ".model_nameでモデル名の設定がされた場合" do
+        it ".model_nameで設定されたモデル名を返す" do
+          expect(ral[2].model_name).to eq :field_bar
         end
       end
     end

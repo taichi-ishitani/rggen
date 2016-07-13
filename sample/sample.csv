@@ -16,5 +16,7 @@
 ,,,,,,[0],bit_field_6_1,w1c,0,bit_field_2_1,
 ,0x28,register_7,,,,[8],bit_field_7_0,w0s,0,,
 ,,,,,,[0],bit_field_7_1,w1s,0,,
-,0x80-0xFF,register_8,,,TRUE,,,,,,
+,0x2C,register_8,,,,[31:16],bit_field_8_0,rwl,0,bit_field_2_1,
+,,,,,,[15:0],bit_field_8_1,rwe,0,bit_field_2_1,
+,0x80-0xFF,register_9,,,TRUE,,,,,,
 ,,,,,,,,,,,

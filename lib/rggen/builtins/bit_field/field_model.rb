@@ -2,11 +2,11 @@ simple_item :bit_field, :field_model do
   ral do
     export :model_creation
 
-    delegate [:name, :width, :lsb, :access] => :bit_field
+    delegate [:name, :width, :lsb, :access, :model_name] => :bit_field
 
     build do
       variable :reg_model, :field_model,
-               data_type: :rggen_ral_field,
+               data_type: model_name,
                name:      name,
                random:    true
     end
