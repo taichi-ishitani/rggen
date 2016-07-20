@@ -6,8 +6,6 @@ module rggen_address_decoder #(
   parameter SHADOW_INDEX_WIDTH  = 1,
   parameter SHADOW_INDEX_VALUE  = 'h00
 )(
-  input                             i_read,
-  input                             i_write,
   input   [ADDRESS_WIDTH-1:0]       i_address,
   input   [SHADOW_INDEX_WIDTH-1:0]  i_shadow_index,
   output                            o_select

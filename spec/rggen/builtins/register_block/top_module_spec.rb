@@ -182,8 +182,6 @@ module block_0 (
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_0_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
     .i_address      (address[7:2]),
     .i_shadow_index (1'h0),
     .o_select       (register_select[0])
@@ -217,8 +215,6 @@ module block_0 (
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_1_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
     .i_address      (address[7:2]),
     .i_shadow_index (1'h0),
     .o_select       (register_select[1])
@@ -255,8 +251,6 @@ module block_0 (
         .SHADOW_INDEX_WIDTH (1),
         .SHADOW_INDEX_VALUE (1'h0)
       ) u_register_2_address_decoder (
-        .i_read         (read),
-        .i_write        (write),
         .i_address      (address[7:2]),
         .i_shadow_index (1'h0),
         .o_select       (register_select[2+g_i])
@@ -297,8 +291,6 @@ module block_0 (
           .SHADOW_INDEX_WIDTH (33),
           .SHADOW_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
         ) u_register_3_address_decoder (
-          .i_read         (read),
-          .i_write        (write),
           .i_address      (address[7:2]),
           .i_shadow_index (register_3_shadow_index[g_i][g_j]),
           .o_select       (register_select[4+4*g_i+g_j])
@@ -335,8 +327,6 @@ module block_0 (
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_4_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
     .i_address      (address[7:2]),
     .i_shadow_index (1'h0),
     .o_select       (register_select[12])
@@ -380,8 +370,6 @@ module block_0 (
     .SHADOW_INDEX_WIDTH (1),
     .SHADOW_INDEX_VALUE (1'h0)
   ) u_register_5_address_decoder (
-    .i_read         (read),
-    .i_write        (write),
     .i_address      (address[7:2]),
     .i_shadow_index (1'h0),
     .o_select       (register_select[13])

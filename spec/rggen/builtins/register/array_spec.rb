@@ -296,8 +296,6 @@ rggen_address_decoder #(
   .SHADOW_INDEX_WIDTH (1),
   .SHADOW_INDEX_VALUE (1'h0)
 ) u_register_0_address_decoder (
-  .i_read         (read),
-  .i_write        (write),
   .i_address      (address[7:2]),
   .i_shadow_index (1'h0),
   .o_select       (register_select[0])
@@ -338,8 +336,6 @@ generate if (1) begin : g_register_2
       .SHADOW_INDEX_WIDTH (1),
       .SHADOW_INDEX_VALUE (1'h0)
     ) u_register_2_address_decoder (
-      .i_read         (read),
-      .i_write        (write),
       .i_address      (address[7:2]),
       .i_shadow_index (1'h0),
       .o_select       (register_select[2+g_i])
@@ -379,8 +375,6 @@ generate if (1) begin : g_register_3
           .SHADOW_INDEX_WIDTH (24),
           .SHADOW_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
         ) u_register_3_address_decoder (
-          .i_read         (read),
-          .i_write        (write),
           .i_address      (address[7:2]),
           .i_shadow_index (register_3_shadow_index[g_i][g_j][g_k]),
           .o_select       (register_select[4+6*g_i+3*g_j+g_k])
