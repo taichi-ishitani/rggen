@@ -24,7 +24,7 @@ simple_item :register, :read_data do
 
     def read_data
       if register.readable?
-        concat(*read_data_expressions)
+        concat(read_data_expressions)
       else
         hex(0, configuration.data_width)
       end

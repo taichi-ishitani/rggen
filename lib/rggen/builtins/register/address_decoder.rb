@@ -43,7 +43,7 @@ simple_item :register, :address_decoder do
     def shadow_index_assignment
       assign(
         shadow_index[register.loop_variables],
-        concat(*shadow_index_fields.map(&:value))
+        concat(shadow_index_fields.map(&:value))
       )
     end
 
@@ -58,7 +58,7 @@ simple_item :register, :address_decoder do
 
     def shadow_index_value
       return hex(0, 1) unless shadow?
-      concat(*shadow_index_values)
+      concat(shadow_index_values)
     end
 
     def shadow_index_fields

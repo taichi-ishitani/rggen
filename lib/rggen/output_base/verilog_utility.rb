@@ -40,13 +40,12 @@ module RgGen
         "#{subroutine}(#{Array(arguments).join(', ')})"
       end
 
-      def concat(expression, *other_expressions)
-        expressions = Array[expression, *other_expressions]
-        "{#{expressions.join(', ')}}"
+      def concat(expression_or_expressions)
+        "{#{Array(expression_or_expressions).join(', ')}}"
       end
 
-      def array(expression, *other_expressions)
-        "'#{concat(expression, *other_expressions)}"
+      def array(expression_or_expressions)
+        "'#{concat(expression_or_expressions)}"
       end
 
       def string(expression)

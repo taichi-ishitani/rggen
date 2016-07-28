@@ -20,11 +20,11 @@ simple_item :register_block, :irq_controller do
     end
 
     def assign_ier
-      assign(ier, concat(*ier_fields.map(&:value)))
+      assign(ier, concat(ier_fields.map(&:value)))
     end
 
     def assign_isr
-      assign(isr, concat(*isr_fields.map(&:value)))
+      assign(isr, concat(isr_fields.map(&:value)))
     end
 
     def isr_fields

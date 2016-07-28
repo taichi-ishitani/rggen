@@ -76,7 +76,7 @@ module RgGen::OutputBase
       end
 
       it "連接のコード片を返す" do
-        expect(verilog.send(:concat, *expressions  )).to eq "{4'b0000, foo, bar}"
+        expect(verilog.send(:concat, expressions   )).to eq "{4'b0000, foo, bar}"
         expect(verilog.send(:concat, expressions[0])).to eq "{4'b0000}"
       end
     end
@@ -87,8 +87,9 @@ module RgGen::OutputBase
       end
 
       it "配列リテラルのコード片を返す" do
-        expect(verilog.send(:array, *expressions  )).to eq "'{4'b0000, foo, bar}"
+        expect(verilog.send(:array, expressions   )).to eq "'{4'b0000, foo, bar}"
         expect(verilog.send(:array, expressions[0])).to eq "'{4'b0000}"
+        expect(verilog.send(:array, []            )).to eq "'{}"
       end
     end
 

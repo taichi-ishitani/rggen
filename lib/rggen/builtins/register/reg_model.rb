@@ -57,8 +57,7 @@ simple_item :register, :reg_model do
     end
 
     def array_index
-      return '\'{}' unless array?
-      array(*loop_varibles)
+      array((array? && loop_varibles) || [])
     end
 
     def offset_address

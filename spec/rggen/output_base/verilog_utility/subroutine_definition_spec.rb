@@ -20,8 +20,8 @@ module RgGen::OutputBase::VerilogUtility
       @verilog.send(:string, expression)
     end
 
-    def array(*expressions)
-      @verilog.send(:array, *expressions)
+    def array(expressions)
+      @verilog.send(:array, expressions)
     end
 
     def super_foo
@@ -117,8 +117,8 @@ CODE
         function(:foo) { |f|
           f.return_type :void
           f.arguments [
-            argument(:bar, data_type: :string,                  default: string(:bar)),
-            argument(:baz, data_type: :bit   , dimensions: [2], default: array(0, 1) )
+            argument(:bar, data_type: :string,                  default: string(:bar) ),
+            argument(:baz, data_type: :bit   , dimensions: [2], default: array([0, 1]))
           ]
           f.body do |code|
             code << super_foo
