@@ -33,10 +33,7 @@ simple_item :register, :shadow_index_configurator do
     end
 
     def fild_parent_register(index_name)
-      index_field = register_block.bit_fields.find do |bit_field|
-        bit_field.name == index_name
-      end
-      index_field.register
+      register_block.bit_fields.find_by(name: index_name).register
     end
 
     def index_name(shadow_index)

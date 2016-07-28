@@ -121,9 +121,9 @@ simple_item :register, :shadow do
 
     def shadow_index_bit_field
       @shadow_index_bit_field ||= Hash.new do |hash, index_name|
-        hash[index_name]  = register_block.bit_fields.find do |bit_field|
-          bit_field.name == index_name && !bit_field.reserved?
-        end
+        hash[index_name]  = register_block.bit_fields.find_by(
+          name: index_name, reserved?: false
+        )
       end
     end
   end

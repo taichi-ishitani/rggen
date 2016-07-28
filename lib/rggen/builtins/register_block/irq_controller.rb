@@ -38,7 +38,7 @@ simple_item :register_block, :irq_controller do
     end
 
     def find_ier_field(reference)
-      register_block.bit_fields.find { |field| field.name == reference.name }
+      register_block.bit_fields.find_by(name: reference.name)
     end
   end
 end

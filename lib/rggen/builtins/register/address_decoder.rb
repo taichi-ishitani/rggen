@@ -63,9 +63,7 @@ simple_item :register, :address_decoder do
 
     def shadow_index_fields
       @shadow_index_fields ||= shadow_indexes.map do |index|
-        register_block.bit_fields.find do |bit_field|
-          bit_field.name == index.name
-        end
+        register_block.bit_fields.find_by(name: index.name)
       end
     end
 

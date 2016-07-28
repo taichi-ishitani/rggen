@@ -34,9 +34,7 @@ simple_item :bit_field, :reference do
 
     def find_reference
       return nil unless has_reference?
-      @found_reference  ||= register_block.bit_fields.find do |bit_field|
-        bit_field.name == @reference
-      end
+      @found_reference ||= register_block.bit_fields.find_by(name: @reference)
     end
   end
 end

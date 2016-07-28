@@ -31,9 +31,7 @@ list_item :bit_field, :type, [:rwl, :rwe] do
     end
 
     def mode_field
-      register_block.bit_fields.find do |f|
-        f.name == bit_field.reference.name
-      end
+      register_block.bit_fields.find_by(name: bit_field.reference.name)
     end
   end
 

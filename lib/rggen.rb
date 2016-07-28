@@ -10,6 +10,7 @@ module RgGen
 
   require_relative 'rggen/exceptions'
 
+  require_relative 'rggen/core_extensions/array'
   require_relative 'rggen/core_extensions/facets'
   require_relative 'rggen/core_extensions/forwardable'
   require_relative 'rggen/core_extensions/integer'
