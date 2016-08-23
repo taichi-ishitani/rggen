@@ -13,18 +13,37 @@ module rggen_bit_field_rwl_rwe #(
   input   [WIDTH-1:0] i_write_mask,
   output  [WIDTH-1:0] o_value
 );
+  `include  "rggen_bit_field_common.svh"
+
   logic [WIDTH-1:0] value;
-  logic             writable;
 
   assign  o_value   = value;
-  assign  writable  = (LOCK_MODE) ? !i_lock_or_enable : i_lock_or_enable;
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       value <= INITIAL_VALUE;
     end
-    else if (writable && i_command_valid && i_select && i_write) begin
-      value <= (i_write_data & ( i_write_mask))
-             | (value        & (~i_write_mask));
+    else if (
+      can_write(i_lock_or_enable, i_command_valid, i_select, i_write)
+    ) begin
+      value <= get_write_data(value, i_write_data, i_write_mask);
     end
   end
+
+  function automatic logic can_write(
+    input lock_or_enable,
+    input command_valid,
+    input select,
+    input write
+  );
+    if (LOCK_MODE) begin
+      return (
+        (!lock_or_enable) && is_write_access(command_valid, select, write)
+      ) ? 1'b1 : 1'b0;
+    end
+    else begin
+      return (
+        lock_or_enable && is_write_access(command_valid, select, write)
+      ) ? 1'b1 : 1'b0;
+    end
+  endfunction
 endmodule
