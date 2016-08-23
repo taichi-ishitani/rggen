@@ -343,14 +343,15 @@ module sample_0 (
     .o_select       (register_select[16])
   );
   assign register_read_data[16] = {23'h000000, bit_field_6_0_value, 7'h00, bit_field_6_1_value};
-  rggen_bit_field_w0c_w1c #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (1'b0)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (0),
+    .SET_CLEAR_VALUE  (0)
   ) u_bit_field_6_0 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_set            (i_bit_field_6_0_set),
+    .i_set_or_clear   (i_bit_field_6_0_set),
     .i_command_valid  (command_valid),
     .i_select         (register_select[16]),
     .i_write          (write),
@@ -358,14 +359,15 @@ module sample_0 (
     .i_write_mask     (write_mask[8]),
     .o_value          (bit_field_6_0_value)
   );
-  rggen_bit_field_w0c_w1c #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (1'b1)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (0),
+    .SET_CLEAR_VALUE  (1)
   ) u_bit_field_6_1 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_set            (i_bit_field_6_1_set),
+    .i_set_or_clear   (i_bit_field_6_1_set),
     .i_command_valid  (command_valid),
     .i_select         (register_select[16]),
     .i_write          (write),
@@ -387,14 +389,15 @@ module sample_0 (
   );
   assign register_read_data[17] = {23'h000000, bit_field_7_0_value, 7'h00, bit_field_7_1_value};
   assign o_bit_field_7_0 = bit_field_7_0_value;
-  rggen_bit_field_w0s_w1s #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .SET_VALUE      (1'b0)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (1),
+    .SET_CLEAR_VALUE  (0)
   ) u_bit_field_7_0 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_clear          (i_bit_field_7_0_clear),
+    .i_set_or_clear   (i_bit_field_7_0_clear),
     .i_command_valid  (command_valid),
     .i_select         (register_select[17]),
     .i_write          (write),
@@ -403,14 +406,15 @@ module sample_0 (
     .o_value          (bit_field_7_0_value)
   );
   assign o_bit_field_7_1 = bit_field_7_1_value;
-  rggen_bit_field_w0s_w1s #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .SET_VALUE      (1'b1)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (1),
+    .SET_CLEAR_VALUE  (1)
   ) u_bit_field_7_1 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_clear          (i_bit_field_7_1_clear),
+    .i_set_or_clear   (i_bit_field_7_1_clear),
     .i_command_valid  (command_valid),
     .i_select         (register_select[17]),
     .i_write          (write),

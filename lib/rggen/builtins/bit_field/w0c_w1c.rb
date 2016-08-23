@@ -20,7 +20,7 @@ list_item :bit_field, :type, [:w0c, :w1c] do
     end
 
     def clear_value
-      bin({ w0c: 0, w1c: 1 }[type], 1)
+      { w0c: 0, w1c: 1 }[type]
     end
   end
 end

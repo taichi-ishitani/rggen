@@ -28,7 +28,7 @@ list_item :bit_field, :type, [:w0s, :w1s] do
     end
 
     def set_value
-      bin({ w0s: 0, w1s: 1 }[type], 1)
+      { w0s: 0, w1s: 1 }[type]
     end
   end
 end

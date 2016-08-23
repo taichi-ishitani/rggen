@@ -188,14 +188,15 @@ describe 'bit_fields/type/w0c_w1c' do
     describe "#generate_code" do
       let(:expected_code_0) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (16),
-  .INITIAL_VALUE  (16'h0123),
-  .CLEAR_VALUE    (1'b0)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (16),
+  .INITIAL_VALUE    (16'h0123),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (0)
 ) u_bit_field_0_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_0_0_set),
+  .i_set_or_clear   (i_bit_field_0_0_set),
   .i_command_valid  (command_valid),
   .i_select         (register_select[0]),
   .i_write          (write),
@@ -208,14 +209,15 @@ CODE
 
       let(:expected_code_1) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b0)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (0)
 ) u_bit_field_0_1 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_0_1_set),
+  .i_set_or_clear   (i_bit_field_0_1_set),
   .i_command_valid  (command_valid),
   .i_select         (register_select[0]),
   .i_write          (write),
@@ -228,14 +230,15 @@ CODE
 
       let(:expected_code_2) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b0)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (0)
 ) u_bit_field_1_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_1_0_set[g_i]),
+  .i_set_or_clear   (i_bit_field_1_0_set[g_i]),
   .i_command_valid  (command_valid),
   .i_select         (register_select[1+g_i]),
   .i_write          (write),
@@ -248,14 +251,15 @@ CODE
 
       let(:expected_code_3) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b0)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (0)
 ) u_bit_field_2_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_2_0_set[g_i][g_j]),
+  .i_set_or_clear   (i_bit_field_2_0_set[g_i][g_j]),
   .i_command_valid  (command_valid),
   .i_select         (register_select[3+2*g_i+g_j]),
   .i_write          (write),
@@ -268,14 +272,15 @@ CODE
 
       let(:expected_code_4) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (16),
-  .INITIAL_VALUE  (16'h4567),
-  .CLEAR_VALUE    (1'b1)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (16),
+  .INITIAL_VALUE    (16'h4567),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (1)
 ) u_bit_field_3_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_3_0_set),
+  .i_set_or_clear   (i_bit_field_3_0_set),
   .i_command_valid  (command_valid),
   .i_select         (register_select[7]),
   .i_write          (write),
@@ -288,14 +293,15 @@ CODE
 
       let(:expected_code_5) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b1)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (1)
 ) u_bit_field_3_1 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_3_1_set),
+  .i_set_or_clear   (i_bit_field_3_1_set),
   .i_command_valid  (command_valid),
   .i_select         (register_select[7]),
   .i_write          (write),
@@ -308,14 +314,15 @@ CODE
 
       let(:expected_code_6) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b1)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (1)
 ) u_bit_field_4_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_4_0_set[g_i]),
+  .i_set_or_clear   (i_bit_field_4_0_set[g_i]),
   .i_command_valid  (command_valid),
   .i_select         (register_select[8+g_i]),
   .i_write          (write),
@@ -328,14 +335,15 @@ CODE
 
       let(:expected_code_7) do
         <<'CODE'
-rggen_bit_field_w0c_w1c #(
-  .WIDTH          (1),
-  .INITIAL_VALUE  (1'h0),
-  .CLEAR_VALUE    (1'b1)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (1),
+  .INITIAL_VALUE    (1'h0),
+  .SET_MODE         (0),
+  .SET_CLEAR_VALUE  (1)
 ) u_bit_field_5_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_set            (i_bit_field_5_0_set[g_i][g_j]),
+  .i_set_or_clear   (i_bit_field_5_0_set[g_i][g_j]),
   .i_command_valid  (command_valid),
   .i_select         (register_select[10+2*g_i+g_j]),
   .i_write          (write),

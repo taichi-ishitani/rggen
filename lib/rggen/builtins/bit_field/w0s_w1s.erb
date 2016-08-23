@@ -1,11 +1,12 @@
-rggen_bit_field_w0s_w1s #(
-  .WIDTH          (<%= width %>),
-  .INITIAL_VALUE  (<%= initial_value %>),
-  .SET_VALUE      (<%= set_value %>)
+rggen_bit_field_w01s_w01c #(
+  .WIDTH            (<%= width %>),
+  .INITIAL_VALUE    (<%= initial_value %>),
+  .SET_MODE         (1),
+  .SET_CLEAR_VALUE  (<%= set_value %>)
 ) u_<%= name %> (
   .clk              (<%= register_block.clock %>),
   .rst_n            (<%= register_block.reset %>),
-  .i_clear          (<%= clear[loop_variables] %>),
+  .i_set_or_clear   (<%= clear[loop_variables] %>),
   .i_command_valid  (<%= register_block.host_if.command_valid %>),
   .i_select         (<%= register_block.register_select[index] %>),
   .i_write          (<%= register_block.host_if.write %>),

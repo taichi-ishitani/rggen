@@ -332,14 +332,15 @@ module block_0 (
     .o_select       (register_select[12])
   );
   assign register_read_data[12] = {23'h000000, bit_field_4_0_value, 7'h00, bit_field_4_1_value};
-  rggen_bit_field_w0c_w1c #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (1'b0)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (0),
+    .SET_CLEAR_VALUE  (0)
   ) u_bit_field_4_0 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_set            (i_bit_field_4_0_set),
+    .i_set_or_clear   (i_bit_field_4_0_set),
     .i_command_valid  (command_valid),
     .i_select         (register_select[12]),
     .i_write          (write),
@@ -347,14 +348,15 @@ module block_0 (
     .i_write_mask     (write_mask[8]),
     .o_value          (bit_field_4_0_value)
   );
-  rggen_bit_field_w0c_w1c #(
-    .WIDTH          (1),
-    .INITIAL_VALUE  (1'h0),
-    .CLEAR_VALUE    (1'b1)
+  rggen_bit_field_w01s_w01c #(
+    .WIDTH            (1),
+    .INITIAL_VALUE    (1'h0),
+    .SET_MODE         (0),
+    .SET_CLEAR_VALUE  (1)
   ) u_bit_field_4_1 (
     .clk              (clk),
     .rst_n            (rst_n),
-    .i_set            (i_bit_field_4_1_set),
+    .i_set_or_clear   (i_bit_field_4_1_set),
     .i_command_valid  (command_valid),
     .i_select         (register_select[12]),
     .i_write          (write),
