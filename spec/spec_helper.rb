@@ -1,6 +1,6 @@
 if ENV['TRAVIS']
-  require "codeclimate-test-reporter"
-  CodeClimate::TestReporter.start
+  require 'simplecov'
+  SimpleCov.start
 end
 
 Encoding.default_external = Encoding::UTF_8
