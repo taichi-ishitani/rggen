@@ -166,20 +166,6 @@ module RgGen::OutputBase
       CodeBlock.new
     end
 
-    describe ".use_verilog_utility" do
-      let(:klass) do
-        Class.new(Item)
-      end
-
-      it "VerilogUtilityをItem内で使えるようにする" do
-        expect {
-          klass.class_eval { use_verilog_utility }
-        }.to change {
-          klass.include?(VerilogUtility)
-        }.from(false).to(true)
-      end
-    end
-
     describe "#build" do
       context ".buildでブロックが与えられた場合" do
         it "登録されたブロックをアイテムのコンテキストで実行する" do

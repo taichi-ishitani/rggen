@@ -1,7 +1,7 @@
 module RgGen
   module RTL
     class Item < OutputBase::Item
-      use_verilog_utility
+      include OutputBase::VerilogUtility
 
       def initialize(owner)
         super(owner)
