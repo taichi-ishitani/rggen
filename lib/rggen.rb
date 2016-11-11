@@ -2,6 +2,7 @@ module RgGen
   RGGEN_HOME  = File.realpath(File.join(__dir__, '..'))
 
   require 'forwardable'
+  require 'singleton'
   require 'baby_erubis'
   require 'fileutils'
   require 'optparse'
@@ -35,6 +36,7 @@ module RgGen
   require_relative 'rggen/output_base/code_block'
   require_relative 'rggen/output_base/code_utility'
   require_relative 'rggen/output_base/template_utility'
+  require_relative 'rggen/output_base/template_engine'
   require_relative 'rggen/output_base/verilog_utility/identifier'
   require_relative 'rggen/output_base/verilog_utility/declaration'
   require_relative 'rggen/output_base/verilog_utility/structure_definition'
