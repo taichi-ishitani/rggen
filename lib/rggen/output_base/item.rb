@@ -3,7 +3,6 @@ module RgGen
     class Item < Base::Item
       include Base::HierarchicalItemAccessors
       include CodeUtility
-      include TemplateUtility
 
       class CodeGenerator
         def []=(kind, body)
@@ -77,6 +76,10 @@ module RgGen
           @builders << body
         end
 
+        def template_engine(engine)
+          define_method(:template_engine) { engine.instance }
+        end
+
         def generate_pre_code(kind, &body)
           @pre_code_generator ||= CodeGenerator.new
           @pre_code_generator[kind] = body
@@ -88,8 +91,10 @@ module RgGen
         end
 
         def generate_code_from_template(kind, path = nil)
-          path  ||= File.ext(caller.first[/^(.+?):\d/, 1], 'erb')
-          generate_code(kind) { process_template(path) }
+          call_info = caller.first
+          generate_code(kind) do
+            template_engine.process_template(self, path, call_info)
+          end
         end
 
         def generate_post_code(kind, &body)
@@ -166,6 +171,10 @@ module RgGen
       end
 
       private
+
+      def process_template(path = nil)
+        template_engine.process_template(self, path, caller.first)
+      end
 
       def configuration
         @owner.configuration

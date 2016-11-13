@@ -2,6 +2,24 @@ require_relative '../../spec_helper'
 
 module RgGen::OutputBase
   describe Item do
+    before(:all) do
+      @template_engine  = Class.new(TemplateEngine) do
+        def file_extension
+          :erb
+        end
+        def parse_template(path)
+          BabyErubis::Text.new.from_str(File.read(path), path)
+        end
+        def render(context, template)
+          template.render(context)
+        end
+      end
+    end
+
+    after do
+      @template_engine.instance_eval { @templates.clear if @templates }
+    end
+
     let(:configuration) do
       RgGen::InputBase::Component.new(nil)
     end
@@ -12,6 +30,10 @@ module RgGen::OutputBase
 
     let(:component) do
       Component.new(nil, configuration, register_map)
+    end
+
+    let(:template_engine) do
+      @template_engine.instance
     end
 
     let(:code) do
@@ -207,6 +229,54 @@ module RgGen::OutputBase
         it "指定された種類のコード生成ブロックを実行する" do
           item.generate_code(:foo, code)
           item.generate_code(:bar, code)
+        end
+      end
+
+      context ".generate_code_from_templateでテンプレートからのコード生成が設定された場合" do
+        let(:template_content) do
+          '<%= content %>'
+        end
+
+        let(:call_info) do
+          /^#{__FILE__}/
+        end
+
+        let(:foo_item) do
+          engine  = @template_engine
+          define_item do
+            template_engine engine
+            generate_code_from_template(:foo)
+            def content
+              'foo'
+            end
+          end
+        end
+
+        let(:bar_item) do
+          define_item(foo_item.class) do
+            generate_code_from_template(:bar, 'bar.erb')
+            def content
+              'bar'
+            end
+          end
+        end
+
+        before do
+          allow(File).to receive(:read).and_return(template_content)
+          allow(template_engine).to receive(:process_template).and_call_original
+          allow(template_engine).to receive(:process_template).and_call_original
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
+        it ".template_engineで登録されたテンプレートエンジンでテンプレートを処理し、コードを生成する" do
+          foo_item.generate_code(:foo, code)
+          bar_item.generate_code(:bar, code)
+          expect(template_engine).to have_received(:process_template).with(foo_item, nil      , call_info)
+          expect(template_engine).to have_received(:process_template).with(bar_item, 'bar.erb', call_info)
         end
       end
 
@@ -445,6 +515,54 @@ module RgGen::OutputBase
             item.write_file
           }.not_to raise_error
         end
+      end
+    end
+
+    describe "#process_template" do
+      let(:template_content) do
+        '<%= content %>'
+      end
+
+      let(:call_info) do
+        /^#{__FILE__}/
+      end
+
+      let(:foo_item) do
+        engine  = @template_engine
+        define_item do
+          template_engine engine
+          generate_code(:foo) { |c| c << process_template }
+          def content
+            'foo'
+          end
+        end
+      end
+
+      let(:bar_item) do
+        define_item(foo_item.class) do
+          generate_code(:bar) { |c| c << process_template('bar.erb') }
+          def content
+            'bar'
+          end
+        end
+      end
+
+      before do
+        allow(File).to receive(:read).and_return(template_content)
+        allow(template_engine).to receive(:process_template).and_call_original
+        allow(template_engine).to receive(:process_template).and_call_original
+      end
+
+      before do
+        expected_code 'foo'
+        expected_code 'bar'
+      end
+
+      it ".template_engineで登録されたテンプレートエンジンでテンプレートを処理し、コードを生成する" do
+        foo_item.generate_code(:foo, code)
+        bar_item.generate_code(:bar, code)
+        expect(template_engine).to have_received(:process_template).with(foo_item, nil      , call_info)
+        expect(template_engine).to have_received(:process_template).with(bar_item, 'bar.erb', call_info)
       end
     end
 

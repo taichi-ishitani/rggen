@@ -36,7 +36,6 @@ module RgGen
   require_relative 'rggen/output_base/line'
   require_relative 'rggen/output_base/code_block'
   require_relative 'rggen/output_base/code_utility'
-  require_relative 'rggen/output_base/template_utility'
   require_relative 'rggen/output_base/template_engine'
   require_relative 'rggen/output_base/verilog_utility/identifier'
   require_relative 'rggen/output_base/verilog_utility/declaration'
