@@ -3,7 +3,6 @@ module RgGen
 
   require 'forwardable'
   require 'singleton'
-  require 'baby_erubis'
   require 'fileutils'
   require 'pathname'
   require 'optparse'
