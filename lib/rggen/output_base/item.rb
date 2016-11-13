@@ -34,27 +34,30 @@ module RgGen
         end
 
         def write_file(item, outptu_directory)
-          code  = generate_code(item)
           path  = file_path(item, outptu_directory)
-          File.write(path, code, nil, binmode: true)
+          code  = generate_code(item, path)
+          File.write(path.to_s, code.to_s, nil, binmode: true)
         end
 
         private
 
-        def generate_code(item)
-          code  = CodeBlock.new.tap do |c|
-            if @body.arity.zero?
+        def generate_code(item, path)
+          CodeBlock.new.tap do |c|
+            case @body.arity
+            when 0
               c << item.instance_exec(&@body)
+            when 1
+              c << item.instance_exec(path, &@body)
             else
-              item.instance_exec(c, &@body)
+              item.instance_exec(path, c, &@body)
             end
           end
-          code.to_s
         end
 
         def file_path(item, outptu_directory)
-          path  = [outptu_directory, file_name(item)].reject(&:empty?)
-          File.join(*path)
+          Pathname.new(
+            File.join([outptu_directory, file_name(item)].reject(&:empty?))
+          )
         end
 
         def file_name(item)

@@ -2,126 +2,6 @@ require_relative '../../spec_helper'
 
 module RgGen::OutputBase
   describe Item do
-    class FooItem < Item
-      generate_pre_code :foo do |buffer|
-        buffer << 'pre_foo'
-      end
-      generate_code :foo do |buffer|
-        buffer << 'foo'
-      end
-      generate_post_code :foo do |buffer|
-        buffer << 'post_foo'
-      end
-      generate_pre_code :foo_with_no_args do
-        'pre_foo_with_no_args'
-      end
-      generate_code :foo_with_no_args do
-        'foo_with_no_args'
-      end
-      generate_post_code :foo_with_no_args do
-        'post_foo_with_no_args'
-      end
-    end
-
-    class BarItem < Item
-      generate_pre_code :bar do |buffer|
-        buffer << 'pre_bar'
-      end
-      generate_pre_code :barbar do |buffer|
-        buffer << 'pre_barbar'
-      end
-
-      generate_code :bar do |buffer|
-        buffer << 'bar'
-      end
-      generate_code :barbar do |buffer|
-        buffer << 'barbar'
-      end
-
-      generate_post_code :bar do |buffer|
-        buffer << 'post_bar'
-      end
-      generate_post_code :barbar do |buffer|
-        buffer << 'post_barbar'
-      end
-    end
-
-    class BazItem < Item
-      export :foo
-      export :bar, :baz
-      export :foo
-
-      generate_pre_code :baz do |buffer|
-        buffer << "pre_#{@baz}"
-      end
-      generate_code :baz do |buffer|
-        buffer << @baz
-      end
-      generate_post_code :baz do |buffer|
-        buffer << "post_#{@baz}"
-      end
-
-      build do
-        @baz  = "#{object_id}_baz"
-      end
-    end
-
-    class QuxItem < BazItem
-      export :foo, :qux
-      export :quux
-
-      generate_pre_code :qux do |buffer|
-        buffer << "pre_#{@qux}"
-      end
-      generate_code :qux do |buffer|
-        buffer << @qux
-      end
-      generate_post_code :qux do |buffer|
-        buffer << "post_#{@qux}"
-      end
-
-      build do
-        @qux  = "#{object_id}_qux"
-      end
-    end
-
-    class QuuxItem < Item
-      generate_code_from_template :quux_0
-      generate_code_from_template :quux_1, 'quux/template.erb'
-
-      def quux
-        :quux
-      end
-    end
-
-    class FooBarItem < Item
-      write_file "<%= owner.object_id %>.txt" do |buffer|
-        owner.generate_code(:foo, :top_down, buffer)
-        buffer << "\n"
-        owner.generate_code(:bar, :top_down, buffer)
-      end
-    end
-
-    class CorgeItem < Item
-      write_file "<%= owner.object_id %>.txt" do
-        owner.generate_code(:foo, :top_down) << "\n" <<
-        owner.generate_code(:bar, :top_down)
-      end
-    end
-
-    before do
-      @foo_item     = FooItem.new(component)
-      @bar_item     = BarItem.new(component)
-      @baz_item     = BazItem.new(component)
-      @qux_item     = QuxItem.new(component)
-      @quux_item    = QuuxItem.new(component)
-      @foo_bar_item = FooBarItem.new(component)
-      @corge_item   = CorgeItem.new(component)
-      [@foo_item, @bar_item, @baz_item, @qux_item, @quux_item, @foo_bar_item, @corge_item].each do |item|
-        component.add_item(item)
-      end
-    end
-
     let(:configuration) do
       RgGen::InputBase::Component.new(nil)
     end
@@ -134,251 +14,430 @@ module RgGen::OutputBase
       Component.new(nil, configuration, register_map)
     end
 
-    let(:foo_item) do
-      @foo_item
+    let(:code) do
+      double('code')
     end
 
-    let(:bar_item) do
-      @bar_item
+    def define_item(base = Item, &body)
+      Class.new(base, &body).new(component).tap { |item| component.add_item(item)}
     end
 
-    let(:baz_item) do
-      @baz_item
+    def expected_code(c)
+      expect(code).to receive(:<<).with(c).ordered
     end
 
-    let(:qux_item) do
-      @qux_item
-    end
-
-    let(:quux_item) do
-      @quux_item
-    end
-
-    let(:foo_bar_item) do
-      @foo_bar_item
-    end
-
-    let(:corge_item) do
-      @corge_item
-    end
-
-    let(:buffer) do
-      CodeBlock.new
+    def expected_file_out(p, c)
+      expect(File).to receive(:write).with(p, c, nil, binmode: true).ordered
     end
 
     describe "#build" do
       context ".buildでブロックが与えられた場合" do
+        let(:item) do
+          define_item do
+            attr_reader :foo
+            build { @foo  = object_id }
+          end
+        end
+
         it "登録されたブロックをアイテムのコンテキストで実行する" do
-          baz_item.build
-          baz_item.generate_code(:baz, buffer)
-          expect(buffer.to_s).to eq "#{baz_item.object_id}_baz"
+          item.build
+          expect(item.foo).to eq item.object_id
         end
 
         context "継承されたとき" do
+          let(:child_item) do
+            define_item(item.class) do
+              attr_reader :bar
+              build { @bar  = object_id }
+            end
+          end
+
+          let(:grandchild_item) do
+            define_item(child_item.class) {}
+          end
+
           specify "登録されたブロックが継承先に引き継がれる" do
-            qux_item.build
-            qux_item.generate_code(:baz, buffer)
-            qux_item.generate_code(:qux, buffer)
-            expect(buffer.to_s).to eq  "#{qux_item.object_id}_baz#{qux_item.object_id}_qux"
+            grandchild_item.build
+            expect(grandchild_item.foo).to eq grandchild_item.object_id
+            expect(grandchild_item.bar).to eq grandchild_item.object_id
           end
         end
       end
     end
 
     describe "#generate_pre_code" do
-      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定され、" do
-        context "コード生成ブロックにブロック引数がある場合" do
-          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
-            foo_item.generate_pre_code(:foo, buffer)
-            expect(buffer.to_s).to eq 'pre_foo'
-          end
+      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定された場合" do
+        let(:foo_item) do
+          define_item { generate_pre_code(:foo) { |c| c << 'foo' } }
         end
 
-        context "コード生成ブロックにブロック引数がない場合" do
-          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
-            foo_item.generate_pre_code(:foo_with_no_args, buffer)
-            expect(buffer.to_s).to eq 'pre_foo_with_no_args'
-          end
+        let(:bar_item) do
+          define_item { generate_pre_code(:bar) { 'bar' } }
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
+        it "指定されたコード生成ブロックを実行する" do
+          foo_item.generate_pre_code(:foo, code)
+          bar_item.generate_pre_code(:bar, code)
         end
       end
 
       context ".generate_pre_codeで複数回コード生成が登録された場合" do
+        let(:item) do
+          define_item do
+            generate_pre_code(:foo) { 'foo' }
+            generate_pre_code(:bar) { 'bar' }
+            generate_pre_code(:baz) { 'baz' }
+          end
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+          expect(code).not_to receive(:<<).with('baz')
+        end
+
         it "指定された種類のコード生成ブロックを実行する" do
-          bar_item.generate_pre_code(:barbar, buffer)
-          bar_item.generate_pre_code(:bar   , buffer)
-          expect(buffer.to_s).to eq 'pre_barbarpre_bar'
+          item.generate_pre_code(:foo, code)
+          item.generate_pre_code(:bar, code)
         end
       end
 
       context ".generate_pre_codeで登録されていないコード生成の種類が指定された場合" do
+        let(:item) do
+          define_item { generate_pre_code(:foo) { 'foo' } }
+        end
+
+        before do
+          expect(code).not_to receive(:<<)
+        end
+
         it "何も起こらない" do
-          aggregate_failures do
-            expect {
-              foo_item.generate_pre_code(:bar, buffer)
-            }.not_to raise_error
-            expect(buffer.to_s).to be_empty
-          end
+          expect {
+            item.generate_pre_code(:bar, code)
+          }.not_to raise_error
         end
       end
 
       context "継承されたとき" do
+        let(:item) do
+          define_item { generate_pre_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_pre_code(:bar) { 'bar' } }
+        end
+
+        let(:grandchild_item) do
+          define_item(child_item.class) {}
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
         specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          qux_item.build
-          qux_item.generate_pre_code(:baz, buffer)
-          qux_item.generate_pre_code(:qux, buffer)
-          expect(buffer.to_s).to eq "pre_#{qux_item.object_id}_bazpre_#{qux_item.object_id}_qux"
+          grandchild_item.generate_pre_code(:foo, code)
+          grandchild_item.generate_pre_code(:bar, code)
+        end
+      end
+
+      context "継承先で同名のコード生成ブロックが登録された場合" do
+        let(:item) do
+          define_item { generate_pre_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_pre_code(:foo) { 'bar' } }
+        end
+
+        specify "新しいコード生成ブロックで上書きされる" do
+          expected_code 'bar'
+          child_item.generate_pre_code(:foo, code)
+        end
+
+        specify "親クラスの生成ブロックは上書きされない" do
+          expected_code 'foo'
+          item.generate_pre_code(:foo, code)
         end
       end
     end
 
     describe "#generate_code" do
-      context ".generate_codeで登録されたコード生成ブロックの種類が指定され、" do
-        context "コード生成ブロックにブロック引数がある場合" do
-          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
-            foo_item.generate_code(:foo, buffer)
-            expect(buffer.to_s).to eq 'foo'
-          end
+      context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
+        let(:foo_item) do
+          define_item {  generate_code(:foo) { |c| c << 'foo' } }
         end
 
-        context "コード生成ブロックにブロック引数がない場合" do
-          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
-            foo_item.generate_code(:foo_with_no_args, buffer)
-            expect(buffer.to_s).to eq 'foo_with_no_args'
-          end
-        end
-      end
-
-      context ".generate_code_from_tempalateでテンプレートからのコード生成が指定され、" do
-        context "テンプレートのパスが指定されていない場合" do
-          before do
-            expect(File).to receive(:read).with(File.ext(File.expand_path(__FILE__), '.erb')).and_return('<%= quux %>')
-          end
-
-          it "[呼び出しもとのファイル名].erbをテンプレートとしてコードを生成する" do
-            quux_item.generate_code(:quux_0, buffer)
-            expect(buffer.to_s).to eq 'quux'
-          end
+        let(:bar_item) do
+          define_item {  generate_code(:bar) { 'bar' } }
         end
 
-        context "テンプレートのパスが指定されている場合" do
-          before do
-            expect(File).to receive(:read).with('quux/template.erb').and_return('<%= quux %>_<%= quux %>')
-          end
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
 
-          it "指定されたテンプレートからコードを生成する" do
-            quux_item.generate_code(:quux_1, buffer)
-            expect(buffer.to_s).to eq 'quux_quux'
-          end
+        it "指定されたコード生成ブロックを実行する" do
+          foo_item.generate_code(:foo, code)
+          bar_item.generate_code(:bar, code)
         end
       end
 
       context ".generate_codeで複数回コード生成が登録された場合" do
+        let(:item) do
+          define_item do
+            generate_code(:foo) { 'foo' }
+            generate_code(:bar) { 'bar' }
+            generate_code(:baz) { 'baz' }
+          end
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+          expect(code).not_to receive(:<<).with('baz')
+        end
+
         it "指定された種類のコード生成ブロックを実行する" do
-          bar_item.generate_code(:barbar, buffer)
-          bar_item.generate_code(:bar   , buffer)
-          expect(buffer.to_s).to eq 'barbarbar'
+          item.generate_code(:foo, code)
+          item.generate_code(:bar, code)
         end
       end
 
       context ".generate_codeで登録されていないコード生成の種類が指定された場合" do
+        let(:item) do
+          define_item { generate_code(:foo) { 'foo' } }
+        end
+
+        before do
+          expect(code).not_to receive(:<<)
+        end
+
         it "何も起こらない" do
-          aggregate_failures do
-            expect {
-              foo_item.generate_code(:bar, buffer)
-            }.not_to raise_error
-            expect(buffer.to_s).to be_empty
-          end
+          expect {
+            item.generate_code(:bar, code)
+          }.not_to raise_error
         end
       end
 
       context "継承されたとき" do
+        let(:item) do
+          define_item { generate_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_code(:bar) { 'bar' } }
+        end
+
+        let(:grandchild_item) do
+          define_item(child_item.class) {}
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
         specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          qux_item.build
-          qux_item.generate_code(:baz, buffer)
-          qux_item.generate_code(:qux, buffer)
-          expect(buffer.to_s).to eq "#{qux_item.object_id}_baz#{qux_item.object_id}_qux"
+          grandchild_item.generate_code(:foo, code)
+          grandchild_item.generate_code(:bar, code)
+        end
+      end
+
+      context "継承先で同名のコード生成ブロックが登録された場合" do
+        let(:item) do
+          define_item { generate_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_code(:foo) { 'bar' } }
+        end
+
+        specify "新しいコード生成ブロックで上書きされる" do
+          expected_code 'bar'
+          child_item.generate_code(:foo, code)
+        end
+
+        specify "親クラスの生成ブロックは上書きされない" do
+          expected_code 'foo'
+          item.generate_code(:foo, code)
         end
       end
     end
 
     describe "#generate_post_code" do
-      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定され、" do
-        context "コード生成ブロックにブロック引数がある場合" do
-          it "出力バッファをブロック引数に渡し、指定された種類のコード生成ブロックを実行する" do
-            foo_item.generate_post_code(:foo, buffer)
-            expect(buffer.to_s).to eq 'post_foo'
-          end
+      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定された場合" do
+        let(:foo_item) do
+          define_item {  generate_post_code(:foo) { |c| c << 'foo' } }
         end
 
-        context "コード生成ブロックにブロック引数がない場合" do
-          it "指定された種類のコード生成ブロックを実行し、戻り値を出力バッファに追加する" do
-            foo_item.generate_post_code(:foo_with_no_args, buffer)
-            expect(buffer.to_s).to eq 'post_foo_with_no_args'
-          end
+        let(:bar_item) do
+          define_item {  generate_post_code(:bar) { 'bar' } }
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
+        it "指定されたコード生成ブロックを実行する" do
+          foo_item.generate_post_code(:foo, code)
+          bar_item.generate_post_code(:bar, code)
         end
       end
 
       context ".generate_post_codeで複数回コード生成が登録された場合" do
+        let(:item) do
+          define_item do
+            generate_post_code(:foo) { 'foo' }
+            generate_post_code(:bar) { 'bar' }
+            generate_post_code(:baz) { 'baz' }
+          end
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+          expect(code).not_to receive(:<<).with('baz')
+        end
+
         it "指定された種類のコード生成ブロックを実行する" do
-          bar_item.generate_post_code(:barbar, buffer)
-          bar_item.generate_post_code(:bar   , buffer)
-          expect(buffer.to_s).to eq 'post_barbarpost_bar'
+          item.generate_post_code(:foo, code)
+          item.generate_post_code(:bar, code)
         end
       end
 
       context ".generate_post_codeで登録されていないコード生成の種類が指定された場合" do
+        let(:item) do
+          define_item { generate_post_code(:foo) { 'foo' } }
+        end
+
+        before do
+          expect(code).not_to receive(:<<)
+        end
+
         it "何も起こらない" do
-          aggregate_failures do
-            expect {
-              foo_item.generate_post_code(:bar, buffer)
-            }.not_to raise_error
-            expect(buffer.to_s).to be_empty
-          end
+          expect {
+            item.generate_post_code(:bar, code)
+          }.not_to raise_error
         end
       end
 
       context "継承されたとき" do
+        let(:item) do
+          define_item { generate_post_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_post_code(:bar) { 'bar' } }
+        end
+
+        let(:grandchild_item) do
+          define_item(child_item.class) {}
+        end
+
+        before do
+          expected_code 'foo'
+          expected_code 'bar'
+        end
+
         specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          qux_item.build
-          qux_item.generate_post_code(:baz, buffer)
-          qux_item.generate_post_code(:qux, buffer)
-          expect(buffer.to_s).to eq "post_#{qux_item.object_id}_bazpost_#{qux_item.object_id}_qux"
+          grandchild_item.generate_post_code(:foo, code)
+          grandchild_item.generate_post_code(:bar, code)
+        end
+      end
+
+      context "継承先で同名のコード生成ブロックが登録された場合" do
+        let(:item) do
+          define_item { generate_post_code(:foo) { 'foo' } }
+        end
+
+        let(:child_item) do
+          define_item(item.class) { generate_post_code(:foo) { 'bar' } }
+        end
+
+        specify "新しいコード生成ブロックで上書きされる" do
+          expected_code 'bar'
+          child_item.generate_post_code(:foo, code)
+        end
+
+        specify "親クラスの生成ブロックは上書きされない" do
+          expected_code 'foo'
+          item.generate_post_code(:foo, code)
         end
       end
     end
 
     describe "#write_file" do
-      let(:output_directory) do
-        '/foo/bar'
+      let(:foo_item) do
+        define_item do
+          write_file '<%= name %>.foo' do
+            'foo'
+          end
+
+          def name
+            'foo'
+          end
+        end
       end
 
-      let(:file_name) do
-        "#{component.object_id}.txt"
+      let(:bar_item) do
+        define_item do
+          write_file '<%= name %>.bar' do |pathname|
+            File.join(pathname.dirname, pathname.basename)
+          end
+
+          def name
+            'bar'
+          end
+        end
       end
 
-      let(:contents) do
-        "pre_foofoopost_foo\npre_barbarpost_bar"
+      let(:baz_item) do
+        define_item do
+          write_file '<%= name %>.baz' do |pathname, code|
+            code << pathname
+          end
+
+          def name
+            'baz'
+          end
+        end
       end
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
-        expect(File).to receive(:write).with(file_name, contents, nil, binmode: true)
-        foo_bar_item.write_file
-        expect(File).to receive(:write).with(file_name, contents, nil, binmode: true)
-        corge_item.write_file
+        expected_file_out 'foo.foo', 'foo'
+        expected_file_out 'bar.bar', './bar.bar'
+        expected_file_out 'baz.baz', 'baz.baz'
+        foo_item.write_file
+        bar_item.write_file
+        baz_item.write_file
       end
 
       context "出力ディレクトリの指定がある場合" do
+        let(:output_directory) do
+          'qux'
+        end
+
         it "指定されたディレクトリにファイルを書き出す" do
-          expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents, nil, binmode: true)
-          foo_bar_item.write_file(output_directory)
-          expect(File).to receive(:write).with("#{output_directory}/#{file_name}", contents, nil, binmode: true)
-          corge_item.write_file(output_directory)
+          expected_file_out 'qux/foo.foo', 'foo'
+          expected_file_out 'qux/bar.bar', 'qux/bar.bar'
+          expected_file_out 'qux/baz.baz', 'qux/baz.baz'
+          foo_item.write_file(output_directory)
+          bar_item.write_file(output_directory)
+          baz_item.write_file(output_directory)
         end
       end
 
       context ".write_fileで生成ブロックが登録されていない場合" do
         let(:item) do
-          Class.new(Item).new(component)
+          define_item {}
         end
 
         it "何も起こらない" do
@@ -390,12 +449,28 @@ module RgGen::OutputBase
     end
 
     describe "#exported_methods" do
+      let(:item) do
+        define_item do
+          export :foo
+          export :bar, :baz
+        end
+      end
+
+      let(:child_item) do
+        define_item(item.class) { export :qux }
+      end
+
+      let(:grandchild_item) do
+        define_item(child_item.class) { export :quux }
+      end
+
       it ".exportで登録されたメソッド名一覧を返す" do
-        expect(baz_item.exported_methods).to match [:foo, :bar, :baz]
+        expect(item.exported_methods).to match [:foo, :bar, :baz]
       end
 
       specify "継承元のメソッド名一覧を引き継ぐ" do
-        expect(qux_item.exported_methods).to match [:foo, :bar, :baz, :qux, :quux]
+        expect(     child_item.exported_methods).to match [:foo, :bar, :baz, :qux       ]
+        expect(grandchild_item.exported_methods).to match [:foo, :bar, :baz, :qux, :quux]
       end
     end
   end

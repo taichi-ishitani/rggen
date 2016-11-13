@@ -5,6 +5,7 @@ module RgGen
   require 'singleton'
   require 'baby_erubis'
   require 'fileutils'
+  require 'pathname'
   require 'optparse'
 
   require_relative 'rggen/version'
