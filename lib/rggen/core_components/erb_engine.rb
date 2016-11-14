@@ -1,6 +1,4 @@
 module RgGen
-  require 'baby_erubis'
-
   class ERBEngine < OutputBase::TemplateEngine
     def file_extension
       :erb

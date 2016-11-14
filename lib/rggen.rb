@@ -6,6 +6,7 @@ module RgGen
   require 'fileutils'
   require 'pathname'
   require 'optparse'
+  require 'baby_erubis'
 
   require_relative 'rggen/version'
 
