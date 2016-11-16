@@ -51,10 +51,6 @@ describe "register_block/ral_package" do
   end
 
   describe "#write_file" do
-    before do
-      expect(File).to receive(:write).with("./block_0_ral_pkg.sv", expected_code, nil, binmode: true)
-    end
-
     let(:expected_code) do
       <<'CODE'
 package block_0_ral_pkg;
@@ -149,7 +145,7 @@ CODE
     end
 
     it "レジスタモジュールのRALパッケージを書き出す" do
-      ral.write_file('.')
+      expect { ral.write_file('.') }.to write_binary_file("./block_0_ral_pkg.sv", expected_code)
     end
   end
 end

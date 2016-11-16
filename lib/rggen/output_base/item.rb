@@ -35,7 +35,7 @@ module RgGen
         def write_file(item, outptu_directory)
           path  = file_path(item, outptu_directory)
           code  = generate_code(item, path)
-          File.write(path.to_s, code.to_s, nil, binmode: true)
+          File.binwrite(path.to_s, code.to_s)
         end
 
         private

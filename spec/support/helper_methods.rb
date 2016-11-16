@@ -105,3 +105,11 @@ def clear_dummy_list_items(list_name, items)
     end
   end
 end
+
+def write_binary_file(file = nil, content = nil)
+  if file
+    write_binary_files([[file, content]])
+  else
+    write_binary_files
+  end
+end

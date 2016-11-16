@@ -48,10 +48,6 @@ module RgGen::OutputBase
       expect(code).to receive(:<<).with(c).ordered
     end
 
-    def expected_file_out(p, c)
-      expect(File).to receive(:write).with(p, c, nil, binmode: true).ordered
-    end
-
     describe "#build" do
       context ".buildでブロックが与えられた場合" do
         let(:item) do
@@ -482,12 +478,9 @@ module RgGen::OutputBase
       end
 
       it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
-        expected_file_out 'foo.foo', 'foo'
-        expected_file_out 'bar.bar', './bar.bar'
-        expected_file_out 'baz.baz', 'baz.baz'
-        foo_item.write_file
-        bar_item.write_file
-        baz_item.write_file
+        expect { foo_item.write_file }.to write_binary_file 'foo.foo', 'foo'
+        expect { bar_item.write_file }.to write_binary_file 'bar.bar', './bar.bar'
+        expect { baz_item.write_file }.to write_binary_file 'baz.baz', 'baz.baz'
       end
 
       context "出力ディレクトリの指定がある場合" do
@@ -496,12 +489,9 @@ module RgGen::OutputBase
         end
 
         it "指定されたディレクトリにファイルを書き出す" do
-          expected_file_out 'qux/foo.foo', 'foo'
-          expected_file_out 'qux/bar.bar', 'qux/bar.bar'
-          expected_file_out 'qux/baz.baz', 'qux/baz.baz'
-          foo_item.write_file(output_directory)
-          bar_item.write_file(output_directory)
-          baz_item.write_file(output_directory)
+          expect { foo_item.write_file(output_directory) }.to write_binary_file 'qux/foo.foo', 'foo'
+          expect { bar_item.write_file(output_directory) }.to write_binary_file 'qux/bar.bar', 'qux/bar.bar'
+          expect { baz_item.write_file(output_directory) }.to write_binary_file 'qux/baz.baz', 'qux/baz.baz'
         end
       end
 
@@ -513,7 +503,7 @@ module RgGen::OutputBase
         it "何も起こらない" do
           expect {
             item.write_file
-          }.not_to raise_error
+          }.not_to write_binary_file
         end
       end
     end

@@ -27,10 +27,6 @@ module RgGen
       end
     end
 
-    before do
-      allow(File).to receive(:write)
-    end
-
     after do
       clear_enabled_items
     end
@@ -142,6 +138,10 @@ HELP
     end
 
     describe "ジェネレータのセットアップ" do
+      before do
+        allow(File).to receive(:binwrite)
+      end
+
       context "--setupでセットアップファイルの指定が無い場合" do
         before do
           expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
@@ -195,6 +195,10 @@ HELP
     end
 
     describe "コンフィグレーションの読み出し" do
+      before do
+        allow(File).to receive(:binwrite)
+      end
+
       context "-c/--configurationでコンフィグレーションファイルの指定が無い場合" do
         it "デフォルト値でコンフィグレーションを生成する" do
           expect {
@@ -227,6 +231,10 @@ HELP
           cache << m.call(*args)
           cache.last
         end
+      end
+
+      before do
+        allow(File).to receive(:binwrite)
       end
 
       let(:configuration_cache) do
@@ -270,6 +278,10 @@ HELP
         end
       end
 
+      before do
+        allow(File).to receive(:binwrite)
+      end
+
       let(:configuration_cache) do
         []
       end
@@ -299,11 +311,12 @@ HELP
         it "カレントディレクトリにファイを書き出す" do
           expect {
             generator.run(['-c', sample_yaml, sample_register_maps[0]])
-          }.not_to raise_error
-          expect(File).to have_received(:write).with("./rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("./rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
-          expect(File).to have_received(:write).with("./ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("./ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
+          }.to write_binary_files [
+            ["./rtl/sample_0.sv"        , expected_rtl_code[0]],
+            ["./rtl/sample_1.sv"        , expected_rtl_code[1]],
+            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
+            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+          ]
         end
       end
 
@@ -311,20 +324,22 @@ HELP
         it "指定されたディレクトリにファイを書き出す" do
           expect {
             generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
-          }.not_to raise_error
-          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("/foo/bar/rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
-          expect(File).to have_received(:write).with("/foo/bar/ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("/foo/bar/ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
+          }.to write_binary_files [
+            ["/foo/bar/rtl/sample_0.sv"        , expected_rtl_code[0]],
+            ["/foo/bar/rtl/sample_1.sv"        , expected_rtl_code[1]],
+            ["/foo/bar/ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
+            ["/foo/bar/ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+          ]
           clear_enabled_items
 
           expect {
             generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
-          }.not_to raise_error
-          expect(File).to have_received(:write).with("../baz/rtl/sample_0.sv"        , expected_rtl_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("../baz/rtl/sample_1.sv"        , expected_rtl_code[1], nil, binmode: true)
-          expect(File).to have_received(:write).with("../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
+          }.to write_binary_files [
+            ["../baz/rtl/sample_0.sv"        , expected_rtl_code[0]],
+            ["../baz/rtl/sample_1.sv"        , expected_rtl_code[1]],
+            ["../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
+            ["../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+          ]
         end
       end
 
@@ -332,16 +347,15 @@ HELP
         it "除外されていない種類のファイルを書き出す" do
           expect {
             generator.run(['-c', sample_yaml, '--except', 'rtl', sample_register_maps[0]])
-          }.not_to raise_error
-          expect(File).to have_received(:write).with("./ral/sample_0_ral_pkg.sv", expected_ral_code[0], nil, binmode: true)
-          expect(File).to have_received(:write).with("./ral/sample_1_ral_pkg.sv", expected_ral_code[1], nil, binmode: true)
-          expect(File).to have_received(:write).twice
+          }.to write_binary_files [
+            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
+            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+          ]
           clear_enabled_items
 
-          expect(File).not_to receive(:write)
           expect {
             generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', sample_register_maps[0]])
-          }.not_to raise_error
+          }.not_to write_binary_files
           clear_enabled_items
         end
       end
