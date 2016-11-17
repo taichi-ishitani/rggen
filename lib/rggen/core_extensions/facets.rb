@@ -9,6 +9,8 @@ require 'facets/kernel/not_nil'
 require 'facets/module/attr_setter'
 require 'facets/numeric/positive'
 require 'facets/object/itself' unless Object.public_method_defined?(:itself)
+require 'facets/pathname/to_path'
+require 'facets/pathname/to_str'
 require 'facets/range/overlap'
 require 'facets/regexp/op_add'
 require 'facets/regexp/op_or'

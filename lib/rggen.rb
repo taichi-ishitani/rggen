@@ -3,7 +3,6 @@ module RgGen
 
   require 'forwardable'
   require 'singleton'
-  require 'fileutils'
   require 'pathname'
   require 'optparse'
   require 'baby_erubis'
@@ -38,6 +37,7 @@ module RgGen
   require_relative 'rggen/output_base/code_utility'
   require_relative 'rggen/output_base/code_generator'
   require_relative 'rggen/output_base/template_engine'
+  require_relative 'rggen/output_base/file_writer'
   require_relative 'rggen/output_base/verilog_utility/identifier'
   require_relative 'rggen/output_base/verilog_utility/declaration'
   require_relative 'rggen/output_base/verilog_utility/structure_definition'

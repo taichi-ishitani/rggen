@@ -26,44 +26,6 @@ module RgGen
         end
       end
 
-      class FileWriter
-        def initialize(name_pattern, body)
-          @name_pattern = BabyErubis::Text.new.from_str(name_pattern)
-          @body         = body
-        end
-
-        def write_file(item, outptu_directory)
-          path  = file_path(item, outptu_directory)
-          code  = generate_code(item, path)
-          File.binwrite(path.to_s, code.to_s)
-        end
-
-        private
-
-        def generate_code(item, path)
-          CodeBlock.new.tap do |c|
-            case @body.arity
-            when 0
-              c << item.instance_exec(&@body)
-            when 1
-              c << item.instance_exec(path, &@body)
-            else
-              item.instance_exec(path, c, &@body)
-            end
-          end
-        end
-
-        def file_path(item, outptu_directory)
-          Pathname.new(
-            File.join([outptu_directory, file_name(item)].reject(&:empty?))
-          )
-        end
-
-        def file_name(item)
-          @name_pattern.render(item)
-        end
-      end
-
       define_helpers do
         attr_reader :builders
         attr_reader :pre_code_generator
@@ -150,6 +112,10 @@ module RgGen
         end
       end
 
+      def create_blank_code
+        CodeBlock.new
+      end
+
       def generate_pre_code(kind, buffer)
         return if pre_code_generator.nil?
         pre_code_generator.generate_code(self, kind, buffer)
@@ -165,7 +131,7 @@ module RgGen
         post_code_generator.generate_code(self, kind, buffer)
       end
 
-      def write_file(output_directory = '')
+      def write_file(output_directory = nil)
         return if file_writer.nil?
         file_writer.write_file(self, output_directory)
       end

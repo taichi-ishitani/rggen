@@ -58,6 +58,12 @@ RSpec::Matchers.define :raise_register_map_error do |expected_message, expected_
   end
 end
 
+RSpec::Matchers.define :match_string do |expected|
+  match do |actual|
+    values_match?(expected, actual) || values_match?(expected, actual.to_s)
+  end
+end
+
 RSpec::Matchers.define :write_binary_files do |expectations|
   match do |given_block|
     setup(expectations)
@@ -103,7 +109,7 @@ RSpec::Matchers.define :write_binary_files do |expectations|
 
   def setup_file_double(file)
     @file_streams  << StringIO.new.tap do |file_stream|
-      @receive_matchers << (expect(File).to receive(:binwrite).with(file, any_args).and_wrap_original do |m, *args|
+      @receive_matchers << (expect(File).to receive(:binwrite).with(match_string(file), any_args).and_wrap_original do |m, *args|
         file_stream.write(args[1])
       end)
     end

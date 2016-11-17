@@ -41,7 +41,15 @@ module RgGen::OutputBase
     end
 
     def define_item(base = Item, &body)
-      Class.new(base, &body).new(component).tap { |item| component.add_item(item)}
+      Class.new(base, &body)
+    end
+
+    def create_item(klass)
+      klass.new(component).tap { |item| component.add_item(item)}
+    end
+
+    def define_and_create_item(base = Item, &body)
+      create_item(define_item(base, &body))
     end
 
     def expected_code(c)
@@ -51,7 +59,7 @@ module RgGen::OutputBase
     describe "#build" do
       context ".buildでブロックが与えられた場合" do
         let(:item) do
-          define_item do
+          define_and_create_item do
             attr_reader :foo
             build { @foo  = object_id }
           end
@@ -64,14 +72,14 @@ module RgGen::OutputBase
 
         context "継承されたとき" do
           let(:child_item) do
-            define_item(item.class) do
+            define_and_create_item(item.class) do
               attr_reader :bar
               build { @bar  = object_id }
             end
           end
 
           let(:grandchild_item) do
-            define_item(child_item.class) {}
+            define_and_create_item(child_item.class) {}
           end
 
           specify "登録されたブロックが継承先に引き継がれる" do
@@ -86,11 +94,11 @@ module RgGen::OutputBase
     describe "#generate_pre_code" do
       context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定された場合" do
         let(:foo_item) do
-          define_item { generate_pre_code(:foo) { |c| c << 'foo' } }
+          define_and_create_item { generate_pre_code(:foo) { |c| c << 'foo' } }
         end
 
         let(:bar_item) do
-          define_item { generate_pre_code(:bar) { 'bar' } }
+          define_and_create_item { generate_pre_code(:bar) { 'bar' } }
         end
 
         before do
@@ -106,7 +114,7 @@ module RgGen::OutputBase
 
       context ".generate_pre_codeで複数回コード生成が登録された場合" do
         let(:item) do
-          define_item do
+          define_and_create_item do
             generate_pre_code(:foo) { 'foo' }
             generate_pre_code(:bar) { 'bar' }
             generate_pre_code(:baz) { 'baz' }
@@ -127,7 +135,7 @@ module RgGen::OutputBase
 
       context ".generate_pre_codeで登録されていないコード生成の種類が指定された場合" do
         let(:item) do
-          define_item { generate_pre_code(:foo) { 'foo' } }
+          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
         end
 
         before do
@@ -143,15 +151,15 @@ module RgGen::OutputBase
 
       context "継承されたとき" do
         let(:item) do
-          define_item { generate_pre_code(:foo) { 'foo' } }
+          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_pre_code(:bar) { 'bar' } }
+          define_and_create_item(item.class) { generate_pre_code(:bar) { 'bar' } }
         end
 
         let(:grandchild_item) do
-          define_item(child_item.class) {}
+          define_and_create_item(child_item.class) {}
         end
 
         before do
@@ -167,11 +175,11 @@ module RgGen::OutputBase
 
       context "継承先で同名のコード生成ブロックが登録された場合" do
         let(:item) do
-          define_item { generate_pre_code(:foo) { 'foo' } }
+          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_pre_code(:foo) { 'bar' } }
+          define_and_create_item(item.class) { generate_pre_code(:foo) { 'bar' } }
         end
 
         specify "新しいコード生成ブロックで上書きされる" do
@@ -189,11 +197,11 @@ module RgGen::OutputBase
     describe "#generate_code" do
       context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
         let(:foo_item) do
-          define_item {  generate_code(:foo) { |c| c << 'foo' } }
+          define_and_create_item {  generate_code(:foo) { |c| c << 'foo' } }
         end
 
         let(:bar_item) do
-          define_item {  generate_code(:bar) { 'bar' } }
+          define_and_create_item {  generate_code(:bar) { 'bar' } }
         end
 
         before do
@@ -209,7 +217,7 @@ module RgGen::OutputBase
 
       context ".generate_codeで複数回コード生成が登録された場合" do
         let(:item) do
-          define_item do
+          define_and_create_item do
             generate_code(:foo) { 'foo' }
             generate_code(:bar) { 'bar' }
             generate_code(:baz) { 'baz' }
@@ -239,7 +247,7 @@ module RgGen::OutputBase
 
         let(:foo_item) do
           engine  = @template_engine
-          define_item do
+          define_and_create_item do
             template_engine engine
             generate_code_from_template(:foo)
             def content
@@ -249,7 +257,7 @@ module RgGen::OutputBase
         end
 
         let(:bar_item) do
-          define_item(foo_item.class) do
+          define_and_create_item(foo_item.class) do
             generate_code_from_template(:bar, 'bar.erb')
             def content
               'bar'
@@ -278,7 +286,7 @@ module RgGen::OutputBase
 
       context ".generate_codeで登録されていないコード生成の種類が指定された場合" do
         let(:item) do
-          define_item { generate_code(:foo) { 'foo' } }
+          define_and_create_item { generate_code(:foo) { 'foo' } }
         end
 
         before do
@@ -294,15 +302,15 @@ module RgGen::OutputBase
 
       context "継承されたとき" do
         let(:item) do
-          define_item { generate_code(:foo) { 'foo' } }
+          define_and_create_item { generate_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_code(:bar) { 'bar' } }
+          define_and_create_item(item.class) { generate_code(:bar) { 'bar' } }
         end
 
         let(:grandchild_item) do
-          define_item(child_item.class) {}
+          define_and_create_item(child_item.class) {}
         end
 
         before do
@@ -318,11 +326,11 @@ module RgGen::OutputBase
 
       context "継承先で同名のコード生成ブロックが登録された場合" do
         let(:item) do
-          define_item { generate_code(:foo) { 'foo' } }
+          define_and_create_item { generate_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_code(:foo) { 'bar' } }
+          define_and_create_item(item.class) { generate_code(:foo) { 'bar' } }
         end
 
         specify "新しいコード生成ブロックで上書きされる" do
@@ -340,11 +348,11 @@ module RgGen::OutputBase
     describe "#generate_post_code" do
       context ".generate_post_codeで登録されたコード生成ブロックの種類が指定された場合" do
         let(:foo_item) do
-          define_item {  generate_post_code(:foo) { |c| c << 'foo' } }
+          define_and_create_item {  generate_post_code(:foo) { |c| c << 'foo' } }
         end
 
         let(:bar_item) do
-          define_item {  generate_post_code(:bar) { 'bar' } }
+          define_and_create_item {  generate_post_code(:bar) { 'bar' } }
         end
 
         before do
@@ -360,7 +368,7 @@ module RgGen::OutputBase
 
       context ".generate_post_codeで複数回コード生成が登録された場合" do
         let(:item) do
-          define_item do
+          define_and_create_item do
             generate_post_code(:foo) { 'foo' }
             generate_post_code(:bar) { 'bar' }
             generate_post_code(:baz) { 'baz' }
@@ -381,7 +389,7 @@ module RgGen::OutputBase
 
       context ".generate_post_codeで登録されていないコード生成の種類が指定された場合" do
         let(:item) do
-          define_item { generate_post_code(:foo) { 'foo' } }
+          define_and_create_item { generate_post_code(:foo) { 'foo' } }
         end
 
         before do
@@ -397,15 +405,15 @@ module RgGen::OutputBase
 
       context "継承されたとき" do
         let(:item) do
-          define_item { generate_post_code(:foo) { 'foo' } }
+          define_and_create_item { generate_post_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_post_code(:bar) { 'bar' } }
+          define_and_create_item(item.class) { generate_post_code(:bar) { 'bar' } }
         end
 
         let(:grandchild_item) do
-          define_item(child_item.class) {}
+          define_and_create_item(child_item.class) {}
         end
 
         before do
@@ -421,11 +429,11 @@ module RgGen::OutputBase
 
       context "継承先で同名のコード生成ブロックが登録された場合" do
         let(:item) do
-          define_item { generate_post_code(:foo) { 'foo' } }
+          define_and_create_item { generate_post_code(:foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_item(item.class) { generate_post_code(:foo) { 'bar' } }
+          define_and_create_item(item.class) { generate_post_code(:foo) { 'bar' } }
         end
 
         specify "新しいコード生成ブロックで上書きされる" do
@@ -441,63 +449,63 @@ module RgGen::OutputBase
     end
 
     describe "#write_file" do
-      let(:foo_item) do
-        define_item do
-          write_file '<%= name %>.foo' do
-            'foo'
-          end
-
-          def name
-            'foo'
-          end
-        end
-      end
-
-      let(:bar_item) do
-        define_item do
-          write_file '<%= name %>.bar' do |pathname|
-            File.join(pathname.dirname, pathname.basename)
-          end
-
-          def name
-            'bar'
+      context ".write_fileでファイル名パターン、コード生成ブロックが登録されている場合" do
+        before do
+          allow(FileWriter).to receive(:new).and_wrap_original do |m, *args|
+            m.call(*args).tap do |w|
+              @writer = w
+              allow(w).to receive(:write_file).and_call_original
+            end
           end
         end
-      end
 
-      let(:baz_item) do
-        define_item do
-          write_file '<%= name %>.baz' do |pathname, code|
-            code << pathname
-          end
-
-          def name
-            'baz'
-          end
-        end
-      end
-
-      it ".write_fileで登録されたブロックの実行結果を、指定されたパターンのファイル名で書き出す" do
-        expect { foo_item.write_file }.to write_binary_file 'foo.foo', 'foo'
-        expect { bar_item.write_file }.to write_binary_file 'bar.bar', './bar.bar'
-        expect { baz_item.write_file }.to write_binary_file 'baz.baz', 'baz.baz'
-      end
-
-      context "出力ディレクトリの指定がある場合" do
-        let(:output_directory) do
-          'qux'
+        let(:file_writer) do
+          @writer
         end
 
-        it "指定されたディレクトリにファイルを書き出す" do
-          expect { foo_item.write_file(output_directory) }.to write_binary_file 'qux/foo.foo', 'foo'
-          expect { bar_item.write_file(output_directory) }.to write_binary_file 'qux/bar.bar', 'qux/bar.bar'
-          expect { baz_item.write_file(output_directory) }.to write_binary_file 'qux/baz.baz', 'qux/baz.baz'
+        let(:foo_item) do
+          define_and_create_item do
+            write_file('<%= object_id %>.txt') { object_id }
+          end
+        end
+
+        let(:bar_item) do
+          create_item(foo_item.class)
+        end
+
+        it ".write_fileで登録されたファイル名パターン、コード生成ブロックをFileWriterオブジェクトで処理し、ファイルを書き出す" do
+          expect {
+            foo_item.write_file
+            bar_item.write_file
+            foo_item.write_file("foo")
+            bar_item.write_file(["bar", "bar"])
+          }.to write_binary_files [
+            [        "#{foo_item.object_id}.txt", "#{foo_item.object_id}"],
+            [        "#{bar_item.object_id}.txt", "#{bar_item.object_id}"],
+            [    "foo/#{foo_item.object_id}.txt", "#{foo_item.object_id}"],
+            ["bar/bar/#{bar_item.object_id}.txt", "#{bar_item.object_id}"]
+          ]
+          expect(file_writer).to have_received(:write_file).with(foo_item, nil)
+          expect(file_writer).to have_received(:write_file).with(bar_item, nil)
+          expect(file_writer).to have_received(:write_file).with(foo_item, "foo")
+          expect(file_writer).to have_received(:write_file).with(bar_item, ["bar", "bar"])
+        end
+
+        specify "FileWriterオブジェクトはオブジェクト間で共有される" do
+          allow(File).to receive(:binwrite)
+          foo_item.write_file
+          bar_item.write_file
+          expect(FileWriter).to have_received(:new).once
         end
       end
 
       context ".write_fileで生成ブロックが登録されていない場合" do
+        before do
+          expect(FileWriter).not_to receive(:new)
+        end
+
         let(:item) do
-          define_item {}
+          define_and_create_item {}
         end
 
         it "何も起こらない" do
@@ -519,7 +527,7 @@ module RgGen::OutputBase
 
       let(:foo_item) do
         engine  = @template_engine
-        define_item do
+        define_and_create_item do
           template_engine engine
           generate_code(:foo) { |c| c << process_template }
           def content
@@ -529,7 +537,7 @@ module RgGen::OutputBase
       end
 
       let(:bar_item) do
-        define_item(foo_item.class) do
+        define_and_create_item(foo_item.class) do
           generate_code(:bar) { |c| c << process_template('bar.erb') }
           def content
             'bar'
@@ -558,18 +566,18 @@ module RgGen::OutputBase
 
     describe "#exported_methods" do
       let(:item) do
-        define_item do
+        define_and_create_item do
           export :foo
           export :bar, :baz
         end
       end
 
       let(:child_item) do
-        define_item(item.class) { export :qux }
+        define_and_create_item(item.class) { export :qux }
       end
 
       let(:grandchild_item) do
-        define_item(child_item.class) { export :quux }
+        define_and_create_item(child_item.class) { export :quux }
       end
 
       it ".exportで登録されたメソッド名一覧を返す" do
