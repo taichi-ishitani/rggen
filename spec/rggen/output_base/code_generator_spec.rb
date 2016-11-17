@@ -46,7 +46,7 @@ module RgGen::OutputBase
         end
       end
 
-      context "codeがnilまたは未指定の場合" do
+      context "codeがnilの場合" do
         let(:generator) do
           create_generator do |g|
             g[:foo] = proc { |c| c << foo }
@@ -65,12 +65,12 @@ module RgGen::OutputBase
 
         it "contextの#create_blank_codeを呼び出して、空のコードオブジェクトを作ってから、コードの生成を行う" do
           generator.generate_code(context, :foo, nil)
-          generator.generate_code(context, :bar)
+          generator.generate_code(context, :bar, nil)
         end
 
         it "生成したコードオブジェクトを返す" do
           expect(generator.generate_code(context, :foo, nil)).to be code
-          expect(generator.generate_code(context, :bar     )).to be code
+          expect(generator.generate_code(context, :bar, nil)).to be code
         end
       end
 
@@ -98,15 +98,11 @@ module RgGen::OutputBase
           expect {
             generator.generate_code(context, :bar, nil)
           }.not_to raise_error
-          expect {
-            generator.generate_code(context, :bar)
-          }.not_to raise_error
         end
 
-        it "使用した、または、生成したコードオブジェクトを返す" do
+        it "与えたコードオブジェクトを返す" do
           expect(generator.generate_code(context, :bar, code)).to be code
-          expect(generator.generate_code(context, :bar, nil )).to be code
-          expect(generator.generate_code(context, :bar      )).to be code
+          expect(generator.generate_code(context, :bar, nil )).to be_nil
         end
       end
 
@@ -132,15 +128,11 @@ module RgGen::OutputBase
           expect {
             generator.generate_code(context, :foo, nil)
           }.not_to raise_error
-          expect {
-            generator.generate_code(context, :foo)
-          }.not_to raise_error
         end
 
-        it "使用した、または、生成したコードオブジェクトを返す" do
+        it "与えたコードオブジェクトを返す" do
           expect(generator.generate_code(context, :foo, code)).to be code
-          expect(generator.generate_code(context, :foo, nil )).to be code
-          expect(generator.generate_code(context, :foo      )).to be code
+          expect(generator.generate_code(context, :foo, nil )).to be_nil
         end
       end
     end

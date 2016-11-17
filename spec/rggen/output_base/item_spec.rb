@@ -91,33 +91,66 @@ module RgGen::OutputBase
       end
     end
 
-    describe "#generate_pre_code" do
-      context ".generate_pre_codeで登録されたコード生成ブロックの種類が指定された場合" do
+    shared_examples_for "code_generator" do |method_name|
+      context ".#{method_name}で登録されたコード生成ブロックの種類が指定された場合" do
+        before do
+          allow(CodeGenerator).to receive(:new).and_wrap_original do |m, *args|
+            m.call(*args).tap do |g|
+              @code_generator = g
+              allow(g).to receive(:generate_code).and_call_original
+            end
+          end
+        end
+
         let(:foo_item) do
-          define_and_create_item { generate_pre_code(:foo) { |c| c << 'foo' } }
+          define_and_create_item { send(method_name, :test) {object_id} }
         end
 
         let(:bar_item) do
-          define_and_create_item { generate_pre_code(:bar) { 'bar' } }
+          create_item(foo_item.class)
+        end
+
+        let(:code_generator) do
+          @code_generator
         end
 
         before do
-          expected_code 'foo'
-          expected_code 'bar'
+          allow(foo_item).to receive(:create_blank_code).and_return(code)
+          allow(bar_item).to receive(:create_blank_code).and_return(code)
         end
 
-        it "指定されたコード生成ブロックを実行する" do
-          foo_item.generate_pre_code(:foo, code)
-          bar_item.generate_pre_code(:bar, code)
+        before do
+          expected_code foo_item.object_id
+          expected_code bar_item.object_id
+          expected_code foo_item.object_id
+          expected_code bar_item.object_id
+        end
+
+        it "設定されたコード生成ブロックをCodeGeneratorオブジェクトで処理し、コードを生成する" do
+          foo_item.send(method_name, :test, code)
+          bar_item.send(method_name, :test, code)
+          foo_item.send(method_name, :test, nil )
+          bar_item.send(method_name, :test, nil )
+          expect(code_generator).to have_received(:generate_code).with(foo_item, :test, code)
+          expect(code_generator).to have_received(:generate_code).with(bar_item, :test, code)
+          expect(code_generator).to have_received(:generate_code).with(foo_item, :test, nil )
+          expect(code_generator).to have_received(:generate_code).with(bar_item, :test, nil )
+        end
+
+        it "与えたコードブロック、または、生成したコードブロックを返す" do
+          expect(foo_item.send(method_name, :test, code)).to be code
+          expect(bar_item.send(method_name, :test, code)).to be code
+          expect(foo_item.send(method_name, :test, nil )).to be code
+          expect(bar_item.send(method_name, :test, nil )).to be code
         end
       end
 
-      context ".generate_pre_codeで複数回コード生成が登録された場合" do
+      context ".#{method_name}で複数回コード生成が登録された場合" do
         let(:item) do
           define_and_create_item do
-            generate_pre_code(:foo) { 'foo' }
-            generate_pre_code(:bar) { 'bar' }
-            generate_pre_code(:baz) { 'baz' }
+            send(method_name, :foo) { 'foo' }
+            send(method_name, :bar) { 'bar' }
+            send(method_name, :baz) { 'baz' }
           end
         end
 
@@ -128,26 +161,52 @@ module RgGen::OutputBase
         end
 
         it "指定された種類のコード生成ブロックを実行する" do
-          item.generate_pre_code(:foo, code)
-          item.generate_pre_code(:bar, code)
+          item.send(method_name, :foo, code)
+          item.send(method_name, :bar, code)
         end
       end
 
-      context ".generate_pre_codeで登録されていないコード生成の種類が指定された場合" do
+      context ".#{method_name}で登録されていないコード生成の種類が指定された場合" do
         let(:item) do
-          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
-        end
-
-        before do
-          expect(code).not_to receive(:<<)
+          define_and_create_item { send(method_name, :foo) { 'foo' } }
         end
 
         it "何も起こらない" do
+          expect(code).not_to receive(:<<)
           expect {
-            item.generate_pre_code(:bar, code)
+            item.send(method_name, :bar, code)
+            item.send(method_name, :bar, nil )
           }.not_to raise_error
         end
+
+        it "与えたコードオブジェクトを返す" do
+          expect(item.send(method_name, :bar, code)).to be code
+          expect(item.send(method_name, :bar, nil )).to be_nil
+        end
       end
+
+      context ".#{method_name}でコード生成ブロックの登録が行われなかった場合" do
+        let(:item) do
+          define_and_create_item {}
+        end
+
+        it "何も起こらない" do
+          expect(code).not_to receive(:<<)
+          expect {
+            item.send(method_name, :bar, code)
+            item.send(method_name, :bar, nil )
+          }.not_to raise_error
+        end
+
+        it "与えたコードオブジェクトを返す" do
+          expect(item.send(method_name, :bar, code)).to be code
+          expect(item.send(method_name, :bar, nil )).to be_nil
+        end
+      end
+    end
+
+    describe "#generate_pre_code" do
+      it_behaves_like 'code_generator', :generate_pre_code
 
       context "継承されたとき" do
         let(:item) do
@@ -195,46 +254,7 @@ module RgGen::OutputBase
     end
 
     describe "#generate_code" do
-      context ".generate_codeで登録されたコード生成ブロックの種類が指定された場合" do
-        let(:foo_item) do
-          define_and_create_item {  generate_code(:foo) { |c| c << 'foo' } }
-        end
-
-        let(:bar_item) do
-          define_and_create_item {  generate_code(:bar) { 'bar' } }
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-        end
-
-        it "指定されたコード生成ブロックを実行する" do
-          foo_item.generate_code(:foo, code)
-          bar_item.generate_code(:bar, code)
-        end
-      end
-
-      context ".generate_codeで複数回コード生成が登録された場合" do
-        let(:item) do
-          define_and_create_item do
-            generate_code(:foo) { 'foo' }
-            generate_code(:bar) { 'bar' }
-            generate_code(:baz) { 'baz' }
-          end
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-          expect(code).not_to receive(:<<).with('baz')
-        end
-
-        it "指定された種類のコード生成ブロックを実行する" do
-          item.generate_code(:foo, code)
-          item.generate_code(:bar, code)
-        end
-      end
+      it_behaves_like 'code_generator', :generate_code
 
       context ".generate_code_from_templateでテンプレートからのコード生成が設定された場合" do
         let(:template_content) do
@@ -284,22 +304,6 @@ module RgGen::OutputBase
         end
       end
 
-      context ".generate_codeで登録されていないコード生成の種類が指定された場合" do
-        let(:item) do
-          define_and_create_item { generate_code(:foo) { 'foo' } }
-        end
-
-        before do
-          expect(code).not_to receive(:<<)
-        end
-
-        it "何も起こらない" do
-          expect {
-            item.generate_code(:bar, code)
-          }.not_to raise_error
-        end
-      end
-
       context "継承されたとき" do
         let(:item) do
           define_and_create_item { generate_code(:foo) { 'foo' } }
@@ -346,62 +350,7 @@ module RgGen::OutputBase
     end
 
     describe "#generate_post_code" do
-      context ".generate_post_codeで登録されたコード生成ブロックの種類が指定された場合" do
-        let(:foo_item) do
-          define_and_create_item {  generate_post_code(:foo) { |c| c << 'foo' } }
-        end
-
-        let(:bar_item) do
-          define_and_create_item {  generate_post_code(:bar) { 'bar' } }
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-        end
-
-        it "指定されたコード生成ブロックを実行する" do
-          foo_item.generate_post_code(:foo, code)
-          bar_item.generate_post_code(:bar, code)
-        end
-      end
-
-      context ".generate_post_codeで複数回コード生成が登録された場合" do
-        let(:item) do
-          define_and_create_item do
-            generate_post_code(:foo) { 'foo' }
-            generate_post_code(:bar) { 'bar' }
-            generate_post_code(:baz) { 'baz' }
-          end
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-          expect(code).not_to receive(:<<).with('baz')
-        end
-
-        it "指定された種類のコード生成ブロックを実行する" do
-          item.generate_post_code(:foo, code)
-          item.generate_post_code(:bar, code)
-        end
-      end
-
-      context ".generate_post_codeで登録されていないコード生成の種類が指定された場合" do
-        let(:item) do
-          define_and_create_item { generate_post_code(:foo) { 'foo' } }
-        end
-
-        before do
-          expect(code).not_to receive(:<<)
-        end
-
-        it "何も起こらない" do
-          expect {
-            item.generate_post_code(:bar, code)
-          }.not_to raise_error
-        end
-      end
+      it_behaves_like 'code_generator', :generate_post_code
 
       context "継承されたとき" do
         let(:item) do

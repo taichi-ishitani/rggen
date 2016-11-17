@@ -5,9 +5,10 @@ module RgGen
         (@bodies ||= {})[kind]  = body
       end
 
-      def generate_code(context, kind, code = nil)
+      def generate_code(context, kind, code)
+        return code unless body?(kind)
         (code || context.create_blank_code).tap do |c|
-          execute_body(context, kind, c) if body?(kind)
+          execute_body(context, kind, c)
         end
       end
 

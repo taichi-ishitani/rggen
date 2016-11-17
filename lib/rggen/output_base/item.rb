@@ -4,33 +4,14 @@ module RgGen
       include Base::HierarchicalItemAccessors
       include CodeUtility
 
-      class CodeGenerator
-        def []=(kind, body)
-          @bodies ||= {}
-          @bodies[kind] = body
-        end
-
-        def generate_code(item, kind, buffer)
-          return unless @bodies && @bodies.key?(kind)
-          if @bodies[kind].arity.zero?
-            buffer << item.instance_exec(&@bodies[kind])
-          else
-            item.instance_exec(buffer, &@bodies[kind])
-          end
-        end
-
-        def copy
-          CodeGenerator.new.tap do |g|
-            g.instance_variable_set(:@bodies, Hash[@bodies]) if @bodies
-          end
-        end
-      end
+      CODE_GENERATION_METHODS = {
+        pre:  :generate_pre_code,
+        main: :generate_code,
+        post: :generate_post_code
+      }
 
       define_helpers do
         attr_reader :builders
-        attr_reader :pre_code_generator
-        attr_reader :code_generator
-        attr_reader :post_code_generator
         attr_reader :file_writer
 
         def build(&body)
@@ -42,14 +23,14 @@ module RgGen
           define_method(:template_engine) { engine.instance }
         end
 
-        def generate_pre_code(kind, &body)
-          @pre_code_generator ||= CodeGenerator.new
-          @pre_code_generator[kind] = body
+        def code_generators
+          @code_generators ||= Hash.new { |h, k| h[k] = CodeGenerator.new }
         end
 
-        def generate_code(kind, &body)
-          @code_generator ||= CodeGenerator.new
-          @code_generator[kind] = body
+        CODE_GENERATION_METHODS.each do |key, method_name|
+          define_method(method_name) do |kind, &body|
+            code_generators[key][kind]  = body
+          end
         end
 
         def generate_code_from_template(kind, path = nil)
@@ -57,11 +38,6 @@ module RgGen
           generate_code(kind) do
             template_engine.process_template(self, path, call_info)
           end
-        end
-
-        def generate_post_code(kind, &body)
-          @post_code_generator  ||= CodeGenerator.new
-          @post_code_generator[kind]  = body
         end
 
         def write_file(name_pattern, &body)
@@ -84,12 +60,11 @@ module RgGen
         [:@builders, :@exported_methods].each do |v|
           subclass.inherit_class_instance_variable(v, self, &:dup)
         end
-        [
-          :@pre_code_generator,
-          :@code_generator,
-          :@post_code_generator
-        ].each do |v|
-          subclass.inherit_class_instance_variable(v, self, &:copy)
+        if @code_generators && @code_generators.size > 0
+          subclass.instance_variable_set(
+            :@code_generators,
+            Hash[*@code_generators.flat_map { |k, g| [k, g.copy] }]
+          )
         end
       end
 
@@ -99,10 +74,8 @@ module RgGen
       end
 
       class_delegator :builders
-      class_delegator :pre_code_generator
-      class_delegator :code_generator
+      class_delegator :code_generators
       class_delegator :file_writer
-      class_delegator :post_code_generator
       class_delegator :exported_methods
 
       def build
@@ -116,19 +89,11 @@ module RgGen
         CodeBlock.new
       end
 
-      def generate_pre_code(kind, buffer)
-        return if pre_code_generator.nil?
-        pre_code_generator.generate_code(self, kind, buffer)
-      end
-
-      def generate_code(kind, buffer)
-        return if code_generator.nil?
-        code_generator.generate_code(self, kind, buffer)
-      end
-
-      def generate_post_code(kind, buffer)
-        return if post_code_generator.nil?
-        post_code_generator.generate_code(self, kind, buffer)
+      CODE_GENERATION_METHODS.each do |key, method_name|
+        define_method(method_name) do |kind, code|
+          return code unless code_generators.key?(key)
+          code_generators[key].generate_code(self, kind, code)
+        end
       end
 
       def write_file(output_directory = nil)
