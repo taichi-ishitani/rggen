@@ -6,6 +6,7 @@ require 'facets/integer/multiple'
 require 'facets/kernel/attr_singleton'
 require 'facets/kernel/not'
 require 'facets/kernel/not_nil'
+require 'facets/method/curry' unless Method.public_method_defined?(:curry)
 require 'facets/module/attr_setter'
 require 'facets/numeric/positive'
 require 'facets/object/itself' unless Object.public_method_defined?(:itself)
