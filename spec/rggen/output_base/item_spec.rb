@@ -203,54 +203,64 @@ module RgGen::OutputBase
           expect(item.send(method_name, :bar, nil )).to be_nil
         end
       end
-    end
-
-    describe "#generate_pre_code" do
-      it_behaves_like 'code_generator', :generate_pre_code
 
       context "継承されたとき" do
         let(:item) do
-          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
+          define_and_create_item { send(method_name, :foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_and_create_item(item.class) { generate_pre_code(:bar) { 'bar' } }
+          define_and_create_item(item.class) { send(method_name, :bar) { 'bar' } }
         end
 
         let(:grandchild_item) do
-          define_and_create_item(child_item.class) {}
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
+          define_and_create_item(child_item.class) do
+            generate_pre_code(:baz) { 'baz' }
+            generate_code(:baz) { 'baz' }
+            generate_post_code(:baz) { 'baz' }
+          end
         end
 
         specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          grandchild_item.generate_pre_code(:foo, code)
-          grandchild_item.generate_pre_code(:bar, code)
+          expected_code 'foo'
+          expected_code 'bar'
+          grandchild_item.send(method_name, :foo, code)
+          grandchild_item.send(method_name, :bar, code)
+        end
+
+        specify "継承先で新たにコード生成ブロックを追加できる" do
+          expected_code 'baz'
+          expected_code 'baz'
+          expected_code 'baz'
+          grandchild_item.generate_pre_code(:baz, code)
+          grandchild_item.generate_code(:baz, code)
+          grandchild_item.generate_post_code(:baz, code)
         end
       end
 
       context "継承先で同名のコード生成ブロックが登録された場合" do
         let(:item) do
-          define_and_create_item { generate_pre_code(:foo) { 'foo' } }
+          define_and_create_item { send(method_name, :foo) { 'foo' } }
         end
 
         let(:child_item) do
-          define_and_create_item(item.class) { generate_pre_code(:foo) { 'bar' } }
+          define_and_create_item(item.class) { send(method_name, :foo) { 'bar' } }
         end
 
         specify "新しいコード生成ブロックで上書きされる" do
           expected_code 'bar'
-          child_item.generate_pre_code(:foo, code)
+          child_item.send(method_name, :foo, code)
         end
 
         specify "親クラスの生成ブロックは上書きされない" do
           expected_code 'foo'
-          item.generate_pre_code(:foo, code)
+          item.send(method_name, :foo, code)
         end
       end
+    end
+
+    describe "#generate_pre_code" do
+      it_behaves_like 'code_generator', :generate_pre_code
     end
 
     describe "#generate_code" do
@@ -303,98 +313,10 @@ module RgGen::OutputBase
           expect(template_engine).to have_received(:process_template).with(bar_item, 'bar.erb', call_info)
         end
       end
-
-      context "継承されたとき" do
-        let(:item) do
-          define_and_create_item { generate_code(:foo) { 'foo' } }
-        end
-
-        let(:child_item) do
-          define_and_create_item(item.class) { generate_code(:bar) { 'bar' } }
-        end
-
-        let(:grandchild_item) do
-          define_and_create_item(child_item.class) {}
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-        end
-
-        specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          grandchild_item.generate_code(:foo, code)
-          grandchild_item.generate_code(:bar, code)
-        end
-      end
-
-      context "継承先で同名のコード生成ブロックが登録された場合" do
-        let(:item) do
-          define_and_create_item { generate_code(:foo) { 'foo' } }
-        end
-
-        let(:child_item) do
-          define_and_create_item(item.class) { generate_code(:foo) { 'bar' } }
-        end
-
-        specify "新しいコード生成ブロックで上書きされる" do
-          expected_code 'bar'
-          child_item.generate_code(:foo, code)
-        end
-
-        specify "親クラスの生成ブロックは上書きされない" do
-          expected_code 'foo'
-          item.generate_code(:foo, code)
-        end
-      end
     end
 
     describe "#generate_post_code" do
       it_behaves_like 'code_generator', :generate_post_code
-
-      context "継承されたとき" do
-        let(:item) do
-          define_and_create_item { generate_post_code(:foo) { 'foo' } }
-        end
-
-        let(:child_item) do
-          define_and_create_item(item.class) { generate_post_code(:bar) { 'bar' } }
-        end
-
-        let(:grandchild_item) do
-          define_and_create_item(child_item.class) {}
-        end
-
-        before do
-          expected_code 'foo'
-          expected_code 'bar'
-        end
-
-        specify "登録されたコード生成ブロックが継承先に引き継がれる" do
-          grandchild_item.generate_post_code(:foo, code)
-          grandchild_item.generate_post_code(:bar, code)
-        end
-      end
-
-      context "継承先で同名のコード生成ブロックが登録された場合" do
-        let(:item) do
-          define_and_create_item { generate_post_code(:foo) { 'foo' } }
-        end
-
-        let(:child_item) do
-          define_and_create_item(item.class) { generate_post_code(:foo) { 'bar' } }
-        end
-
-        specify "新しいコード生成ブロックで上書きされる" do
-          expected_code 'bar'
-          child_item.generate_post_code(:foo, code)
-        end
-
-        specify "親クラスの生成ブロックは上書きされない" do
-          expected_code 'foo'
-          item.generate_post_code(:foo, code)
-        end
-      end
     end
 
     describe "#write_file" do

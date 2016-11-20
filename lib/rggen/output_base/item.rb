@@ -24,12 +24,12 @@ module RgGen
         end
 
         def code_generators
-          @code_generators ||= Hash.new { |h, k| h[k] = CodeGenerator.new }
+          @code_generators ||= {}
         end
 
-        CODE_GENERATION_METHODS.each do |key, method_name|
+        CODE_GENERATION_METHODS.each do |type, method_name|
           define_method(method_name) do |kind, &body|
-            code_generators[key][kind]  = body
+            (code_generators[type] ||= CodeGenerator.new)[kind] = body
           end
         end
 
@@ -89,10 +89,10 @@ module RgGen
         CodeBlock.new
       end
 
-      CODE_GENERATION_METHODS.each do |key, method_name|
+      CODE_GENERATION_METHODS.each do |type, method_name|
         define_method(method_name) do |kind, code|
-          return code unless code_generators.key?(key)
-          code_generators[key].generate_code(self, kind, code)
+          return code unless code_generators.key?(type)
+          code_generators[type].generate_code(self, kind, code)
         end
       end
 
