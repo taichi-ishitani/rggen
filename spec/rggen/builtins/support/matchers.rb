@@ -60,7 +60,7 @@ end
 
 RSpec::Matchers.define :match_identifier do |expected_name|
   match do |identifier|
-    next false unless identifier.is_a?(RgGen::OutputBase::VerilogUtility::Identifier)
+    next false unless identifier.is_a?(RgGen::VerilogUtility::Identifier)
     identifier.to_s == expected_name
   end
 end
@@ -124,7 +124,7 @@ RSpec::Matchers.define :have_port_declaration do |attributes|
   end
 
   define_method(:expectation) do
-    RgGen::OutputBase::VerilogUtility::Declaration.new(:port, attributes).to_s
+    RgGen::VerilogUtility::Declaration.new(:port, attributes).to_s
   end
 end
 
@@ -140,7 +140,7 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
   end
 
   define_method(:expectation) do
-    RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    RgGen::VerilogUtility::Declaration.new(:variable, attributes).to_s
   end
 end
 
@@ -156,7 +156,7 @@ RSpec::Matchers.define :have_parameter_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::OutputBase::VerilogUtility::Declaration.new(:parameter, attributes).to_s
+    RgGen::VerilogUtility::Declaration.new(:parameter, attributes).to_s
   end
 end
 
@@ -172,7 +172,7 @@ RSpec::Matchers.define :have_variable_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::OutputBase::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    RgGen::VerilogUtility::Declaration.new(:variable, attributes).to_s
   end
 end
 
@@ -201,7 +201,7 @@ RSpec::Matchers.define :generate_code do |kind, mode, expected_code|
   attr_reader :expected
 
   def generate_code(component, kind, mode)
-    buffer  = RgGen::OutputBase::CodeBlock.new
+    buffer  = RgGen::CodeUtility::CodeBlock.new
     component.generate_code(kind, mode, buffer)
     @actual = buffer.to_s
   end

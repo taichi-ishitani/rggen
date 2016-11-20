@@ -1,6 +1,6 @@
-require_relative '../../spec_helper'
+require_relative '../../../spec_helper'
 
-module RgGen::OutputBase
+module RgGen::CodeUtility
   describe Line do
     let(:line) do
       Line.new

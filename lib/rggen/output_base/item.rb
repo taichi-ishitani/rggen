@@ -2,7 +2,6 @@ module RgGen
   module OutputBase
     class Item < Base::Item
       include Base::HierarchicalItemAccessors
-      include CodeUtility
 
       CODE_GENERATION_METHODS = {
         pre:  :generate_pre_code,
@@ -83,10 +82,6 @@ module RgGen
         builders.each do |builder|
           instance_exec(&builder)
         end
-      end
-
-      def create_blank_code
-        CodeBlock.new
       end
 
       CODE_GENERATION_METHODS.each do |type, method_name|

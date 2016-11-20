@@ -72,7 +72,7 @@ describe 'register/sub_block_model' do
       end
 
       let(:code) do
-        RgGen::OutputBase::CodeBlock.new
+        RgGen::CodeUtility::CodeBlock.new
       end
 
       let(:expected_code_0) do

@@ -1,7 +1,7 @@
 module RgGen
   module RAL
     class Item < OutputBase::Item
-      include         OutputBase::VerilogUtility
+      include         VerilogUtility
       template_engine ERBEngine
 
       def initialize(owner)

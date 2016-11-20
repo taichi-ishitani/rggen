@@ -320,6 +320,12 @@ module RgGen::OutputBase
     end
 
     describe "#write_file" do
+      before do
+        allow_any_instance_of(Item).to receive(:create_blank_code).and_wrap_original do
+          StringIO.new.tap { |io| def io.to_s; string end }
+        end
+      end
+
       context ".write_fileでファイル名パターン、コード生成ブロックが登録されている場合" do
         before do
           allow(FileWriter).to receive(:new).and_wrap_original do |m, *args|

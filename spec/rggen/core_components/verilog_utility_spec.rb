@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RgGen::OutputBase
+module RgGen
   describe VerilogUtility do
     before(:all) do
       @verilog  = Class.new {

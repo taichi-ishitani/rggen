@@ -32,11 +32,11 @@ module RgGen::RAL
       end
 
       it "識別子オブジェクトを生成し、ハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq "foo"
-        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq "bar"
-        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq "BAZ"
       end
 
@@ -45,11 +45,11 @@ module RgGen::RAL
       end
 
       it "変数宣言オブジェクトを生成し、#variable_declarationsに追加する" do
-        expect(item.variable_declarations(:domain_a)[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.variable_declarations[:domain_a][0].to_s).to eq "foo_type foo"
-        expect(item.variable_declarations(:domain_b)[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.variable_declarations[:domain_b][0].to_s).to eq "bar_type bar[2]"
-        expect(item.variable_declarations(:domain_a)[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.variable_declarations[:domain_a][1].to_s).to eq "rand baz_type BAZ"
       end
     end
@@ -64,11 +64,11 @@ module RgGen::RAL
       end
 
       it "識別子オブジェクトを生成し、ハンドル名でアクセッサを定義する" do
-        expect(item.foo     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.foo     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.foo.to_s).to eq "foo"
-        expect(item.bar     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.bar     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.bar.to_s).to eq "bar"
-        expect(item.baz     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Identifier
+        expect(item.baz     ).to be_instance_of RgGen::VerilogUtility::Identifier
         expect(item.baz.to_s).to eq "BAZ"
       end
 
@@ -77,11 +77,11 @@ module RgGen::RAL
       end
 
       it "変数宣言オブジェクトを生成し、#variable_declarationsに追加する" do
-        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.parameter_declarations[:domain_a][0].to_s).to eq "type foo = uvm_object"
-        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.parameter_declarations[:domain_b][0].to_s).to eq "int bar = 1"
-        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::OutputBase::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.parameter_declarations[:domain_a][1].to_s).to eq "BAZ = 0"
       end
     end
