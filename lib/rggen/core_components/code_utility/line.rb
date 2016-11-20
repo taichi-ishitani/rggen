@@ -1,5 +1,5 @@
 module RgGen
-  module OutputBase
+  module CodeUtility
     class Line
       def initialize
         @words      = []

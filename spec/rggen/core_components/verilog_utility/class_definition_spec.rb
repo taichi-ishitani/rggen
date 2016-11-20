@@ -1,10 +1,10 @@
 require_relative '../../../spec_helper'
 
-module RgGen::OutputBase::VerilogUtility
+module RgGen::VerilogUtility
   describe ClassDefinition do
     before(:all) do
       @verilog  = Class.new {
-        include RgGen::OutputBase::VerilogUtility
+        include RgGen::VerilogUtility
       }.new
     end
 

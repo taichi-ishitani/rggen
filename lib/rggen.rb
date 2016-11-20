@@ -2,9 +2,10 @@ module RgGen
   RGGEN_HOME  = File.realpath(File.join(__dir__, '..'))
 
   require 'forwardable'
-  require 'baby_erubis'
-  require 'fileutils'
+  require 'singleton'
+  require 'pathname'
   require 'optparse'
+  require 'baby_erubis'
 
   require_relative 'rggen/version'
 
@@ -31,18 +32,9 @@ module RgGen
   require_relative 'rggen/input_base/component_factory'
   require_relative 'rggen/input_base/item_factory'
 
-  require_relative 'rggen/output_base/line'
-  require_relative 'rggen/output_base/code_block'
-  require_relative 'rggen/output_base/code_utility'
-  require_relative 'rggen/output_base/template_utility'
-  require_relative 'rggen/output_base/verilog_utility/identifier'
-  require_relative 'rggen/output_base/verilog_utility/declaration'
-  require_relative 'rggen/output_base/verilog_utility/structure_definition'
-  require_relative 'rggen/output_base/verilog_utility/module_definition'
-  require_relative 'rggen/output_base/verilog_utility/package_definition'
-  require_relative 'rggen/output_base/verilog_utility/class_definition'
-  require_relative 'rggen/output_base/verilog_utility/subroutine_definition'
-  require_relative 'rggen/output_base/verilog_utility'
+  require_relative 'rggen/output_base/code_generator'
+  require_relative 'rggen/output_base/template_engine'
+  require_relative 'rggen/output_base/file_writer'
   require_relative 'rggen/output_base/component'
   require_relative 'rggen/output_base/item'
   require_relative 'rggen/output_base/component_factory'

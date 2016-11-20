@@ -1,6 +1,6 @@
 require_relative '../../spec_helper'
 
-module RgGen::OutputBase
+module RgGen
   describe CodeUtility do
     before(:all) do
       @test_object  = Class.new {
@@ -26,9 +26,15 @@ module RgGen::OutputBase
       end
     end
 
+    describe "#create_blank_code" do
+      it "空のCodeBlockオブジェクトを返す" do
+        expect(test_object.send(:create_blank_code)).to be_a_kind_of(CodeUtility::CodeBlock) and be_empty
+      end
+    end
+
     describe "#code_block" do
       it "CodeBlockオブジェクトを返す" do
-        expect(test_object.send(:code_block)).to be_a_kind_of(CodeBlock)
+        expect(test_object.send(:code_block)).to be_a_kind_of(CodeUtility::CodeBlock)
       end
 
       context "ブロックが与えられた場合" do

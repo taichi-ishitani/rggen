@@ -49,10 +49,6 @@ describe "register_block/top_module" do
   end
 
   describe "#write_file" do
-    before do
-      expect(File).to receive(:write).with("./block_0.sv", expected_code, nil, binmode: true)
-    end
-
     let(:expected_code) do
       <<'CODE'
 module block_0 (
@@ -410,7 +406,7 @@ CODE
     end
 
     it "レジスタモジュールのRTLを書き出す" do
-      rtl.write_file('.')
+      expect { rtl.write_file('.') }.to write_binary_file("./block_0.sv", expected_code)
     end
   end
 end

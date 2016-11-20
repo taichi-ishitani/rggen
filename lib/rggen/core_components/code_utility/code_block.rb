@@ -1,5 +1,5 @@
 module RgGen
-  module OutputBase
+  module CodeUtility
     class CodeBlock
       def initialize
         @lines  = []

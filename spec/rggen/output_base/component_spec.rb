@@ -3,21 +3,13 @@ require_relative '../../spec_helper'
 module RgGen::OutputBase
   describe Component do
     def create_component(parent)
-      component = Component.new(parent, configuration, register_map)
-      [:foo, :bar].each do |kind|
-        item  = Class.new(Item) {
-          export kind
-
-          define_method(kind) {kind}
-
-          generate_code kind do |buffer|
-            buffer  << "#{component.object_id}_#{kind}"
-          end
-        }.new(component)
-        component.add_item(item)
+      Component.new(parent, configuration, register_map).tap do |c|
+        parent && parent.add_child(c)
       end
-      parent.add_child(component) unless parent.nil?
-      component
+    end
+
+    def create_item(owner, &body)
+      Class.new(Item, &body).new(owner).tap { |item| owner.add_item(item) }
     end
 
     let(:component) do
@@ -41,9 +33,7 @@ module RgGen::OutputBase
     end
 
     let(:register_map) do
-      RgGen::InputBase::Component.new(nil).tap do |r|
-        allow(r).to receive(:fields).and_return [:baz, :qux]
-      end
+      RgGen::InputBase::Component.new(nil)
     end
 
     it "階層アクセッサを持つ" do
@@ -53,17 +43,24 @@ module RgGen::OutputBase
     end
 
     it "自身をレシーバとして、配下のアイテムのexportされたメソッドを呼び出せる" do
-      expect(component.items[0]).to receive(:foo).and_call_original
-      expect(component.items[1]).to receive(:bar).and_call_original
-      expect(component.foo).to eq :foo
-      expect(component.bar).to eq :bar
+      create_item(component) do
+        export :foo
+      end
+      create_item(component) do
+        export :bar
+      end
+      expect(component.items[0]).to receive(:foo)
+      expect(component.items[1]).to receive(:bar)
+      component.foo
+      component.bar
     end
 
     it "自身をレシーバとして、与えられたレジスタマップオブジェクトの各フィールドにアクセスできる" do
-      expect(register_map).to receive(:baz)
-      expect(register_map).to receive(:qux)
-      component.baz
-      component.qux
+      allow(register_map).to receive(:fields).and_return([:foo, :bar])
+      expect(register_map).to receive(:foo)
+      expect(register_map).to receive(:bar)
+      component.foo
+      component.bar
     end
 
     describe "#need_children?" do
@@ -86,30 +83,33 @@ module RgGen::OutputBase
 
     describe "#configuration" do
       it "与えられたコンフィグレーションオブジェクトを返す" do
-        expect(component.configuration).to eql configuration
+        expect(component.configuration).to be configuration
       end
     end
 
     describe "#source" do
       it "与えられたレジスタマップオブジェクトを返す" do
-        expect(component.source).to eql register_map
+        expect(component.source).to be register_map
       end
     end
 
     describe "#build" do
       before do
-        component.items.each do |item|
-          expect(item).to receive(:build)
+        allow(Item).to receive(:new).and_wrap_original do |m, *args|
+          m.call(*args).tap { |item| expect(item).to receive(:build) }
         end
+
+        create_item(component) {}
+        create_item(component) {}
+
         child_components.each do |child_component|
-          child_component.items.each do |item|
-            expect(item).to receive(:build)
-          end
+          create_item(child_component) {}
+          create_item(child_component) {}
         end
+
         grandchild_components.each do |grandchild_component|
-          grandchild_component.items.each do |item|
-            expect(item).to receive(:build)
-          end
+          create_item(grandchild_component) {}
+          create_item(grandchild_component) {}
         end
       end
 
@@ -120,228 +120,219 @@ module RgGen::OutputBase
 
     describe "#generate_code" do
       before do
-        component
-        child_components
-        grandchild_components
+        allow_any_instance_of(Item).to receive(:create_blank_code).and_return(code)
       end
 
-      let(:buffer) do
-        CodeBlock.new
+      before do
+        create_item(component) { generate_code(:foo) { "#{owner.object_id}_foo" } }
+        create_item(component) { generate_code(:bar) { "#{owner.object_id}_bar" } }
+
+        child_components.each do |child_component|
+          create_item(child_component) { generate_code(:foo) { "#{owner.object_id}_foofoo" } }
+          create_item(child_component) { generate_code(:bar) { "#{owner.object_id}_barbar" } }
+        end
+
+        grandchild_components.each do |grandchild_component|
+          create_item(grandchild_component) { generate_code(:foo) { "#{owner.object_id}_foofoofoo" } }
+          create_item(grandchild_component) { generate_code(:bar) { "#{owner.object_id}_barbarbar" } }
+        end
       end
 
-      it "kindで指定した種類のコードを生成する" do
-        component.generate_code(:foo, :top_down, buffer)
-        expect(buffer.to_s).to eq [
-          "#{component.object_id}_foo",
-          "#{child_components[0].object_id}_foo",
-          "#{grandchild_components[0].object_id}_foo",
-          "#{grandchild_components[1].object_id}_foo",
-          "#{child_components[1].object_id}_foo",
-          "#{grandchild_components[2].object_id}_foo",
-          "#{grandchild_components[3].object_id}_foo"
-        ].join
+      let(:code) do
+        double("code")
+      end
+
+      def expected_code(code_or_code_array)
+        Array(code_or_code_array).each do |c|
+          expect(code).to receive(:<<).with(c).ordered
+        end
+      end
+
+      it "使用した、または、内部で生成したコードオブジェクトを返す" do
+        allow(code).to receive(:<<)
+        expect(component.generate_code(:foo, :top_down, code)).to be code
+        expect(component.generate_code(:foo, :top_down      )).to be code
       end
 
       context "modeが:top_downを指定した場合" do
-        it "上位からコードの生成を行う" do
-          component.generate_code(:foo, :top_down, buffer)
-          expect(buffer.to_s).to eq [
+        it "kindで指定した種類のコードを上位から生成する" do
+          expected_code [
             "#{component.object_id}_foo",
-            "#{child_components[0].object_id}_foo",
-            "#{grandchild_components[0].object_id}_foo",
-            "#{grandchild_components[1].object_id}_foo",
-            "#{child_components[1].object_id}_foo",
-            "#{grandchild_components[2].object_id}_foo",
-            "#{grandchild_components[3].object_id}_foo"
-          ].join
+            "#{child_components[0].object_id}_foofoo",
+            "#{grandchild_components[0].object_id}_foofoofoo",
+            "#{grandchild_components[1].object_id}_foofoofoo",
+            "#{child_components[1].object_id}_foofoo",
+            "#{grandchild_components[2].object_id}_foofoofoo",
+            "#{grandchild_components[3].object_id}_foofoofoo"
+          ]
+          component.generate_code(:foo, :top_down, code)
+
+          expected_code [
+            "#{component.object_id}_bar",
+            "#{child_components[0].object_id}_barbar",
+            "#{grandchild_components[0].object_id}_barbarbar",
+            "#{grandchild_components[1].object_id}_barbarbar",
+            "#{child_components[1].object_id}_barbar",
+            "#{grandchild_components[2].object_id}_barbarbar",
+            "#{grandchild_components[3].object_id}_barbarbar"
+          ]
+          component.generate_code(:bar, :top_down)
         end
       end
 
       context "modeが:bottom_upを指定した場合" do
-        it "下位からコードの生成を行う" do
-          component.generate_code(:foo, :bottom_up, buffer)
-          expect(buffer.to_s).to eq [
-            "#{grandchild_components[0].object_id}_foo",
-            "#{grandchild_components[1].object_id}_foo",
-            "#{child_components[0].object_id}_foo",
-            "#{grandchild_components[2].object_id}_foo",
-            "#{grandchild_components[3].object_id}_foo",
-            "#{child_components[1].object_id}_foo",
+        it "kindで指定した種類のコードを下位から生成する" do
+          expected_code [
+            "#{grandchild_components[0].object_id}_foofoofoo",
+            "#{grandchild_components[1].object_id}_foofoofoo",
+            "#{child_components[0].object_id}_foofoo",
+            "#{grandchild_components[2].object_id}_foofoofoo",
+            "#{grandchild_components[3].object_id}_foofoofoo",
+            "#{child_components[1].object_id}_foofoo",
             "#{component.object_id}_foo"
-          ].join
-        end
-      end
+          ]
+          component.generate_code(:foo, :bottom_up, code)
 
-      context "Item.generate_pre_codeでコード生成が登録されている場合" do
-        before do
-          item  = Class.new(Item) {
-            generate_pre_code :foo do |buffer|
-              buffer << 'pre_foo_baz'
-            end
-            generate_pre_code :bar do |buffer|
-              buffer << 'pre_bar_baz'
-            end
-          }.new(component)
-          component.add_item(item)
-          item  = Class.new(Item) {
-            generate_pre_code :foo do |buffer|
-              buffer << 'pre_foo_qux'
-            end
-            generate_pre_code :bar do |buffer|
-              buffer << 'pre_bar_qux'
-            end
-          }.new(component)
-          component.add_item(item)
-        end
-
-        it "generate_codeで登録されたコードの前に、generate_pre_codeで登録され、kindで指定された種類のコードを登録された順に挿入する" do
-          component.generate_code(:foo, :top_down, buffer)
-          expect(buffer.to_s).to eq [
-            "pre_foo_baz",
-            "pre_foo_qux",
-            "#{component.object_id}_foo",
-            "#{child_components[0].object_id}_foo",
-            "#{grandchild_components[0].object_id}_foo",
-            "#{grandchild_components[1].object_id}_foo",
-            "#{child_components[1].object_id}_foo",
-            "#{grandchild_components[2].object_id}_foo",
-            "#{grandchild_components[3].object_id}_foo"
-          ].join
-
-          buffer.instance_variable_get(:@lines).clear
-          buffer.send(:add_newline)
-
-          component.generate_code(:bar, :bottom_up, buffer)
-          expect(buffer.to_s).to eq [
-            "pre_bar_baz",
-            "pre_bar_qux",
-            "#{grandchild_components[0].object_id}_bar",
-            "#{grandchild_components[1].object_id}_bar",
-            "#{child_components[0].object_id}_bar",
-            "#{grandchild_components[2].object_id}_bar",
-            "#{grandchild_components[3].object_id}_bar",
-            "#{child_components[1].object_id}_bar",
+          expected_code [
+            "#{grandchild_components[0].object_id}_barbarbar",
+            "#{grandchild_components[1].object_id}_barbarbar",
+            "#{child_components[0].object_id}_barbar",
+            "#{grandchild_components[2].object_id}_barbarbar",
+            "#{grandchild_components[3].object_id}_barbarbar",
+            "#{child_components[1].object_id}_barbar",
             "#{component.object_id}_bar"
-          ].join
+          ]
+          component.generate_code(:bar, :bottom_up)
         end
       end
 
-      context "Item.generate_post_codeでコード生成が登録されている場合" do
+      context "Item.generate_pre_codeで事前コード生成が登録されている場合" do
         before do
-          item  = Class.new(Item) {
-            generate_post_code :foo do |buffer|
-              buffer << 'post_foo_baz'
+          create_item(component) do
+            generate_pre_code(:foo) { "#{owner.object_id}_pre_foo" }
+            generate_pre_code(:bar) { "#{owner.object_id}_pre_bar" }
+          end
+
+          child_components.each do |child_component|
+            create_item(child_component) do
+              generate_pre_code(:foo) { "#{owner.object_id}_pre_foofoo" }
+              generate_pre_code(:bar) { "#{owner.object_id}_pre_barbar" }
             end
-            generate_post_code :bar do |buffer|
-              buffer << 'post_bar_baz'
-            end
-          }.new(component)
-          component.add_item(item)
-          item  = Class.new(Item) {
-            generate_post_code :foo do |buffer|
-              buffer << 'post_foo_qux'
-            end
-            generate_post_code :bar do |buffer|
-              buffer << 'post_bar_qux'
-            end
-          }.new(component)
-          component.add_item(item)
+          end
         end
 
-        it "generate_codeで登録されたコードの後に、generate_post_codeで登録され、kindで指定された種類のコードを登録された順と逆順に挿入する" do
-          component.generate_code(:foo, :top_down, buffer)
-          expect(buffer.to_s).to eq [
+        it "generaet_codeで登録されたコードの前に、指定された種類の事前コードを挿入する" do
+          expected_code [
+            "#{component.object_id}_pre_foo",
             "#{component.object_id}_foo",
-            "#{child_components[0].object_id}_foo",
-            "#{grandchild_components[0].object_id}_foo",
-            "#{grandchild_components[1].object_id}_foo",
-            "#{child_components[1].object_id}_foo",
-            "#{grandchild_components[2].object_id}_foo",
-            "#{grandchild_components[3].object_id}_foo",
-            "post_foo_qux",
-            "post_foo_baz"
-          ].join
+            "#{child_components[0].object_id}_pre_foofoo",
+            "#{child_components[0].object_id}_foofoo",
+            "#{grandchild_components[0].object_id}_foofoofoo",
+            "#{grandchild_components[1].object_id}_foofoofoo",
+            "#{child_components[1].object_id}_pre_foofoo",
+            "#{child_components[1].object_id}_foofoo",
+            "#{grandchild_components[2].object_id}_foofoofoo",
+            "#{grandchild_components[3].object_id}_foofoofoo"
+          ]
+          component.generate_code(:foo, :top_down, code)
 
-          buffer.instance_variable_get(:@lines).clear
-          buffer.send(:add_newline)
+          expected_code [
+            "#{component.object_id}_pre_bar",
+            "#{child_components[0].object_id}_pre_barbar",
+            "#{grandchild_components[0].object_id}_barbarbar",
+            "#{grandchild_components[1].object_id}_barbarbar",
+            "#{child_components[0].object_id}_barbar",
+            "#{child_components[1].object_id}_pre_barbar",
+            "#{grandchild_components[2].object_id}_barbarbar",
+            "#{grandchild_components[3].object_id}_barbarbar",
+            "#{child_components[1].object_id}_barbar",
+            "#{component.object_id}_bar"
+          ]
+          component.generate_code(:bar, :bottom_up, code)
+        end
+      end
 
-          component.generate_code(:bar, :bottom_up, buffer)
-          expect(buffer.to_s).to eq [
-            "#{grandchild_components[0].object_id}_bar",
-            "#{grandchild_components[1].object_id}_bar",
-            "#{child_components[0].object_id}_bar",
-            "#{grandchild_components[2].object_id}_bar",
-            "#{grandchild_components[3].object_id}_bar",
-            "#{child_components[1].object_id}_bar",
+      context "Item.generate_post_codeで事後コード生成が登録されている場合" do
+        before do
+          create_item(component) do
+            generate_post_code(:foo) { "#{owner.object_id}_post_foo" }
+            generate_post_code(:bar) { "#{owner.object_id}_post_bar" }
+          end
+
+          child_components.each do |child_component|
+            create_item(child_component) do
+              generate_post_code(:foo) { "#{owner.object_id}_post_foofoo" }
+              generate_post_code(:bar) { "#{owner.object_id}_post_barbar" }
+            end
+          end
+        end
+
+        it "generaet_codeで登録されたコードの後に、指定された種類の事後コードを挿入する" do
+          expected_code [
+            "#{component.object_id}_foo",
+            "#{child_components[0].object_id}_foofoo",
+            "#{grandchild_components[0].object_id}_foofoofoo",
+            "#{grandchild_components[1].object_id}_foofoofoo",
+            "#{child_components[0].object_id}_post_foofoo",
+            "#{child_components[1].object_id}_foofoo",
+            "#{grandchild_components[2].object_id}_foofoofoo",
+            "#{grandchild_components[3].object_id}_foofoofoo",
+            "#{child_components[1].object_id}_post_foofoo",
+            "#{component.object_id}_post_foo"
+          ]
+          component.generate_code(:foo, :top_down, code)
+
+          expected_code [
+            "#{grandchild_components[0].object_id}_barbarbar",
+            "#{grandchild_components[1].object_id}_barbarbar",
+            "#{child_components[0].object_id}_barbar",
+            "#{child_components[0].object_id}_post_barbar",
+            "#{grandchild_components[2].object_id}_barbarbar",
+            "#{grandchild_components[3].object_id}_barbarbar",
+            "#{child_components[1].object_id}_barbar",
+            "#{child_components[1].object_id}_post_barbar",
             "#{component.object_id}_bar",
-            "post_bar_qux",
-            "post_bar_baz"
-          ].join
-        end
-      end
-
-      context "バッファ用のCodeBlockを与えなかった場合" do
-        before do
-          expect(CodeBlock).to receive(:new).and_call_original
-        end
-
-        let(:code_block) do
-          component.generate_code(:foo, :top_down)
-        end
-
-        let(:expected_code) do
-          [
-            "#{component.object_id}_foo",
-            "#{child_components[0].object_id}_foo",
-            "#{grandchild_components[0].object_id}_foo",
-            "#{grandchild_components[1].object_id}_foo",
-            "#{child_components[1].object_id}_foo",
-            "#{grandchild_components[2].object_id}_foo",
-            "#{grandchild_components[3].object_id}_foo"
-          ].join
-        end
-
-        it "CodeBlockオブジェクトを生成する" do
-          expect(code_block     ).to be_a_kind_of(CodeBlock)
-          expect(code_block.to_s).to eq expected_code
+            "#{component.object_id}_post_bar"
+          ]
+          component.generate_code(:bar, :bottom_up, code)
         end
       end
     end
 
     describe "#write_file" do
       before do
-        component.output_directory  = 'baz'
-        component.items.each do |item|
-          expect(item).to receive(:write_file).with(output_directory)
+        allow(Item).to receive(:new).and_wrap_original do |m, *args|
+          m.call(*args).tap do |item|
+            expect(item).to receive(:write_file).with([root_directory, output_directory])
+          end
         end
-        child_components.map(&:items).flatten.each do |item|
-          expect(item).to receive(:write_file).with(output_directory)
+
+        component.output_directory  = output_directory
+
+        create_item(component)
+        create_item(component)
+
+        child_components.each do |child_component|
+          create_item(child_component)
+          create_item(child_component)
         end
-        grandchild_components.map(&:items).flatten.each do |item|
-          expect(item).to receive(:write_file).with(output_directory)
+
+        grandchild_components.each do |grandchild__component|
+          create_item(grandchild__component)
+          create_item(grandchild__component)
         end
       end
 
       let(:root_directory) do
-        '/foo/bar'
+        'foo/bar'
       end
 
       let(:output_directory) do
-        '/foo/bar/baz'
+        'baz'
       end
 
       it "与えられた出力ディレクトリ/@output_directoryを引数として、配下全アイテムオブジェクトの#write_fileを呼び出す" do
         component.write_file(root_directory)
-      end
-
-      context "指定したディレクトリが存在しない場合" do
-        before do
-          expect(FileUtils).to receive(:mkpath).with(output_directory)
-        end
-
-        it "ディレクトリの作成する" do
-          component.write_file(root_directory)
-        end
       end
     end
   end

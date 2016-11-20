@@ -76,7 +76,7 @@ describe 'bit_field/field_model' do
     end
 
     let(:code) do
-      RgGen::OutputBase::CodeBlock.new
+      RgGen::CodeUtility::CodeBlock.new
     end
 
     let(:expected_code) do

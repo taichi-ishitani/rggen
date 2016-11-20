@@ -26,64 +26,50 @@ module RgGen
         children.each(&:build)
       end
 
-      def generate_code(kind, mode, buffer = nil)
-        buffer  ||= CodeBlock.new
-        generate_pre_code(kind, buffer)
-        generate_main_code(kind, mode, buffer)
-        generate_post_code(kind, buffer)
-        buffer
+      def generate_code(kind, mode, code = nil)
+        [
+          pre_code_generator, *main_code_generator(mode), post_code_generator
+        ].inject(code) { |c, g| g.call(kind, mode, c) }
       end
 
-      def write_file(root_directory)
-        directory = output_directory(root_directory)
-        FileUtils.mkpath(directory) unless Dir.exist?(directory)
-        items.each do |item|
-          item.write_file(directory)
-        end
-        children.each do |child|
-          child.write_file(directory)
+      def write_file(output_directory)
+        directoris  = [*Array(output_directory), @output_directory].compact
+        [*items, *children].each do |item_or_child|
+          item_or_child.write_file(directoris)
         end
       end
 
       private
 
-      def generate_pre_code(kind, buffer)
-        items.each do |item|
-          item.generate_pre_code(kind, buffer)
+      def generate_item_code(method_name, kind, _, code)
+        items.inject(code) do |c, item|
+          item.send(method_name, kind, c)
         end
       end
 
-      def generate_main_code(kind, mode, buffer)
-        case mode
-        when :top_down
-          generate_item_code(kind, buffer)
-          generate_child_code(kind, mode, buffer)
-        when :bottom_up
-          generate_child_code(kind, mode, buffer)
-          generate_item_code(kind, buffer)
+      def generate_child_code(kind, mode, code)
+        children.inject(code) do |c, child|
+          child.generate_code(kind, mode, code)
         end
       end
 
-      def generate_child_code(kind, mode, buffer)
-        children.each do |child|
-          child.generate_code(kind, mode, buffer)
-        end
+      def pre_code_generator
+        method(:generate_item_code).curry[:generate_pre_code]
       end
 
-      def generate_item_code(kind, buffer)
-        items.each do |item|
-          item.generate_code(kind, buffer)
-        end
+      def main_code_generator(mode)
+        return [
+          method(:generate_item_code ).curry[:generate_code],
+          method(:generate_child_code)
+        ] if mode == :top_down
+        return [
+          method(:generate_child_code),
+          method(:generate_item_code ).curry[:generate_code]
+        ] if mode == :bottom_up
       end
 
-      def generate_post_code(kind, buffer)
-        items.reverse_each do |item|
-          item.generate_post_code(kind, buffer)
-        end
-      end
-
-      def output_directory(root_directory)
-        File.join([root_directory, @output_directory.to_s].reject(&:empty?))
+      def post_code_generator
+        method(:generate_item_code).curry[:generate_post_code]
       end
     end
   end
