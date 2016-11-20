@@ -62,63 +62,39 @@ module RgGen
     end
 
     describe "RgGenホームディレクトリの表示" do
-      before do
-        $stdout = StringIO.new
-        $stderr = StringIO.new
-      end
-
-      after do
-        $stdout = STDOUT
-        $stderr = STDERR
+      let(:home) do
+        "#{RgGen::RGGEN_HOME}\n"
       end
 
       it "RgGenのホームディレクトリを表示し、そのまま終了する" do
         expect {
           generator.run(['--show-home'])
-        }.to raise_error SystemExit
-        expect($stdout.string).to eq "#{RgGen::RGGEN_HOME}\n"
+        }.to raise_error(SystemExit).and output(home).to_stdout
       end
     end
 
     describe "バージョンの出力" do
-      before do
-        $stdout = StringIO.new
-        $stderr = StringIO.new
-      end
-
-      after do
-        $stdout = STDOUT
-        $stderr = STDERR
+      let(:version) do
+        "rggen #{RgGen::VERSION}\n"
       end
 
       it "バージョンを出力し、そのまま終了する" do
         expect {
           generator.run(['-v'])
-        }.to raise_error SystemExit
+        }.to raise_error(SystemExit).and output(version).to_stdout
         expect {
           generator.run(['--version'])
-        }.to raise_error SystemExit
-        expect($stdout.string).to eq("rggen #{RgGen::VERSION}\n" * 2)
+        }.to raise_error(SystemExit).and output(version).to_stdout
       end
     end
 
     describe "ヘルプの表示" do
-      before do
-        $stdout = StringIO.new
-        $stderr = StringIO.new
-      end
-
-      after do
-        $stdout = STDOUT
-        $stderr = STDERR
-      end
-
-      let(:expected_message) do
+      let(:help) do
         <<HELP
 Usage: rggen [options] REGISTER_MAP
         --setup FILE                 Specify a setup file to set up RgGen tool(default: #{RgGen::RGGEN_HOME}/setup/default.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code
-    -o, --output DIR                 Specify output directory(default: ./)
+    -o, --output DIR                 Specify output directory(default: .)
         --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
         --show-home                  Display the path of RgGen tool home directory
     -v, --version                    Display the version
@@ -129,11 +105,10 @@ HELP
       it "ヘルプを表示し、そのまま終了する" do
         expect {
           generator.run(['-h'])
-        }.to raise_error SystemExit
+        }.to raise_error(SystemExit).and output(help).to_stdout
         expect {
           generator.run(['--help'])
-        }.to raise_error SystemExit
-        expect($stdout.string).to eq(expected_message * 2)
+        }.to raise_error(SystemExit).and output(help).to_stdout
       end
     end
 

@@ -78,7 +78,7 @@ module RgGen
     add_option :output do |option|
       option.short        = '-o'
       option.long         = '--output DIR'
-      option.default      = './'
+      option.default      = '.'
       option.description  = 'Specify output directory'
     end
 
