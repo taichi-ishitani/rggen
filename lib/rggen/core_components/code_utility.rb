@@ -24,6 +24,10 @@ module RgGen
       ' ' * size
     end
 
+    def string(expression)
+      "\"#{expression}\""
+    end
+
     def code_block(indent_size = 0, &block)
       CodeBlock.new.tap do |code|
         code.indent = indent_size

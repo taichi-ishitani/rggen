@@ -26,6 +26,13 @@ module RgGen
       end
     end
 
+    describe "#string" do
+      it "文字列リテラルのコード片を返す" do
+        expect(test_object.send(:string, "foo")).to eq '"foo"'
+        expect(test_object.send(:string, :bar )).to eq '"bar"'
+      end
+    end
+
     describe "#create_blank_code" do
       it "空のCodeBlockオブジェクトを返す" do
         expect(test_object.send(:create_blank_code)).to be_a_kind_of(CodeUtility::CodeBlock) and be_empty
