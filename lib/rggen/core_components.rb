@@ -14,6 +14,7 @@ require_relative 'core_components/verilog_utility/subroutine_definition'
 require_relative 'core_components/verilog_utility'
 
 require_relative 'core_components/c_utility/variable_declaration'
+require_relative 'core_components/c_utility/data_structure_definition'
 
 require_relative 'core_components/configuration/raise_error'
 require_relative 'core_components/configuration/item'
