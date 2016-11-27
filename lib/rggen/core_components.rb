@@ -15,6 +15,7 @@ require_relative 'core_components/verilog_utility'
 
 require_relative 'core_components/c_utility/variable_declaration'
 require_relative 'core_components/c_utility/data_structure_definition'
+require_relative 'core_components/c_utility'
 
 require_relative 'core_components/configuration/raise_error'
 require_relative 'core_components/configuration/item'
@@ -42,3 +43,6 @@ require_relative 'core_components/rtl/setup'
 require_relative 'core_components/ral/component'
 require_relative 'core_components/ral/item'
 require_relative 'core_components/ral/setup'
+
+require_relative 'core_components/c_header/item'
+require_relative 'core_components/c_header/setup'
