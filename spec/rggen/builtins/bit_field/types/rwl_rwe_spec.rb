@@ -1,4 +1,4 @@
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 
 describe 'bit_fields/type/rwl_rwe' do
   include_context 'bit field type common'
