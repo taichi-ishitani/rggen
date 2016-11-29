@@ -1,4 +1,4 @@
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 
 describe 'register_block/axi4lite' do
   include_context 'configuration common'
