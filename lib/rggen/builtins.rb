@@ -36,6 +36,7 @@ require_relative 'builtins/register/shadow'
 require_relative 'builtins/register/shadow_index_configurator'
 require_relative 'builtins/register/sub_block_model'
 require_relative 'builtins/register/type'
+require_relative 'builtins/register/types/external'
 require_relative 'builtins/register/uniqueness_validator'
 
 require_relative 'builtins/register_block/base_address'
