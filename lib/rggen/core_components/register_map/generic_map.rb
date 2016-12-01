@@ -12,7 +12,9 @@ module RgGen
         attr_reader   :position
 
         def empty?
-          value.to_s.empty?
+          return true if value.nil?
+          return false unless value.respond_to?(:empty?)
+          value.empty?
         end
       end
 
