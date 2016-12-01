@@ -50,7 +50,7 @@ describe 'register/type' do
   end
 
   describe "item_base" do
-    describe "#type" do
+    describe "#type/#type?" do
       let(:load_data) do
         [
           [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
@@ -61,6 +61,11 @@ describe 'register/type' do
       it "レジスタの型名を返す" do
         expect(registers[0].type).to eq :foo
         expect(registers[1].type).to eq :bar
+      end
+
+      it "与えた型名が自分の型名と同じかどうかを返す" do
+        expect(registers[0]).to be_type(:foo)
+        expect(registers[0]).not_to be_type(:bar)
       end
     end
 

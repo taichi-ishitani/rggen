@@ -33,6 +33,10 @@ list_item :register, :type do
 
       field :type
 
+      field :type? do |other|
+        other == type
+      end
+
       field :readable? do
         next true if readability_evaluator.nil?
         instance_exec(&readability_evaluator)
@@ -54,7 +58,6 @@ list_item :register, :type do
       field :reserved? do
         !(readable? || writable?)
       end
-
 
       build do |cell|
         @type = cell
