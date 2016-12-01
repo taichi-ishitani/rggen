@@ -1,4 +1,5 @@
 require 'facets/enumerable/exclude'
+require 'facets/enumerable/find_yield'
 require 'facets/enumerable/sum'
 require 'facets/file/ext'
 require 'facets/hash/symbolize_keys'

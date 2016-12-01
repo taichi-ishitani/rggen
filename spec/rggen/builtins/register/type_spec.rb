@@ -50,6 +50,42 @@ describe 'register/type' do
   end
 
   describe "item_base" do
+    describe "#build" do
+      before do
+        define_item(:foo) do
+          field :foo_type
+          field :foo_options
+          build do |cell|
+            @foo_type     = cell.type
+            @foo_options  = cell.options
+          end
+        end
+
+        define_item(:bar) do
+          field :bar_type
+          field :bar_options
+          build do |cell|
+            @bar_type     = cell.type
+            @bar_options  = cell.options
+          end
+        end
+      end
+
+      let(:load_data) do
+        [
+          [nil, "register_0", "0x00", nil, nil, "foo"      , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, nil, "bar: baz ", "bit_field_1_0", "[0]", :rw, 0, nil]
+        ]
+      end
+
+      it "ブロック内で入力された型名とオプションを参照できる" do
+        expect(registers[0].foo_type   ).to eq :foo
+        expect(registers[0].foo_options).to be_nil
+        expect(registers[1].bar_type   ).to eq :bar
+        expect(registers[1].bar_options).to eq " baz "
+      end
+    end
+
     describe "#type/#type?" do
       let(:load_data) do
         [
