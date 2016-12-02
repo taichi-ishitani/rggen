@@ -33,7 +33,7 @@ describe 'register/type' do
 
   after do
     @items.each_value do |item|
-      [:@readability_evaluator, :@writability_evaluator, :@no_bit_fields].each do |variable|
+      [:@readability_evaluator, :@writability_evaluator, :@need_options, :@no_bit_fields].each do |variable|
         if item.instance_variable_defined?(variable)
           item.remove_instance_variable(variable)
         end
@@ -73,8 +73,9 @@ describe 'register/type' do
 
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo"      , "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "bar: baz ", "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, nil, "foo"          , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, nil, "bar: baz "    , "bit_field_1_0", "[0]", :rw, 0, nil],
+          [nil, "register_2", "0x08", nil, nil, "bar: baz\nqux", "bit_field_2_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -83,6 +84,8 @@ describe 'register/type' do
         expect(registers[0].foo_options).to be_nil
         expect(registers[1].bar_type   ).to eq :bar
         expect(registers[1].bar_options).to eq " baz "
+        expect(registers[2].bar_type   ).to eq :bar
+        expect(registers[2].bar_options).to eq " baz\nqux"
       end
     end
 
@@ -291,6 +294,35 @@ describe 'register/type' do
 
       it "対象レジスタが予約済みであることを指定する" do
         expect(registers[0]).to be_reserved
+      end
+    end
+
+    describe ".need_options" do
+      before do
+        define_item(:bar) { need_options }
+      end
+
+      it "対象レジスタがオプションが必要かどうかを指定する" do
+        set_load_data([
+          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+
+        set_load_data([
+          [nil, "register_0", "0x00", nil, nil, "bar: baz", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+
+        set_load_data([
+          [nil, "register_0", "0x00", nil, nil, "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error("no options are specified", position("block_0", 4, 5))
       end
     end
 

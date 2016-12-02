@@ -22,14 +22,27 @@ list_item :register, :type do
           end
         end
 
+        def need_options
+          @need_options = true
+        end
+
+        def need_options?
+          @need_options
+        end
+
         def need_no_bit_fields
           @no_bit_fields  = true
+        end
+
+        def need_no_bit_fields?
+          @no_bit_fields
         end
       end
 
       attr_class_reader :writability_evaluator
       attr_class_reader :readability_evaluator
-      attr_class_reader :no_bit_fields
+      class_delegator   :need_options?
+      class_delegator   :need_no_bit_fields?
 
       field :type
 
@@ -61,7 +74,8 @@ list_item :register, :type do
 
       build do |cell|
         @type = cell.type
-        register.need_no_children if no_bit_fields
+        error 'no options are specified' if need_options? && cell.options.nil?
+        register.need_no_children if need_no_bit_fields?
       end
     end
 
@@ -97,7 +111,7 @@ list_item :register, :type do
       def convert(cell)
         [:default, *@target_items.keys].find_yield do |t|
           case cell
-          when /\A#{t}(?::(.+))?\Z/i
+          when /\A#{t}(?::(.+))?\Z/im
             cell_value.new(t, Regexp.last_match.captures[0])
           end
         end || cell_value.new(cell, nil)
