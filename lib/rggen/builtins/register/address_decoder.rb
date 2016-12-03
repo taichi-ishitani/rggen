@@ -2,14 +2,14 @@ simple_item :register, :address_decoder do
   rtl do
     build do
       next unless type?(:indirect)
-      logic :shadow_index,
-            name:       "#{register.name}_shadow_index",
-            width:      shadow_index_width,
+      logic :indirect_index,
+            name:       "#{register.name}_indirect_index",
+            width:      indirect_index_width,
             dimensions: register.dimensions
     end
 
     generate_code :module_item do |buffer|
-      buffer << shadow_index_assignment << nl if type?(:indirect)
+      buffer << indirect_index_assignment << nl if type?(:indirect)
       buffer << process_template
     end
 
@@ -40,41 +40,41 @@ simple_item :register, :address_decoder do
       (array? && multiple? && "#{base} + #{register.local_index}") || base
     end
 
-    def shadow_index_assignment
+    def indirect_index_assignment
       assign(
-        shadow_index[register.loop_variables],
-        concat(shadow_index_fields.map(&:value))
+        indirect_index[register.loop_variables],
+        concat(indirect_index_fields.map(&:value))
       )
     end
 
-    def use_shadow_index
+    def indirect_register
       (type?(:indirect) && 1) || 0
     end
 
-    def shadow_index_width
+    def indirect_index_width
       return 1 unless type?(:indirect)
-      shadow_index_fields.sum(0, &:width)
+      indirect_index_fields.sum(0, &:width)
     end
 
-    def shadow_index_value
+    def indirect_index_value
       return hex(0, 1) unless type?(:indirect)
-      concat(shadow_index_values)
+      concat(indirect_index_values)
     end
 
-    def shadow_index_fields
-      @shadow_index_fields ||= indexes.map do |index|
+    def indirect_index_fields
+      @indirect_index_fields ||= indexes.map do |index|
         register_block.bit_fields.find_by(name: index.name)
       end
     end
 
-    def shadow_index_values
+    def indirect_index_values
       variables = loop_variables
       indexes.map.with_index do |index, i|
         if index.value
-          hex(index.value, shadow_index_fields[i].width)
+          hex(index.value, indirect_index_fields[i].width)
         else
           loop_variable = variables.shift
-          loop_variable[shadow_index_fields[i].width - 1, 0]
+          loop_variable[indirect_index_fields[i].width - 1, 0]
         end
       end
     end

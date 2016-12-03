@@ -129,7 +129,7 @@ HELP
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :axi4lite]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
         end
 
@@ -154,7 +154,7 @@ HELP
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
         end
 

@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'register/shadow_index_configurator' do
+describe 'register/indirect_index_configurator' do
   include_context 'bit field type common'
   include_context 'configuration common'
   include_context 'ral common'
@@ -12,7 +12,7 @@ describe 'register/shadow_index_configurator' do
     enable :register , :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw]
-    enable :register , :shadow_index_configurator
+    enable :register , :indirect_index_configurator
 
     configuration = create_configuration
     register_map  = create_register_map(
@@ -43,41 +43,41 @@ describe 'register/shadow_index_configurator' do
   end
 
   describe "#generate_code" do
-    context "シャドウレジスタではない場合" do
+    context "間接参照レジスタではない場合" do
       it "コードの生成を行わない" do
         expect(ral[0]).to generate_code(:reg_model_item, :top_down, "")
       end
     end
 
-    context "シャドウレジスタの場合" do
+    context "間接参照レジスタの場合" do
       let(:expected_code_2) do
         <<'CODE'
-function void configure_shadow_indexes();
-  set_shadow_index("register_0", "bit_field_0_0", 0);
+function void configure_indirect_indexes();
+  set_indirect_index("register_0", "bit_field_0_0", 0);
 endfunction
 CODE
       end
 
       let(:expected_code_3) do
         <<'CODE'
-function void configure_shadow_indexes();
-  set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
+function void configure_indirect_indexes();
+  set_indirect_index("register_0", "bit_field_0_0", indexes[0]);
 endfunction
 CODE
       end
 
       let(:expected_code_4) do
         <<'CODE'
-function void configure_shadow_indexes();
-  set_shadow_index("register_0", "bit_field_0_0", 0);
-  set_shadow_index("register_0", "bit_field_0_1", indexes[0]);
-  set_shadow_index("register_1", "bit_field_1_0", indexes[1]);
-  set_shadow_index("register_1", "bit_field_1_1", 3);
+function void configure_indirect_indexes();
+  set_indirect_index("register_0", "bit_field_0_0", 0);
+  set_indirect_index("register_0", "bit_field_0_1", indexes[0]);
+  set_indirect_index("register_1", "bit_field_1_0", indexes[1]);
+  set_indirect_index("register_1", "bit_field_1_1", 3);
 endfunction
 CODE
       end
 
-      it "シャドウインデックスの設定を行うconfigure_shadow_indexesメソッドの定義を生成する" do
+      it "間接参照インデックスの設定を行うconfigure_indirect_indexesメソッドの定義を生成する" do
         expect(ral[2]).to generate_code(:reg_model_item, :top_down, expected_code_2)
         expect(ral[3]).to generate_code(:reg_model_item, :top_down, expected_code_3)
         expect(ral[4]).to generate_code(:reg_model_item, :top_down, expected_code_4)

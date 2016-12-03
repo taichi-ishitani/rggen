@@ -13,7 +13,7 @@ describe "register_block/ral_package" do
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :wo]
     enable :bit_field     , :field_model
-    enable :register      , [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]
+    enable :register      , [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]
     enable :register_block, [:block_model, :constructor, :sub_model_creator, :default_map_creator]
     enable :register_block, :ral_package
 
@@ -74,7 +74,7 @@ package block_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_0_3, "bit_field_0_3", 8, 0, "RO", 0, 8'h00, 0, "u_bit_field_0_3.i_value")
     endfunction
   endclass
-  class register_1_reg_model extends rggen_ral_shadow_reg;
+  class register_1_reg_model extends rggen_ral_indirect_reg;
     rand rggen_ral_field bit_field_1_0;
     rand rggen_ral_field bit_field_1_1;
     rand rggen_ral_field bit_field_1_2;
@@ -88,11 +88,11 @@ package block_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_1_2, "bit_field_1_2", 4, 4, "RW", 0, 4'h4, 1, "u_bit_field_1_2.value")
       `rggen_ral_create_field_model(bit_field_1_3, "bit_field_1_3", 4, 0, "RW", 0, 4'h5, 1, "u_bit_field_1_3.value")
     endfunction
-    function void configure_shadow_indexes();
-      set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
-      set_shadow_index("register_0", "bit_field_0_1", 1);
-      set_shadow_index("register_0", "bit_field_0_2", indexes[1]);
-      set_shadow_index("register_0", "bit_field_0_3", 3);
+    function void configure_indirect_indexes();
+      set_indirect_index("register_0", "bit_field_0_0", indexes[0]);
+      set_indirect_index("register_0", "bit_field_0_1", 1);
+      set_indirect_index("register_0", "bit_field_0_2", indexes[1]);
+      set_indirect_index("register_0", "bit_field_0_3", 3);
     endfunction
   endclass
   class register_2_reg_model extends rggen_ral_reg;

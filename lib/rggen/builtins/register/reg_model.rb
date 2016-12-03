@@ -97,7 +97,7 @@ simple_item :register, :reg_model do
     end
 
     def base_model
-      (type?(:indirect) && :rggen_ral_shadow_reg) || :rggen_ral_reg
+      (type?(:indirect) && :rggen_ral_indirect_reg) || :rggen_ral_reg
     end
 
     def body_code(code)

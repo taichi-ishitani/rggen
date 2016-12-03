@@ -81,16 +81,16 @@ module sample_1 (
     .i_external_register_status ('{2'b00})
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (5),
-    .START_ADDRESS      (5'h00),
-    .END_ADDRESS        (5'h00),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (5),
+    .START_ADDRESS        (5'h00),
+    .END_ADDRESS          (5'h00),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_0_address_decoder (
-    .i_address      (address[6:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[0])
+    .i_address        (address[6:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[0])
   );
   assign register_read_data[0] = {bit_field_0_0_value, bit_field_0_1_value};
   assign o_bit_field_0_0 = bit_field_0_0_value;
@@ -114,16 +114,16 @@ module sample_1 (
     .o_value  (bit_field_0_1_value)
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (5),
-    .START_ADDRESS      (5'h01),
-    .END_ADDRESS        (5'h01),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (5),
+    .START_ADDRESS        (5'h01),
+    .END_ADDRESS          (5'h01),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_1_address_decoder (
-    .i_address      (address[6:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[1])
+    .i_address        (address[6:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[1])
   );
   assign register_read_data[1] = {bit_field_1_0_value};
   assign o_bit_field_1_0 = bit_field_1_0_value;
@@ -141,16 +141,16 @@ module sample_1 (
     .o_value          (bit_field_1_0_value)
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (5),
-    .START_ADDRESS      (5'h02),
-    .END_ADDRESS        (5'h02),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (5),
+    .START_ADDRESS        (5'h02),
+    .END_ADDRESS          (5'h02),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_2_address_decoder (
-    .i_address      (address[6:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[2])
+    .i_address        (address[6:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[2])
   );
   assign register_read_data[2] = {15'h0000, bit_field_2_0_value, 15'h0000, bit_field_2_1_value};
   rggen_bit_field_ro #(

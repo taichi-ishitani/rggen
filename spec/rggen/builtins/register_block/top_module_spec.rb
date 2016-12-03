@@ -109,7 +109,7 @@ module block_0 (
   logic [15:0] bit_field_1_1_value;
   logic [15:0] bit_field_2_0_value[2];
   logic [15:0] bit_field_2_1_value[2];
-  logic [32:0] register_3_shadow_index[2][4];
+  logic [32:0] register_3_indirect_index[2][4];
   logic [15:0] bit_field_3_0_value[2][4];
   logic [15:0] bit_field_3_1_value[2][4];
   logic bit_field_4_0_value;
@@ -172,16 +172,16 @@ module block_0 (
     .o_irq  (o_irq)
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h00),
-    .END_ADDRESS        (6'h00),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (6),
+    .START_ADDRESS        (6'h00),
+    .END_ADDRESS          (6'h00),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_0_address_decoder (
-    .i_address      (address[7:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[0])
+    .i_address        (address[7:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[0])
   );
   assign register_read_data[0] = {15'h0000, bit_field_0_0_value, 15'h0000, bit_field_0_1_value};
   assign o_bit_field_0_0 = bit_field_0_0_value;
@@ -205,16 +205,16 @@ module block_0 (
     .o_value  (bit_field_0_1_value)
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h01),
-    .END_ADDRESS        (6'h01),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (6),
+    .START_ADDRESS        (6'h01),
+    .END_ADDRESS          (6'h01),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_1_address_decoder (
-    .i_address      (address[7:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[1])
+    .i_address        (address[7:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[1])
   );
   assign register_read_data[1] = {bit_field_1_0_value, bit_field_1_1_value};
   rggen_bit_field_ro #(
@@ -241,16 +241,16 @@ module block_0 (
     genvar g_i;
     for (g_i = 0;g_i < 2;g_i++) begin : g
       rggen_address_decoder #(
-        .ADDRESS_WIDTH      (6),
-        .START_ADDRESS      (6'h02 + g_i),
-        .END_ADDRESS        (6'h02 + g_i),
-        .USE_SHADOW_INDEX   (0),
-        .SHADOW_INDEX_WIDTH (1),
-        .SHADOW_INDEX_VALUE (1'h0)
+        .ADDRESS_WIDTH        (6),
+        .START_ADDRESS        (6'h02 + g_i),
+        .END_ADDRESS          (6'h02 + g_i),
+        .INDIRECT_REGISTER    (0),
+        .INDIRECT_INDEX_WIDTH (1),
+        .INDIRECT_INDEX_VALUE (1'h0)
       ) u_register_2_address_decoder (
-        .i_address      (address[7:2]),
-        .i_shadow_index (1'h0),
-        .o_select       (register_select[2+g_i])
+        .i_address        (address[7:2]),
+        .i_indirect_index (1'h0),
+        .o_select         (register_select[2+g_i])
       );
       assign register_read_data[2+g_i] = {bit_field_2_0_value[g_i], bit_field_2_1_value[g_i]};
       rggen_bit_field_ro #(
@@ -279,18 +279,18 @@ module block_0 (
     genvar g_i, g_j;
     for (g_i = 0;g_i < 2;g_i++) begin : g
       for (g_j = 0;g_j < 4;g_j++) begin : g
-        assign register_3_shadow_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
+        assign register_3_indirect_index[g_i][g_j] = {bit_field_0_0_value, bit_field_1_0_value, bit_field_1_1_value};
         rggen_address_decoder #(
-          .ADDRESS_WIDTH      (6),
-          .START_ADDRESS      (6'h04),
-          .END_ADDRESS        (6'h04),
-          .USE_SHADOW_INDEX   (1),
-          .SHADOW_INDEX_WIDTH (33),
-          .SHADOW_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
+          .ADDRESS_WIDTH        (6),
+          .START_ADDRESS        (6'h04),
+          .END_ADDRESS          (6'h04),
+          .INDIRECT_REGISTER    (1),
+          .INDIRECT_INDEX_WIDTH (33),
+          .INDIRECT_INDEX_VALUE ({1'h1, g_i[15:0], g_j[15:0]})
         ) u_register_3_address_decoder (
-          .i_address      (address[7:2]),
-          .i_shadow_index (register_3_shadow_index[g_i][g_j]),
-          .o_select       (register_select[4+4*g_i+g_j])
+          .i_address        (address[7:2]),
+          .i_indirect_index (register_3_indirect_index[g_i][g_j]),
+          .o_select         (register_select[4+4*g_i+g_j])
         );
         assign register_read_data[4+4*g_i+g_j] = {bit_field_3_0_value[g_i][g_j], bit_field_3_1_value[g_i][g_j]};
         rggen_bit_field_ro #(
@@ -317,16 +317,16 @@ module block_0 (
     end
   end endgenerate
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h05),
-    .END_ADDRESS        (6'h05),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (6),
+    .START_ADDRESS        (6'h05),
+    .END_ADDRESS          (6'h05),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_4_address_decoder (
-    .i_address      (address[7:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[12])
+    .i_address        (address[7:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[12])
   );
   assign register_read_data[12] = {23'h000000, bit_field_4_0_value, 7'h00, bit_field_4_1_value};
   rggen_bit_field_w01s_w01c #(
@@ -362,16 +362,16 @@ module block_0 (
     .o_value          (bit_field_4_1_value)
   );
   rggen_address_decoder #(
-    .ADDRESS_WIDTH      (6),
-    .START_ADDRESS      (6'h08),
-    .END_ADDRESS        (6'h0b),
-    .USE_SHADOW_INDEX   (0),
-    .SHADOW_INDEX_WIDTH (1),
-    .SHADOW_INDEX_VALUE (1'h0)
+    .ADDRESS_WIDTH        (6),
+    .START_ADDRESS        (6'h08),
+    .END_ADDRESS          (6'h0b),
+    .INDIRECT_REGISTER    (0),
+    .INDIRECT_INDEX_WIDTH (1),
+    .INDIRECT_INDEX_VALUE (1'h0)
   ) u_register_5_address_decoder (
-    .i_address      (address[7:2]),
-    .i_shadow_index (1'h0),
-    .o_select       (register_select[13])
+    .i_address        (address[7:2]),
+    .i_indirect_index (1'h0),
+    .o_select         (register_select[13])
   );
   assign external_register_select[0] = register_select[13];
   rggen_bus_exporter #(

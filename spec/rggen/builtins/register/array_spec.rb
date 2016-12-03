@@ -274,16 +274,16 @@ describe 'register/array' do
         let(:expected_code) do
           <<'CODE'
 rggen_address_decoder #(
-  .ADDRESS_WIDTH      (6),
-  .START_ADDRESS      (6'h00),
-  .END_ADDRESS        (6'h00),
-  .USE_SHADOW_INDEX   (0),
-  .SHADOW_INDEX_WIDTH (1),
-  .SHADOW_INDEX_VALUE (1'h0)
+  .ADDRESS_WIDTH        (6),
+  .START_ADDRESS        (6'h00),
+  .END_ADDRESS          (6'h00),
+  .INDIRECT_REGISTER    (0),
+  .INDIRECT_INDEX_WIDTH (1),
+  .INDIRECT_INDEX_VALUE (1'h0)
 ) u_register_0_address_decoder (
-  .i_address      (address[7:2]),
-  .i_shadow_index (1'h0),
-  .o_select       (register_select[0])
+  .i_address        (address[7:2]),
+  .i_indirect_index (1'h0),
+  .o_select         (register_select[0])
 );
 assign o_bit_field_0_0 = bit_field_0_0_value;
 rggen_bit_field_rw #(
@@ -314,16 +314,16 @@ generate if (1) begin : g_register_2
   genvar g_i;
   for (g_i = 0;g_i < 2;g_i++) begin : g
     rggen_address_decoder #(
-      .ADDRESS_WIDTH      (6),
-      .START_ADDRESS      (6'h02 + g_i),
-      .END_ADDRESS        (6'h02 + g_i),
-      .USE_SHADOW_INDEX   (0),
-      .SHADOW_INDEX_WIDTH (1),
-      .SHADOW_INDEX_VALUE (1'h0)
+      .ADDRESS_WIDTH        (6),
+      .START_ADDRESS        (6'h02 + g_i),
+      .END_ADDRESS          (6'h02 + g_i),
+      .INDIRECT_REGISTER    (0),
+      .INDIRECT_INDEX_WIDTH (1),
+      .INDIRECT_INDEX_VALUE (1'h0)
     ) u_register_2_address_decoder (
-      .i_address      (address[7:2]),
-      .i_shadow_index (1'h0),
-      .o_select       (register_select[2+g_i])
+      .i_address        (address[7:2]),
+      .i_indirect_index (1'h0),
+      .o_select         (register_select[2+g_i])
     );
     assign o_bit_field_2_0[g_i] = bit_field_2_0_value[g_i];
     rggen_bit_field_rw #(
@@ -351,18 +351,18 @@ generate if (1) begin : g_register_3
   for (g_i = 0;g_i < 1;g_i++) begin : g
     for (g_j = 0;g_j < 2;g_j++) begin : g
       for (g_k = 0;g_k < 3;g_k++) begin : g
-        assign register_3_shadow_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
+        assign register_3_indirect_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
         rggen_address_decoder #(
-          .ADDRESS_WIDTH      (6),
-          .START_ADDRESS      (6'h04),
-          .END_ADDRESS        (6'h04),
-          .USE_SHADOW_INDEX   (1),
-          .SHADOW_INDEX_WIDTH (24),
-          .SHADOW_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
+          .ADDRESS_WIDTH        (6),
+          .START_ADDRESS        (6'h04),
+          .END_ADDRESS          (6'h04),
+          .INDIRECT_REGISTER    (1),
+          .INDIRECT_INDEX_WIDTH (24),
+          .INDIRECT_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
         ) u_register_3_address_decoder (
-          .i_address      (address[7:2]),
-          .i_shadow_index (register_3_shadow_index[g_i][g_j][g_k]),
-          .o_select       (register_select[4+6*g_i+3*g_j+g_k])
+          .i_address        (address[7:2]),
+          .i_indirect_index (register_3_indirect_index[g_i][g_j][g_k]),
+          .o_select         (register_select[4+6*g_i+3*g_j+g_k])
         );
         assign o_bit_field_3_0[g_i][g_j][g_k] = bit_field_3_0_value[g_i][g_j][g_k];
         rggen_bit_field_rw #(

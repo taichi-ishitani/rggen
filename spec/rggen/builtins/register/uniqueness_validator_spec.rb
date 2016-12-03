@@ -45,7 +45,7 @@ describe 'register/uniqueness_validator' do
     RegisterMapDummyLoader.load_data("block_0" => block_data)
   end
 
-  context "オフセットアドレスとシャドウインデックスに重複がない場合" do
+  context "オフセットアドレスと間接参照インデックスに重複がない場合" do
     before do
       set_load_data([
         *index_registers,
@@ -114,7 +114,7 @@ describe 'register/uniqueness_validator' do
     end
   end
 
-  context "同一アドレスのシャドウインデックスが重なる場合" do
+  context "同一アドレスの間接参照インデックスが重なる場合" do
     let(:invalid_value_pairs) do
       [
         [["[2]"   , "indirect: index_0"                    ], ["[2]"   , "indirect: index_0"                      ]],
@@ -137,7 +137,7 @@ describe 'register/uniqueness_validator' do
           [nil, "0x08", invalid_value_pair[1][0], invalid_value_pair[1][1], "bit_field_1_0", "[31:0]", "ro", nil]
         ])
 
-        message = "shadow indexes is not unique"
+        message = "indirect indexes is not unique"
         expect {
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 8, 3))
