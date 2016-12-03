@@ -1,6 +1,8 @@
 module RgGen
   module Base
     class ItemFactory
+      extend InternalStruct
+
       attr_writer :target_items
       attr_writer :target_item
 

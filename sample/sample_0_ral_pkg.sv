@@ -54,7 +54,7 @@ package sample_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_4_1, "bit_field_4_1", 16, 0, "RW", 0, 16'h0000, 1, "u_bit_field_4_1.value")
     endfunction
   endclass
-  class register_5_reg_model extends rggen_ral_shadow_reg;
+  class register_5_reg_model extends rggen_ral_indirect_reg;
     rand rggen_ral_field bit_field_5_0;
     rand rggen_ral_field bit_field_5_1;
     function new(string name = "register_5");
@@ -64,10 +64,10 @@ package sample_0_ral_pkg;
       `rggen_ral_create_field_model(bit_field_5_0, "bit_field_5_0", 16, 16, "RO", 0, 16'h0000, 0, "u_bit_field_5_0.i_value")
       `rggen_ral_create_field_model(bit_field_5_1, "bit_field_5_1", 16, 0, "RW", 0, 16'h0000, 1, "u_bit_field_5_1.value")
     endfunction
-    function void configure_shadow_indexes();
-      set_shadow_index("register_2", "bit_field_2_1", 1);
-      set_shadow_index("register_0", "bit_field_0_0", indexes[0]);
-      set_shadow_index("register_0", "bit_field_0_1", indexes[1]);
+    function void configure_indirect_indexes();
+      set_indirect_index("register_2", "bit_field_2_1", 1);
+      set_indirect_index("register_0", "bit_field_0_0", indexes[0]);
+      set_indirect_index("register_0", "bit_field_0_1", indexes[1]);
     endfunction
   endclass
   class register_6_reg_model extends rggen_ral_reg;

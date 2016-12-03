@@ -59,42 +59,94 @@ module RgGen::InputBase
       end
 
       context "フィールド名とヘルパーメソッドへの委譲設定が与えられた場合" do
-        it "同名のヘルパーメソッドへ委譲するメソッドを定義する" do
-          k = Class.new(Item) {
-            define_helpers {def foo;end}
-            field :foo, forward_to_helper:true
-          }
-          i = k.new(owner)
+        let(:klass) do
+          Class.new(Item) do
+            define_helpers do
+              def foo
+              end
+              def bar(m, n, &b)
+                if block_given?
+                  m * n * b.call
+                else
+                  m * n
+                end
+              end
+            end
 
-          expect(k).to receive(:foo).with(no_args)
-          i.foo
+            field :foo, forward_to_helper:true
+            field :bar, forward_to_helper:true
+          end
+        end
+
+        let(:item) do
+          klass.new(owner)
+        end
+
+        it "同名のヘルパーメソッドへ委譲するメソッドを定義する" do
+          expect(klass).to receive(:foo).with(no_args)
+          item.foo
+        end
+
+        specify "定義するメソッドは通常の引数及びブロック引数を取れる" do
+          expect(klass).to receive(:bar).with(2, 3).and_call_original
+          expect(item.bar(2, 3) { 4 }).to eq 24
         end
       end
 
       context "フィールド名と委譲先のメソッド名が与えられた場合" do
-        it "与えたメソッドに委譲するメソッドを定義する" do
-          i = Class.new(Item) {
+        let(:klass) do
+          Class.new(Item) do
             field :foo, forward_to: :bar
-            def bar;end
-          }.new(owner)
+            field :baz, forward_to: :qux
+            def bar
+            end
+            def qux(m, n, &b)
+              if block_given?
+                m * n * b.call
+              else
+                m * n
+              end
+            end
+          end
+        end
 
-          expect(i).to receive(:bar).with(no_args)
-          i.foo
+        let(:item) do
+          klass.new(owner)
+        end
+
+        it "与えたメソッドに委譲するメソッドを定義する" do
+          expect(item).to receive(:bar).with(no_args)
+          item.foo
+        end
+
+        specify "定義するメソッドは通常の引数及びブロック引数を取れる" do
+          expect(item).to receive(:qux).with(2, 3).and_call_original
+          expect(item.baz(2, 3) { 4 }).to eq 24
         end
       end
 
       context "フィールド名とブロックが与えられた場合" do
-        it "ブロックの実行結果を返すメソッドを定義する" do
-          f = field_name
-          v = field_value
-          k = Class.new(Item) do
-            field f do
-              v
+        let(:klass) do
+          Class.new(Item) do
+            field :foo do
+              object_id
+            end
+            field :bar do |m, n|
+              m * n
             end
           end
-          i = k.new(owner)
+        end
 
-          expect(i.send(field_name)).to eq field_value
+        let(:item) do
+          klass.new(owner)
+        end
+
+        it "ブロックをアイテム上で実行し、その結果を返すメソッドを定義する" do
+          expect(item.foo).to eq item.object_id
+        end
+
+        specify "定義するメソッドは通常の引数を取れる" do
+          expect(item.bar(2, 3)).to eq 6
         end
       end
 

@@ -1,4 +1,4 @@
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 
 describe 'bit_fields/type/rwl_rwe' do
   include_context 'bit field type common'
@@ -10,7 +10,8 @@ describe 'bit_fields/type/rwl_rwe' do
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
-    enable :register, [:name, :offset_address, :array, :shadow, :external]
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :register, :index
     enable :bit_field, :type, [:rwl, :rwe, :rw]
@@ -36,10 +37,10 @@ describe 'bit_fields/type/rwl_rwe' do
     describe "#type" do
       it ":rwl/rweを返す" do
         bit_fields  = build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwl", '0', "bit_field_1_0"],
-          [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[1]", "rwe", '0', "bit_field_1_1"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ],
-          [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[1]", "rw" , '0', nil            ]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwl", '0', "bit_field_1_0"],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[1]", "rwe", '0', "bit_field_1_1"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ],
+          [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[1]", "rw" , '0', nil            ]
         ])
         expect(bit_fields[0].type).to be :rwl
         expect(bit_fields[1].type).to be :rwe
@@ -48,10 +49,10 @@ describe 'bit_fields/type/rwl_rwe' do
 
     it "アクセス属性はread-write" do
       bit_fields  = build_bit_fields([
-        [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwl", '0', "bit_field_1_0"],
-        [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[1]", "rwe", '0', "bit_field_1_1"],
-        [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ],
-        [nil, nil         , nil   , nil, nil, nil, "bit_field_1_1", "[1]", "rw" , '0', nil            ]
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwl", '0', "bit_field_1_0"],
+        [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[1]", "rwe", '0', "bit_field_1_1"],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ],
+        [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[1]", "rw" , '0', nil            ]
       ])
       expect(bit_fields[0]).to match_access :read_write
       expect(bit_fields[1]).to match_access :read_write
@@ -60,20 +61,20 @@ describe 'bit_fields/type/rwl_rwe' do
     it "任意のビット幅を持つビットフィールドで使用できる" do
       expect {
         build_bit_fields([
-          [nil, "register_0" , "0x00", nil, nil, nil, "bit_field_0_0" , "[0]"   , "rwl", '0', "bit_field_12_0"],
-          [nil, "register_1" , "0x04", nil, nil, nil, "bit_field_1_0" , "[1:0]" , "rwl", '0', "bit_field_12_0"],
-          [nil, "register_2" , "0x08", nil, nil, nil, "bit_field_2_0" , "[3:0]" , "rwl", '0', "bit_field_12_0"],
-          [nil, "register_3" , "0x0C", nil, nil, nil, "bit_field_3_0" , "[7:0]" , "rwl", '0', "bit_field_12_0"],
-          [nil, "register_4" , "0x10", nil, nil, nil, "bit_field_4_0" , "[15:0]", "rwl", '0', "bit_field_12_0"],
-          [nil, "register_5" , "0x14", nil, nil, nil, "bit_field_5_0" , "[31:0]", "rwl", '0', "bit_field_12_0"],
-          [nil, "register_6" , "0x20", nil, nil, nil, "bit_field_6_0" , "[0]"   , "rwe", '0', "bit_field_12_1"],
-          [nil, "register_7" , "0x24", nil, nil, nil, "bit_field_7_0" , "[1:0]" , "rwe", '0', "bit_field_12_1"],
-          [nil, "register_8" , "0x28", nil, nil, nil, "bit_field_8_0" , "[3:0]" , "rwe", '0', "bit_field_12_1"],
-          [nil, "register_9" , "0x2C", nil, nil, nil, "bit_field_9_0" , "[7:0]" , "rwe", '0', "bit_field_12_1"],
-          [nil, "register_10", "0x30", nil, nil, nil, "bit_field_10_0", "[15:0]", "rwe", '0', "bit_field_12_1"],
-          [nil, "register_11", "0x34", nil, nil, nil, "bit_field_11_0", "[31:0]", "rwe", '0', "bit_field_12_1"],
-          [nil, "register_12", "0x40", nil, nil, nil, "bit_field_12_0", "[0]"   , "rw" , '0', nil             ],
-          [nil, nil          , nil   , nil, nil, nil, "bit_field_12_1", "[1]"   , "rw" , '0', nil             ]
+          [nil, "register_0" , "0x00", nil, nil, "bit_field_0_0" , "[0]"   , "rwl", '0', "bit_field_12_0"],
+          [nil, "register_1" , "0x04", nil, nil, "bit_field_1_0" , "[1:0]" , "rwl", '0', "bit_field_12_0"],
+          [nil, "register_2" , "0x08", nil, nil, "bit_field_2_0" , "[3:0]" , "rwl", '0', "bit_field_12_0"],
+          [nil, "register_3" , "0x0C", nil, nil, "bit_field_3_0" , "[7:0]" , "rwl", '0', "bit_field_12_0"],
+          [nil, "register_4" , "0x10", nil, nil, "bit_field_4_0" , "[15:0]", "rwl", '0', "bit_field_12_0"],
+          [nil, "register_5" , "0x14", nil, nil, "bit_field_5_0" , "[31:0]", "rwl", '0', "bit_field_12_0"],
+          [nil, "register_6" , "0x20", nil, nil, "bit_field_6_0" , "[0]"   , "rwe", '0', "bit_field_12_1"],
+          [nil, "register_7" , "0x24", nil, nil, "bit_field_7_0" , "[1:0]" , "rwe", '0', "bit_field_12_1"],
+          [nil, "register_8" , "0x28", nil, nil, "bit_field_8_0" , "[3:0]" , "rwe", '0', "bit_field_12_1"],
+          [nil, "register_9" , "0x2C", nil, nil, "bit_field_9_0" , "[7:0]" , "rwe", '0', "bit_field_12_1"],
+          [nil, "register_10", "0x30", nil, nil, "bit_field_10_0", "[15:0]", "rwe", '0', "bit_field_12_1"],
+          [nil, "register_11", "0x34", nil, nil, "bit_field_11_0", "[31:0]", "rwe", '0', "bit_field_12_1"],
+          [nil, "register_12", "0x40", nil, nil, "bit_field_12_0", "[0]"   , "rw" , '0', nil             ],
+          [nil, nil          , nil   , nil, nil, "bit_field_12_1", "[1]"   , "rw" , '0', nil             ]
         ])
       }.not_to raise_error
     end
@@ -81,14 +82,14 @@ describe 'bit_fields/type/rwl_rwe' do
     it "初期値を必要とする" do
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwl", nil, "bit_field_1_0"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwl", nil, "bit_field_1_0"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ]
         ])
       }.to raise_error RgGen::RegisterMapError
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwe", nil, "bit_field_1_0"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwe", nil, "bit_field_1_0"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", "rw" , '0', nil            ]
         ])
       }.to raise_error RgGen::RegisterMapError
     end
@@ -96,24 +97,24 @@ describe 'bit_fields/type/rwl_rwe' do
     it "1ビットの参照ビットフィールドを必要とする" do
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwl", '0', nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwl", '0', nil]
         ])
       }.to raise_error RgGen::RegisterMapError
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]"  , "rwl", '0', "bit_field_1_0"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[1:0]", "rw" , '0', nil            ]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]"  , "rwl", '0', "bit_field_1_0"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[1:0]", "rw" , '0', nil            ]
         ])
       }.to raise_error RgGen::RegisterMapError
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwe", '0', nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwe", '0', nil]
         ])
       }.to raise_error RgGen::RegisterMapError
       expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]"  , "rwe", '0', "bit_field_1_0"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[1:0]", "rw" , '0', nil            ]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]"  , "rwe", '0', "bit_field_1_0"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[1:0]", "rw" , '0', nil            ]
         ])
       }.to raise_error RgGen::RegisterMapError
     end
@@ -124,22 +125,22 @@ describe 'bit_fields/type/rwl_rwe' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil         , "block_0"                                                                                                               ],
-          [nil, nil         , 256                                                                                                                     ],
-          [nil, nil         , nil                                                                                                                     ],
-          [nil, nil         , nil                                                                                                                     ],
-          [nil, "register_0", "0x00"     , nil     , nil                           , nil, "bit_field_0_0", "[31:16]", "rwl", "0x0123", "bit_field_6_0"],
-          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_0_1", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
-          [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , nil, "bit_field_1_0", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
-          [nil, "register_2", "0x0C"     , "[2, 2]", "bit_field_7_0, bit_field_7_1", nil, "bit_field_2_0", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
-          [nil, "register_3", "0x10"     , nil     , nil                           , nil, "bit_field_3_0", "[31:16]", "rwe", "0x4567", "bit_field_6_1"],
-          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_3_1", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
-          [nil, "register_4", "0x14-0x1B", "[2]"   , nil                           , nil, "bit_field_4_0", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
-          [nil, "register_5", "0x1C"     , "[2, 2]", "bit_field_7_0, bit_field_7_1", nil, "bit_field_5_0", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
-          [nil, "register_6", "0x20"     , nil     , nil                           , nil, "bit_field_6_0", "[1]"    , "rw" , "0x0"   , nil            ],
-          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_6_1", "[0]"    , "rw" , "0x0"   , nil            ],
-          [nil, "register_7", "0x24"     , nil     , nil                           , nil, "bit_field_7_0", "[3:2]"  , "rw" , "0x0"   , nil            ],
-          [nil, nil         , nil        , nil     , nil                           , nil, "bit_field_7_1", "[1:0]"  , "rw" , "0x0"   , nil            ]
+          [nil, nil         , "block_0"                                                                                                                    ],
+          [nil, nil         , 256                                                                                                                          ],
+          [nil, nil         , nil                                                                                                                          ],
+          [nil, nil         , nil                                                                                                                          ],
+          [nil, "register_0", "0x00"     , nil     , nil                                     , "bit_field_0_0", "[31:16]", "rwl", "0x0123", "bit_field_6_0"],
+          [nil, nil         , nil        , nil     , nil                                     , "bit_field_0_1", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
+          [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                     , "bit_field_1_0", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
+          [nil, "register_2", "0x0C"     , "[2, 2]", "indirect: bit_field_7_0, bit_field_7_1", "bit_field_2_0", "[0]"    , "rwl", "0x0"   , "bit_field_6_0"],
+          [nil, "register_3", "0x10"     , nil     , nil                                     , "bit_field_3_0", "[31:16]", "rwe", "0x4567", "bit_field_6_1"],
+          [nil, nil         , nil        , nil     , nil                                     , "bit_field_3_1", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
+          [nil, "register_4", "0x14-0x1B", "[2]"   , nil                                     , "bit_field_4_0", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
+          [nil, "register_5", "0x1C"     , "[2, 2]", "indirect: bit_field_7_0, bit_field_7_1", "bit_field_5_0", "[0]"    , "rwe", "0x0"   , "bit_field_6_1"],
+          [nil, "register_6", "0x20"     , nil     , nil                                     , "bit_field_6_0", "[1]"    , "rw" , "0x0"   , nil            ],
+          [nil, nil         , nil        , nil     , nil                                     , "bit_field_6_1", "[0]"    , "rw" , "0x0"   , nil            ],
+          [nil, "register_7", "0x24"     , nil     , nil                                     , "bit_field_7_0", "[3:2]"  , "rw" , "0x0"   , nil            ],
+          [nil, nil         , nil        , nil     , nil                                     , "bit_field_7_1", "[1:0]"  , "rw" , "0x0"   , nil            ]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
@@ -347,14 +348,14 @@ CODE
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil         , "block_0"                                                                   ],
-          [nil, nil         , 256                                                                         ],
-          [nil, nil         , nil                                                                         ],
-          [nil, nil         , nil                                                                         ],
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", "rwl", "0x0", "bit_field_2_0"],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", "rwe", "0x0", "bit_field_3_0"],
-          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]", "rw" , "0x0", nil            ],
-          [nil, "register_3", "0x0C", nil, nil, nil, "bit_field_3_0", "[0]", "rw" , "0x0", nil            ]
+          [nil, nil         , "block_0"                                                              ],
+          [nil, nil         , 256                                                                    ],
+          [nil, nil         , nil                                                                    ],
+          [nil, nil         , nil                                                                    ],
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", "rwl", "0x0", "bit_field_2_0"],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", "rwe", "0x0", "bit_field_3_0"],
+          [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", "rw" , "0x0", nil            ],
+          [nil, "register_3", "0x0C", nil, nil, "bit_field_3_0", "[0]", "rw" , "0x0", nil            ]
         ]
       )
       @ral  = build_ral_factory.create(@configuration, register_map).bit_fields

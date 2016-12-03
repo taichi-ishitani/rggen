@@ -1,13 +1,14 @@
 require_relative '../spec_helper'
 
 describe 'register/array' do
-  include_context 'bit field type common'
+  include_context 'register common'
   include_context 'configuration common'
   include_context 'rtl common'
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register      , [:name, :offset_address, :array, :shadow, :external, :accessibility]
+    enable :register      , [:name, :offset_address, :array, :type]
+    enable :register      , :type, :indirect
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field     , :type, [:rw]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
@@ -33,27 +34,11 @@ describe 'register/array' do
       @factory  = build_register_map_factory
     end
 
-    let(:registers) do
-      set_load_data(load_data)
-      @factory.create(configuration, register_map_file).registers
-    end
-
-    def set_load_data(data)
-      block_data  = [
-        [nil, nil, "block_0"],
-        [nil, nil, 256      ],
-        [                   ],
-        [                   ]
-      ]
-      block_data.concat(data)
-      RegisterMapDummyLoader.load_data("block_0" => block_data)
-    end
-
     context "入力がnilや空文字の場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00"     , nil, nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04-0x0B", "" , nil, nil, "bit_field_1_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00"     , nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04-0x0B", "" , nil, "bit_field_1_0", "[31:0]", "rw", 0]
         ]
       end
 
@@ -79,13 +64,13 @@ describe 'register/array' do
     context "適切な入力が与えられた場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00"     , "[ 1]"     , nil                        , nil, "bit_field_0_0", "[31:0]" , "rw", 0],
-          [nil, "register_1", "0x04-0x0B", "[2 ]"     , nil                        , nil, "bit_field_1_0", "[31:0]" , "rw", 0],
-          [nil, "register_2", "0x20-0x47", "[10]"     , nil                        , nil, "bit_field_2_0", "[31:0]" , "rw", 0],
-          [nil, "register_3", "0x50"     , "[2, 3, 4]", "index_0, index_1, index_2", nil, "bit_field_3_0", "[31:0]" , "rw", 0],
-          [nil, "regsiter_4", "0x54"     , nil        , nil                        , nil, "index_0"      , "[17:16]", "rw", 0],
-          [nil, nil         , nil        , nil        , nil                        , nil, "index_1"      , "[ 9: 8]", "rw", 0],
-          [nil, nil         , nil        , nil        , nil                        , nil, "index_2"      , "[ 1: 0]", "rw", 0]
+          [nil, "register_0", "0x00"     , "[ 1]"     , nil                                  , "bit_field_0_0", "[31:0]" , "rw", 0],
+          [nil, "register_1", "0x04-0x0B", "[2 ]"     , nil                                  , "bit_field_1_0", "[31:0]" , "rw", 0],
+          [nil, "register_2", "0x20-0x47", "[10]"     , nil                                  , "bit_field_2_0", "[31:0]" , "rw", 0],
+          [nil, "register_3", "0x50"     , "[2, 3, 4]", "indirect: index_0, index_1, index_2", "bit_field_3_0", "[31:0]" , "rw", 0],
+          [nil, "regsiter_4", "0x54"     , nil        , nil                                  , "index_0"      , "[17:16]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                  , "index_1"      , "[ 9: 8]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                  , "index_2"      , "[ 1: 0]", "rw", 0]
         ]
       end
 
@@ -120,7 +105,7 @@ describe 'register/array' do
       it "RegisterMapErrorを発生させる" do
         invalid_values.each do |invalid_value|
           set_load_data([
-            [nil, "register_0", "0x00", invalid_value, nil, nil, "bit_field_0_0", "[31:0]", "rw", 0]
+            [nil, "register_0", "0x00", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
           ])
 
           message = "invalid value for array dimension: #{invalid_value.inspect}"
@@ -138,7 +123,7 @@ describe 'register/array' do
 
       it "RegisterMapErrorを発生させる" do
         set_load_data([
-          [nil, "register_0", "0x00 - 0x0F", invalid_value, nil, nil, "bit_field_0_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00 - 0x0F", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
         ])
 
         message = "not use multi dimensions array with real register"
@@ -155,7 +140,7 @@ describe 'register/array' do
 
       it do
         set_load_data([
-          [nil, "register_0", "0x00", invalid_value, nil, nil, "bit_field_0_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
         ])
 
         message = "0 is not allowed for array dimension: #{invalid_value.inspect}"
@@ -173,7 +158,7 @@ describe 'register/array' do
       it "RegisterMapErrorを発生させる" do
         invalid_values.each do |invalid_value|
           set_load_data([
-            [nil, "register_0", "0x00-0x07", "[#{invalid_value}]", nil, nil, "bit_field_0_0", "[31:0]", "rw", 0]
+            [nil, "register_0", "0x00-0x07", "[#{invalid_value}]", nil, "bit_field_0_0", "[31:0]", "rw", 0]
           ])
 
           message = "mismatches with own byte size(8): #{[invalid_value]}"
@@ -190,27 +175,27 @@ describe 'register/array' do
       register_map  = create_register_map(
         @configuration,
         "block_0" => [
-          [nil, nil         , "block_0"                                                                                                        ],
-          [nil, nil         , 256                                                                                                              ],
-          [                                                                                                                                    ],
-          [                                                                                                                                    ],
-          [nil, "register_0", "0x00"     , ""         , nil                                          , nil, "bit_field_0_0", "[31:0]" , "rw", 0],
-          [nil, "register_1", "0x04"     , "[1]"      , nil                                          , nil, "bit_field_1_0", "[31:0]" , "rw", 0],
-          [nil, "register_2", "0x08-0x0F", "[2]"      , nil                                          , nil, "bit_field_2_0", "[31:0]" , "rw", 0],
-          [nil, "register_3", "0x10"     , "[1, 2, 3]", "bit_field_4_0, bit_field_4_1, bit_field_4_2", nil, "bit_field_3_0", "[31:0]" , "rw", 0],
-          [nil, "register_4", "0x20"     , ""         , nil                                          , nil, "bit_field_4_0", "[23:16]", "rw", 0],
-          [nil, nil         , nil        , nil        , nil                                          , nil, "bit_field_4_1", "[15:8]" , "rw", 0],
-          [nil, nil         , nil        , nil        , nil                                          , nil, "bit_field_4_2", "[7:0]"  , "rw", 0]
+          [nil, nil         , "block_0"                                                                                                             ],
+          [nil, nil         , 256                                                                                                                   ],
+          [                                                                                                                                         ],
+          [                                                                                                                                         ],
+          [nil, "register_0", "0x00"     , ""         , nil                                                    , "bit_field_0_0", "[31:0]" , "rw", 0],
+          [nil, "register_1", "0x04"     , "[1]"      , nil                                                    , "bit_field_1_0", "[31:0]" , "rw", 0],
+          [nil, "register_2", "0x08-0x0F", "[2]"      , nil                                                    , "bit_field_2_0", "[31:0]" , "rw", 0],
+          [nil, "register_3", "0x10"     , "[1, 2, 3]", "indirect: bit_field_4_0, bit_field_4_1, bit_field_4_2", "bit_field_3_0", "[31:0]" , "rw", 0],
+          [nil, "register_4", "0x20"     , ""         , nil                                                    , "bit_field_4_0", "[23:16]", "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                                    , "bit_field_4_1", "[15:8]" , "rw", 0],
+          [nil, nil         , nil        , nil        , nil                                                    , "bit_field_4_2", "[7:0]"  , "rw", 0]
         ],
         "block_1" => [
-          [nil, nil         , "block_1"                                                       ],
-          [nil, nil         , 256                                                             ],
-          [                                                                                   ],
-          [                                                                                   ],
-          [nil, "register_0", "0x00"     , "[1]", nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04"     , ""   , nil, nil, "bit_field_1_0", "[31:0]", "rw", 0],
-          [nil, "register_2", "0x08-0x0F", "[2]", nil, nil, "bit_field_2_0", "[31:0]", "rw", 0],
-          [nil, "register_3", "0x20"     , ""   , nil, nil, "bit_field_3_0", "[31:0]", "rw", 0]
+          [nil, nil         , "block_1"                                                  ],
+          [nil, nil         , 256                                                        ],
+          [                                                                              ],
+          [                                                                              ],
+          [nil, "register_0", "0x00"     , "[1]", nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04"     , ""   , nil, "bit_field_1_0", "[31:0]", "rw", 0],
+          [nil, "register_2", "0x08-0x0F", "[2]", nil, "bit_field_2_0", "[31:0]", "rw", 0],
+          [nil, "register_3", "0x20"     , ""   , nil, "bit_field_3_0", "[31:0]", "rw", 0]
         ]
       )
       @rtl  = build_rtl_factory.create(@configuration, register_map)
@@ -289,16 +274,16 @@ describe 'register/array' do
         let(:expected_code) do
           <<'CODE'
 rggen_address_decoder #(
-  .ADDRESS_WIDTH      (6),
-  .START_ADDRESS      (6'h00),
-  .END_ADDRESS        (6'h00),
-  .USE_SHADOW_INDEX   (0),
-  .SHADOW_INDEX_WIDTH (1),
-  .SHADOW_INDEX_VALUE (1'h0)
+  .ADDRESS_WIDTH        (6),
+  .START_ADDRESS        (6'h00),
+  .END_ADDRESS          (6'h00),
+  .INDIRECT_REGISTER    (0),
+  .INDIRECT_INDEX_WIDTH (1),
+  .INDIRECT_INDEX_VALUE (1'h0)
 ) u_register_0_address_decoder (
-  .i_address      (address[7:2]),
-  .i_shadow_index (1'h0),
-  .o_select       (register_select[0])
+  .i_address        (address[7:2]),
+  .i_indirect_index (1'h0),
+  .o_select         (register_select[0])
 );
 assign o_bit_field_0_0 = bit_field_0_0_value;
 rggen_bit_field_rw #(
@@ -329,16 +314,16 @@ generate if (1) begin : g_register_2
   genvar g_i;
   for (g_i = 0;g_i < 2;g_i++) begin : g
     rggen_address_decoder #(
-      .ADDRESS_WIDTH      (6),
-      .START_ADDRESS      (6'h02 + g_i),
-      .END_ADDRESS        (6'h02 + g_i),
-      .USE_SHADOW_INDEX   (0),
-      .SHADOW_INDEX_WIDTH (1),
-      .SHADOW_INDEX_VALUE (1'h0)
+      .ADDRESS_WIDTH        (6),
+      .START_ADDRESS        (6'h02 + g_i),
+      .END_ADDRESS          (6'h02 + g_i),
+      .INDIRECT_REGISTER    (0),
+      .INDIRECT_INDEX_WIDTH (1),
+      .INDIRECT_INDEX_VALUE (1'h0)
     ) u_register_2_address_decoder (
-      .i_address      (address[7:2]),
-      .i_shadow_index (1'h0),
-      .o_select       (register_select[2+g_i])
+      .i_address        (address[7:2]),
+      .i_indirect_index (1'h0),
+      .o_select         (register_select[2+g_i])
     );
     assign o_bit_field_2_0[g_i] = bit_field_2_0_value[g_i];
     rggen_bit_field_rw #(
@@ -366,18 +351,18 @@ generate if (1) begin : g_register_3
   for (g_i = 0;g_i < 1;g_i++) begin : g
     for (g_j = 0;g_j < 2;g_j++) begin : g
       for (g_k = 0;g_k < 3;g_k++) begin : g
-        assign register_3_shadow_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
+        assign register_3_indirect_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
         rggen_address_decoder #(
-          .ADDRESS_WIDTH      (6),
-          .START_ADDRESS      (6'h04),
-          .END_ADDRESS        (6'h04),
-          .USE_SHADOW_INDEX   (1),
-          .SHADOW_INDEX_WIDTH (24),
-          .SHADOW_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
+          .ADDRESS_WIDTH        (6),
+          .START_ADDRESS        (6'h04),
+          .END_ADDRESS          (6'h04),
+          .INDIRECT_REGISTER    (1),
+          .INDIRECT_INDEX_WIDTH (24),
+          .INDIRECT_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
         ) u_register_3_address_decoder (
-          .i_address      (address[7:2]),
-          .i_shadow_index (register_3_shadow_index[g_i][g_j][g_k]),
-          .o_select       (register_select[4+6*g_i+3*g_j+g_k])
+          .i_address        (address[7:2]),
+          .i_indirect_index (register_3_indirect_index[g_i][g_j][g_k]),
+          .o_select         (register_select[4+6*g_i+3*g_j+g_k])
         );
         assign o_bit_field_3_0[g_i][g_j][g_k] = bit_field_3_0_value[g_i][g_j][g_k];
         rggen_bit_field_rw #(

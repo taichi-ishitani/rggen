@@ -121,14 +121,15 @@ HELP
         before do
           expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :external, :accessibility, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :reserved]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :axi4lite]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
         end
 
@@ -145,14 +146,15 @@ HELP
           expect(RgGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :shadow, :external, :accessibility, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :foo, :reserved]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :shadow_index_configurator, :sub_block_model]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
         end
 
