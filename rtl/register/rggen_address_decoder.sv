@@ -1,19 +1,19 @@
 module rggen_address_decoder #(
-  parameter ADDRESS_WIDTH       = 16,
-  parameter START_ADDRESS       = 'h00,
-  parameter END_ADDRESS         = 'h00,
-  parameter USE_SHADOW_INDEX    = 0,
-  parameter SHADOW_INDEX_WIDTH  = 1,
-  parameter SHADOW_INDEX_VALUE  = 'h00
+  parameter ADDRESS_WIDTH         = 16,
+  parameter START_ADDRESS         = 'h00,
+  parameter END_ADDRESS           = 'h00,
+  parameter INDIRECT_REGISTER     = 0,
+  parameter INDIRECT_INDEX_WIDTH  = 1,
+  parameter INDIRECT_INDEX_VALUE  = 'h00
 )(
-  input   [ADDRESS_WIDTH-1:0]       i_address,
-  input   [SHADOW_INDEX_WIDTH-1:0]  i_shadow_index,
-  output                            o_select
+  input   [ADDRESS_WIDTH-1:0]         i_address,
+  input   [INDIRECT_INDEX_WIDTH-1:0]  i_indirect_index,
+  output                              o_select
 );
   logic match_address;
-  logic match_shadow_index;
+  logic match_indirect_index;
 
-  assign  o_select  = (match_address && match_shadow_index) ? 1'b1 : 1'b0;
+  assign  o_select  = (match_address && match_indirect_index) ? 1'b1 : 1'b0;
 
   generate
     if (START_ADDRESS == END_ADDRESS) begin
@@ -27,11 +27,11 @@ module rggen_address_decoder #(
   endgenerate
 
   generate
-    if (USE_SHADOW_INDEX) begin
-      assign  match_shadow_index  = (i_shadow_index == SHADOW_INDEX_VALUE) ? 1'b1 : 1'b0;
+    if (INDIRECT_REGISTER) begin
+      assign  match_indirect_index  = (i_indirect_index == INDIRECT_INDEX_VALUE) ? 1'b1 : 1'b0;
     end
     else begin
-      assign  match_shadow_index  = 1'b1;
+      assign  match_indirect_index  = 1'b1;
     end
   endgenerate
 endmodule
