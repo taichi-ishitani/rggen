@@ -10,7 +10,8 @@ describe "register_block/irq_controller" do
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if, :response_mux, :irq_controller]
     enable :register_block, :host_if, :apb
-    enable :register, [:name, :offset_address, :array, :shadow, :external]
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :register, :index
     enable :bit_field, :type, [:w0c, :w1c, :rw]
@@ -23,28 +24,28 @@ describe "register_block/irq_controller" do
         [nil, nil         , 256                                                                    ],
         [                                                                                          ],
         [                                                                                          ],
-        [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
-        [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", :w0c, 0, nil            ],
-        [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :w0c, 0, nil            ],
+        [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
       ],
       "block_1" => [
         [nil, nil         , "block_1"                                                              ],
         [nil, nil         , 256                                                                    ],
         [                                                                                          ],
         [                                                                                          ],
-        [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
-        [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", :w0c, 0, "bit_field_0_0"],
-        [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :w0c, 0, "bit_field_0_0"],
+        [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
       ],
       "block_2" => [
         [nil, nil         , "block_2"                                                              ],
         [nil, nil         , 256                                                                    ],
         [                                                                                          ],
         [                                                                                          ],
-        [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[8]", :rw , 0, nil            ],
-        [nil, nil         , nil   , nil, nil, nil, "bit_field_0_1", "[0]", :rw , 0, nil            ],
-        [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[8]", :w0c, 0, "bit_field_0_1"],
-        [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[0]", :w1c, 0, "bit_field_0_0"]
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[8]", :rw , 0, nil            ],
+        [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", :rw , 0, nil            ],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[8]", :w0c, 0, "bit_field_0_1"],
+        [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, "bit_field_0_0"]
       ]
     )
     @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks

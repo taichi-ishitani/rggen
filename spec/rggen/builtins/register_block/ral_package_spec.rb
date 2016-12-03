@@ -8,7 +8,8 @@ describe "register_block/ral_package" do
   before(:all) do
     enable :global        , [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register      , [:name, :offset_address, :array, :shadow, :external, :accessibility]
+    enable :register      , [:name, :offset_address, :array, :type]
+    enable :register      , :type, [:external, :indirect]
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :wo]
     enable :bit_field     , :field_model
@@ -20,23 +21,23 @@ describe "register_block/ral_package" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         ,"block_0"                                                                                                                                  ],
-        [nil, nil         , 256                                                                                                                                       ],
-        [                                                                                                                                                             ],
-        [                                                                                                                                                             ],
-        [nil, "register_0", "0x00"     , nil     , nil                                                             , nil , "bit_field_0_0", "[31:24]", "rw" , 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_1", "[23:16]", "rw" , 1  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_2", "[15: 8]", "ro" , 2  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_0_3", "[ 7: 0]", "ro" , nil, nil],
-        [nil, "register_1", "0x04"     , "[2, 4]", "bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", nil , "bit_field_1_0", "[15:12]", "ro" , nil, nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_1", "[11: 8]", "ro" , 3  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_2", "[ 7: 4]", "rw" , 4  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_1_3", "[ 3: 0]", "rw" , 5  , nil],
-        [nil, "register_2", "0x08"     , nil     , nil                                                             , nil , "bit_field_2_0", "[8]"    , "w0c", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_2_1", "[0]"    , "w1c", 0  , nil],
-        [nil, "register_3", "0x0C"     , nil     , nil                                                             , nil , "bit_field_3_0", "[8]"    , "w0s", 0  , nil],
-        [nil, nil         , nil        , nil     , nil                                                             , nil , "bit_field_3_1", "[0]"    , "w1s", 0  , nil],
-        [nil, "register_4", "0x10-0x1F", nil     , nil                                                             , true, nil            , nil      , nil  , nil, nil]
+        [nil, nil         ,"block_0"                                                                                                                                      ],
+        [nil, nil         , 256                                                                                                                                           ],
+        [                                                                                                                                                                 ],
+        [                                                                                                                                                                 ],
+        [nil, "register_0", "0x00"     , nil     , nil                                                                       , "bit_field_0_0", "[31:24]", "rw" , 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_0_1", "[23:16]", "rw" , 1  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_0_2", "[15: 8]", "ro" , 2  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_0_3", "[ 7: 0]", "ro" , nil, nil],
+        [nil, "register_1", "0x04"     , "[2, 4]", "indirect: bit_field_0_0, bit_field_0_1:1, bit_field_0_2, bit_field_0_3:3", "bit_field_1_0", "[15:12]", "ro" , nil, nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_1_1", "[11: 8]", "ro" , 3  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_1_2", "[ 7: 4]", "rw" , 4  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_1_3", "[ 3: 0]", "rw" , 5  , nil],
+        [nil, "register_2", "0x08"     , nil     , nil                                                                       , "bit_field_2_0", "[8]"    , "w0c", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_2_1", "[0]"    , "w1c", 0  , nil],
+        [nil, "register_3", "0x0C"     , nil     , nil                                                                       , "bit_field_3_0", "[8]"    , "w0s", 0  , nil],
+        [nil, nil         , nil        , nil     , nil                                                                       , "bit_field_3_1", "[0]"    , "w1s", 0  , nil],
+        [nil, "register_4", "0x10-0x1F", nil     , :external                                                                 , nil            , nil      , nil  , nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).register_blocks[0]

@@ -1,6 +1,7 @@
 enable :global        , [:data_width, :address_width]
 enable :register_block, [:name, :byte_size]
-enable :register      , [:offset_address, :name, :array, :shadow, :external, :accessibility, :uniquness_validator]
+enable :register      , [:offset_address, :name, :array, :type, :uniquness_validator]
+enable :register      , :type, [:indirect, :external]
 enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :reference]
 enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :reserved]
 enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]

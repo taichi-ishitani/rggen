@@ -7,6 +7,6 @@ rggen_address_decoder #(
   .SHADOW_INDEX_VALUE (<%= shadow_index_value %>)
 ) u_<%= register.name%>_address_decoder (
   .i_address      (<%= register_block.host_if.address[local_address_width - 1, address_lsb] %>),
-  .i_shadow_index (<%= (shadow? && shadow_index[loop_variables]) || shadow_index_value %>),
+  .i_shadow_index (<%= (type?(:indirect) && shadow_index[loop_variables]) || shadow_index_value %>),
   .o_select       (<%= register_block.register_select[register.index] %>)
 );

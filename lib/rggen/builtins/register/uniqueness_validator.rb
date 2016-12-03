@@ -15,12 +15,12 @@ simple_item :register, :uniqueness_validator do
       when overlap_offset_address?(previous_register)
         error 'offset address is not unique', error_position(:start_address)
       when overlap_shadow_indexes?(previous_register)
-        error 'shadow indexes is not unique', error_position(:shadow_indexes)
+        error 'shadow indexes is not unique', error_position(:indexes)
       end
     end
 
     def overlap_offset_address?(previous_register)
-      return false if [previous_register, register].all?(&:shadow?)
+      return false if both_register_indirect?(previous_register)
       overlap_address_range?(register, previous_register)
     end
 
@@ -37,8 +37,12 @@ simple_item :register, :uniqueness_validator do
       false
     end
 
+    def both_register_indirect?(previous_register)
+      [register, previous_register].all? { |r| r.type?(:indirect) }
+    end
+
     def unique_shadw_indexes?(lhs, rhs)
-      lhs.shadow_indexes.any?(&rhs.shadow_indexes.method(:exclude?))
+      lhs.indexes.any?(&rhs.indexes.method(:exclude?))
     end
 
     def error_position(field)

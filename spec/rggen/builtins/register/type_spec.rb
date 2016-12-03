@@ -12,7 +12,7 @@ describe 'register/type' do
     end
 
     enable :register_block, [:name, :byte_size]
-    enable :register, [:name, :offset_address, :array, :shadow, :type]
+    enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:foo, :bar]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
@@ -73,9 +73,9 @@ describe 'register/type' do
 
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo"          , "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "bar: baz "    , "bit_field_1_0", "[0]", :rw, 0, nil],
-          [nil, "register_2", "0x08", nil, nil, "bar: baz\nqux", "bit_field_2_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo"          , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "bar: baz "    , "bit_field_1_0", "[0]", :rw, 0, nil],
+          [nil, "register_2", "0x08", nil, "bar: baz\nqux", "bit_field_2_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -92,8 +92,8 @@ describe 'register/type' do
     describe "#type/#type?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "bar", "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "bar", "bit_field_1_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -112,7 +112,7 @@ describe 'register/type' do
       context ".readable?で評価ブロックが設定されていない場合" do
         let(:load_data) do
           [
-            [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
           ]
         end
 
@@ -124,8 +124,8 @@ describe 'register/type' do
       context ".readable?で評価ブロックが設定されている場合" do
         let(:load_data) do
           [
-            [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-            [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+            [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
           ]
         end
 
@@ -144,7 +144,7 @@ describe 'register/type' do
       context ".writable?で評価ブロックが設定されていない場合" do
         let(:load_data) do
           [
-            [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
           ]
         end
 
@@ -156,8 +156,8 @@ describe 'register/type' do
       context ".writable?で評価ブロックが設定されている場合" do
         let(:load_data) do
           [
-            [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-            [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+            [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
           ]
         end
 
@@ -175,8 +175,8 @@ describe 'register/type' do
     describe "#read_only?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -193,8 +193,8 @@ describe 'register/type' do
     describe "#write_only?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -211,10 +211,10 @@ describe 'register/type' do
     describe "#reserved?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil],
-          [nil, "register_2", "0x08", nil, nil, "foo", "bit_field_2_0", "[0]", :rw, 0, nil],
-          [nil, "register_3", "0x0C", nil, nil, "foo", "bit_field_3_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil],
+          [nil, "register_2", "0x08", nil, "foo", "bit_field_2_0", "[0]", :rw, 0, nil],
+          [nil, "register_3", "0x0C", nil, "foo", "bit_field_3_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -236,7 +236,7 @@ describe 'register/type' do
     describe ".read_write" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -252,7 +252,7 @@ describe 'register/type' do
     describe ".read_only" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -268,7 +268,7 @@ describe 'register/type' do
     describe ".write_only" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -284,7 +284,7 @@ describe 'register/type' do
     describe ".reserved" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil,  "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -304,33 +304,33 @@ describe 'register/type' do
 
       it "対象レジスタがオプションが必要かどうかを指定する" do
         set_load_data([
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
         ])
         expect {
           @factory.create(configuration, register_map_file)
         }.not_to raise_error
 
         set_load_data([
-          [nil, "register_0", "0x00", nil, nil, "bar: baz", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "bar: baz", "bit_field_0_0", "[0]", :rw, 0, nil]
         ])
         expect {
           @factory.create(configuration, register_map_file)
         }.not_to raise_error
 
         set_load_data([
-          [nil, "register_0", "0x00", nil, nil, "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
         ])
         expect {
           @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error("no options are specified", position("block_0", 4, 5))
+        }.to raise_register_map_error("no options are specified", position("block_0", 4, 4))
       end
     end
 
     describe ".need_no_bit_fields" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "bar", "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "bar", "bit_field_1_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -349,7 +349,7 @@ describe 'register/type' do
     describe "#type" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil],
         ]
       end
 
@@ -361,12 +361,12 @@ describe 'register/type' do
     describe "#readable?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw      , 0, nil],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", :ro      , 0, nil],
-          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[1]", :ro      , 0, nil],
-          [nil, nil         , nil   , nil, nil, nil, "bit_field_2_1", "[0]", :wo      , 0, nil],
-          [nil, "register_3", "0x0C", nil, nil, nil, "bit_field_3_0", "[0]", :wo      , 0, nil],
-          [nil, "register_4", "0x10", nil, nil, nil, "bit_field_4_0", "[0]", :reserved, 0, nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw      , 0, nil],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :ro      , 0, nil],
+          [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[1]", :ro      , 0, nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_2_1", "[0]", :wo      , 0, nil],
+          [nil, "register_3", "0x0C", nil, nil, "bit_field_3_0", "[0]", :wo      , 0, nil],
+          [nil, "register_4", "0x10", nil, nil, "bit_field_4_0", "[0]", :reserved, 0, nil]
         ]
       end
 
@@ -382,12 +382,12 @@ describe 'register/type' do
     describe "#writable?" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw      , 0, nil],
-          [nil, "register_1", "0x04", nil, nil, nil, "bit_field_1_0", "[0]", :wo      , 0, nil],
-          [nil, "register_2", "0x08", nil, nil, nil, "bit_field_2_0", "[1]", :wo      , 0, nil],
-          [nil, nil         , nil   , nil, nil, nil, "bit_field_2_1", "[0]", :ro      , 0, nil],
-          [nil, "register_3", "0x0C", nil, nil, nil, "bit_field_3_0", "[0]", :ro      , 0, nil],
-          [nil, "register_4", "0x10", nil, nil, nil, "bit_field_4_0", "[0]", :reserved, 0, nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw      , 0, nil],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :wo      , 0, nil],
+          [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[1]", :wo      , 0, nil],
+          [nil, nil         , nil   , nil, nil, "bit_field_2_1", "[0]", :ro      , 0, nil],
+          [nil, "register_3", "0x0C", nil, nil, "bit_field_3_0", "[0]", :ro      , 0, nil],
+          [nil, "register_4", "0x10", nil, nil, "bit_field_4_0", "[0]", :reserved, 0, nil]
         ]
       end
 
@@ -403,7 +403,7 @@ describe 'register/type' do
     describe "#bit_fiels" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil],
         ]
       end
 
@@ -417,8 +417,8 @@ describe 'register/type' do
     context "入力が空セルの場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, nil  , "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, ""   , "bit_field_1_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, nil  , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, ""   , "bit_field_1_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -430,10 +430,10 @@ describe 'register/type' do
     context "入力がdefaultの場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, :default , "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "default", "bit_field_1_0", "[0]", :rw, 0, nil],
-          [nil, "register_2", "0x08", nil, nil, :DEFAULT , "bit_field_2_0", "[0]", :rw, 0, nil],
-          [nil, "register_3", "0x0C", nil, nil, "DEFAULT", "bit_field_3_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, :default , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "default", "bit_field_1_0", "[0]", :rw, 0, nil],
+          [nil, "register_2", "0x08", nil, :DEFAULT , "bit_field_2_0", "[0]", :rw, 0, nil],
+          [nil, "register_3", "0x0C", nil, "DEFAULT", "bit_field_3_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -445,10 +445,10 @@ describe 'register/type' do
     context "入力がenableで有効したレジスタ型の場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00", nil, nil, :foo , "bit_field_0_0", "[0]", :rw, 0, nil],
-          [nil, "register_1", "0x04", nil, nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil],
-          [nil, "register_2", "0x08", nil, nil, :BAR , "bit_field_2_0", "[0]", :rw, 0, nil],
-          [nil, "register_3", "0x0C", nil, nil, "BAR", "bit_field_3_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, :foo , "bit_field_0_0", "[0]", :rw, 0, nil],
+          [nil, "register_1", "0x04", nil, "foo", "bit_field_1_0", "[0]", :rw, 0, nil],
+          [nil, "register_2", "0x08", nil, :BAR , "bit_field_2_0", "[0]", :rw, 0, nil],
+          [nil, "register_3", "0x0C", nil, "BAR", "bit_field_3_0", "[0]", :rw, 0, nil]
         ]
       end
 
@@ -468,11 +468,11 @@ describe 'register/type' do
       it "RgGen::RegisterMapErrorを発生させる" do
         invalid_values.each do |invalid_value|
           set_load_data([
-            [nil, "register_0", "0x00", nil, nil, invalid_value, "bit_field_0_0", "[0]", :rw, 0, nil]
+            [nil, "register_0", "0x00", nil, invalid_value, "bit_field_0_0", "[0]", :rw, 0, nil]
           ])
           expect {
             @factory.create(configuration, register_map_file)
-          }.to raise_register_map_error("unknown register type: #{invalid_value}", position("block_0", 4, 5))
+          }.to raise_register_map_error("unknown register type: #{invalid_value}", position("block_0", 4, 4))
         end
       end
     end

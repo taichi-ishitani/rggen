@@ -10,7 +10,8 @@ describe "register_block/top_module" do
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]
     enable :register_block, :host_if, :apb
-    enable :register, [:name, :offset_address, :array, :shadow, :external, :accessibility]
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, [:external, :indirect]
     enable :register, [:address_decoder, :read_data, :bus_exporter]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :w0c, :w1c]
@@ -19,21 +20,21 @@ describe "register_block/top_module" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                                                                                           ],
-        [nil, nil         , 256                                                                                                                                 ],
-        [                                                                                                                                                       ],
-        [                                                                                                                                                       ],
-        [nil, "register_0", "0x00"     , nil     , nil                                           , nil , "bit_field_0_0", "[16]"   , "rw" , 0  , nil            ],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_0_1", "[0]"    , "ro" , 0  , nil            ],
-        [nil, "register_1", "0x04"     , nil     , nil                                           , nil , "bit_field_1_0", "[31:16]", "ro" , 0  , nil            ],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_1_1", "[15:0]" , "rw" , 0  , nil            ],
-        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                           , nil , "bit_field_2_0", "[31:16]", "ro" , 0  , nil            ],
-        [nil, nil         , nil        , nil     , nil                                           , nil , "bit_field_2_1", "[15:0]" , "rw" , 0  , nil            ],
-        [nil, "register_3", "0x10"     , "[2,4]", "bit_field_0_0:1, bit_field_1_0, bit_field_1_1", nil , "bit_field_3_0", "[31:16]", "ro" , 0  , nil            ],
-        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_3_1", "[15:0]" , "rw" , 0  , nil            ],
-        [nil, "register_4", "0x14"     , nil    , nil                                            , nil , "bit_field_4_0", "[8]"    , "w0c", 0  , "bit_field_0_0"],
-        [nil, nil         , nil        , nil    , nil                                            , nil , "bit_field_4_1", "[0]"    , "w1c", 0  , "bit_field_0_0"],
-        [nil, "register_5", "0x20-0x2F", nil    , nil                                            , true, nil            , nil      , nil  , nil, nil            ]
+        [nil, nil         , "block_0"                                                                                                                               ],
+        [nil, nil         , 256                                                                                                                                     ],
+        [                                                                                                                                                           ],
+        [                                                                                                                                                           ],
+        [nil, "register_0", "0x00"     , nil     , nil                                                     , "bit_field_0_0", "[16]"   , "rw" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                                     , "bit_field_0_1", "[0]"    , "ro" , 0  , nil            ],
+        [nil, "register_1", "0x04"     , nil     , nil                                                     , "bit_field_1_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                                     , "bit_field_1_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_2", "0x08-0x0F", "[2]"   , nil                                                     , "bit_field_2_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil     , nil                                                     , "bit_field_2_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_3", "0x10"     , "[2,4]", "indirect: bit_field_0_0:1, bit_field_1_0, bit_field_1_1", "bit_field_3_0", "[31:16]", "ro" , 0  , nil            ],
+        [nil, nil         , nil        , nil    , nil                                                      , "bit_field_3_1", "[15:0]" , "rw" , 0  , nil            ],
+        [nil, "register_4", "0x14"     , nil    , nil                                                      , "bit_field_4_0", "[8]"    , "w0c", 0  , "bit_field_0_0"],
+        [nil, nil         , nil        , nil    , nil                                                      , "bit_field_4_1", "[0]"    , "w1c", 0  , "bit_field_0_0"],
+        [nil, "register_5", "0x20-0x2F", nil    , :external                                                , nil            , nil      , nil  , nil, nil            ]
       ]
     )
 

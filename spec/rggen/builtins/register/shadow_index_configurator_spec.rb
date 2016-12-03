@@ -8,7 +8,8 @@ describe 'register/shadow_index_configurator' do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register , [:name, :offset_address, :array, :shadow, :accessibility]
+    enable :register , [:name, :offset_address, :array, :type]
+    enable :register , :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw]
     enable :register , :shadow_index_configurator
@@ -17,17 +18,17 @@ describe 'register/shadow_index_configurator' do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         ,"block_0"                                                                                                                   ],
-        [nil, nil         , 256                                                                                                                        ],
-        [                                                                                                                                              ],
-        [                                                                                                                                              ],
-        [nil, "register_0", "0x00", nil    , nil                                                             , "bit_field_0_0", "[31:24]", "rw", 0, nil],
-        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_0_1", "[23:16]", "rw", 0, nil],
-        [nil, "register_1", "0x04", nil    , nil                                                             , "bit_field_1_0", "[15: 8]", "rw", 0, nil],
-        [nil, nil         , nil   , nil    , nil                                                             , "bit_field_1_1", "[ 7: 0]", "rw", 0, nil],
-        [nil, "register_2", "0x10", nil    , "bit_field_0_0:0"                                               , "bit_field_2_0", "[31: 0]", "rw", 0, nil],
-        [nil, "register_3", "0x14", "[4]"  , "bit_field_0_0  "                                               , "bit_field_3_0", "[31: 0]", "rw", 0, nil],
-        [nil, "register_4", "0x18", "[2,4]", "bit_field_0_0:0, bit_field_0_1, bit_field_1_0, bit_field_1_1:3", "bit_field_4_0", "[31: 0]", "rw", 0, nil]
+        [nil, nil         ,"block_0"                                                                                                                             ],
+        [nil, nil         , 256                                                                                                                                  ],
+        [                                                                                                                                                        ],
+        [                                                                                                                                                        ],
+        [nil, "register_0", "0x00", nil    , nil                                                                       , "bit_field_0_0", "[31:24]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                                       , "bit_field_0_1", "[23:16]", "rw", 0, nil],
+        [nil, "register_1", "0x04", nil    , nil                                                                       , "bit_field_1_0", "[15: 8]", "rw", 0, nil],
+        [nil, nil         , nil   , nil    , nil                                                                       , "bit_field_1_1", "[ 7: 0]", "rw", 0, nil],
+        [nil, "register_2", "0x10", nil    , "indirect: bit_field_0_0:0"                                               , "bit_field_2_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_3", "0x14", "[4]"  , "indirect: bit_field_0_0  "                                               , "bit_field_3_0", "[31: 0]", "rw", 0, nil],
+        [nil, "register_4", "0x18", "[2,4]", "indirect: bit_field_0_0:0, bit_field_0_1, bit_field_1_0, bit_field_1_1:3", "bit_field_4_0", "[31: 0]", "rw", 0, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).registers

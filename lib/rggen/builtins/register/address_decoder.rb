@@ -1,7 +1,7 @@
 simple_item :register, :address_decoder do
   rtl do
     build do
-      next unless register.shadow?
+      next unless type?(:indirect)
       logic :shadow_index,
             name:       "#{register.name}_shadow_index",
             width:      shadow_index_width,
@@ -9,13 +9,13 @@ simple_item :register, :address_decoder do
     end
 
     generate_code :module_item do |buffer|
-      buffer << shadow_index_assignment << nl if shadow?
+      buffer << shadow_index_assignment << nl if type?(:indirect)
       buffer << process_template
     end
 
     delegate [:local_address_width] => :register_block
-    delegate [:array?, :shadow?, :multiple?] => :register
-    delegate [:shadow_indexes, :loop_variables] => :register
+    delegate [:array?, :type?, :multiple?] => :register
+    delegate [:indexes, :loop_variables] => :register
 
     def address_lsb
       Math.clog2(configuration.byte_width)
@@ -48,28 +48,28 @@ simple_item :register, :address_decoder do
     end
 
     def use_shadow_index
-      (shadow? && 1) || 0
+      (type?(:indirect) && 1) || 0
     end
 
     def shadow_index_width
-      return 1 unless shadow?
+      return 1 unless type?(:indirect)
       shadow_index_fields.sum(0, &:width)
     end
 
     def shadow_index_value
-      return hex(0, 1) unless shadow?
+      return hex(0, 1) unless type?(:indirect)
       concat(shadow_index_values)
     end
 
     def shadow_index_fields
-      @shadow_index_fields ||= shadow_indexes.map do |index|
+      @shadow_index_fields ||= indexes.map do |index|
         register_block.bit_fields.find_by(name: index.name)
       end
     end
 
     def shadow_index_values
       variables = loop_variables
-      shadow_indexes.map.with_index do |index, i|
+      indexes.map.with_index do |index, i|
         if index.value
           hex(index.value, shadow_index_fields[i].width)
         else

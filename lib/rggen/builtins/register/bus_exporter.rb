@@ -4,10 +4,10 @@ simple_item :register, :bus_exporter do
       :data_width, :byte_width
     ] => :configuration
     delegate [
-      :name, :byte_size, :external?, :index, :external_index
+      :name, :byte_size, :index, :external_index
     ] => :register
 
-    available? { external? }
+    available? { register.type?(:external) }
 
     build do
       output :valid     , name: "o_#{name}_valid"     , width: 1
@@ -39,6 +39,14 @@ simple_item :register, :bus_exporter do
 
     def start_address
       hex(register.start_address, register_block.local_address_width)
+    end
+
+    def external_index
+      external_registers.index(&register.method(:equal?))
+    end
+
+    def external_registers
+      register_block.registers.select { |r| r.type?(:external) }
     end
   end
 end

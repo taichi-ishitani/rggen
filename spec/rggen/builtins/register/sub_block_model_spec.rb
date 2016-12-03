@@ -8,7 +8,8 @@ describe 'register/sub_block_model' do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register , [:name, :offset_address, :array, :shadow, :external, :accessibility]
+    enable :register , [:name, :offset_address, :array, :type]
+    enable :register , :type, :external
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo]
     enable :register , :sub_block_model
@@ -21,9 +22,9 @@ describe 'register/sub_block_model' do
         [nil, nil         , 256                                                                    ],
         [                                                                                          ],
         [                                                                                          ],
-        [nil, "register_0", "0x00"     , nil, nil, nil , "bit_field_0_0", "[31:0 ]", "rw", 0  , nil],
-        [nil, "register_1", "0x10-0x1F", nil, nil, true, nil            , nil      , nil , nil, nil],
-        [nil, "register_2", "0x20-0x3F", nil, nil, true, nil            , nil      , nil , nil, nil]
+        [nil, "register_0", "0x00"     , nil, nil      , "bit_field_0_0", "[31:0 ]", "rw", 0  , nil],
+        [nil, "register_1", "0x10-0x1F", nil, :external, nil            , nil      , nil , nil, nil],
+        [nil, "register_2", "0x20-0x3F", nil, :external, nil            , nil      , nil , nil, nil]
       ]
     )
     @ral  = build_ral_factory.create(configuration, register_map).registers

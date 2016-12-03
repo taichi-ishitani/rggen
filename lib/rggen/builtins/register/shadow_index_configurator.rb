@@ -1,8 +1,6 @@
 simple_item :register, :shadow_index_configurator do
   ral do
-    available? do
-      register.shadow?
-    end
+    available? { register.type?(:indirect) }
 
     generate_code :reg_model_item do
       function_definition :configure_shadow_indexes do |f|
@@ -12,8 +10,8 @@ simple_item :register, :shadow_index_configurator do
     end
 
     def function_body(code)
-      register.shadow_indexes.each do |shadow_index|
-        code << subroutine_call(:set_shadow_index, arguments(shadow_index))
+      register.indexes.each do |index|
+        code << subroutine_call(:set_shadow_index, arguments(index))
         code << semicolon
         code << nl
       end

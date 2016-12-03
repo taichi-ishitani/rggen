@@ -11,7 +11,8 @@ describe "register/bus_exporter" do
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
-    enable :register, [:name, :offset_address, :array, :shadow, :external, :accessibility, :bus_exporter]
+    enable :register, [:name, :offset_address, :array, :type, :bus_exporter]
+    enable :register, :type, :external
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field, :type, :rw
 
@@ -23,10 +24,10 @@ describe "register/bus_exporter" do
         [nil, nil          , 256                                                           ],
         [nil, nil          , nil                                                           ],
         [nil, nil          , nil                                                           ],
-        [nil, "register_0" , "0x00"     , nil, nil, nil , "bit_field_0", "[31:0]", :rw, 0  ],
-        [nil, "register_1" , "0x04"     , nil, nil, true, nil          , nil     , nil, nil],
-        [nil, "register_2" , "0x08-0x0F", nil, nil, true, nil          , nil     , nil, nil],
-        [nil, "register_3" , "0x10-0x1B", nil, nil, true, nil          , nil     , nil, nil]
+        [nil, "register_0" , "0x00"     , nil, nil      , "bit_field_0", "[31:0]", :rw, 0  ],
+        [nil, "register_1" , "0x04"     , nil, :external, nil          , nil     , nil, nil],
+        [nil, "register_2" , "0x08-0x0F", nil, :external, nil          , nil     , nil, nil],
+        [nil, "register_3" , "0x10-0x1B", nil, :external, nil          , nil     , nil, nil]
       ]
     )
     @rtl  = build_rtl_factory.create(configuration, register_map).registers

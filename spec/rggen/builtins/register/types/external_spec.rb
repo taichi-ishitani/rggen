@@ -6,7 +6,7 @@ describe 'register/types/external' do
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register, [:name, :offset_address, :array, :shadow, :type]
+    enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :external
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
@@ -29,7 +29,7 @@ describe 'register/types/external' do
 
   let(:external_register) do
     set_load_data([
-      [nil, "register_0", "0x00", nil, nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
+      [nil, "register_0", "0x00", nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
     ])
     @factory.create(configuration, register_map_file).registers[0]
   end
@@ -54,7 +54,7 @@ describe 'register/types/external' do
     context "配列レジスタでない場合" do
       before do
         set_load_data([
-          [nil, "register_0", "0x00", nil, nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00", nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
         ])
       end
 
@@ -68,14 +68,14 @@ describe 'register/types/external' do
     context "配列レジスタの場合" do
       before do
         set_load_data([
-          [nil, "register_0", "0x00 - 0x07", "[2]", nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
+          [nil, "register_0", "0x00 - 0x07", "[2]", :external, "bit_field_0_0", "[0]", :rw, 0, nil]
         ])
       end
 
       it "RegisterMapErrorを発生させる" do
         expect {
           @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error("not use array and external register on the same register", position("block_0", 4, 5))
+        }.to raise_register_map_error("not use array and external register on the same register", position("block_0", 4, 4))
       end
     end
   end

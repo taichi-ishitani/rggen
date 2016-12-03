@@ -4,9 +4,9 @@ simple_item :register, :reg_model do
 
     delegate [:byte_width] => :configuration
     delegate [:local_address_width] => :register_block
-    delegate [:name, :dimensions, :array?, :shadow?] => :register
+    delegate [:name, :dimensions, :array?, :type?] => :register
 
-    available? { register.internal? }
+    available? { !type?(:external) }
 
     build do
       variable :block_model, :reg_model,
@@ -62,7 +62,7 @@ simple_item :register, :reg_model do
 
     def offset_address
       base  = hex(register.start_address, local_address_width)
-      if !array? || shadow?
+      if !array? || type?(:indirect)
         base
       else
         "#{base} + #{byte_width} * #{loop_varibles.first}"
@@ -76,7 +76,7 @@ simple_item :register, :reg_model do
     end
 
     def unmapped
-      (shadow? && 1) || 0
+      (type?(:indirect) && 1) || 0
     end
 
     def hdl_path
@@ -97,7 +97,7 @@ simple_item :register, :reg_model do
     end
 
     def base_model
-      (register.shadow? && :rggen_ral_shadow_reg) || :rggen_ral_reg
+      (type?(:indirect) && :rggen_ral_shadow_reg) || :rggen_ral_reg
     end
 
     def body_code(code)
