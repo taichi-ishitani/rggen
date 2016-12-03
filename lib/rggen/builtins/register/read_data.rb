@@ -1,6 +1,6 @@
 simple_item :register, :read_data do
   rtl do
-    available? { register.internal? }
+    available? { !register.type?(:external) }
 
     generate_code :module_item do |buffer|
       buffer  << assign(register_read_data, read_data) << nl

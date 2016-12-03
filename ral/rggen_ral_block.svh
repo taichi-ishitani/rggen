@@ -65,7 +65,7 @@ function void rggen_ral_block::lock_model();
     foreach (maps[i]) begin
       rggen_ral_map rggen_map;
       if ($cast(rggen_map, maps[i])) begin
-        rggen_map.Xinit_shadow_reg_address_mapX();
+        rggen_map.Xinit_indirect_reg_address_mapX();
       end
     end
   end

@@ -2,7 +2,7 @@ simple_item :register, :sub_block_model do
   ral do
     export :model_creation
 
-    available? { register.external? }
+    available? { register.type?(:external) }
 
     build do
       parameter :block_model, :model_type,

@@ -39,13 +39,13 @@ simple_item :register, :array do
 
     def multi_dimensions_array_with_real_register?
       return false unless array?
-      return false if register.shadow?
+      return false if register.type?(:indirect)
       register.multiple? && dimensions.size > 1
     end
 
     def mismatch_with_own_byte_size?
       return false unless array?
-      return false if register.shadow?
+      return false if register.type?(:indirect)
       register.byte_size != dimensions.first * configuration.byte_width
     end
   end

@@ -26,24 +26,25 @@ module RgGen::RegisterMap
           end
         end
 
-        context "#valueが文字列で空文字のとき" do
-          it "trueを返す" do
-            cell.value  = ""
-            expect(cell).to be_empty
-          end
-        end
-
-        context "#valueが文字列で空白のとき" do
-          it "falseを返す" do
-            cell.value  = " \n\t\r "
-            expect(cell).not_to be_empty
+        context "#valeuが#empty?を持つ場合" do
+          it "#empty?の結果を返す" do
+            ['', " \n\t\r ", :'', :foo, [], [:foo], {}, {foo: :bar}].each do |v|
+              cell.value  = v
+              if v.empty?
+                expect(cell).to be_empty
+              else
+                expect(cell).not_to be_empty
+              end
+            end
           end
         end
 
         context "上記以外の場合" do
           it "falseを返す" do
-            cell.value  = 1
-            expect(cell).not_to be_empty
+            [1, 1.0, Object.new].each do |v|
+              cell.value  = v
+              expect(cell).not_to be_empty
+            end
           end
         end
       end

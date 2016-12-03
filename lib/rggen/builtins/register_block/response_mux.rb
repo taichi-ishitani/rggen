@@ -25,11 +25,11 @@ simple_item :register_block, :response_mux do
     end
 
     def external_registers?
-      register_block.registers.any?(&:external?)
+      register_block.registers.any? { |r| r.type?(:external) }
     end
 
     def total_external_registers
-      register_block.registers.count(&:external?)
+      register_block.registers.count  { |r| r.type?(:external) }
     end
 
     def actual_external_register_select

@@ -22,11 +22,12 @@ describe 'bit_field/type' do
       end
     end
 
-    RgGen.enable(:global, [:data_width, :address_width])
-    RgGen.enable(:register_block, [:name, :byte_size])
-    RgGen.enable(:register, [:name, :offset_address, :array, :shadow])
-    RgGen.enable(:bit_field, [:name, :bit_assignment, :type, :initial_value, :reference])
-    RgGen.enable(:bit_field, :type, [:rw, :ro, :foo, :BAR])
+    enable :global, [:data_width, :address_width]
+    enable :register_block, [:name, :byte_size]
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, [:indirect]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :bit_field, :type, [:rw, :ro, :foo, :BAR]
 
     @items    = items
     @factory  = build_register_map_factory
@@ -506,11 +507,11 @@ describe 'bit_field/type' do
   describe "rtl" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "0x00"     , nil     , nil                           , "bit_field_0_0", "[31:0]" , "foo", nil, nil],
-        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                           , "bit_field_1_0", "[0]"    , "foo", nil, nil],
-        [nil, "register_2", "0x0C"     , "[3, 4]", "bit_field_3_0, bit_field_3_1", "bit_field_2_0", "[0]"    , "foo", nil, nil],
-        [nil, "register_3", "0x10"     , nil     , nil                           , "bit_field_3_0", "[31:16]", "ro" , nil, nil],
-        [nil, nil         , nil        , nil     , nil                           , "bit_field_3_1", "[15:0]" , "ro" , nil, nil]
+        [nil, "register_0", "0x00"     , nil     , nil                                     , "bit_field_0_0", "[31:0]" , "foo", nil, nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                     , "bit_field_1_0", "[0]"    , "foo", nil, nil],
+        [nil, "register_2", "0x0C"     , "[3, 4]", "indirect: bit_field_3_0, bit_field_3_1", "bit_field_2_0", "[0]"    , "foo", nil, nil],
+        [nil, "register_3", "0x10"     , nil     , nil                                     , "bit_field_3_0", "[31:16]", "ro" , nil, nil],
+        [nil, nil         , nil        , nil     , nil                                     , "bit_field_3_1", "[15:0]" , "ro" , nil, nil]
       ])
       @factory.create(configuration, register_map_file)
     end

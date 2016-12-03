@@ -53,8 +53,8 @@ module RgGen
         def field(field_name, options = {}, &body)
           return if fields.include?(field_name)
 
-          define_method(field_name) do
-            field_method(field_name, options, body)
+          define_method(field_name) do |*args, &block|
+            field_method(field_name, options, body, args, block)
           end
 
           fields  << field_name
@@ -139,14 +139,14 @@ module RgGen
         input_matcher && input_matcher.match_automatically?
       end
 
-      def field_method(field_name, options, body)
+      def field_method(field_name, options, body, args, block)
         validate if options[:need_validation]
         if body
-          instance_exec(&body)
+          instance_exec(*args, &body)
         elsif options[:forward_to_helper]
-          self.class.__send__(field_name)
+          self.class.__send__(field_name, *args, &block)
         elsif options.key?(:forward_to)
-          __send__(options[:forward_to])
+          __send__(options[:forward_to], *args, &block)
         else
           default_field_method(field_name, options[:default])
         end
