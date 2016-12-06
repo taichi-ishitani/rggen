@@ -33,7 +33,15 @@ describe 'register/type' do
 
   after do
     @items.each_value do |item|
-      [:@readability_evaluator, :@writability_evaluator, :@need_options, :@no_bit_fields].each do |variable|
+      [
+        :@readability_evaluator,
+        :@writability_evaluator,
+        :@need_options,
+        :@support_array_register,
+        :@array_options,
+        :@required_byte_size,
+        :@no_bit_fields
+      ].each do |variable|
         if item.instance_variable_defined?(variable)
           item.remove_instance_variable(variable)
         end
@@ -326,6 +334,358 @@ describe 'register/type' do
       end
     end
 
+    describe ".support_array_register" do
+      before do
+        define_item(:foo) { support_array_register }
+      end
+
+      it "対象レジスタが配列レジスタに対応しているかどうかを指定する" do
+        set_load_data([
+          [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+
+        set_load_data([
+          [nil, "register_0", "0x00", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+
+        set_load_data([
+          [nil, "register_0", "0x00", nil, "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+
+        set_load_data([
+          [nil, "register_0", "0x00", "[1]", "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+        ])
+        expect {
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error("array register is not allowed", position("block_0", 4, 4))
+      end
+
+      describe "support_multiple_dimensionsオプション" do
+        context "未指定の場合" do
+          it "対象レジスタが単一次元の配列レジスタに対応している事を指定する" do
+            set_load_data([
+              [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.not_to raise_error
+
+            set_load_data([
+              [nil, "register_0", "0x00", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.not_to raise_error
+
+            set_load_data([
+              [nil, "register_0", "0x00", "[1, 1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("multiple dimensions array register is not allowed", position("block_0", 4, 4))
+          end
+        end
+
+        context "support_multiple_dimensions: falseが指定された場合" do
+          before do
+            define_item(:bar) { support_array_register support_multiple_dimensions: false }
+          end
+
+          it "対象レジスタが単一次元の配列レジスタに対応している事を指定する" do
+            set_load_data([
+              [nil, "register_0", "0x00", nil, "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.not_to raise_error
+
+            set_load_data([
+              [nil, "register_0", "0x00", "[1]", "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.not_to raise_error
+
+            set_load_data([
+              [nil, "register_0", "0x00", "[1, 1]", "bar", "bit_field_0_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.to raise_register_map_error("multiple dimensions array register is not allowed", position("block_0", 4, 4))
+          end
+        end
+
+        context "support_multiple_dimensions: trueが指定された場合" do
+          before do
+            define_item(:bar) { support_array_register support_multiple_dimensions: true }
+          end
+
+          it "対象レジスタが複数次元の配列レジスタに対応している事を指定する" do
+            set_load_data([
+              [nil, "register_0", "0x00"       , nil     , "bar", "bit_field_0_0", "[0]", :rw, 0, nil],
+              [nil, "register_1", "0x04"       , "[1]"   , "bar", "bit_field_1_0", "[0]", :rw, 0, nil],
+              [nil, "register_2", "0x08 - 0x0F", "[1, 2]", "bar", "bit_field_2_0", "[0]", :rw, 0, nil]
+            ])
+            expect {
+              @factory.create(configuration, register_map_file)
+            }.not_to raise_error
+          end
+        end
+      end
+    end
+
+    describe "required_byte_size" do
+      context "amount_of_registersが指定された場合" do
+        before do
+          define_item(:foo) do
+            support_array_register support_multiple_dimensions: true
+            required_byte_size amount_of_registers
+          end
+        end
+
+        it "実装されたレジスタ分のバイトサイズが必要であることを指定する" do
+          set_load_data([
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(4) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x0B", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(12) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(4) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x0B", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(12) is not matched with required size(8)", position("block_0", 4, 4))
+        end
+      end
+
+      context "data_widthが指定された場合" do
+        before do
+          define_item(:foo) do
+            support_array_register support_multiple_dimensions: true
+            required_byte_size data_width
+          end
+        end
+
+        it "データ幅分のバイトサイズが必要であることを指定する" do
+          set_load_data([
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+        end
+      end
+
+      context "any_sizeが指定された場合" do
+        before do
+          define_item(:foo) do
+            support_array_register support_multiple_dimensions: true
+            required_byte_size any_size
+          end
+        end
+
+        it "任意のバイトサイズで使用できることを指定する" do
+          set_load_data([
+            [nil, "register_0", "0x00"       , nil     , "foo", "bit_field_0_0", "[0]", :rw, 0, nil],
+            [nil, "register_1", "0x04 - 0x0B", nil     , "foo", "bit_field_1_0", "[0]", :rw, 0, nil],
+            [nil, "register_2", "0x10"       , "[1]"   , "foo", "bit_field_2_0", "[0]", :rw, 0, nil],
+            [nil, "register_3", "0x14 - 0x1B", "[1]"   , "foo", "bit_field_3_0", "[0]", :rw, 0, nil],
+            [nil, "register_4", "0x20 - 0x27", "[2]"   , "foo", "bit_field_4_0", "[0]", :rw, 0, nil],
+            [nil, "register_5", "0x28       ", "[2]"   , "foo", "bit_field_5_0", "[0]", :rw, 0, nil],
+            [nil, "register_6", "0x2C - 0x37", "[2]"   , "foo", "bit_field_6_0", "[0]", :rw, 0, nil],
+            [nil, "register_7", "0x40 - 0x47", "[1, 2]", "foo", "bit_field_7_0", "[0]", :rw, 0, nil],
+            [nil, "register_8", "0x48       ", "[1, 2]", "foo", "bit_field_8_0", "[0]", :rw, 0, nil],
+            [nil, "register_9", "0x4C - 0x57", "[1, 2]", "foo", "bit_field_9_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+        end
+      end
+
+      context "未指定の場合" do
+        before do
+          define_item(:foo) do
+            support_array_register support_multiple_dimensions: true
+          end
+        end
+
+        it "amount_of_registersを指定した場合が既定の動作" do
+          set_load_data([
+            [nil, "register_0", "0x00", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.not_to raise_error
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x07", nil, "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(8) is not matched with required size(4)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(4) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x0B", "[2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(12) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(4) is not matched with required size(8)", position("block_0", 4, 4))
+
+          set_load_data([
+            [nil, "register_0", "0x00 - 0x0B", "[1, 2]", "foo", "bit_field_0_0", "[0]", :rw, 0, nil]
+          ])
+          expect {
+            @factory.create(configuration, register_map_file)
+          }.to raise_register_map_error("byte size(12) is not matched with required size(8)", position("block_0", 4, 4))
+        end
+      end
+    end
+
     describe ".need_no_bit_fields" do
       let(:load_data) do
         [
@@ -410,6 +770,52 @@ describe 'register/type' do
       it "配下にビットフィールドを持つ" do
         expect(registers[0].bit_fields).not_to be_empty
       end
+    end
+
+    it "単一次元の配列レジスタに対応する" do
+      set_load_data([
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.not_to raise_error
+
+      set_load_data([
+        [nil, "register_0", "0x10 - 0x17", "[2]", nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.not_to raise_error
+
+      set_load_data([
+        [nil, "register_0", "0x00", "[1, 1]"  , nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.to raise_error RgGen::RegisterMapError
+    end
+
+    it "実装されているレジスタ分のバイトサイズを必要とする" do
+      set_load_data([
+        [nil, "register_0", "0x00 - 0x07", nil, nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.to raise_error RgGen::RegisterMapError
+
+      set_load_data([
+        [nil, "register_0", "0x00", "[2]", nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.to raise_error RgGen::RegisterMapError
+
+      set_load_data([
+        [nil, "register_0", "0x00 - 0x0B", "[2]", nil, "bit_field_0_0", "[0]", :rw, 0, nil]
+      ])
+      expect {
+        @factory.create(configuration, register_map_file)
+      }.to raise_error RgGen::RegisterMapError
     end
   end
 

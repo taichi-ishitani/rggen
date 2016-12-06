@@ -6,6 +6,8 @@ list_item :register, :type, :indirect do
     writable? { register.bit_fields.any?(&:writable?) }
 
     need_options
+    support_array_register support_multiple_dimensions: true
+    required_byte_size data_width
 
     input_pattern %r{(#{variable_name})(?::(#{number}))?}
 
@@ -37,16 +39,10 @@ list_item :register, :type, :indirect do
     end
 
     validate do
-      check_using_with_real_array_register
       check_index_entries
       check_number_of_array_indexes
       check_array_index_values
       check_fixed_value_index_values
-    end
-
-    def check_using_with_real_array_register
-      return unless register.multiple? && register.array?
-      error 'not use real array and indirect register on the same register'
     end
 
     def check_index_entries

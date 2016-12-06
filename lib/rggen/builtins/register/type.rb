@@ -30,6 +30,25 @@ list_item :register, :type do
           @need_options
         end
 
+        def support_array_register(options = {})
+          @support_array_register = true
+          @array_options          = options
+        end
+
+        def support_array_register?
+          @support_array_register
+        end
+
+        def array_options
+          @array_options || {}
+        end
+
+        attr_setter :required_byte_size
+
+        [:amount_of_registers, :data_width, :any_size].each do |width_type|
+          define_method(width_type) { width_type }
+        end
+
         def need_no_bit_fields
           @no_bit_fields  = true
         end
@@ -42,6 +61,9 @@ list_item :register, :type do
       attr_class_reader :writability_evaluator
       attr_class_reader :readability_evaluator
       class_delegator   :need_options?
+      class_delegator   :support_array_register?
+      class_delegator   :array_options
+      class_delegator   :required_byte_size
       class_delegator   :need_no_bit_fields?
 
       field :type
@@ -77,11 +99,43 @@ list_item :register, :type do
         error 'no options are specified' if need_options? && cell.options.nil?
         register.need_no_children if need_no_bit_fields?
       end
+
+      validate do
+        check_array_register_usage
+        check_array_demension
+        check_byte_size
+      end
+
+      def check_array_register_usage
+        return unless register.array?
+        return if support_array_register?
+        error 'array register is not allowed'
+      end
+
+      def check_array_demension
+        return unless register.array?
+        return if register.dimensions.size == 1
+        return if array_options[:support_multiple_dimensions]
+        error 'multiple dimensions array register is not allowed'
+      end
+
+      def check_byte_size
+        return if required_byte_size == :any_size
+        return if register.byte_size == required_byte_size_value
+        error "byte size(#{register.byte_size}) is not matched with " \
+              "required size(#{required_byte_size_value})"
+      end
+
+      def required_byte_size_value
+        return configuration.byte_width if required_byte_size == :data_width
+        register.count * configuration.byte_width
+      end
     end
 
     default_item do
       readable? { register.bit_fields.any?(&:readable?) }
       writable? { register.bit_fields.any?(&:writable?) }
+      support_array_register
       build { @type = :default }
     end
 

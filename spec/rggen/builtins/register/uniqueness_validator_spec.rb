@@ -7,7 +7,7 @@ describe 'register/uniqueness_validator' do
   before(:all) do
     enable :register_block, :byte_size
     enable :register      , [:offset_address, :array, :type, :uniqueness_validator]
-    enable :register      , :type, :indirect
+    enable :register      , :type, [:indirect, :external]
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field     , :type, [:ro, :reserved]
     @factory  = build_register_map_factory
@@ -87,23 +87,23 @@ describe 'register/uniqueness_validator' do
         ["0x04"     , nil                        ],
         ["0x08"     , nil                        ],
         ["0x10"     , nil                        ],
-        ["0x00-0x07", nil                        ],
-        ["0x10-0x17", nil                        ],
-        ["0x08-0x0F", nil                        ],
-        ["0x04-0x13", nil                        ],
+        ["0x00-0x07", :external                  ],
+        ["0x10-0x17", :external                  ],
+        ["0x08-0x0F", :external                  ],
+        ["0x04-0x13", :external                  ],
         ["0x24"     , "indirect: bit_field_1_0:0"],
         ["0x28"     , nil                        ]
       ]
     end
 
     it "RegisterMapErrorを発生させる" do
-      invalid_values.each do |address, indirect|
+      invalid_values.each do |address, register_type|
         set_load_data([
-          [nil, "0x04-0x13", nil, nil                        , "bit_field_0_0", "[31:0]", "ro", nil],
+          [nil, "0x04-0x13", nil, :external                  , "bit_field_0_0", "[31:0]", "ro", nil],
           [nil, "0x20"     , nil, nil                        , "bit_field_1_0", "[31:0]", "ro", nil],
           [nil, "0x24"     , nil, nil                        , "bit_field_2_0", "[31:0]", "ro", nil],
           [nil, "0x28"     , nil, "indirect: bit_field_1_0:0", "bit_field_3_0", "[31:0]", "ro", nil],
-          [nil, address    , nil, indirect                   , "bit_field_4_0", "[31:0]", "ro", nil]
+          [nil, address    , nil, register_type              , "bit_field_4_0", "[31:0]", "ro", nil]
         ])
 
         message = "offset address is not unique"
