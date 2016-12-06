@@ -12,7 +12,7 @@ describe "register/address_decoder" do
     enable :register_block, [:clock_reset, :host_if, :response_mux]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type, :address_decoder]
-    enable :register, :type, :indirect
+    enable :register, :type, [:indirect, :external]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field, :type, [:rw, :ro, :wo]
 
@@ -27,7 +27,7 @@ describe "register/address_decoder" do
         [nil, "register_0" , "0x10"      , nil     , nil                                                                           , "bit_field_0_0" , "[31:0]" , "rw", "0"],
         [nil, "register_1" , "0x14"      , nil     , nil                                                                           , "bit_field_1_0" , "[31:0]" , "ro", "0"],
         [nil, "register_2" , "0x18"      , nil     , nil                                                                           , "bit_field_2_0" , "[31:0]" , "wo", "0"],
-        [nil, "register_3" , "0x20-0x02F", nil     , nil                                                                           , "bit_field_3_0" , "[31:0]" , "rw", "0"],
+        [nil, "register_3" , "0x20-0x02F", nil     , :external                                                                     , "bit_field_3_0" , "[31:0]" , "rw", "0"],
         [nil, "register_4" , "0x30-0x03F", "[4]"   , nil                                                                           , "bit_field_4_0" , "[31:0]" , "rw", "0"],
         [nil, "register_5" , "0x40"      , nil     , "indirect: bit_field_10_0:0"                                                  , "bit_field_5_0" , "[31:0]" , "rw", "0"],
         [nil, "register_6" , "0x40"      , nil     , "indirect: bit_field_10_0:1, bit_field_10_1:2"                                , "bit_field_6_0" , "[31:0]" , "rw", "0"],

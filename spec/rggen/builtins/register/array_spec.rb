@@ -37,8 +37,8 @@ describe 'register/array' do
     context "入力がnilや空文字の場合" do
       let(:load_data) do
         [
-          [nil, "register_0", "0x00"     , nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
-          [nil, "register_1", "0x04-0x0B", "" , nil, "bit_field_1_0", "[31:0]", "rw", 0]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[31:0]", "rw", 0],
+          [nil, "register_1", "0x04", "" , nil, "bit_field_1_0", "[31:0]", "rw", 0]
         ]
       end
 
@@ -116,23 +116,6 @@ describe 'register/array' do
       end
     end
 
-    context "実レジスタに対して、複数次元を持つ配列を設定したとき" do
-      let(:invalid_value) do
-        "[2, 2]"
-      end
-
-      it "RegisterMapErrorを発生させる" do
-        set_load_data([
-          [nil, "register_0", "0x00 - 0x0F", invalid_value, nil, "bit_field_0_0", "[31:0]", "rw", 0]
-        ])
-
-        message = "not use multi dimensions array with real register"
-        expect {
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error(message, position("block_0", 4, 3))
-      end
-    end
-
     context "配列の大きさに0が設定されたとき" do
       let(:invalid_value) do
         "[0]"
@@ -147,25 +130,6 @@ describe 'register/array' do
         expect {
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 4, 3))
-      end
-    end
-
-    context "配列の大きさと自身のバイトサイズが合わないとき" do
-      let(:invalid_values) do
-        [1, 3]
-      end
-
-      it "RegisterMapErrorを発生させる" do
-        invalid_values.each do |invalid_value|
-          set_load_data([
-            [nil, "register_0", "0x00-0x07", "[#{invalid_value}]", nil, "bit_field_0_0", "[31:0]", "rw", 0]
-          ])
-
-          message = "mismatches with own byte size(8): #{[invalid_value]}"
-          expect {
-            @factory.create(configuration, register_map_file)
-          }.to raise_register_map_error(message, position("block_0", 4, 3))
-        end
       end
     end
   end

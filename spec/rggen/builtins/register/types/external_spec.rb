@@ -46,37 +46,33 @@ describe 'register/types/external' do
     expect(external_register).not_to be_reserved
   end
 
-  it "配下にビットフィールドを持たない" do
-    expect(external_register.bit_fields).to be_empty
+  it "配列レジスタに対応しない" do
+    set_load_data([
+      [nil, "register_0", "0x00", "[1]", :external, "bit_field_0_0", "[0]", :rw, 0, nil]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.to raise_error RgGen::RegisterMapError
+
+    set_load_data([
+      [nil, "register_0", "0x00", "[1, 1]", :external, "bit_field_0_0", "[0]", :rw, 0, nil]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.to raise_error RgGen::RegisterMapError
   end
 
-  describe "#validate" do
-    context "配列レジスタでない場合" do
-      before do
-        set_load_data([
-          [nil, "register_0", "0x00", nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil]
-        ])
-      end
+  it "任意のバイト幅で使用できる" do
+    set_load_data([
+      [nil, "register_0", "0x00"       , nil, :external, "bit_field_0_0", "[0]", :rw, 0, nil],
+      [nil, "register_1", "0x04 - 0x0B", nil, :external, "bit_field_1_0", "[0]", :rw, 0, nil]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.not_to raise_error
+  end
 
-      it "エラーを起こさない" do
-        expect {
-          @factory.create(configuration, register_map_file)
-        }.not_to raise_error
-      end
-    end
-
-    context "配列レジスタの場合" do
-      before do
-        set_load_data([
-          [nil, "register_0", "0x00 - 0x07", "[2]", :external, "bit_field_0_0", "[0]", :rw, 0, nil]
-        ])
-      end
-
-      it "RegisterMapErrorを発生させる" do
-        expect {
-          @factory.create(configuration, register_map_file)
-        }.to raise_register_map_error("not use array and external register on the same register", position("block_0", 4, 4))
-      end
-    end
+  it "配下にビットフィールドを持たない" do
+    expect(external_register.bit_fields).to be_empty
   end
 end
