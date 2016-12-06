@@ -16,16 +16,6 @@ simple_item :register, :array do
       end
     end
 
-    validate do
-      case
-      when multi_dimensions_array_with_real_register?
-        error 'not use multi dimensions array with real register'
-      when mismatch_with_own_byte_size?
-        error "mismatches with own byte size(#{register.byte_size}):" \
-              " #{dimensions}"
-      end
-    end
-
     def parse_array_dimensions(cell)
       case
       when cell.nil? || cell.empty?
@@ -35,18 +25,6 @@ simple_item :register, :array do
       else
         error "invalid value for array dimension: #{cell.inspect}"
       end
-    end
-
-    def multi_dimensions_array_with_real_register?
-      return false unless array?
-      return false if register.type?(:indirect)
-      register.multiple? && dimensions.size > 1
-    end
-
-    def mismatch_with_own_byte_size?
-      return false unless array?
-      return false if register.type?(:indirect)
-      register.byte_size != dimensions.first * configuration.byte_width
     end
   end
 

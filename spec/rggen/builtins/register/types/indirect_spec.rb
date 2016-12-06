@@ -115,6 +115,52 @@ describe 'register/types/external' do
     }.to raise_error RgGen::RegisterMapError
   end
 
+  it "多次元配列に対応する" do
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00", nil, "indirect: index_0: 1", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.not_to raise_error
+
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00", "[2]", "indirect: index_0", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.not_to raise_error
+
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00", "[1, 2]", "indirect: index_0, index_1", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.not_to raise_error
+  end
+
+  it "必要なバイト幅はデータ幅である" do
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00 - 0x07", nil, "indirect: index_0: 1", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.to raise_error RgGen::RegisterMapError
+
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00 - 0x07", "[2]", "indirect: index_0", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.to raise_error RgGen::RegisterMapError
+
+    set_load_data_with_index([
+      [nil, "register_0" , "0x00 - 0x07", "[1, 2]", "indirect: index_0, index_1", "bit_field_0_0" , "[31:0]", "rw", 0  ]
+    ])
+    expect {
+      @factory.create(configuration, register_map_file)
+    }.to raise_error RgGen::RegisterMapError
+  end
+
   describe "#indexes" do
     it "インダイレクトレジスタ用のインデックスを返す" do
       expect(indirect_registers.map(&:indexes).map { |indexes|
@@ -156,19 +202,6 @@ describe 'register/types/external' do
           @factory.create(configuration, register_map_file)
         }.to raise_register_map_error(message, position("block_0", 8, 4))
       end
-    end
-  end
-
-  context "実配列レジスタと同時に使用した場合" do
-    it "RegisterMapErrorを発生させる" do
-      set_load_data_with_index([
-        [nil, "register_0", "0x08-0x0F", "[2]", "indirect: index_0", "bit_field_0_0", "[31:0]", "ro", nil]
-      ])
-
-      message = "not use real array and indirect register on the same register"
-      expect {
-        @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 8, 4))
     end
   end
 
