@@ -142,20 +142,40 @@ describe 'register/offset_address' do
     end
   end
 
-  context "スタートアドレスとエンドアドレスが等しいとき" do
-    let(:invalid_value) do
+  context "スタートアドレスとエンドアドレスが等しく、" do
+    before do
+      set_load_data([
+        [nil, address_value]
+      ])
+    end
+
+    let(:address_value) do
       "0x00 - 0x00"
     end
 
-    it "RegisterMapErrorを発生させる" do
-      set_load_data([
-        [nil, invalid_value]
-      ])
+    context "データ幅が16ビット以上の場合" do
+      let(:data_width) do
+        16
+      end
 
-      message = "start address is equal to or greater than end address: #{invalid_value}"
-      expect{
-        @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 3, 1))
+      it "RegisterMapErrorを発生させる" do
+        message = "start address is equal to or greater than end address: #{address_value}"
+        expect{
+          @factory.create(configuration, register_map_file)
+        }.to raise_register_map_error(message, position("block_0", 3, 1))
+      end
+    end
+
+    context "8ビットの場合" do
+      let(:data_width) do
+        8
+      end
+
+      it "エラーは発生しない" do
+        expect{
+          @factory.create(configuration, register_map_file)
+        }.not_to raise_error
+      end
     end
   end
 
