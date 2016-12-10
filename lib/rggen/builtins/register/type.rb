@@ -172,4 +172,36 @@ list_item :register, :type do
       end
     end
   end
+
+  c_header do
+    item_base do
+      define_helpers do
+        def address_struct_member(&body)
+          define_method(:address_struct_member, &body)
+        end
+      end
+
+      export :address_struct_member
+
+      def data_type
+        "rggen_uint#{configuration.data_width}"
+      end
+    end
+
+    default_item do
+      delegate [:name, :dimensions] => :register
+
+      address_struct_member do
+        variable_declaration(
+          name: name, data_type: data_type, dimensions: dimensions
+        )
+      end
+    end
+
+    factory do
+      def select_target_item(_, register)
+        @target_items[register.type]
+      end
+    end
+  end
 end

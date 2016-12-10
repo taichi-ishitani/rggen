@@ -9,7 +9,7 @@ module RgGen
     end
 
     def struct_definition(type_name, &body)
-      DataStructureDefinition.new(:struct, name, &body)
+      DataStructureDefinition.new(:struct, name, &body).to_code
     end
   end
 end
