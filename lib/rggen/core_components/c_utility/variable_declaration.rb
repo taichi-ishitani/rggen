@@ -22,12 +22,12 @@ module RgGen
       end
 
       def dimensions
-        return unless @attributes.key?(:dimensions)
+        return unless @attributes[:dimensions]
         @attributes[:dimensions].map { |d| "[#{d}]" }.join
       end
 
       def default_value_assignment
-        return unless @attributes.key?(:default)
+        return unless @attributes[:default]
         "= #{@attributes[:default]}"
       end
     end
