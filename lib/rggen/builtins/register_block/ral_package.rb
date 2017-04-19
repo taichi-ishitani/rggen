@@ -2,7 +2,12 @@ simple_item :register_block, :ral_package do
   ral do
     delegate :name => :register_block
 
-    write_file '<%= name %>_ral_pkg.sv' do
+    write_file '<%= name %>_ral_pkg.sv' do |f|
+      f.include_guard
+      f.body { source_file_body }
+    end
+
+    def source_file_body
       package_definition "#{name}_ral_pkg" do |pkg|
         pkg.import_package :uvm_pkg
         pkg.import_package :rggen_ral_pkg

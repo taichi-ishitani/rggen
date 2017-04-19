@@ -1,3 +1,5 @@
+`ifndef SAMPLE_1_RAL_PKG_SV
+`define SAMPLE_1_RAL_PKG_SV
 package sample_1_ral_pkg;
   import uvm_pkg::*;
   import rggen_ral_pkg::*;
@@ -51,3 +53,4 @@ package sample_1_ral_pkg;
     endfunction
   endclass
 endpackage
+`endif

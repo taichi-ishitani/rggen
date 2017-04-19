@@ -22,15 +22,8 @@ module RgGen
       end
 
       def generate_code(context, path)
-        context.create_blank_code.tap do |code|
-          case @body.arity
-          when 0
-            code << context.instance_exec(&@body)
-          when 1
-            code << context.instance_exec(path, &@body)
-          else
-            context.instance_exec(path, code, &@body)
-          end
+        context.create_blank_file(path).tap do |file|
+          context.instance_exec(file, &@body)
         end
       end
 
