@@ -54,6 +54,8 @@ describe "register_block/ral_package" do
   describe "#write_file" do
     let(:expected_code) do
       <<'CODE'
+`ifndef BLOCK_0_RAL_PKG_SV
+`define BLOCK_0_RAL_PKG_SV
 package block_0_ral_pkg;
   import uvm_pkg::*;
   import rggen_ral_pkg::*;
@@ -142,6 +144,7 @@ package block_0_ral_pkg;
     endfunction
   endclass
 endpackage
+`endif
 CODE
     end
 

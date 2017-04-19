@@ -321,9 +321,7 @@ module RgGen::OutputBase
 
     describe "#write_file" do
       before do
-        allow_any_instance_of(Item).to receive(:create_blank_code).and_wrap_original do
-          StringIO.new.tap { |io| def io.to_s; string end }
-        end
+        allow_any_instance_of(Item).to receive(:create_blank_file).and_wrap_original { '' }
       end
 
       context ".write_fileでファイル名パターン、コード生成ブロックが登録されている場合" do
@@ -342,7 +340,7 @@ module RgGen::OutputBase
 
         let(:foo_item) do
           define_and_create_item do
-            write_file('<%= object_id %>.txt') { object_id }
+            write_file('<%= object_id %>.txt') { |f| f << "#{object_id}" }
           end
         end
 
