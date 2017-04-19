@@ -2,6 +2,7 @@ require_relative 'core_components/erb_engine'
 
 require_relative 'core_components/code_utility/line'
 require_relative 'core_components/code_utility/code_block'
+require_relative 'core_components/code_utility/source_file'
 require_relative 'core_components/code_utility'
 
 require_relative 'core_components/verilog_utility/identifier'
@@ -11,6 +12,7 @@ require_relative 'core_components/verilog_utility/module_definition'
 require_relative 'core_components/verilog_utility/package_definition'
 require_relative 'core_components/verilog_utility/class_definition'
 require_relative 'core_components/verilog_utility/subroutine_definition'
+require_relative 'core_components/verilog_utility/source_file'
 require_relative 'core_components/verilog_utility'
 
 require_relative 'core_components/c_utility/variable_declaration'
