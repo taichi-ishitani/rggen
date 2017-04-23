@@ -1013,7 +1013,7 @@ describe 'register/type' do
           Hash.new { |h, w| h[w] = create_c_header(configurations[w], register_maps[w]) }
         end
 
-        it "デフォルトの’アドレス構造体用のメンバー定義を返す" do
+        it "デフォルトのアドレス構造体用のメンバー定義を返す" do
           [8, 16, 32, 64].each do |w|
             expect(c_headers[w][0].address_struct_member).to match_string "rggen_uint#{w} register_0"
             expect(c_headers[w][1].address_struct_member).to match_string "rggen_uint#{w} register_1[1]"
