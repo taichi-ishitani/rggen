@@ -2,6 +2,10 @@ module RgGen
   module CUtility
     include CodeUtility
 
+    def create_blank_file(path)
+      SourceFile.new(path)
+    end
+
     private
 
     def variable_declaration(attributes)

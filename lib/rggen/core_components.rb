@@ -17,6 +17,7 @@ require_relative 'core_components/verilog_utility'
 
 require_relative 'core_components/c_utility/variable_declaration'
 require_relative 'core_components/c_utility/data_structure_definition'
+require_relative 'core_components/c_utility/source_file'
 require_relative 'core_components/c_utility'
 
 require_relative 'core_components/configuration/raise_error'
