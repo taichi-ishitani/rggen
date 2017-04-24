@@ -125,4 +125,10 @@ list_item :register, :type, :indirect do
       2**index_bit_fields[index_name].width - 1
     end
   end
+
+  c_header do
+    address_struct_member do
+      variable_declaration(name: register.name, data_type: data_type)
+    end
+  end
 end
