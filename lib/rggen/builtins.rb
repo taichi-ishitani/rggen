@@ -37,6 +37,7 @@ require_relative 'builtins/register/types/external'
 require_relative 'builtins/register/types/indirect'
 require_relative 'builtins/register/uniqueness_validator'
 
+require_relative 'builtins/register_block/address_struct'
 require_relative 'builtins/register_block/base_address'
 require_relative 'builtins/register_block/block_model'
 require_relative 'builtins/register_block/byte_size'
