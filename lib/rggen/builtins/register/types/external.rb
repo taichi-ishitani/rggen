@@ -9,7 +9,7 @@ list_item :register, :type, :external do
     delegate [:name, :byte_size] => :register
 
     address_struct_member do
-      "RGGEN_EXTERNAL_REGISTERS(#{byte_size}, #{name.upcase}) #{name};"
+      "RGGEN_EXTERNAL_REGISTERS(#{byte_size}, #{name.upcase}) #{name}"
     end
   end
 end

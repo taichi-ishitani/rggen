@@ -95,7 +95,7 @@ describe 'register/types/external' do
 
     describe "#address_struct_member" do
       it "外部レジスタ用のアドレス構造体のメンバー定義を返す" do
-        expect(c_header.address_struct_member).to match_string "RGGEN_EXTERNAL_REGISTERS(128, REGISTER_0) register_0;"
+        expect(c_header.address_struct_member).to match_string "RGGEN_EXTERNAL_REGISTERS(128, REGISTER_0) register_0"
       end
     end
   end
