@@ -74,7 +74,10 @@ module RgGen
 
     add_option :setup do |option|
       option.long         = '--setup FILE'
-      option.default      = File.join(RGGEN_HOME, 'setup', 'default.rb')
+      option.default      = proc do
+        ENV['RGGEN_DEFAULT_SETUP_FILE'] ||
+        File.join(RGGEN_HOME, 'setup', 'default.rb')
+      end
       option.description  = 'Specify a setup file to set up RgGen tool'
     end
 
