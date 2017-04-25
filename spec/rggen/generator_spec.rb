@@ -48,6 +48,10 @@ module RgGen
       {}
     end
 
+    let(:default_setup) do
+      "#{RGGEN_HOME}/setup/default.rb"
+    end
+
     let(:sample_setup) do
       "#{RGGEN_HOME}/sample/sample_setup.rb"
     end
@@ -95,7 +99,7 @@ module RgGen
       let(:help) do
         <<HELP
 Usage: rggen [options] REGISTER_MAP
-        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{RgGen::RGGEN_HOME}/setup/default.rb)
+        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{default_setup})
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: .)
         --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
@@ -122,6 +126,10 @@ HELP
 
       context "--setupでセットアップファイルの指定が無い場合" do
         before do
+          expect_any_instance_of(RgGen::Generator).to receive(:load).with(default_setup).and_call_original
+        end
+
+        before do
           expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
@@ -146,21 +154,7 @@ HELP
 
       context "--setupでセットアップファイルの指定がある場合" do
         before do
-          expect(RgGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
-          expect(RgGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :foo, :reserved]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:c_header_file, :address_struct]).and_call_original
+          expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
         end
 
         after do
@@ -172,6 +166,40 @@ HELP
           expect {
             generator.run(["--setup", sample_setup, sample_register_maps[1]])
           }.not_to raise_error
+        end
+      end
+
+      context "環境変数 RGGEN_DEFAULT_SETUP_FILE が設定されている場合" do
+        before do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with('RGGEN_DEFAULT_SETUP_FILE').and_return(sample_setup)
+        end
+
+        after do
+          clear_dummy_list_items(:type   , [:foo])
+          clear_dummy_list_items(:host_if, [:bar])
+        end
+
+        specify "指定されたファイルをデフォルトのセットアップファイルとする" do
+          expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
+          expect {
+            generator.run([sample_register_maps[1]])
+          }.not_to raise_error
+          clear_enabled_items
+
+          expect_any_instance_of(RgGen::Generator).to receive(:load).with(default_setup).and_call_original
+          expect {
+            generator.run(["--setup", default_setup, sample_register_maps[0]])
+          }.not_to raise_error
+        end
+
+        specify "ヘルプメッセージを変更される" do
+          help  = <<HELP
+        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{sample_setup})
+HELP
+          expect {
+            generator.run(['-h'])
+          }.to raise_error(SystemExit).and output(/#{Regexp.escape(help.chomp)}/).to_stdout
         end
       end
     end
@@ -202,6 +230,35 @@ HELP
             generator.run(["--configuration", sample_json, sample_register_maps[0]])
           }.not_to raise_error
           expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
+        end
+      end
+
+      context "環境変数 RGGEN_DEFAULT_CONFIGURATION_FILE が設定されている場合" do
+        before do
+          allow(ENV).to receive(:[]).and_call_original
+          allow(ENV).to receive(:[]).with('RGGEN_DEFAULT_CONFIGURATION_FILE').and_return(sample_json)
+        end
+
+        specify "指定されたファイルをデフォルトのコンフィグレーションファイルとする" do
+          expect {
+            generator.run([sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_json)
+
+          expect {
+            generator.run(["-c", sample_yaml, sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_yaml)
+          clear_enabled_items
+        end
+
+        specify "ヘルプメッセージが変更される" do
+          help  = <<HELP
+-c, --configuration FILE         Specify a configuration file for generated source code(default: #{sample_json})
+HELP
+          expect {
+            generator.run(['-h'])
+          }.to raise_error(SystemExit).and output(/#{Regexp.escape(help.chomp)}/).to_stdout
         end
       end
     end
