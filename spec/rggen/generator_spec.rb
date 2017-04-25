@@ -48,6 +48,10 @@ module RgGen
       {}
     end
 
+    let(:default_setup) do
+      "#{RGGEN_HOME}/setup/default.rb"
+    end
+
     let(:sample_setup) do
       "#{RGGEN_HOME}/sample/sample_setup.rb"
     end
@@ -95,7 +99,7 @@ module RgGen
       let(:help) do
         <<HELP
 Usage: rggen [options] REGISTER_MAP
-        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{RgGen::RGGEN_HOME}/setup/default.rb)
+        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{default_setup})
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: .)
         --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
@@ -122,6 +126,10 @@ HELP
 
       context "--setupでセットアップファイルの指定が無い場合" do
         before do
+          allow_any_instance_of(RgGen::Generator).to receive(:load).with(default_setup).and_call_original
+        end
+
+        before do
           expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
@@ -146,21 +154,7 @@ HELP
 
       context "--setupでセットアップファイルの指定がある場合" do
         before do
-          expect(RgGen.builder).to receive(:define_list_item).with(:bit_field, :type, :foo).and_call_original
-          expect(RgGen.builder).to receive(:define_list_item).with(:register_block, :host_if, :bar).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :base_address]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :foo, :reserved]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:top_module, :clock_reset, :host_if, :response_mux, :irq_controller]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :bar]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:address_decoder, :read_data, :bus_exporter]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:c_header_file, :address_struct]).and_call_original
+          allow_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
         end
 
         after do
