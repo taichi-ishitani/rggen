@@ -16,16 +16,9 @@ simple_item :register, :offset_address do
 
     build do |cell|
       @start_address, @end_address  = parse_address(cell)
-      case
-      when @start_address >= @end_address
-        error "start address is equal to or greater than end address: #{cell}"
-      when unaligned_address?
-        error 'not aligned with data width' \
-              "(#{configuration.data_width}): #{cell}"
-      when @end_address > max_address
-        error 'exceeds the maximum offset address' \
-              "(0x#{max_address.to_s(16)}): #{cell}"
-      end
+      check_start_end_adderss_relation(cell)
+      check_address_align(cell)
+      check_address_range(cell)
     end
 
     def parse_address(cell)
@@ -41,11 +34,24 @@ simple_item :register, :offset_address do
       end
     end
 
-    def unaligned_address?
-      byte_width  = configuration.byte_width
-      return true unless (@start_address + 0).multiple?(byte_width)
-      return true unless (@end_address   + 1).multiple?(byte_width)
-      false
+    def check_start_end_adderss_relation(cell)
+      return if start_address < end_address
+      return if [configuration.byte_width, byte_size].all? { |v| v == 1}
+      error "start address is equal to or greater than end address: #{cell}"
+    end
+
+    def check_address_align(cell)
+      return if [start_address, end_address + 1].all? do |a|
+        a.multiple?(configuration.byte_width)
+      end
+      error 'not aligned with data width' \
+            "(#{configuration.data_width}): #{cell}"
+    end
+
+    def check_address_range(cell)
+      return if end_address <= max_address
+      error 'exceeds the maximum offset address' \
+            "(0x#{max_address.to_s(16)}): #{cell}"
     end
 
     def max_address

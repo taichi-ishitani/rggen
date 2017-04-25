@@ -93,13 +93,6 @@ module RgGen
       end
     end
 
-    describe "#string" do
-      it "文字列リテラルのコード片を返す" do
-        expect(verilog.send(:string, "foo")).to eq '"foo"'
-        expect(verilog.send(:string, :bar )).to eq '"bar"'
-      end
-    end
-
     describe "#bin" do
       it "与えた値をVerilog形式の2進数表記に変換する" do
         expect(verilog.send(:bin, 2, 2)).to eq "2'b10"

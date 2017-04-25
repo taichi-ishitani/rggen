@@ -179,3 +179,9 @@ shared_context 'ral common' do
     have_identifier(handle_name, attributes).and have_parameter_declaration(domain, attributes)
   end
 end
+
+shared_context 'c header common' do
+  def build_c_header_factory
+    RgGen.builder.build_factory(:c_header)
+  end
+end

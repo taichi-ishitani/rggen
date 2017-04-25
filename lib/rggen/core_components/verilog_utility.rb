@@ -53,10 +53,6 @@ module RgGen
       "'#{concat(expression_or_expressions)}"
     end
 
-    def string(expression)
-      "\"#{expression}\""
-    end
-
     def bin(value, width)
       format("%d'b%0*b", width, width, value)
     end
