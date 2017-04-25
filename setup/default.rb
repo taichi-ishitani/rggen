@@ -10,3 +10,4 @@ enable :register      , [:address_decoder, :read_data, :bus_exporter]
 enable :register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]
 enable :register      , [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]
 enable :bit_field     , :field_model
+enable :register_block, [:c_header_file, :address_struct]

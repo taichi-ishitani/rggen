@@ -9,6 +9,9 @@ module RgGen
       @expected_ral_code  = 2.times.map do |i|
         File.read("#{RGGEN_HOME}/sample/sample_#{i}_ral_pkg.sv")
       end
+      @expected_c_header_code = 2.times.map do |i|
+        File.read("#{RGGEN_HOME}/sample/sample_#{i}.h")
+      end
     end
 
     before do
@@ -131,6 +134,7 @@ HELP
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:c_header_file, :address_struct]).and_call_original
         end
 
         it "デフォルトのセットアップが実行される" do
@@ -156,6 +160,7 @@ HELP
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :field_model).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:c_header_file, :address_struct]).and_call_original
         end
 
         after do
@@ -284,15 +289,21 @@ HELP
         @expected_ral_code
       end
 
+      let(:expected_c_header_code) do
+        @expected_c_header_code
+      end
+
       context "-o/--outputで出力ディレクトリの指定が無い場合" do
         it "カレントディレクトリにファイを書き出す" do
           expect {
             generator.run(['-c', sample_yaml, sample_register_maps[0]])
           }.to write_binary_files [
-            ["./rtl/sample_0.sv"        , expected_rtl_code[0]],
-            ["./rtl/sample_1.sv"        , expected_rtl_code[1]],
-            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
-            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+            ["./rtl/sample_0.sv"        , expected_rtl_code[0]     ],
+            ["./rtl/sample_1.sv"        , expected_rtl_code[1]     ],
+            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
+            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
+            ["./c_header/sample_0.h"    , expected_c_header_code[0]],
+            ["./c_header/sample_1.h"    , expected_c_header_code[1]]
           ]
         end
       end
@@ -302,20 +313,24 @@ HELP
           expect {
             generator.run(['-c', sample_yaml, '-o', '/foo/bar', sample_register_maps[0]])
           }.to write_binary_files [
-            ["/foo/bar/rtl/sample_0.sv"        , expected_rtl_code[0]],
-            ["/foo/bar/rtl/sample_1.sv"        , expected_rtl_code[1]],
-            ["/foo/bar/ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
-            ["/foo/bar/ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+            ["/foo/bar/rtl/sample_0.sv"        , expected_rtl_code[0]     ],
+            ["/foo/bar/rtl/sample_1.sv"        , expected_rtl_code[1]     ],
+            ["/foo/bar/ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
+            ["/foo/bar/ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
+            ["/foo/bar/c_header/sample_0.h"    , expected_c_header_code[0]],
+            ["/foo/bar/c_header/sample_1.h"    , expected_c_header_code[1]]
           ]
           clear_enabled_items
 
           expect {
             generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
           }.to write_binary_files [
-            ["../baz/rtl/sample_0.sv"        , expected_rtl_code[0]],
-            ["../baz/rtl/sample_1.sv"        , expected_rtl_code[1]],
-            ["../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
-            ["../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+            ["../baz/rtl/sample_0.sv"        , expected_rtl_code[0]     ],
+            ["../baz/rtl/sample_1.sv"        , expected_rtl_code[1]     ],
+            ["../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
+            ["../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
+            ["../baz/c_header/sample_0.h"    , expected_c_header_code[0]],
+            ["../baz/c_header/sample_1.h"    , expected_c_header_code[1]]
           ]
         end
       end
@@ -325,13 +340,15 @@ HELP
           expect {
             generator.run(['-c', sample_yaml, '--except', 'rtl', sample_register_maps[0]])
           }.to write_binary_files [
-            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]],
-            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]]
+            ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
+            ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
+            ["./c_header/sample_0.h"    , expected_c_header_code[0]],
+            ["./c_header/sample_1.h"    , expected_c_header_code[1]]
           ]
           clear_enabled_items
 
           expect {
-            generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', sample_register_maps[0]])
+            generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', '--except', 'c_header', sample_register_maps[0]])
           }.not_to write_binary_files
           clear_enabled_items
         end
