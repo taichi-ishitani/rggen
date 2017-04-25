@@ -204,6 +204,34 @@ HELP
           expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
         end
       end
+
+      context "環境変数 RGGEN_DEFAULT_CONFIGURATION_FILE がされている場合" do
+        before do
+          allow(ENV).to receive(:[]).with('RGGEN_DEFAULT_CONFIGURATION_FILE').and_return(sample_json)
+        end
+
+        specify "指定されたファイルをデフォルトのコンフィグレーションファイルとする" do
+          expect {
+            generator.run([sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_json)
+
+          expect {
+            generator.run(["-c", sample_yaml, sample_register_maps[0]])
+          }.not_to raise_error
+          expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_yaml)
+          clear_enabled_items
+        end
+
+        specify "ヘルプメッセージが変更される" do
+          help  = <<HELP
+-c, --configuration FILE         Specify a configuration file for generated source code(default: #{sample_json})
+HELP
+          expect {
+            generator.run(['-h'])
+          }.to raise_error(SystemExit).and output(/#{Regexp.escape(help.chomp)}/).to_stdout
+        end
+      end
     end
 
     describe "レジスタマップの読み出し" do

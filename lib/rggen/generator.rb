@@ -20,7 +20,7 @@ module RgGen
       attr_writer   :body
 
       def on(parser, options)
-        options[@kind]  = @default if @default
+        options[@kind]  = default_value if default_value
         parser.on(*args) do |value|
           parser.instance_exec(value, options, @kind, &body)
         end
@@ -31,10 +31,10 @@ module RgGen
       end
 
       def description
-        return nil unless @description || @default
+        return nil unless @description || default_value
         d = ''
         d << @description.to_s
-        d << "(default: #{@default})" if @default
+        d << "(default: #{default_value})" if default_value
         d
       end
 
@@ -45,6 +45,16 @@ module RgGen
       def default_body
         proc do |value, options, kind|
           options[kind] = value
+        end
+      end
+
+      def default_value
+        return unless @default
+        case @default
+        when Proc
+          @default.call
+        else
+          @default
         end
       end
     end
@@ -71,6 +81,7 @@ module RgGen
     add_option :configuration do |option|
       option.short        = '-c'
       option.long         = '--configuration FILE'
+      option.default      = proc { ENV['RGGEN_DEFAULT_CONFIGURATION_FILE'] }
       option.description  = 'Specify a configuration file ' \
                             'for generated source code'
     end
