@@ -1,6 +1,4 @@
 module RgGen
-  RGGEN_HOME  = File.realpath(File.join(__dir__, '..'))
-
   require 'forwardable'
   require 'singleton'
   require 'pathname'
@@ -8,6 +6,7 @@ module RgGen
   require 'baby_erubis'
 
   require_relative 'rggen/version'
+  require_relative 'rggen/rggen_home'
 
   require_relative 'rggen/exceptions'
 
