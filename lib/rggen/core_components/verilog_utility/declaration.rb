@@ -36,6 +36,7 @@ module RgGen
 
       def width
         return unless vector?
+        return "[#{@attributes[:width]}-1:0]" unless numerical_width?
         "[#{(@attributes[:width] || 1) - 1}:0]"
       end
 
@@ -44,12 +45,12 @@ module RgGen
       end
 
       def dimensions
-        return if @attributes[:dimensions].nil?
+        return unless @attributes[:dimensions]
         @attributes[:dimensions].map { |dimension| "[#{dimension}]" }.join
       end
 
       def default_value_assignment
-        return if @attributes[:default].nil?
+        return unless @attributes[:default]
         "= #{@attributes[:default]}"
       end
 
@@ -58,8 +59,17 @@ module RgGen
       end
 
       def vector?
-        return true if @attributes[:vector]
-        @attributes[:width] && (parameter? || (@attributes[:width] > 1))
+        return true  if @attributes[:vector]
+        return false unless @attributes[:width]
+        return true  unless numerical_width?
+        return true  if parameter?
+        @attributes[:width] > 1
+      end
+
+      def numerical_width?
+        return true unless @attributes[:width]
+        return true if Integer === @attributes[:width]
+        false
       end
     end
   end
