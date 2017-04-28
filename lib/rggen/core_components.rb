@@ -12,6 +12,7 @@ require_relative 'core_components/verilog_utility/module_definition'
 require_relative 'core_components/verilog_utility/package_definition'
 require_relative 'core_components/verilog_utility/class_definition'
 require_relative 'core_components/verilog_utility/subroutine_definition'
+require_relative 'core_components/verilog_utility/interface_port_declaration'
 require_relative 'core_components/verilog_utility/source_file'
 require_relative 'core_components/verilog_utility'
 
