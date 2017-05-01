@@ -13,11 +13,11 @@ module RgGen::VerilogUtility
     end
 
     def parameter(attributes)
-      @verilog.send(:create_declaration, :parameter, attributes)
+      @verilog.send(:parameter_declaration, attributes)
     end
 
     def variable(attributes)
-      @verilog.send(:create_declaration, :variable, attributes)
+      @verilog.send(:variable_declaration, attributes)
     end
 
     it "クラス定義を行うコードを生成する" do

@@ -108,6 +108,38 @@ module RgGen::RTL
       end
     end
 
+    describe "#interface" do
+      before do
+        item.instance_eval do
+          interface :foo, type: :test_bus_if
+          interface :bar, type: :test_bus_if, parameters: [2, 4], dimensions: [2, 4]
+          interface :baz, type: :test_bus_if, name: :baz_if
+        end
+      end
+
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        expect(item.foo     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.baz.to_s).to eq 'baz_if'
+      end
+
+      it "#identifiersに与えたハンドル名を追加する" do
+        expect(item.identifiers).to match [:foo, :bar, :baz]
+      end
+
+      it "interfaceインスタンス用のInterfaceInstantiationオブジェクトを生成し、#signal_declarationsに追加する" do
+        expect(item.signal_declarations[0]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+        expect(item.signal_declarations[0].to_s).to eq "test_bus_if foo()"
+        expect(item.signal_declarations[1]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+        expect(item.signal_declarations[1].to_s).to eq "test_bus_if #(2, 4) bar[2][4]()"
+        expect(item.signal_declarations[2]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+        expect(item.signal_declarations[2].to_s).to eq "test_bus_if baz_if()"
+      end
+    end
+
     describe "#input" do
       before do
         item.instance_eval do
@@ -169,6 +201,38 @@ module RgGen::RTL
         expect(item.port_declarations[1].to_s).to eq "output [1:0] bar[4]"
         expect(item.port_declarations[2]     ).to be_instance_of RgGen::VerilogUtility::Declaration
         expect(item.port_declarations[2].to_s).to eq "output o_baz"
+      end
+    end
+
+    describe "#interface_port" do
+      before do
+        item.instance_eval do
+          interface_port :foo, type: :test_bus_if
+          interface_port :bar, type: :test_bus_if, modport: :slave, dimensions: [2, 4]
+          interface_port :baz, type: :test_bus_if, name: :baz_if
+        end
+      end
+
+      it "Identifierオブジェクトを生成し、与えたハンドル名でアクセッサを定義する" do
+        expect(item.foo     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.foo.to_s).to eq 'foo'
+        expect(item.bar     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.bar.to_s).to eq 'bar'
+        expect(item.baz     ).to be_instance_of RgGen::VerilogUtility::Identifier
+        expect(item.baz.to_s).to eq 'baz_if'
+      end
+
+      it "#identifiersに与えたハンドル名を追加する" do
+        expect(item.identifiers).to match [:foo, :bar, :baz]
+      end
+
+      it "output宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
+        expect(item.port_declarations[0]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations[0].to_s).to eq "test_bus_if foo"
+        expect(item.port_declarations[1]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations[1].to_s).to eq "test_bus_if.slave bar[2][4]"
+        expect(item.port_declarations[2]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations[2].to_s).to eq "test_bus_if baz_if"
       end
     end
 

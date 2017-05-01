@@ -37,8 +37,10 @@ module RgGen
       define_declaration_method :wire
       define_declaration_method :reg
       define_declaration_method :logic
+      define_declaration_method :interface
       define_declaration_method :input
       define_declaration_method :output
+      define_declaration_method :interface_port
       define_declaration_method :parameter
       define_declaration_method :localparam
 
@@ -49,19 +51,32 @@ module RgGen
       end
 
       def add_declaration(type, attributes)
-        attribute_key, declaration_type, declarations =
-          case type
-          when :wire, :reg, :logic
-            [:data_type, :variable, signal_declarations]
-          when :input, :output
-            [:direction, :port, port_declarations]
-          when :parameter
-            [:parameter_type, :parameter, parameter_declarations]
-          when :localparam
-            [:parameter_type, :parameter, localparam_declarations]
-          end
-        attributes[attribute_key] = type
-        declarations << create_declaration(declaration_type, attributes)
+        case type
+        when :wire, :reg, :logic
+          signal_declarations << variable_declaration(type, attributes)
+        when :interface
+          signal_declarations << interface_instantiation(attributes)
+        when :input, :output
+          port_declarations << port_declaration(type, attributes)
+        when :interface_port
+          port_declarations << interface_port_declaration(attributes)
+        when :parameter
+          parameter_declarations  << parameter_declaration(type, attributes)
+        when :localparam
+          localparam_declarations << parameter_declaration(type, attributes)
+        end
+      end
+
+      def variable_declaration(data_type, attributes)
+        super(attributes.merge(data_type: data_type))
+      end
+
+      def port_declaration(direction, attributes)
+        super(attributes.merge(direction: direction))
+      end
+
+      def parameter_declaration(parameter_type, attributes)
+        super(attributes.merge(parameter_type: parameter_type))
       end
 
       def add_identifier(handle_name, name)
