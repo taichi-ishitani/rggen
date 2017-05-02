@@ -103,18 +103,11 @@ describe "register_block/host_if" do
       end
     end
 
-    it "ホストIF用の信号群を持つ" do
+    it "rggen_bus_if のインスタンスを持つ" do
       host_if_rtl = rtl(host_if: :foo, data_width: data_width)
-      expect(host_if_rtl).to have_logic(:host_if, :command_valid , width: 1             )
-      expect(host_if_rtl).to have_logic(:host_if, :write         , width: 1             )
-      expect(host_if_rtl).to have_logic(:host_if, :read          , width: 1             )
-      expect(host_if_rtl).to have_logic(:host_if, :address       , width: address_width )
-      expect(host_if_rtl).to have_logic(:host_if, :strobe        , width: data_width / 8)
-      expect(host_if_rtl).to have_logic(:host_if, :write_data    , width: data_width    )
-      expect(host_if_rtl).to have_logic(:host_if, :write_mask    , width: data_width    )
-      expect(host_if_rtl).to have_logic(:host_if, :response_ready, width: 1             )
-      expect(host_if_rtl).to have_logic(:host_if, :read_data     , width: data_width    )
-      expect(host_if_rtl).to have_logic(:host_if, :status        , width: 2             )
+      expect(host_if_rtl).to have_interface(
+        :bus_if, type: :rggen_bus_if, parameters: [address_width, data_width]
+      )
     end
   end
 end

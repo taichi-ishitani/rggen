@@ -128,6 +128,22 @@ RSpec::Matchers.define :have_port_declaration do |attributes|
   end
 end
 
+RSpec::Matchers.define :have_interface_port_declaration do |attributes|
+  match do |component|
+    @actual = component.port_declarations
+    actual.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "interface port(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::VerilogUtility::InterfacePortDeclaration.new(attributes).to_s
+  end
+end
+
 RSpec::Matchers.define :have_signal_declaration do |attributes|
   match do |component|
     @actual = component.signal_declarations
@@ -141,6 +157,22 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
 
   define_method(:expectation) do
     RgGen::VerilogUtility::Declaration.new(:variable, attributes).to_s
+  end
+end
+
+RSpec::Matchers.define :have_interface_instantiation do |attributes|
+  match do |component|
+    @actual = component.signal_declarations
+    actual.any? { |declaration| declaration.to_s == expectation }
+  end
+
+  failure_message do
+    "signal(#{expectation}) is not declared.\n" \
+    "actual declarations: \n#{actual.map(&:to_s).join("\n")}"
+  end
+
+  define_method(:expectation) do
+    RgGen::VerilogUtility::InterfaceInstantiation.new(attributes).to_s
   end
 end
 

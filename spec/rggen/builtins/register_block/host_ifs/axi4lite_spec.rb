@@ -71,71 +71,25 @@ describe 'register_block/axi4lite' do
     end
 
     it "読み書きの優先度を決めるパラメータを持つ" do
-      expect(rtl).to have_parameter(:write_priority, name: 'WRITE_PRIORITY', default: 1)
+      expect(rtl).to have_parameter(:access_priority, name: 'ACCESS_PRIORITY', type: :rggen_direction, default: :RGGEN_WRITE)
     end
 
-    it "AXI4LITE用の入出力を持つ" do
-      expect(rtl).to  have_input(:axi4lite, :awvalid, name: 'i_awvalid', width: 1                 )
-      expect(rtl).to have_output(:axi4lite, :awready, name: 'o_awready', wdith: 1                 )
-      expect(rtl).to  have_input(:axi4lite, :awaddr , name: 'i_awaddr' , width: host_address_width)
-      expect(rtl).to  have_input(:axi4lite, :awprot , name: 'i_awprot' , width: 3                 )
-      expect(rtl).to  have_input(:axi4lite, :wvalid , name: 'i_wvalid' , width: 1                 )
-      expect(rtl).to have_output(:axi4lite, :wready , name: 'o_wready' , width: 1                 )
-      expect(rtl).to  have_input(:axi4lite, :wdata  , name: 'i_wdata'  , width: data_width        )
-      expect(rtl).to  have_input(:axi4lite, :wstrb  , name: 'i_wstrb'  , width: data_width / 8    )
-      expect(rtl).to have_output(:axi4lite, :bvalid , name: 'o_bvalid' , width: 1                 )
-      expect(rtl).to  have_input(:axi4lite, :bready , name: 'i_bready' , width: 1                 )
-      expect(rtl).to have_output(:axi4lite, :bresp  , name: 'o_bresp'  , width: 2                 )
-      expect(rtl).to  have_input(:axi4lite, :arvalid, name: 'i_arvalid', width: 1                 )
-      expect(rtl).to have_output(:axi4lite, :arready, name: 'o_arready', width: 1                 )
-      expect(rtl).to  have_input(:axi4lite, :araddr , name: 'i_araddr' , width: host_address_width)
-      expect(rtl).to  have_input(:axi4lite, :arprot , name: 'i_arprot' , width: 3                 )
-      expect(rtl).to have_output(:axi4lite, :rvalid , name: 'o_rvalid' , width: 1                 )
-      expect(rtl).to  have_input(:axi4lite, :rready , name: 'i_rready' , width: 1                 )
-      expect(rtl).to have_output(:axi4lite, :rdata  , name: 'o_rdata'  , width: data_width        )
-      expect(rtl).to have_output(:axi4lite, :rresp  , name: 'o_rresp'  , width: 2                 )
+    it "rggen_axi4lite_ifを入出力ポートに持つ" do
+      expect(rtl).to have_interface_port(:axi4lite_if, type: :rggen_axi4lite_if, modport: :slave)
     end
 
     describe "#generate_code" do
       let(:expected_code) do
         <<'CODE'
 rggen_host_if_axi4lite #(
-  .DATA_WIDTH           (32),
-  .HOST_ADDRESS_WIDTH   (16),
   .LOCAL_ADDRESS_WIDTH  (8),
-  .WRITE_PRIORITY       (WRITE_PRIORITY)
+  .DATA_WIDTH           (32),
+  .ACCESS_PRIORITY      (ACCESS_PRIORITY)
 ) u_host_if (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_awvalid        (i_awvalid),
-  .o_awready        (o_awready),
-  .i_awaddr         (i_awaddr),
-  .i_awprot         (i_awprot),
-  .i_wvalid         (i_wvalid),
-  .o_wready         (o_wready),
-  .i_wdata          (i_wdata),
-  .i_wstrb          (i_wstrb),
-  .o_bvalid         (o_bvalid),
-  .i_bready         (i_bready),
-  .o_bresp          (o_bresp),
-  .i_arvalid        (i_arvalid),
-  .o_arready        (o_arready),
-  .i_araddr         (i_araddr),
-  .i_arprot         (i_arprot),
-  .o_rvalid         (o_rvalid),
-  .i_rready         (i_rready),
-  .o_rdata          (o_rdata),
-  .o_rresp          (o_rresp),
-  .o_command_valid  (command_valid),
-  .o_write          (write),
-  .o_read           (read),
-  .o_address        (address),
-  .o_strobe         (strobe),
-  .o_write_data     (write_data),
-  .o_write_mask     (write_mask),
-  .i_response_ready (response_ready),
-  .i_read_data      (read_data),
-  .i_status         (status)
+  .clk          (clk),
+  .rst_n        (rst_n),
+  .axi4lite_if  (axi4lite_if),
+  .bus_if       (bus_if)
 );
 CODE
       end
