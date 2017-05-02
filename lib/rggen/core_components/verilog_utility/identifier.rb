@@ -1,6 +1,8 @@
 module RgGen
   module VerilogUtility
     class Identifier
+      include InputBase::RegxpPatterns
+
       def initialize(name)
         @name = name
       end
@@ -21,6 +23,17 @@ module RgGen
         else
           Identifier.new("#{@name}[#{indexes_or_msb}:#{lsb}]")
         end
+      end
+
+      def method_missing(name, *args)
+        return super if args.size > 0
+        return super unless name =~ variable_name
+        Identifier.new("#{@name}.#{name}")
+      end
+
+      def respond_to_missing?(symbol, include_private)
+        return true if name =~ variable_name
+        super
       end
     end
   end
