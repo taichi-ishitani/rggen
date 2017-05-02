@@ -7,12 +7,11 @@ describe 'bit_fields/type/w0s_w1s' do
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, [:clock_reset, :host_if, :bus_splitter]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :register, :index
     enable :bit_field, :type, [:w0s, :w1s, :rw]
 
     @factory  = build_register_map_factory
@@ -151,176 +150,144 @@ describe 'bit_fields/type/w0s_w1s' do
     describe "#generate_code" do
       let(:expected_code_0) do
         <<'CODE'
-assign o_bit_field_0_0 = bit_field_0_0_value;
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (16),
-  .INITIAL_VALUE    (16'h0123),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (0)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (0),
+  .MSB              (31),
+  .LSB              (16),
+  .INITIAL_VALUE    (16'h0123)
 ) u_bit_field_0_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_0_0_clear),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[0]),
-  .i_write          (write),
-  .i_write_data     (write_data[31:16]),
-  .i_write_mask     (write_mask[31:16]),
-  .o_value          (bit_field_0_0_value)
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_0_0_clear),
+  .register_if    (register_if[0]),
+  .o_value        (o_bit_field_0_0)
 );
 CODE
       end
 
       let(:expected_code_1) do
         <<'CODE'
-assign o_bit_field_0_1 = bit_field_0_1_value;
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (0)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (0),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_0_1 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_0_1_clear),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[0]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_0_1_value)
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_0_1_clear),
+  .register_if    (register_if[0]),
+  .o_value        (o_bit_field_0_1)
 );
 CODE
       end
 
       let(:expected_code_2) do
         <<'CODE'
-assign o_bit_field_1_0[g_i] = bit_field_1_0_value[g_i];
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (0)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (0),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_1_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_1_0_clear[g_i]),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[1+g_i]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_1_0_value[g_i])
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_1_0_clear[g_i]),
+  .register_if    (register_if[1+g_i]),
+  .o_value        (o_bit_field_1_0[g_i])
 );
 CODE
       end
 
       let(:expected_code_3) do
         <<'CODE'
-assign o_bit_field_2_0[g_i][g_j] = bit_field_2_0_value[g_i][g_j];
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (0)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (0),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_2_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_2_0_clear[g_i][g_j]),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[3+2*g_i+g_j]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_2_0_value[g_i][g_j])
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_2_0_clear[g_i][g_j]),
+  .register_if    (register_if[3+2*g_i+g_j]),
+  .o_value        (o_bit_field_2_0[g_i][g_j])
 );
 CODE
       end
 
       let(:expected_code_4) do
         <<'CODE'
-assign o_bit_field_3_0 = bit_field_3_0_value;
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (16),
-  .INITIAL_VALUE    (16'h4567),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (1)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (1),
+  .MSB              (31),
+  .LSB              (16),
+  .INITIAL_VALUE    (16'h4567)
 ) u_bit_field_3_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_3_0_clear),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[7]),
-  .i_write          (write),
-  .i_write_data     (write_data[31:16]),
-  .i_write_mask     (write_mask[31:16]),
-  .o_value          (bit_field_3_0_value)
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_3_0_clear),
+  .register_if    (register_if[7]),
+  .o_value        (o_bit_field_3_0)
 );
 CODE
       end
 
       let(:expected_code_5) do
         <<'CODE'
-assign o_bit_field_3_1 = bit_field_3_1_value;
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (1)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (1),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_3_1 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_3_1_clear),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[7]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_3_1_value)
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_3_1_clear),
+  .register_if    (register_if[7]),
+  .o_value        (o_bit_field_3_1)
 );
 CODE
       end
 
       let(:expected_code_6) do
         <<'CODE'
-assign o_bit_field_4_0[g_i] = bit_field_4_0_value[g_i];
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (1)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (1),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_4_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_4_0_clear[g_i]),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[8+g_i]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_4_0_value[g_i])
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_4_0_clear[g_i]),
+  .register_if    (register_if[8+g_i]),
+  .o_value        (o_bit_field_4_0[g_i])
 );
 CODE
       end
 
       let(:expected_code_7) do
         <<'CODE'
-assign o_bit_field_5_0[g_i][g_j] = bit_field_5_0_value[g_i][g_j];
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (1),
-  .INITIAL_VALUE    (1'h0),
-  .SET_MODE         (1),
-  .SET_CLEAR_VALUE  (1)
+  .MODE             (RGGEN_SET_MODE),
+  .SET_CLEAR_VALUE  (1),
+  .MSB              (0),
+  .LSB              (0),
+  .INITIAL_VALUE    (1'h0)
 ) u_bit_field_5_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_set_or_clear   (i_bit_field_5_0_clear[g_i][g_j]),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[10+2*g_i+g_j]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_5_0_value[g_i][g_j])
+  .clk            (clk),
+  .rst_n          (rst_n),
+  .i_set_or_clear (i_bit_field_5_0_clear[g_i][g_j]),
+  .register_if    (register_if[10+2*g_i+g_j]),
+  .o_value        (o_bit_field_5_0[g_i][g_j])
 );
 CODE
       end

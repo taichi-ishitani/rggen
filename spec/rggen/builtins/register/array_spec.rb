@@ -11,9 +11,8 @@ describe 'register/array' do
     enable :register      , :type, :indirect
     enable :bit_field     , [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field     , :type, [:rw]
-    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, [:clock_reset, :host_if, :bus_splitter]
     enable :register_block, :host_if, :apb
-    enable :register      , :address_decoder
   end
 
   before(:all) do
@@ -237,31 +236,26 @@ describe 'register/array' do
       context "レジスタが配列では無い場合" do
         let(:expected_code) do
           <<'CODE'
-rggen_address_decoder #(
-  .ADDRESS_WIDTH        (6),
-  .START_ADDRESS        (6'h00),
-  .END_ADDRESS          (6'h00),
-  .INDIRECT_REGISTER    (0),
-  .INDIRECT_INDEX_WIDTH (1),
-  .INDIRECT_INDEX_VALUE (1'h0)
-) u_register_0_address_decoder (
-  .i_address        (address[7:2]),
-  .i_indirect_index (1'h0),
-  .o_select         (register_select[0])
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h00),
+  .END_ADDRESS    (8'h03),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'hffffffff),
+  .READABLE_BITS  (32'hffffffff)
+) u_register_0 (
+  .register_if  (register_if[0]),
+  .o_select     ()
 );
-assign o_bit_field_0_0 = bit_field_0_0_value;
 rggen_bit_field_rw #(
-  .WIDTH          (32),
+  .MSB            (31),
+  .LSB            (0),
   .INITIAL_VALUE  (32'h00000000)
 ) u_bit_field_0_0 (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[0]),
-  .i_write          (write),
-  .i_write_data     (write_data[31:0]),
-  .i_write_mask     (write_mask[31:0]),
-  .o_value          (bit_field_0_0_value)
+  .clk          (clk),
+  .rst_n        (rst_n),
+  .register_if  (register_if[0]),
+  .o_value      (o_bit_field_0_0)
 );
 CODE
         end
@@ -277,31 +271,26 @@ CODE
 generate if (1) begin : g_register_2
   genvar g_i;
   for (g_i = 0;g_i < 2;g_i++) begin : g
-    rggen_address_decoder #(
-      .ADDRESS_WIDTH        (6),
-      .START_ADDRESS        (6'h02 + g_i),
-      .END_ADDRESS          (6'h02 + g_i),
-      .INDIRECT_REGISTER    (0),
-      .INDIRECT_INDEX_WIDTH (1),
-      .INDIRECT_INDEX_VALUE (1'h0)
-    ) u_register_2_address_decoder (
-      .i_address        (address[7:2]),
-      .i_indirect_index (1'h0),
-      .o_select         (register_select[2+g_i])
+    rggen_default_register #(
+      .ADDRESS_WIDTH  (8),
+      .START_ADDRESS  (8'h08 + 8'h04 * g_i),
+      .END_ADDRESS    (8'h0b + 8'h04 * g_i),
+      .DATA_WIDTH     (32),
+      .VALID_BITS     (32'hffffffff),
+      .READABLE_BITS  (32'hffffffff)
+    ) u_register_2 (
+      .register_if  (register_if[2+g_i]),
+      .o_select     ()
     );
-    assign o_bit_field_2_0[g_i] = bit_field_2_0_value[g_i];
     rggen_bit_field_rw #(
-      .WIDTH          (32),
+      .MSB            (31),
+      .LSB            (0),
       .INITIAL_VALUE  (32'h00000000)
     ) u_bit_field_2_0 (
-      .clk              (clk),
-      .rst_n            (rst_n),
-      .i_command_valid  (command_valid),
-      .i_select         (register_select[2+g_i]),
-      .i_write          (write),
-      .i_write_data     (write_data[31:0]),
-      .i_write_mask     (write_mask[31:0]),
-      .o_value          (bit_field_2_0_value[g_i])
+      .clk          (clk),
+      .rst_n        (rst_n),
+      .register_if  (register_if[2+g_i]),
+      .o_value      (o_bit_field_2_0[g_i])
     );
   end
 end endgenerate
@@ -315,32 +304,29 @@ generate if (1) begin : g_register_3
   for (g_i = 0;g_i < 1;g_i++) begin : g
     for (g_j = 0;g_j < 2;g_j++) begin : g
       for (g_k = 0;g_k < 3;g_k++) begin : g
-        assign register_3_indirect_index[g_i][g_j][g_k] = {bit_field_4_0_value, bit_field_4_1_value, bit_field_4_2_value};
-        rggen_address_decoder #(
-          .ADDRESS_WIDTH        (6),
-          .START_ADDRESS        (6'h04),
-          .END_ADDRESS          (6'h04),
-          .INDIRECT_REGISTER    (1),
-          .INDIRECT_INDEX_WIDTH (24),
-          .INDIRECT_INDEX_VALUE ({g_i[7:0], g_j[7:0], g_k[7:0]})
-        ) u_register_3_address_decoder (
-          .i_address        (address[7:2]),
-          .i_indirect_index (register_3_indirect_index[g_i][g_j][g_k]),
-          .o_select         (register_select[4+6*g_i+3*g_j+g_k])
+        assign register_3_indirect_index[g_i][g_j][g_k] = {register_if[10].value[23:16], register_if[10].value[15:8], register_if[10].value[7:0]};
+        rggen_indirect_register #(
+          .ADDRESS_WIDTH  (8),
+          .START_ADDRESS  (8'h10),
+          .END_ADDRESS    (8'h13),
+          .INDEX_WIDTH    (24),
+          .INDEX_VALUE    ({g_i[7:0], g_j[7:0], g_k[7:0]}),
+          .DATA_WIDTH     (32),
+          .VALID_BITS     (32'hffffffff),
+          .READABLE_BITS  (32'hffffffff)
+        ) u_register_3 (
+          .register_if  (register_if[4+6*g_i+3*g_j+g_k]),
+          .i_index      (register_3_indirect_index[g_i][g_j][g_k])
         );
-        assign o_bit_field_3_0[g_i][g_j][g_k] = bit_field_3_0_value[g_i][g_j][g_k];
         rggen_bit_field_rw #(
-          .WIDTH          (32),
+          .MSB            (31),
+          .LSB            (0),
           .INITIAL_VALUE  (32'h00000000)
         ) u_bit_field_3_0 (
-          .clk              (clk),
-          .rst_n            (rst_n),
-          .i_command_valid  (command_valid),
-          .i_select         (register_select[4+6*g_i+3*g_j+g_k]),
-          .i_write          (write),
-          .i_write_data     (write_data[31:0]),
-          .i_write_mask     (write_mask[31:0]),
-          .o_value          (bit_field_3_0_value[g_i][g_j][g_k])
+          .clk          (clk),
+          .rst_n        (rst_n),
+          .register_if  (register_if[4+6*g_i+3*g_j+g_k]),
+          .o_value      (o_bit_field_3_0[g_i][g_j][g_k])
         );
       end
     end

@@ -11,6 +11,7 @@ module rggen_bit_field_rw #(
   logic [MSB-LSB:0] value;
 
   assign  o_value                         = value;
+  assign  register_if.value[MSB:LSB]      = value;
   assign  register_if.read_data[MSB:LSB]  = value;
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin

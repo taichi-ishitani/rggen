@@ -5,7 +5,8 @@ module rggen_indirect_register #(
   parameter int                     INDEX_WIDTH   = 1,
   parameter bit [INDEX_WIDTH-1:0]   INDEX_VALUE   = '0,
   parameter int                     DATA_WIDTH    = 32,
-  parameter bit [DATA_WIDTH-1:0]    VALID_BITS    = '1
+  parameter bit [DATA_WIDTH-1:0]    VALID_BITS    = '1,
+  parameter bit [DATA_WIDTH-1:0]    READABLE_BITS = '1
 )(
   rggen_register_if.control register_if,
   input [INDEX_WIDTH-1:0]   i_index
@@ -23,6 +24,7 @@ module rggen_indirect_register #(
     .END_ADDRESS    (END_ADDRESS    ),
     .DATA_WIDTH     (DATA_WIDTH     ),
     .VALID_BITS     (VALID_BITS     ),
+    .READABLE_BITS  (READABLE_BITS  ),
     .INTERNAL_USE   (1              )
   ) u_register (register_if, address_match);
 endmodule

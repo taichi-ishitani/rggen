@@ -28,7 +28,6 @@ module rggen_external_register #(
     .START_ADDRESS  (START_ADDRESS  ),
     .END_ADDRESS    (END_ADDRESS    ),
     .DATA_WIDTH     (DATA_WIDTH     ),
-    .VALID_BITS     ('1             ),
     .INTERNAL_USE   (1              )
   ) u_register (register_control_if, address_match);
 
@@ -82,6 +81,7 @@ module rggen_external_register #(
 
   //  External -> Local
   assign  register_control_if.ready   = bus_if.done;
+  assign  register_data_if.value      = bus_if.read_data;
   assign  register_data_if.read_data  = bus_if.read_data;
   assign  register_control_if.status  = bus_if.status;
 endmodule

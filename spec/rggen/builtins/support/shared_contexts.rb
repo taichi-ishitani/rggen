@@ -158,7 +158,8 @@ shared_context 'rtl common' do
 
   def have_interface_port(*expectation)
     handle_name, attributes = expectation.last(2)
-    have_identifier(*expectation).and have_interface_port_declaration(attributes.merge(name: handle_name))
+    attributes[:name] ||= handle_name
+    have_identifier(*expectation).and have_interface_port_declaration(attributes)
   end
 
   def have_logic(*expectation)
@@ -170,7 +171,8 @@ shared_context 'rtl common' do
 
   def have_interface(*expectation)
     handle_name, attributes = expectation.last(2)
-    have_identifier(*expectation).and have_interface_instantiation(attributes.merge(name: handle_name.to_s))
+    attributes[:name] ||= handle_name.to_s
+    have_identifier(*expectation).and have_interface_instantiation(attributes)
   end
 end
 

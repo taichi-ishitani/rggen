@@ -16,6 +16,7 @@ describe 'register/types/external' do
     enable :register, :type, :external
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
+    enable :register_block, [:clock_reset, :bus_splitter]
     @factory  = build_register_map_factory
   end
 
@@ -79,6 +80,45 @@ describe 'register/types/external' do
 
     it "配下にビットフィールドを持たない" do
       expect(external_register.bit_fields).to be_empty
+    end
+  end
+
+  describe "rtl" do
+    include_context "rtl common"
+
+    before(:all) do
+      @rtl_factory  = build_rtl_factory
+    end
+
+    let(:rtl) do
+      @rtl_factory.create(configuration, register_map).registers[0]
+    end
+
+    it "rggen_bus_ifをポートとして持つ" do
+      expect(rtl).to have_interface_port(:bus_if, name: "register_0_bus_if", type: :rggen_bus_if, modport: :master)
+    end
+
+    describe "#generate_code" do
+      let(:expected_code) do
+        <<'CODE'
+rggen_external_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h00),
+  .END_ADDRESS    (8'h7f),
+  .DATA_WIDTH     (32)
+) u_register_0 (
+  .clk                  (clk),
+  .rst_n                (rst_n),
+  .register_control_if  (register_if[0]),
+  .register_data_if     (register_if[0]),
+  .bus_if               (register_0_bus_if)
+);
+CODE
+      end
+
+      it "外部レジスタモジュールをインスタンスするコードを生成する" do
+        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+      end
     end
   end
 

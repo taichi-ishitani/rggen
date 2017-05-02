@@ -166,18 +166,18 @@ list_item :bit_field, :type do
 
   rtl do
     item_base do
-      build do
-        next if bit_field.reserved?
-        logic :value, name: value_name, width: width, dimensions: dimensions
+      export :value
+
+      def value
+        register.register_if.value[msb, lsb]
       end
 
-      def value_name
-        "#{bit_field.name}_value"
-      end
-
-      delegate [:dimensions                          ] => :register
-      delegate [:width                               ] => :bit_field
-      delegate [:index, :local_index, :loop_variables] => :register
+      delegate [
+        :width, :msb, :lsb
+      ] => :bit_field
+      delegate [
+        :dimensions, :index, :local_index, :loop_variables
+      ] => :register
     end
 
     default_item do

@@ -13,13 +13,12 @@ list_item :bit_field, :type, [:rwl, :rwe] do
              dimensions: dimensions
     end
 
-    generate_code :module_item do |code|
-      code << assign(value_out[loop_variables], value[loop_variables]) << nl
-      code << process_template
-    end
+    generate_code_from_template :module_item
 
-    def lock_mode
-      { rwl: 1, rwe: 0 }[bit_field.type]
+    def mode
+      {
+        rwl: :RGGEN_LOCK_MODE, rwe: :RGGEN_ENABLE_MODE
+      }[bit_field.type]
     end
 
     def initial_value

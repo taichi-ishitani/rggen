@@ -13,6 +13,7 @@ interface rggen_register_if #(
   logic [DATA_WIDTH-1:0]    write_mask;
   logic                     ready;
   logic [DATA_WIDTH-1:0]    read_data;
+  logic [DATA_WIDTH-1:0]    value;
   rggen_status              status;
 
   function automatic logic write_access();
@@ -41,6 +42,7 @@ interface rggen_register_if #(
     input   direction,
     output  ready,
     output  read_data,
+    output  value,
     output  status
   );
 
@@ -49,6 +51,7 @@ interface rggen_register_if #(
     input   write_strobe,
     input   write_mask,
     output  read_data,
+    output  value,
     import  write_access,
     import  read_access
   );

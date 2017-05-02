@@ -9,7 +9,7 @@ describe 'bit_fields/type/ro' do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, [:clock_reset, :host_if, :bus_splitter]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
@@ -105,10 +105,11 @@ describe 'bit_fields/type/ro' do
       let(:expected_code_0) do
         <<'CODE'
 rggen_bit_field_ro #(
-  .WIDTH  (32)
+  .MSB  (31),
+  .LSB  (0)
 ) u_bit_field_0_0 (
-  .i_value  (i_bit_field_0_0[g_i]),
-  .o_value  (bit_field_0_0_value[g_i])
+  .register_if  (register_if[0+g_i]),
+  .i_value      (i_bit_field_0_0[g_i])
 );
 CODE
       end
@@ -116,10 +117,11 @@ CODE
       let(:expected_code_1) do
         <<'CODE'
 rggen_bit_field_ro #(
-  .WIDTH  (16)
+  .MSB  (31),
+  .LSB  (16)
 ) u_bit_field_1_0 (
-  .i_value  (i_bit_field_1_0),
-  .o_value  (bit_field_1_0_value)
+  .register_if  (register_if[2]),
+  .i_value      (i_bit_field_1_0)
 );
 CODE
       end
@@ -127,10 +129,11 @@ CODE
       let(:expected_code_2) do
         <<'CODE'
 rggen_bit_field_ro #(
-  .WIDTH  (1)
+  .MSB  (0),
+  .LSB  (0)
 ) u_bit_field_1_1 (
-  .i_value  (i_bit_field_1_1),
-  .o_value  (bit_field_1_1_value)
+  .register_if  (register_if[2]),
+  .i_value      (i_bit_field_1_1)
 );
 CODE
       end
@@ -138,11 +141,11 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
 rggen_bit_field_ro #(
-  .WIDTH  (32)
+  .MSB  (31),
+  .LSB  (0)
 ) u_bit_field_2_0 (
-  .i_value  (i_bit_field_2_0[g_i][g_j]),
-  .o_value  (bit_field_2_0_value[g_i][g_j])
-);
+  .register_if  (register_if[3+2*g_i+g_j]),
+  .i_value      (i_bit_field_2_0[g_i][g_j])
 CODE
       end
 

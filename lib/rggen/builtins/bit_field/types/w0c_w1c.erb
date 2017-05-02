@@ -1,16 +1,13 @@
 rggen_bit_field_w01s_w01c #(
-  .WIDTH            (<%= width %>),
-  .INITIAL_VALUE    (<%= initial_value %>),
-  .SET_MODE         (0),
-  .SET_CLEAR_VALUE  (<%= clear_value %>)
+  .MODE             (RGGEN_CLEAR_MODE),
+  .SET_CLEAR_VALUE  (<%= clear_value %>),
+  .MSB              (<%= msb %>),
+  .LSB              (<%= lsb %>),
+  .INITIAL_VALUE    (<%= initial_value %>)
 ) u_<%= name%> (
-  .clk              (<%= register_block.clock %>),
-  .rst_n            (<%= register_block.reset %>),
-  .i_set_or_clear   (<%= set[loop_variables] %>),
-  .i_command_valid  (<%= register_block.host_if.command_valid %>),
-  .i_select         (<%= register_block.register_select[index] %>),
-  .i_write          (<%= register_block.host_if.write %>),
-  .i_write_data     (<%= register_block.host_if.write_data[bit_field.msb, bit_field.lsb] %>),
-  .i_write_mask     (<%= register_block.host_if.write_mask[bit_field.msb, bit_field.lsb] %>),
-  .o_value          (<%= value[loop_variables] %>)
+  .clk            (<%= register_block.clock %>),
+  .rst_n          (<%= register_block.reset %>),
+  .i_set_or_clear (<%= set[loop_variables] %>),
+  .register_if    (<%= register.register_if %>),
+  .o_value        ()
 );

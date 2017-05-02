@@ -22,6 +22,7 @@ describe 'register/type' do
     enable :register, :type, [:foo, :bar]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
+    enable :register_block, [:clock_reset, :bus_splitter]
 
     @factory  = build_register_map_factory
   end
@@ -891,6 +892,184 @@ describe 'register/type' do
               @factory.create(configuration, register_map_file)
             }.to raise_register_map_error("unknown register type: #{invalid_value}", position("block_0", 4, 4))
           end
+        end
+      end
+    end
+  end
+
+  describe "rtl" do
+    include_context 'rtl common'
+
+    before(:all) do
+      configuration = create_configuration(host_if: :apb, data_width: 32, address_width: 16)
+      register_map  = create_register_map(
+        configuration,
+        "block_0" => [
+          [nil, nil         , "block_0"                                                               ],
+          [nil, nil         , 256                                                                     ],
+          [nil, nil         , nil                                                                     ],
+          [nil, nil         , nil                                                                     ],
+          [nil, "register_0", "0x00"     , nil  , nil, "bit_field_0_0", "[31:0]" , :rw      , 0  , nil],
+          [nil, "register_1", "0x04"     , nil  , nil, "bit_field_1_0", "[31]"   , :rw      , 0  , nil],
+          [nil, nil         , nil        , nil  , nil, "bit_field_1_1", "[16:15]", :rw      , 0  , nil],
+          [nil, nil         , nil        , nil  , nil, "bit_field_1_2", "[0]"    , :rw      , 0  , nil],
+          [nil, "register_2", "0x08"     , nil  , nil, "bit_field_2_0", "[30]"   , :rw      , 0  , nil],
+          [nil, "register_3", "0x0C"     , nil  , nil, "bit_field_3_0", "[1] "   , :rw      , 0  , nil],
+          [nil, "register_4", "0x10-0x1F", "[4]", nil, "bit_field_4_0", "[31:0]" , :rw      , 0  , nil],
+          [nil, "register_5", "0x20"     , nil  , nil, "bit_fiedl_5_0", "[31:24]", :reserved, nil, nil],
+          [nil, nil         , nil        , nil  , nil, "bit_field_5_1", "[23:16]", :rw      , 0  , nil],
+          [nil, nil         , nil        , nil  , nil, "bit_field_5_2", "[15: 8]", :rw      , 0  , nil],
+          [nil, nil         , nil        , nil  , nil, "bit_field_5_3", "[ 7: 0]", :wo      , 0  , nil]
+        ]
+      )
+
+      @rtl  = build_rtl_factory.create(configuration, register_map).registers
+    end
+
+    let(:rtl) do
+      @rtl
+    end
+
+    describe "item_base" do
+      describe "#valid_bits" do
+        it "アサインされているビットフィールドを示す" do
+          expect(rtl[0].valid_bits).to eq 0xFFFF_FFFF
+          expect(rtl[1].valid_bits).to eq 0x8001_8001
+          expect(rtl[2].valid_bits).to eq 0x4000_0000
+          expect(rtl[3].valid_bits).to eq 0x0000_0002
+          expect(rtl[4].valid_bits).to eq 0xFFFF_FFFF
+          expect(rtl[5].valid_bits).to eq 0x00FF_FFFF
+        end
+      end
+
+      describe "#readable_bits" do
+        it "読み出し可能なビットフィールドを示す" do
+          expect(rtl[0].readable_bits).to eq 0xFFFF_FFFF
+          expect(rtl[1].readable_bits).to eq 0x8001_8001
+          expect(rtl[2].readable_bits).to eq 0x4000_0000
+          expect(rtl[3].readable_bits).to eq 0x0000_0002
+          expect(rtl[4].readable_bits).to eq 0xFFFF_FFFF
+          expect(rtl[5].readable_bits).to eq 0x00FF_FF00
+        end
+      end
+
+      describe "#register_if" do
+        it "自身が属するregister_ifを返す" do
+          expect(rtl[0].register_if).to match_identifier "register_if[0]"
+          expect(rtl[1].register_if).to match_identifier "register_if[1]"
+          expect(rtl[2].register_if).to match_identifier "register_if[2]"
+          expect(rtl[3].register_if).to match_identifier "register_if[3]"
+          expect(rtl[4].register_if).to match_identifier "register_if[4+g_i]"
+          expect(rtl[5].register_if).to match_identifier "register_if[8]"
+        end
+      end
+    end
+
+    describe "default_item" do
+      describe "#generate_code" do
+        let(:expected_code_0) do
+          <<'CODE'
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h00),
+  .END_ADDRESS    (8'h03),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'hffffffff),
+  .READABLE_BITS  (32'hffffffff)
+) u_register_0 (
+  .register_if  (register_if[0]),
+  .o_select     ()
+);
+CODE
+        end
+
+        let(:expected_code_1) do
+          <<'CODE'
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h04),
+  .END_ADDRESS    (8'h07),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'h80018001),
+  .READABLE_BITS  (32'h80018001)
+) u_register_1 (
+  .register_if  (register_if[1]),
+  .o_select     ()
+);
+CODE
+        end
+
+        let(:expected_code_2) do
+          <<'CODE'
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h08),
+  .END_ADDRESS    (8'h0b),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'h40000000),
+  .READABLE_BITS  (32'h40000000)
+) u_register_2 (
+  .register_if  (register_if[2]),
+  .o_select     ()
+);
+CODE
+        end
+
+        let(:expected_code_3) do
+          <<'CODE'
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h0c),
+  .END_ADDRESS    (8'h0f),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'h00000002),
+  .READABLE_BITS  (32'h00000002)
+) u_register_3 (
+  .register_if  (register_if[3]),
+  .o_select     ()
+);
+CODE
+        end
+
+        let(:expected_code_4) do
+          <<'CODE'
+    rggen_default_register #(
+      .ADDRESS_WIDTH  (8),
+      .START_ADDRESS  (8'h10 + 8'h04 * g_i),
+      .END_ADDRESS    (8'h13 + 8'h04 * g_i),
+      .DATA_WIDTH     (32),
+      .VALID_BITS     (32'hffffffff),
+      .READABLE_BITS  (32'hffffffff)
+    ) u_register_4 (
+      .register_if  (register_if[4+g_i]),
+      .o_select     ()
+    );
+CODE
+        end
+
+        let(:expected_code_5) do
+          <<'CODE'
+rggen_default_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h20),
+  .END_ADDRESS    (8'h23),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'h00ffffff),
+  .READABLE_BITS  (32'h00ffff00)
+) u_register_5 (
+  .register_if  (register_if[8]),
+  .o_select     ()
+);
+CODE
+        end
+
+        it "rggen_default_registerをインスタンスするコードを生成する" do
+          expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
+          expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
+          expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
+          expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
+          expect(rtl[4]).to generate_code(:module_item, :top_down, expected_code_4)
+          expect(rtl[5]).to generate_code(:module_item, :top_down, expected_code_5)
         end
       end
     end
