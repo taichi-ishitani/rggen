@@ -9,14 +9,11 @@ interface rggen_bus_if #(
   rggen_direction           direction;
   logic [DATA_WIDTH-1:0]    write_data;
   logic [DATA_WIDTH/8-1:0]  write_strobe;
+  logic                     done;
   logic                     read_done;
   logic                     write_done;
   logic [DATA_WIDTH-1:0]    read_data;
   rggen_status              status;
-
-  function automatic logic done();
-    return (read_done || write_done) ? 1'b1 : 1'b0;
-  endfunction
 
   modport master (
     output  request,
@@ -24,11 +21,11 @@ interface rggen_bus_if #(
     output  direction,
     output  write_data,
     output  write_strobe,
+    input   done,
     input   read_done,
     input   write_done,
     input   read_data
-    input   status,
-    import  done
+    input   status
   );
 
   modport slave (
@@ -37,6 +34,7 @@ interface rggen_bus_if #(
     input   direction,
     input   write_data,
     input   write_strobe,
+    output  done,
     output  read_data,
     output  write_done,
     output  read_data,

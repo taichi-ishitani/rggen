@@ -36,7 +36,7 @@ module rggen_external_register #(
     if (!rst_n) begin
       access_done <= '0;
     end
-    else if (request && bus_if.done()) begin
+    else if (request && bus_if.done) begin
       access_done <= '1;
     end
     else begin
@@ -58,7 +58,7 @@ module rggen_external_register #(
       write_data    <= '0;
       write_strobe  <= '0;
     end
-    else if (request && bus_if.done()) begin
+    else if (request && bus_if.done) begin
       request       <= '0;
       address       <= '0;
       direction     <= RGGEN_READ;
@@ -81,7 +81,7 @@ module rggen_external_register #(
   endfunction
 
   //  External -> Local
-  assign  register_control_if.ready   = bus_if.done();
+  assign  register_control_if.ready   = bus_if.done;
   assign  register_data_if.read_data  = bus_if.read_data;
   assign  register_control_if.status  = bus_if.status;
 endmodule

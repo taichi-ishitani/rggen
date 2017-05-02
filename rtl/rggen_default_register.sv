@@ -9,9 +9,9 @@ module rggen_default_register #(
   rggen_register_if.control register_if,
   output                    o_select
 );
-  localparam  int LSB                             = $clog2(DATA_WIDTH / 8);
-  localparam  bit [ADDRESS_WIDTH-LSB:0] SADDRESS  = START_ADDRESS >> LSB;
-  localparam  bit [ADDRESS_WIDTH-LSB:0] EADDRESS  = END_ADDRESS >> LSB;
+  localparam  int                         LSB       = $clog2(DATA_WIDTH / 8);
+  localparam  bit [ADDRESS_WIDTH-LSB-1:0] SADDRESS  = START_ADDRESS >> LSB;
+  localparam  bit [ADDRESS_WIDTH-LSB-1:0] EADDRESS  = END_ADDRESS >> LSB;
 
   logic select;
 

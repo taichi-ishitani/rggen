@@ -55,7 +55,7 @@ interface rggen_register_if #(
 
   generate if (1) begin : g
     genvar  i;
-    for (i = 0;i < DATA_WIDTH;i *= 8) begin
+    for (i = 0;i < DATA_WIDTH;i += 8) begin
       assign  write_mask[i:+8]  = {8{write_strobe[i/8]}};
     end
   end endgenerate

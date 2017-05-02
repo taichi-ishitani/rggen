@@ -1,6 +1,7 @@
 +libext+.sv
-+incdir+${RGGEN_HOME}/rtl/register_block
-+incdir+${RGGEN_HOME}/rtl/bit_field
--y ${RGGEN_HOME}/rtl/bit_field
--y ${RGGEN_HOME}/rtl/register
--y ${RGGEN_HOME}/rtl/register_block
+-y ${RGGEN_HOME}/rtl
+${RGGEN_HOME}/rggen_rtl_pkg.sv
+${RGGEN_HOME}/rggen_bus_if.sv
+${RGGEN_HOME}/rggen_register_if.sv
+${RGGEN_HOME}/rggen_apb_if.sv
+${RGGEN_HOME}/rggen_axi4lite_if.sv
