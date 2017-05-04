@@ -62,6 +62,15 @@ module RgGen::VerilogUtility
         expect(identifier.baz    ).to match_identifier "foo.baz"
         expect(identifier.bar.baz).to match_identifier "foo.bar.baz"
       end
+
+      it "型変換メソッドには反応しない" do
+        [:to_a, :to_ary, :to_hash, :to_int, :to_io, :to_proc, :to_regexp, :to_str].each do |m|
+          expect {
+            identifier.send(m)
+          }.to raise_error NoMethodError
+          expect(identifier).not_to be_respond_to(m)
+        end
+      end
     end
   end
 end
