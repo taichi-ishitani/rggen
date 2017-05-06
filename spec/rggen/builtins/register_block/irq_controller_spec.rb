@@ -8,7 +8,7 @@ describe "register_block/irq_controller" do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:clock_reset, :host_if, :response_mux, :irq_controller]
+    enable :register_block, [:clock_reset, :host_if, :bus_splitter, :irq_controller]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
@@ -20,28 +20,28 @@ describe "register_block/irq_controller" do
     register_map  = create_register_map(
       configuration,
       "block_0" => [
-        [nil, nil         , "block_0"                                                              ],
-        [nil, nil         , 256                                                                    ],
-        [                                                                                          ],
-        [                                                                                          ],
+        [nil, nil         , "block_0"                                                         ],
+        [nil, nil         , 256                                                               ],
+        [                                                                                     ],
+        [                                                                                     ],
         [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
         [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :w0c, 0, nil            ],
         [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
       ],
       "block_1" => [
-        [nil, nil         , "block_1"                                                              ],
-        [nil, nil         , 256                                                                    ],
-        [                                                                                          ],
-        [                                                                                          ],
+        [nil, nil         , "block_1"                                                         ],
+        [nil, nil         , 256                                                               ],
+        [                                                                                     ],
+        [                                                                                     ],
         [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[0]", :rw , 0, nil            ],
         [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[0]", :w0c, 0, "bit_field_0_0"],
         [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, nil            ]
       ],
       "block_2" => [
-        [nil, nil         , "block_2"                                                              ],
-        [nil, nil         , 256                                                                    ],
-        [                                                                                          ],
-        [                                                                                          ],
+        [nil, nil         , "block_2"                                                         ],
+        [nil, nil         , 256                                                               ],
+        [                                                                                     ],
+        [                                                                                     ],
         [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[8]", :rw , 0, nil            ],
         [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", :rw , 0, nil            ],
         [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[8]", :w0c, 0, "bit_field_0_1"],
@@ -86,8 +86,8 @@ describe "register_block/irq_controller" do
     describe "#generate_code" do
       let(:expected_code_0) do
         <<'CODE'
-assign ier = {bit_field_0_0_value};
-assign isr = {bit_field_1_0_value};
+assign ier = {register_if[0].value[0]};
+assign isr = {register_if[1].value[0]};
 rggen_irq_controller #(
   .TOTAL_INTERRUPTS (1)
 ) u_irq_controller (
@@ -102,8 +102,8 @@ CODE
 
       let(:expected_code_1) do
         <<'CODE'
-assign ier = {bit_field_0_1_value, bit_field_0_0_value};
-assign isr = {bit_field_1_0_value, bit_field_2_0_value};
+assign ier = {register_if[0].value[0], register_if[0].value[8]};
+assign isr = {register_if[1].value[8], register_if[2].value[0]};
 rggen_irq_controller #(
   .TOTAL_INTERRUPTS (2)
 ) u_irq_controller (
