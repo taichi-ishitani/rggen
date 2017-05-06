@@ -71,7 +71,7 @@ describe 'register_block/axi4lite' do
     end
 
     it "読み書きの優先度を決めるパラメータを持つ" do
-      expect(rtl).to have_parameter(:access_priority, name: 'ACCESS_PRIORITY', type: :rggen_direction, default: :RGGEN_WRITE)
+      expect(rtl).to have_parameter(:access_priority, name: 'ACCESS_PRIORITY', type: :'rggen_rtl_pkg::rggen_direction', default: :'rggen_rtl_pkg::RGGEN_WRITE')
     end
 
     it "rggen_axi4lite_ifを入出力ポートに持つ" do

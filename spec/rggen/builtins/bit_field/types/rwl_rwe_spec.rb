@@ -164,7 +164,7 @@ describe 'bit_fields/type/rwl_rwe' do
       let(:expected_code_0) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_LOCK_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
   .MSB            (31),
   .LSB            (16),
   .INITIAL_VALUE  (16'h0123)
@@ -181,7 +181,7 @@ CODE
       let(:expected_code_1) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_LOCK_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)
@@ -198,7 +198,7 @@ CODE
       let(:expected_code_2) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_LOCK_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)
@@ -215,7 +215,7 @@ CODE
       let(:expected_code_3) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_LOCK_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)
@@ -232,7 +232,7 @@ CODE
       let(:expected_code_4) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_ENABLE_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
   .MSB            (31),
   .LSB            (16),
   .INITIAL_VALUE  (16'h4567)
@@ -249,7 +249,7 @@ CODE
       let(:expected_code_5) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_ENABLE_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)
@@ -266,7 +266,7 @@ CODE
       let(:expected_code_6) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_ENABLE_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)
@@ -283,7 +283,7 @@ CODE
       let(:expected_code_7) do
         <<'CODE'
 rggen_bit_field_rwl_rwe #(
-  .MODE           (RGGEN_ENABLE_MODE),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
   .MSB            (0),
   .LSB            (0),
   .INITIAL_VALUE  (1'h0)

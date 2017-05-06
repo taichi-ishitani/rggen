@@ -235,7 +235,7 @@ module sample_0 (
     .o_select     ()
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_CLEAR_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
     .SET_CLEAR_VALUE  (0),
     .MSB              (8),
     .LSB              (8),
@@ -248,7 +248,7 @@ module sample_0 (
     .o_value        ()
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_CLEAR_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
     .SET_CLEAR_VALUE  (1),
     .MSB              (0),
     .LSB              (0),
@@ -272,7 +272,7 @@ module sample_0 (
     .o_select     ()
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_SET_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_SET_MODE),
     .SET_CLEAR_VALUE  (0),
     .MSB              (8),
     .LSB              (8),
@@ -285,7 +285,7 @@ module sample_0 (
     .o_value        (o_bit_field_7_0)
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_SET_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_SET_MODE),
     .SET_CLEAR_VALUE  (1),
     .MSB              (0),
     .LSB              (0),
@@ -309,7 +309,7 @@ module sample_0 (
     .o_select     ()
   );
   rggen_bit_field_rwl_rwe #(
-    .MODE           (RGGEN_LOCK_MODE),
+    .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
     .MSB            (31),
     .LSB            (16),
     .INITIAL_VALUE  (16'h0000)
@@ -321,7 +321,7 @@ module sample_0 (
     .o_value          (o_bit_field_8_0)
   );
   rggen_bit_field_rwl_rwe #(
-    .MODE           (RGGEN_ENABLE_MODE),
+    .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
     .MSB            (15),
     .LSB            (0),
     .INITIAL_VALUE  (16'h0000)

@@ -238,7 +238,7 @@ module block_0 (
     .o_select     ()
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_CLEAR_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
     .SET_CLEAR_VALUE  (0),
     .MSB              (8),
     .LSB              (8),
@@ -251,7 +251,7 @@ module block_0 (
     .o_value        ()
   );
   rggen_bit_field_w01s_w01c #(
-    .MODE             (RGGEN_CLEAR_MODE),
+    .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
     .SET_CLEAR_VALUE  (1),
     .MSB              (0),
     .LSB              (0),

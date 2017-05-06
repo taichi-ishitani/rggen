@@ -19,8 +19,8 @@ list_item :register_block, :host_if, :axi4lite do
     build do
       parameter :access_priority,
                 name:    'ACCESS_PRIORITY',
-                type:    :rggen_direction,
-                default: :RGGEN_WRITE
+                type:    :'rggen_rtl_pkg::rggen_direction',
+                default: :'rggen_rtl_pkg::RGGEN_WRITE'
       interface_port :axi4lite_if,
                      type:    :rggen_axi4lite_if,
                      modport: :slave
