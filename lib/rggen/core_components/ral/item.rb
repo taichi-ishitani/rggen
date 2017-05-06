@@ -49,12 +49,8 @@ module RgGen
       end
 
       def add_declaration(type, domain, attributes)
-        create_declaration(type, attributes).tap do |d|
-          declarations  = {
-            variable: @variable_declarations,
-            parameter: @parameter_declarations
-          }.fetch(type)
-          declarations[domain] << d
+        instance_variable_get("@#{type}_declarations").tap do |list|
+          list[domain] << __send__("#{type}_declaration", attributes)
         end
       end
     end

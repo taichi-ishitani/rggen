@@ -1,6 +1,8 @@
 module RgGen
   module VerilogUtility
     class Identifier
+      include InputBase::RegxpPatterns
+
       def initialize(name)
         @name = name
       end
@@ -21,6 +23,23 @@ module RgGen
         else
           Identifier.new("#{@name}[#{indexes_or_msb}:#{lsb}]")
         end
+      end
+
+      TYPE_CONVERSIONS  = [
+        :to_a, :to_ary, :to_hash, :to_int, :to_io, :to_proc, :to_regexp, :to_str
+      ].freeze
+
+      def method_missing(name, *args)
+        return super if args.size > 0
+        return super if TYPE_CONVERSIONS.include?(name)
+        return super unless name =~ variable_name
+        Identifier.new("#{@name}.#{name}")
+      end
+
+      def respond_to_missing?(symbol, include_private)
+        return super if TYPE_CONVERSIONS.include?(symbol)
+        return super unless symbol =~ variable_name
+        true
       end
     end
   end

@@ -5,6 +5,17 @@ list_item :register, :type, :external do
     need_no_bit_fields
   end
 
+  rtl do
+    build do
+      interface_port :bus_if,
+                     name:    "#{register.name}_bus_if",
+                     type:    :rggen_bus_if,
+                     modport: :master
+    end
+
+    generate_code_from_template :module_item
+  end
+
   c_header do
     delegate [:name, :byte_size] => :register
 

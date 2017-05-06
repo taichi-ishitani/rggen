@@ -173,6 +173,77 @@ list_item :register, :type do
     end
   end
 
+  rtl do
+    item_base do
+      export :valid_bits
+      export :readable_bits
+      export :register_if
+
+      delegate [:data_width, :byte_width] => :configuration
+      delegate [:local_address_width] => :register_block
+      delegate [:loop_variables, :local_index] => :register
+
+      def valid_bits
+        valid_bit_fields.inject(0) do |bits, bit_field|
+          bits | ((1 << bit_field.width) - 1) << bit_field.lsb
+        end
+      end
+
+      def readable_bits
+        readable_bit_fields.inject(0) do |bits, bit_field|
+          bits | ((1 << bit_field.width) - 1) << bit_field.lsb
+        end
+      end
+
+      def register_if
+        register_block.register_if[register.index]
+      end
+
+      private
+
+      def valid_bit_fields
+        register.bit_fields.reject(&:reserved?)
+      end
+
+      def readable_bit_fields
+        register.bit_fields.select(&:readable?)
+      end
+
+      def start_address
+        address_code(register.start_address)
+      end
+
+      def end_address
+        return address_code(register.end_address) unless register.array?
+        address_code(
+          register.start_address + byte_width - 1
+        )
+      end
+
+      def address_code(address)
+        base  = hex(address, local_address_width)
+        if register.array? && register.multiple?
+          increment_value = hex(byte_width, local_address_width)
+          "#{base} + #{increment_value} * #{local_index}"
+        else
+          base
+        end
+      end
+    end
+
+    default_item do
+      generate_code :module_item do
+        process_template File.join(__dir__, 'types', 'default.erb')
+      end
+    end
+
+    factory do
+      def select_target_item(_, register)
+        @target_items[register.type]
+      end
+    end
+  end
+
   c_header do
     item_base do
       define_helpers do

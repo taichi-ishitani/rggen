@@ -6,13 +6,13 @@ describe "register_block/apb" do
   include_context 'rtl common'
 
   before(:all) do
-    RgGen.enable(:global, :address_width)
-    RgGen.enable(:global, :data_width   )
-    RgGen.enable(:register_block, :name       )
-    RgGen.enable(:register_block, :byte_size  )
-    RgGen.enable(:register_block, :clock_reset)
-    RgGen.enable(:register_block, :host_if    )
-    RgGen.enable(:register_block, :host_if, [:apb])
+    enable :global, :address_width
+    enable :global, :data_width
+    enable :register_block, :name
+    enable :register_block, :byte_size
+    enable :register_block, :clock_reset
+    enable :register_block, :host_if
+    enable :register_block, :host_if, [:apb]
   end
 
   after(:all) do
@@ -95,49 +95,18 @@ describe "register_block/apb" do
       16
     end
 
-    it "APB用の入出出力を持つ" do
-      expect(rtl).to  have_input(:apb, :paddr  , name: "i_paddr"  , width: host_address_width)
-      expect(rtl).to  have_input(:apb, :pprot  , name: "i_pprot"  , width: 3                 )
-      expect(rtl).to  have_input(:apb, :psel   , name: "i_psel"   , width: 1                 )
-      expect(rtl).to  have_input(:apb, :penable, name: "i_penable", width: 1                 )
-      expect(rtl).to  have_input(:apb, :pwrite , name: "i_pwrite" , width: 1                 )
-      expect(rtl).to  have_input(:apb, :pwdata , name: "i_pwdata" , width: data_width        )
-      expect(rtl).to  have_input(:apb, :pstrb  , name: "i_pstrb"  , width: data_width / 8    )
-      expect(rtl).to have_output(:apb, :pready , name: "o_pready" , width: 1                 )
-      expect(rtl).to have_output(:apb, :prdata , name: "o_prdata" , width: data_width        )
-      expect(rtl).to have_output(:apb, :pslverr, name: "o_pslverr", width: 1                 )
+    it "rggen_apb_ifを入出力ポートに持つ" do
+      expect(rtl).to have_interface_port(:apb_if, type: :rggen_apb_if, modport: :slave)
     end
 
     describe "#generate_code" do
       let(:expected_code) do
         <<'CODE'
 rggen_host_if_apb #(
-  .DATA_WIDTH           (32),
-  .HOST_ADDRESS_WIDTH   (16),
   .LOCAL_ADDRESS_WIDTH  (8)
 ) u_host_if (
-  .clk              (clk),
-  .rst_n            (rst_n),
-  .i_paddr          (i_paddr),
-  .i_pprot          (i_pprot),
-  .i_psel           (i_psel),
-  .i_penable        (i_penable),
-  .i_pwrite         (i_pwrite),
-  .i_pwdata         (i_pwdata),
-  .i_pstrb          (i_pstrb),
-  .o_pready         (o_pready),
-  .o_prdata         (o_prdata),
-  .o_pslverr        (o_pslverr),
-  .o_command_valid  (command_valid),
-  .o_write          (write),
-  .o_read           (read),
-  .o_address        (address),
-  .o_strobe         (strobe),
-  .o_write_data     (write_data),
-  .o_write_mask     (write_mask),
-  .i_response_ready (response_ready),
-  .i_read_data      (read_data),
-  .i_status         (status)
+  .apb_if (apb_if),
+  .bus_if (bus_if)
 );
 CODE
       end

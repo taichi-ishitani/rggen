@@ -1,0 +1,12 @@
+rggen_external_register #(
+  .ADDRESS_WIDTH  (<%= local_address_width %>),
+  .START_ADDRESS  (<%= start_address %>),
+  .END_ADDRESS    (<%= end_address %>),
+  .DATA_WIDTH     (<%= configuration.data_width %>)
+) u_<%= register.name %> (
+  .clk                  (<%= register_block.clock %>),
+  .rst_n                (<%= register_block.reset %>),
+  .register_control_if  (<%= register.register_if %>),
+  .register_data_if     (<%= register.register_if %>),
+  .bus_if               (<%= bus_if %>)
+);

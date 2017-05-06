@@ -8,12 +8,11 @@ describe 'bit_fields/type/rwl_rwe' do
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:clock_reset, :host_if, :response_mux]
+    enable :register_block, [:clock_reset, :host_if, :bus_splitter]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :register, :index
     enable :bit_field, :type, [:rwl, :rwe, :rw]
 
     @factory  = build_register_map_factory
@@ -164,168 +163,136 @@ describe 'bit_fields/type/rwl_rwe' do
     describe "#generate_code" do
       let(:expected_code_0) do
         <<'CODE'
-assign o_bit_field_0_0 = bit_field_0_0_value;
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (1),
-  .WIDTH          (16),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
+  .MSB            (31),
+  .LSB            (16),
   .INITIAL_VALUE  (16'h0123)
 ) u_bit_field_0_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_0_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[0]),
-  .i_write          (write),
-  .i_write_data     (write_data[31:16]),
-  .i_write_mask     (write_mask[31:16]),
-  .o_value          (bit_field_0_0_value)
+  .i_lock_or_enable (register_if[14].value[1]),
+  .register_if      (register_if[0]),
+  .o_value          (o_bit_field_0_0)
 );
 CODE
       end
 
       let(:expected_code_1) do
         <<'CODE'
-assign o_bit_field_0_1 = bit_field_0_1_value;
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (1),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_0_1 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_0_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[0]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_0_1_value)
+  .i_lock_or_enable (register_if[14].value[1]),
+  .register_if      (register_if[0]),
+  .o_value          (o_bit_field_0_1)
 );
 CODE
       end
 
       let(:expected_code_2) do
         <<'CODE'
-assign o_bit_field_1_0[g_i] = bit_field_1_0_value[g_i];
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (1),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_1_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_0_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[1+g_i]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_1_0_value[g_i])
+  .i_lock_or_enable (register_if[14].value[1]),
+  .register_if      (register_if[1+g_i]),
+  .o_value          (o_bit_field_1_0[g_i])
 );
 CODE
       end
 
       let(:expected_code_3) do
         <<'CODE'
-assign o_bit_field_2_0[g_i][g_j] = bit_field_2_0_value[g_i][g_j];
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (1),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_2_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_0_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[3+2*g_i+g_j]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_2_0_value[g_i][g_j])
+  .i_lock_or_enable (register_if[14].value[1]),
+  .register_if      (register_if[3+2*g_i+g_j]),
+  .o_value          (o_bit_field_2_0[g_i][g_j])
 );
 CODE
       end
 
       let(:expected_code_4) do
         <<'CODE'
-assign o_bit_field_3_0 = bit_field_3_0_value;
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (0),
-  .WIDTH          (16),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
+  .MSB            (31),
+  .LSB            (16),
   .INITIAL_VALUE  (16'h4567)
 ) u_bit_field_3_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_1_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[7]),
-  .i_write          (write),
-  .i_write_data     (write_data[31:16]),
-  .i_write_mask     (write_mask[31:16]),
-  .o_value          (bit_field_3_0_value)
+  .i_lock_or_enable (register_if[14].value[0]),
+  .register_if      (register_if[7]),
+  .o_value          (o_bit_field_3_0)
 );
 CODE
       end
 
       let(:expected_code_5) do
         <<'CODE'
-assign o_bit_field_3_1 = bit_field_3_1_value;
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (0),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_3_1 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_1_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[7]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_3_1_value)
+  .i_lock_or_enable (register_if[14].value[0]),
+  .register_if      (register_if[7]),
+  .o_value          (o_bit_field_3_1)
 );
 CODE
       end
 
       let(:expected_code_6) do
         <<'CODE'
-assign o_bit_field_4_0[g_i] = bit_field_4_0_value[g_i];
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (0),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_4_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_1_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[8+g_i]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_4_0_value[g_i])
+  .i_lock_or_enable (register_if[14].value[0]),
+  .register_if      (register_if[8+g_i]),
+  .o_value          (o_bit_field_4_0[g_i])
 );
 CODE
       end
 
       let(:expected_code_7) do
         <<'CODE'
-assign o_bit_field_5_0[g_i][g_j] = bit_field_5_0_value[g_i][g_j];
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (0),
-  .WIDTH          (1),
+  .MODE           (rggen_rtl_pkg::RGGEN_ENABLE_MODE),
+  .MSB            (0),
+  .LSB            (0),
   .INITIAL_VALUE  (1'h0)
 ) u_bit_field_5_0 (
   .clk              (clk),
   .rst_n            (rst_n),
-  .i_lock_or_enable (bit_field_6_1_value),
-  .i_command_valid  (command_valid),
-  .i_select         (register_select[10+2*g_i+g_j]),
-  .i_write          (write),
-  .i_write_data     (write_data[0]),
-  .i_write_mask     (write_mask[0]),
-  .o_value          (bit_field_5_0_value[g_i][g_j])
+  .i_lock_or_enable (register_if[14].value[0]),
+  .register_if      (register_if[10+2*g_i+g_j]),
+  .o_value          (o_bit_field_5_0[g_i][g_j])
 );
 CODE
       end

@@ -1,0 +1,9 @@
+rggen_bus_splitter #(
+  .DATA_WIDTH       (<%= configuration.data_width %>),
+  .TOTAL_REGISTERS  (<%= total_registers %>)
+) u_bus_splitter (
+  .clk          (<%= register_block.clock %>),
+  .rst_n        (<%= register_block.reset %>),
+  .bus_if       (<%= register_block.bus_if %>),
+  .register_if  (<%= register_if %>)
+);

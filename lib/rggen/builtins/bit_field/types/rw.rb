@@ -9,10 +9,7 @@ list_item :bit_field, :type, :rw do
       output :value_out, name: port_name, width: width, dimensions: dimensions
     end
 
-    generate_code :module_item do |buffer|
-      buffer << assign(value_out[loop_variables], value[loop_variables]) << nl
-      buffer << process_template
-    end
+    generate_code_from_template :module_item
 
     def port_name
       "o_#{bit_field.name}"

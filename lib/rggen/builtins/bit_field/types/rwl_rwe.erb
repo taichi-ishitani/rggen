@@ -1,15 +1,12 @@
 rggen_bit_field_rwl_rwe #(
-  .LOCK_MODE      (<%= lock_mode %>),
-  .WIDTH          (<%= width %>),
+  .MODE           (rggen_rtl_pkg::<%= mode %>),
+  .MSB            (<%= msb %>),
+  .LSB            (<%= lsb %>),
   .INITIAL_VALUE  (<%= initial_value %>)
 ) u_<%= bit_field.name %> (
   .clk              (<%= register_block.clock %>),
   .rst_n            (<%= register_block.reset %>),
   .i_lock_or_enable (<%= lock_or_enable %>),
-  .i_command_valid  (<%= register_block.host_if.command_valid %>),
-  .i_select         (<%= register_block.register_select[index] %>),
-  .i_write          (<%= register_block.host_if.write %>),
-  .i_write_data     (<%= register_block.host_if.write_data[bit_field.msb, bit_field.lsb] %>),
-  .i_write_mask     (<%= register_block.host_if.write_mask[bit_field.msb, bit_field.lsb] %>),
-  .o_value          (<%= value[loop_variables] %>)
+  .register_if      (<%= register.register_if %>),
+  .o_value          (<%= value_out[loop_variables] %>)
 );

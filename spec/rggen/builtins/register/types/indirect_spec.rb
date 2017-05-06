@@ -10,6 +10,7 @@ describe 'register/types/external' do
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
+    enable :register_block, [:clock_reset, :bus_splitter]
     @factory  = build_register_map_factory
   end
 
@@ -367,6 +368,152 @@ describe 'register/types/external' do
             @factory.create(configuration, register_map_file)
           }.to raise_register_map_error(message, position("block_0", 8, 4))
         end
+      end
+    end
+  end
+
+  describe "rtl" do
+    include_context 'rtl common'
+
+    before(:all) do
+      @rtl_factory  = build_rtl_factory
+    end
+
+    let(:rtl) do
+      @rtl_factory.create(configuration, register_map).registers[2..-1]
+    end
+
+    it "間接参照用インデックス信号を持つ" do
+      expect(rtl[ 0]).to have_logic :indirect_index, name: "register_0_indirect_index" , width: 2
+      expect(rtl[ 4]).to have_logic :indirect_index, name: "register_4_indirect_index" , width: 4
+      expect(rtl[ 8]).to have_logic :indirect_index, name: "register_8_indirect_index" , width: 2, dimensions: [4]
+      expect(rtl[10]).to have_logic :indirect_index, name: "register_10_indirect_index", width: 4, dimensions: [2, 4]
+      expect(rtl[13]).to have_logic :indirect_index, name: "register_13_indirect_index", width: 6, dimensions: [2, 2, 2]
+      expect(rtl[14]).to have_logic :indirect_index, name: "register_14_indirect_index", width: 6, dimensions: [2, 4]
+    end
+
+    describe "#generate_code" do
+      let(:expected_code_0) do
+        <<'CODE'
+assign register_0_indirect_index = {register_if[0].value[9:8]};
+rggen_indirect_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h08),
+  .END_ADDRESS    (8'h0b),
+  .INDEX_WIDTH    (2),
+  .INDEX_VALUE    ({2'h0}),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'hffffffff),
+  .READABLE_BITS  (32'hffffffff)
+) u_register_0 (
+  .register_if  (register_if[2]),
+  .i_index      (register_0_indirect_index)
+);
+CODE
+      end
+
+      let(:expected_code_1) do
+        <<'CODE'
+assign register_4_indirect_index = {register_if[0].value[9:8], register_if[0].value[1:0]};
+rggen_indirect_register #(
+  .ADDRESS_WIDTH  (8),
+  .START_ADDRESS  (8'h10),
+  .END_ADDRESS    (8'h13),
+  .INDEX_WIDTH    (4),
+  .INDEX_VALUE    ({2'h0, 2'h0}),
+  .DATA_WIDTH     (32),
+  .VALID_BITS     (32'hffffffff),
+  .READABLE_BITS  (32'hffffffff)
+) u_register_4 (
+  .register_if  (register_if[6]),
+  .i_index      (register_4_indirect_index)
+);
+CODE
+      end
+
+      let(:expected_code_2) do
+        <<'CODE'
+    assign register_8_indirect_index[g_i] = {register_if[0].value[9:8]};
+    rggen_indirect_register #(
+      .ADDRESS_WIDTH  (8),
+      .START_ADDRESS  (8'h18),
+      .END_ADDRESS    (8'h1b),
+      .INDEX_WIDTH    (2),
+      .INDEX_VALUE    ({g_i[1:0]}),
+      .DATA_WIDTH     (32),
+      .VALID_BITS     (32'hffffffff),
+      .READABLE_BITS  (32'hffffffff)
+    ) u_register_8 (
+      .register_if  (register_if[10+g_i]),
+      .i_index      (register_8_indirect_index[g_i])
+    );
+CODE
+      end
+
+      let(:expected_code_3) do
+        <<'CODE'
+      assign register_10_indirect_index[g_i][g_j] = {register_if[0].value[9:8], register_if[0].value[1:0]};
+      rggen_indirect_register #(
+        .ADDRESS_WIDTH  (8),
+        .START_ADDRESS  (8'h20),
+        .END_ADDRESS    (8'h23),
+        .INDEX_WIDTH    (4),
+        .INDEX_VALUE    ({g_i[1:0], g_j[1:0]}),
+        .DATA_WIDTH     (32),
+        .VALID_BITS     (32'hffffffff),
+        .READABLE_BITS  (32'hffffffff)
+      ) u_register_10 (
+        .register_if  (register_if[16+4*g_i+g_j]),
+        .i_index      (register_10_indirect_index[g_i][g_j])
+      );
+CODE
+      end
+
+      let(:expected_code_4) do
+        <<'CODE'
+        assign register_13_indirect_index[g_i][g_j][g_k] = {register_if[0].value[1:0], register_if[1].value[9:8], register_if[1].value[1:0]};
+        rggen_indirect_register #(
+          .ADDRESS_WIDTH  (8),
+          .START_ADDRESS  (8'h24),
+          .END_ADDRESS    (8'h27),
+          .INDEX_WIDTH    (6),
+          .INDEX_VALUE    ({g_i[1:0], g_j[1:0], g_k[1:0]}),
+          .DATA_WIDTH     (32),
+          .VALID_BITS     (32'hffffffff),
+          .READABLE_BITS  (32'hffffffff)
+        ) u_register_13 (
+          .register_if  (register_if[34+4*g_i+2*g_j+g_k]),
+          .i_index      (register_13_indirect_index[g_i][g_j][g_k])
+        );
+CODE
+      end
+
+      let(:expected_code_5) do
+        <<'CODE'
+      assign register_14_indirect_index[g_i][g_j] = {register_if[0].value[9:8], register_if[0].value[1:0], register_if[1].value[9:8]};
+      rggen_indirect_register #(
+        .ADDRESS_WIDTH  (8),
+        .START_ADDRESS  (8'h28),
+        .END_ADDRESS    (8'h2b),
+        .INDEX_WIDTH    (6),
+        .INDEX_VALUE    ({g_i[1:0], 2'h0, g_j[1:0]}),
+        .DATA_WIDTH     (32),
+        .VALID_BITS     (32'hffffffff),
+        .READABLE_BITS  (32'hffffffff)
+      ) u_register_14 (
+        .register_if  (register_if[42+4*g_i+g_j]),
+        .i_index      (register_14_indirect_index[g_i][g_j])
+      );
+CODE
+      end
+
+      it "インダイレクトレジスタモジュールをインスタンスするコードを生成する" do
+        expect(rtl[ 0]).to generate_code :module_item, :top_down, expected_code_0
+        expect(rtl[ 4]).to generate_code :module_item, :top_down, expected_code_1
+        expect(rtl[ 8]).to generate_code :module_item, :top_down, expected_code_2
+        expect(rtl[10]).to generate_code :module_item, :top_down, expected_code_3
+        expect(rtl[13]).to generate_code :module_item, :top_down, expected_code_4
+        expect(rtl[14]).to generate_code :module_item, :top_down, expected_code_5
       end
     end
   end

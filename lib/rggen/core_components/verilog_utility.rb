@@ -12,8 +12,24 @@ module RgGen
       Identifier.new(name)
     end
 
-    def create_declaration(declaration_type, attributes)
-      Declaration.new(declaration_type, attributes)
+    def variable_declaration(attributes)
+      Declaration.new(:variable, attributes)
+    end
+
+    def interface_instantiation(attributes)
+      InterfaceInstantiation.new(attributes)
+    end
+
+    def port_declaration(attributes)
+      Declaration.new(:port, attributes)
+    end
+
+    def interface_port_declaration(attributes)
+      InterfacePortDeclaration.new(attributes)
+    end
+
+    def parameter_declaration(attributes)
+      Declaration.new(:parameter, attributes)
     end
 
     def module_definition(name, &body)
@@ -33,8 +49,7 @@ module RgGen
     end
 
     def argument(name, attributes)
-      attributes[:name] = name
-      create_declaration(:port, attributes)
+      port_declaration(attributes.merge(name: name))
     end
 
     def assign(lhs, rhs)

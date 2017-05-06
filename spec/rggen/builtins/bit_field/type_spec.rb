@@ -28,6 +28,7 @@ describe 'bit_field/type' do
     enable :register, :type, [:indirect]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :foo, :BAR]
+    enable :register_block, :bus_splitter
 
     @items    = items
     @factory  = build_register_map_factory
@@ -520,54 +521,13 @@ describe 'bit_field/type' do
       build_rtl_factory.create(@configuration, register_map).bit_fields
     end
 
-    context "アクセス属性がread-writeの場合" do
-      before do
-        define_item(:foo) {read_write}
-      end
-
-      it "value信号を持つ" do
-        expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
-        expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
-        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
-      end
-    end
-
-    context "アクセス属性がread-onlyの場合" do
-      before do
-        define_item(:foo) {read_only}
-      end
-
-      it "value信号を持つ" do
-        expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
-        expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
-        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
-      end
-    end
-
-    context "アクセス属性がwrite-onlyの場合" do
-      before do
-        define_item(:foo) {write_only}
-      end
-
-      it "value信号を持つ" do
-        expect(rtl[0]).to have_logic(:value, name: 'bit_field_0_0_value', width: 32)
-        expect(rtl[1]).to have_logic(:value, name: 'bit_field_1_0_value', width: 1, dimensions: [2])
-        expect(rtl[2]).to have_logic(:value, name: 'bit_field_2_0_value', width: 1, dimensions: [3, 4])
-      end
-    end
-
-    context "アクセス属性がreservedの場合" do
-      before do
-        define_item(:foo) {reserved}
-      end
-
-      it "value信号を持たない" do
-        expect(rtl[0]).not_to have_identifier(:value, name: 'bit_field_0_0_value')
-        expect(rtl[0]).not_to have_signal_declaration(name: 'bit_field_0_0_value', data_type: :logic, width: 32)
-        expect(rtl[1]).not_to have_identifier(:value, name: 'bit_field_1_0_value')
-        expect(rtl[1]).not_to have_signal_declaration(name: 'bit_field_1_0_value', data_type: :logic, width: 1, dimensions: [2])
-        expect(rtl[2]).not_to have_identifier(:value, name: 'bit_field_2_0_value')
-        expect(rtl[2]).not_to have_signal_declaration(name: 'bit_field_2_0_value', data_type: :logic, width: 1, dimensions: [3, 4])
+    describe "#value" do
+      it "自身がアサインされているregister_ifのvalue信号を返す" do
+        expect(rtl[0].value).to match_identifier 'register_if[0].value[31:0]'
+        expect(rtl[1].value).to match_identifier 'register_if[1+g_i].value[0]'
+        expect(rtl[2].value).to match_identifier 'register_if[3+4*g_i+g_j].value[0]'
+        expect(rtl[3].value).to match_identifier 'register_if[15].value[31:16]'
+        expect(rtl[4].value).to match_identifier 'register_if[15].value[15:0]'
       end
     end
   end

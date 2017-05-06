@@ -126,6 +126,53 @@ list_item :register, :type, :indirect do
     end
   end
 
+  rtl do
+    build do
+      logic :indirect_index,
+            name:       "#{register.name}_indirect_index",
+            width:      indirect_index_width,
+            dimensions: register.dimensions
+    end
+
+    generate_code :module_item do |code|
+      code << indirect_index_assignment << nl
+      code << process_template
+    end
+
+    def indirect_index_fields
+      @indirect_index_fields  ||= register.indexes.map do |i|
+        register_block.bit_fields.find_by(name: i.name)
+      end
+    end
+
+    def indirect_index_assignment
+      assign(
+        indirect_index[loop_variables],
+        concat(indirect_index_fields.map(&:value))
+      )
+    end
+
+    def indirect_index_width
+      indirect_index_fields.sum(&:width)
+    end
+
+    def indirect_index_value
+      concat(indirect_index_values)
+    end
+
+    def indirect_index_values
+      variables = loop_variables
+      register.indexes.map.with_index do |index, i|
+        if index.value
+          hex(index.value, indirect_index_fields[i].width)
+        else
+          variable  = variables.shift
+          variable[indirect_index_fields[i].width - 1, 0]
+        end
+      end
+    end
+  end
+
   c_header do
     address_struct_member do
       variable_declaration(name: register.name, data_type: data_type)

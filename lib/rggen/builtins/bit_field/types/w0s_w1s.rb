@@ -18,10 +18,7 @@ list_item :bit_field, :type, [:w0s, :w1s] do
              dimensions: dimensions
     end
 
-    generate_code :module_item do |code|
-      code << assign(value_out[loop_variables], value[loop_variables]) << nl
-      code << process_template
-    end
+    generate_code_from_template :module_item
 
     def initial_value
       hex(bit_field.initial_value, width)
