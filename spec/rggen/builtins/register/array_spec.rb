@@ -236,7 +236,7 @@ describe 'register/array' do
       context "レジスタが配列では無い場合" do
         let(:expected_code) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h00),
   .END_ADDRESS    (8'h03),
@@ -245,7 +245,10 @@ rggen_default_register #(
   .READABLE_BITS  (32'hffffffff)
 ) u_register_0 (
   .register_if  (register_if[0]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 rggen_bit_field_rw #(
   .MSB            (31),
@@ -271,7 +274,7 @@ CODE
 generate if (1) begin : g_register_2
   genvar g_i;
   for (g_i = 0;g_i < 2;g_i++) begin : g
-    rggen_default_register #(
+    rggen_register #(
       .ADDRESS_WIDTH  (8),
       .START_ADDRESS  (8'h08 + 8'h04 * g_i),
       .END_ADDRESS    (8'h0b + 8'h04 * g_i),
@@ -280,7 +283,10 @@ generate if (1) begin : g_register_2
       .READABLE_BITS  (32'hffffffff)
     ) u_register_2 (
       .register_if  (register_if[2+g_i]),
-      .o_select     ()
+      .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+      .o_select     (),
+      .i_select     (1'b0),
+      .i_ready      (1'b0)
     );
     rggen_bit_field_rw #(
       .MSB            (31),

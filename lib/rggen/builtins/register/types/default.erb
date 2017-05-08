@@ -1,4 +1,4 @@
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (<%= local_address_width %>),
   .START_ADDRESS  (<%= start_address %>),
   .END_ADDRESS    (<%= end_address %>),
@@ -7,5 +7,8 @@ rggen_default_register #(
   .READABLE_BITS  (<%= hex(readable_bits, data_width) %>)
 ) u_<%= register.name %> (
   .register_if  (<%= register.register_if %>),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );

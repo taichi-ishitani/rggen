@@ -23,13 +23,15 @@ module rggen_external_register #(
   logic [DATA_WIDTH/8-1:0]            write_strobe;
   logic                               access_done;
 
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (ADDRESS_WIDTH  ),
     .START_ADDRESS  (START_ADDRESS  ),
     .END_ADDRESS    (END_ADDRESS    ),
     .DATA_WIDTH     (DATA_WIDTH     ),
     .INTERNAL_USE   (1              )
-  ) u_register (register_control_if, address_match);
+  ) u_register (
+    register_control_if, bus_if.status, address_match, address_match, bus_if.done
+  );
 
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
@@ -80,8 +82,6 @@ module rggen_external_register #(
   endfunction
 
   //  External -> Local
-  assign  register_control_if.ready   = bus_if.done;
   assign  register_data_if.value      = bus_if.read_data;
   assign  register_data_if.read_data  = bus_if.read_data;
-  assign  register_control_if.status  = bus_if.status;
 endmodule

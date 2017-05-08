@@ -24,7 +24,7 @@ interface rggen_bus_if #(
     input   done,
     input   read_done,
     input   write_done,
-    input   read_data
+    input   read_data,
     input   status
   );
 
@@ -35,7 +35,7 @@ interface rggen_bus_if #(
     input   write_data,
     input   write_strobe,
     output  done,
-    output  read_data,
+    output  read_done,
     output  write_done,
     output  read_data,
     output  status

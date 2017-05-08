@@ -54,7 +54,7 @@ module sample_0 (
     .i_isr  (isr),
     .o_irq  (o_irq)
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h00),
     .END_ADDRESS    (8'h03),
@@ -63,7 +63,10 @@ module sample_0 (
     .READABLE_BITS  (32'hffffffff)
   ) u_register_0 (
     .register_if  (register_if[0]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_rw #(
     .MSB            (31),
@@ -85,7 +88,7 @@ module sample_0 (
     .register_if  (register_if[0]),
     .o_value      (o_bit_field_0_1)
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h04),
     .END_ADDRESS    (8'h07),
@@ -94,7 +97,10 @@ module sample_0 (
     .READABLE_BITS  (32'hffffffff)
   ) u_register_1 (
     .register_if  (register_if[1]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_rw #(
     .MSB            (31),
@@ -106,7 +112,7 @@ module sample_0 (
     .register_if  (register_if[1]),
     .o_value      (o_bit_field_1_0)
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h08),
     .END_ADDRESS    (8'h0b),
@@ -115,7 +121,10 @@ module sample_0 (
     .READABLE_BITS  (32'h00010001)
   ) u_register_2 (
     .register_if  (register_if[2]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_ro #(
     .MSB  (16),
@@ -134,7 +143,7 @@ module sample_0 (
     .register_if  (register_if[2]),
     .o_value      (o_bit_field_2_1)
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h0c),
     .END_ADDRESS    (8'h0f),
@@ -143,7 +152,10 @@ module sample_0 (
     .READABLE_BITS  (32'hffffffff)
   ) u_register_3 (
     .register_if  (register_if[3]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_ro #(
     .MSB  (31),
@@ -155,7 +167,7 @@ module sample_0 (
   generate if (1) begin : g_register_4
     genvar g_i;
     for (g_i = 0;g_i < 4;g_i++) begin : g
-      rggen_default_register #(
+      rggen_register #(
         .ADDRESS_WIDTH  (8),
         .START_ADDRESS  (8'h10 + 8'h04 * g_i),
         .END_ADDRESS    (8'h13 + 8'h04 * g_i),
@@ -164,7 +176,10 @@ module sample_0 (
         .READABLE_BITS  (32'hffffffff)
       ) u_register_4 (
         .register_if  (register_if[4+g_i]),
-        .o_select     ()
+        .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+        .o_select     (),
+        .i_select     (1'b0),
+        .i_ready      (1'b0)
       );
       rggen_bit_field_ro #(
         .MSB  (31),
@@ -223,7 +238,7 @@ module sample_0 (
       end
     end
   end endgenerate
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h24),
     .END_ADDRESS    (8'h27),
@@ -232,7 +247,10 @@ module sample_0 (
     .READABLE_BITS  (32'h00000101)
   ) u_register_6 (
     .register_if  (register_if[16]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_w01s_w01c #(
     .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
@@ -260,7 +278,7 @@ module sample_0 (
     .register_if    (register_if[16]),
     .o_value        ()
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h28),
     .END_ADDRESS    (8'h2b),
@@ -269,7 +287,10 @@ module sample_0 (
     .READABLE_BITS  (32'h00000101)
   ) u_register_7 (
     .register_if  (register_if[17]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_w01s_w01c #(
     .MODE             (rggen_rtl_pkg::RGGEN_SET_MODE),
@@ -297,7 +318,7 @@ module sample_0 (
     .register_if    (register_if[17]),
     .o_value        (o_bit_field_7_1)
   );
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (8),
     .START_ADDRESS  (8'h2c),
     .END_ADDRESS    (8'h2f),
@@ -306,7 +327,10 @@ module sample_0 (
     .READABLE_BITS  (32'hffffffff)
   ) u_register_8 (
     .register_if  (register_if[18]),
-    .o_select     ()
+    .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+    .o_select     (),
+    .i_select     (1'b0),
+    .i_ready      (1'b0)
   );
   rggen_bit_field_rwl_rwe #(
     .MODE           (rggen_rtl_pkg::RGGEN_LOCK_MODE),

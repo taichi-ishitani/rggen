@@ -969,7 +969,7 @@ describe 'register/type' do
       describe "#generate_code" do
         let(:expected_code_0) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h00),
   .END_ADDRESS    (8'h03),
@@ -978,14 +978,17 @@ rggen_default_register #(
   .READABLE_BITS  (32'hffffffff)
 ) u_register_0 (
   .register_if  (register_if[0]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 CODE
         end
 
         let(:expected_code_1) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h04),
   .END_ADDRESS    (8'h07),
@@ -994,14 +997,17 @@ rggen_default_register #(
   .READABLE_BITS  (32'h80018001)
 ) u_register_1 (
   .register_if  (register_if[1]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 CODE
         end
 
         let(:expected_code_2) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h08),
   .END_ADDRESS    (8'h0b),
@@ -1010,14 +1016,17 @@ rggen_default_register #(
   .READABLE_BITS  (32'h40000000)
 ) u_register_2 (
   .register_if  (register_if[2]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 CODE
         end
 
         let(:expected_code_3) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h0c),
   .END_ADDRESS    (8'h0f),
@@ -1026,14 +1035,17 @@ rggen_default_register #(
   .READABLE_BITS  (32'h00000002)
 ) u_register_3 (
   .register_if  (register_if[3]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 CODE
         end
 
         let(:expected_code_4) do
           <<'CODE'
-    rggen_default_register #(
+    rggen_register #(
       .ADDRESS_WIDTH  (8),
       .START_ADDRESS  (8'h10 + 8'h04 * g_i),
       .END_ADDRESS    (8'h13 + 8'h04 * g_i),
@@ -1042,14 +1054,17 @@ CODE
       .READABLE_BITS  (32'hffffffff)
     ) u_register_4 (
       .register_if  (register_if[4+g_i]),
-      .o_select     ()
+      .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+      .o_select     (),
+      .i_select     (1'b0),
+      .i_ready      (1'b0)
     );
 CODE
         end
 
         let(:expected_code_5) do
           <<'CODE'
-rggen_default_register #(
+rggen_register #(
   .ADDRESS_WIDTH  (8),
   .START_ADDRESS  (8'h20),
   .END_ADDRESS    (8'h23),
@@ -1058,12 +1073,15 @@ rggen_default_register #(
   .READABLE_BITS  (32'h00ffff00)
 ) u_register_5 (
   .register_if  (register_if[8]),
-  .o_select     ()
+  .i_status     (rggen_rtl_pkg::RGGEN_OKAY),
+  .o_select     (),
+  .i_select     (1'b0),
+  .i_ready      (1'b0)
 );
 CODE
         end
 
-        it "rggen_default_registerをインスタンスするコードを生成する" do
+        it "rggen_registerをインスタンスするコードを生成する" do
           expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
           expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
           expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)

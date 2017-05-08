@@ -1,4 +1,4 @@
-module rggen_default_register #(
+module rggen_register #(
   parameter int                     ADDRESS_WIDTH = 16,
   parameter bit [ADDRESS_WIDTH-1:0] START_ADDRESS = '0,
   parameter bit [ADDRESS_WIDTH-1:0] END_ADDRESS   = '0,
@@ -8,7 +8,10 @@ module rggen_default_register #(
   parameter bit                     INTERNAL_USE  = 0
 )(
   rggen_register_if.control register_if,
-  output                    o_select
+  input   rggen_status      i_status,
+  output                    o_select,
+  input                     i_select,
+  input                     i_ready
 );
   import  rggen_rtl_pkg::*;
 
@@ -33,11 +36,15 @@ module rggen_default_register #(
   generate if (!INTERNAL_USE) begin
     assign  register_if.select  = select;
     assign  register_if.ready   = register_if.request & select;
+  end
+  else begin
+    assign  register_if.select  = i_select;
+    assign  register_if.ready   = i_ready;
   end endgenerate
 
-  generate if (1) begin
+  generate if (1) begin : g
     genvar  i;
-    for (i = 0;i < DATA_WIDTH;i++) begin
+    for (i = 0;i < DATA_WIDTH;i++) begin : g
       if (!VALID_BITS[i]) begin
         assign  register_if.value[i]  = 1'b0;
       end
@@ -47,5 +54,5 @@ module rggen_default_register #(
     end
   end endgenerate
 
-  assign  register_if.status  = RGGEN_OKAY;
+  assign  register_if.status  = i_status;
 endmodule

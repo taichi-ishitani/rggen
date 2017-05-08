@@ -12,19 +12,21 @@ module rggen_indirect_register #(
   input [INDEX_WIDTH-1:0]   i_index
 );
   logic select;
+  logic ready;
   logic address_match;
 
-  assign  select              = (address_match && (i_index == INDEX_VALUE)) ? 1'b1 : 1'b0;
-  assign  register_if.select  = select;
-  assign  register_if.ready   = register_if.request & select;
+  assign  select  = (address_match && (i_index == INDEX_VALUE)) ? 1'b1 : 1'b0;
+  assign  ready   = register_if.request & select;
 
-  rggen_default_register #(
+  rggen_register #(
     .ADDRESS_WIDTH  (ADDRESS_WIDTH  ),
     .START_ADDRESS  (START_ADDRESS  ),
     .END_ADDRESS    (END_ADDRESS    ),
     .DATA_WIDTH     (DATA_WIDTH     ),
     .VALID_BITS     (VALID_BITS     ),
     .READABLE_BITS  (READABLE_BITS  ),
-    .INTERNAL_USE   (1              )
-  ) u_register (register_if, address_match);
+    .INTERNAL_USE   (1'b1           )
+  ) u_register (
+    register_if, rggen_rtl_pkg::RGGEN_OKAY, address_match, select, ready
+  );
 endmodule

@@ -1,5 +1,5 @@
 module rggen_bit_field_rwl_rwe
-  import rgge_rtl_type_pkg::*;
+  import rggen_rtl_pkg::*;
 #(
   parameter rggen_rwle_mode   MODE          = RGGEN_LOCK_MODE,
   parameter int               MSB           = 0,

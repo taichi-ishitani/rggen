@@ -7,6 +7,8 @@ module rggen_bus_splitter #(
   rggen_bus_if.slave        bus_if,
   rggen_register_if.master  register_if[TOTAL_REGISTERS]
 );
+  import  rggen_rtl_pkg::*;
+
   typedef struct packed {
     logic [DATA_WIDTH-1:0]  read_data;
     rggen_status            status;
@@ -29,16 +31,25 @@ module rggen_bus_splitter #(
 
   generate if (1) begin : g
     genvar  i;
-    for (i = 0;i < TOTAL_REGISTERS;i++) begin
+    for (i = 0;i < TOTAL_REGISTERS;i++) begin : g
       assign  register_if[i].request      = bus_if.request;
       assign  register_if[i].address      = bus_if.address;
       assign  register_if[i].direction    = bus_if.direction;
       assign  register_if[i].write_data   = bus_if.write_data;
-      assign  register_if[i].write_strob  = bus_if.write_strobe;
+      assign  register_if[i].write_strobe = bus_if.write_strobe;
+      assign  register_if[i].write_mask   = get_write_mask();
       assign  select[i]                   = register_if[i].select;
       assign  ready[i]                    = register_if[i].ready;
     end
   end endgenerate
+
+  function automatic logic [DATA_WIDTH-1:0] get_write_mask();
+    logic [DATA_WIDTH-1:0]  write_mask;
+    for (int i = 0;i < DATA_WIDTH;i += 8) begin
+      write_mask[i+:8]  = {8{bus_if.write_strobe[i/8]}};
+    end
+    return write_mask;
+  endfunction
 
   assign  response_ready        =  |ready;
   assign  no_register_selected  = ~|select;
@@ -47,36 +58,35 @@ module rggen_bus_splitter #(
       done        <= '0;
       read_done   <= '0;
       write_done  <= '0;
-      response    <= '{RGGEN_OKAY, '0};
+      response    <= '{'0, RGGEN_OKAY};
     end
     else if (bus_if.request && (response_ready || no_register_selected) && (!done)) begin
       done        <= '1;
       write_done  <= (bus_if.direction == RGGEN_WRITE) ? '1 : '0;
       read_done   <= (bus_if.direction == RGGEN_READ ) ? '1 : '0;
       if (response_ready) begin
-        response  <= get_response(register_if);
+        response  <= get_response();
       end
       else begin
-        response  <= '{RGGEN_SLAVE_ERROR, '0};
+        response  <= '{'0, RGGEN_SLAVE_ERROR};
       end
     end
     else begin
       done        <= '0;
       read_done   <= '0;
       write_done  <= '0;
-      response    <= '{RGGEN_OKAY, '0};
+      response    <= '{'0, RGGEN_OKAY};
     end
   end
 
-  function automatic s_response get_response (
-    rggen_register_if.master  register_if[TOTAL_REGISTERS]
-  );
+  function automatic s_response get_response ();
     s_response  masked_response[TOTAL_REGISTERS];
     for (int i = 0;i < TOTAL_REGISTERS;++i) begin
       logic                   select    = register_if[i].select;
       logic [DATA_WIDTH-1:0]  read_data = register_if[i].read_data;
       rggen_status            status    = register_if[i].status;
-      masked_response[i]  = s_response'({status, read_data}) & {$size(s_response){select}};
+      masked_response[i].read_data  = read_data & {DATA_WIDTH{1'b1}};
+      masked_response[i].status     = rggen_status'(status & {$size(rggen_status){select}});
     end
     return masked_response.or();
   endfunction
