@@ -44,9 +44,14 @@ list_item :register_block, :host_if do
       delegate [:data_width] => :configuration
 
       build do
-        interface :bus_if,
-                  type: :rggen_bus_if,
-                  parameters: [local_address_width, data_width]
+        interface :register_if,
+                  type: :rggen_register_if,
+                  parameters: [local_address_width, data_width],
+                  dimensions: [total_registers]
+      end
+
+      def total_registers
+        register_block.registers.sum(0, &:count)
       end
     end
 
