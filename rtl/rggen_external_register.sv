@@ -6,8 +6,7 @@ module rggen_external_register #(
 )(
   input                     clk,
   input                     rst_n,
-  rggen_register_if.control register_control_if,
-  rggen_register_if.data    register_data_if,
+  rggen_register_if.slave   register_if,
   rggen_bus_if.master       bus_if
 );
   import  rggen_rtl_pkg::*;
@@ -23,15 +22,9 @@ module rggen_external_register #(
   logic [DATA_WIDTH/8-1:0]            write_strobe;
   logic                               access_done;
 
-  rggen_register #(
-    .ADDRESS_WIDTH  (ADDRESS_WIDTH  ),
-    .START_ADDRESS  (START_ADDRESS  ),
-    .END_ADDRESS    (END_ADDRESS    ),
-    .DATA_WIDTH     (DATA_WIDTH     ),
-    .INTERNAL_USE   (1              )
-  ) u_register (
-    register_control_if, bus_if.status, address_match, address_match, bus_if.done
-  );
+  rggen_address_decoder #(
+    ADDRESS_WIDTH, START_ADDRESS, END_ADDRESS, DATA_WIDTH
+  ) u_address_decoder (register_if.address, address_match);
 
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
@@ -66,12 +59,12 @@ module rggen_external_register #(
       write_data    <= '0;
       write_strobe  <= '0;
     end
-    else if (register_control_if.request && address_match && (!request) && (!access_done)) begin
+    else if (register_if.request && address_match && (!request) && (!access_done)) begin
       request       <= '1;
-      address       <= calc_address(register_control_if.address);
-      direction     <= register_control_if.direction;
-      write_data    <= register_data_if.write_data;
-      write_strobe  <= register_data_if.write_strobe;
+      address       <= calc_address(register_if.address);
+      direction     <= register_if.direction;
+      write_data    <= register_if.write_data;
+      write_strobe  <= register_if.write_strobe;
     end
   end
 
@@ -82,6 +75,9 @@ module rggen_external_register #(
   endfunction
 
   //  External -> Local
-  assign  register_data_if.value      = bus_if.read_data;
-  assign  register_data_if.read_data  = bus_if.read_data;
+  assign  register_if.select    = address_match;
+  assign  register_if.ready     = bus_if.done;
+  assign  register_if.value     = bus_if.read_data;
+  assign  register_if.read_data = bus_if.read_data;
+  assign  register_if.status    = bus_if.status;
 endmodule
