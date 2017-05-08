@@ -29,10 +29,10 @@ module rggen_indirect_register #(
   assign  register_if.status    = RGGEN_OKAY;
 
   assign  bit_field_if.write_access = (
-    register_if.request && address_match && (register_if.direction == RGGEN_WRITE)
+    register_if.request && select && (register_if.direction == RGGEN_WRITE)
   ) ? 1'b1 : 1'b0;
   assign  bit_field_if.read_access  = (
-    register_if.request && address_match && (register_if.direction == RGGEN_READ)
+    register_if.request && select && (register_if.direction == RGGEN_READ)
   ) ? 1'b1 : 1'b0;
   assign  bit_field_if.write_data   = register_if.write_data;
   assign  bit_field_if.write_mask   = register_if.write_mask;
