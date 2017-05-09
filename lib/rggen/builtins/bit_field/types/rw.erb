@@ -1,10 +1,9 @@
 rggen_bit_field_rw #(
-  .MSB            (<%= msb %>),
-  .LSB            (<%= lsb %>),
+  .WIDTH          (<%= width %>),
   .INITIAL_VALUE  (<%= initial_value %>)
 ) u_<%= bit_field.name %> (
   .clk          (<%= register_block.clock %>),
   .rst_n        (<%= register_block.reset %>),
-  .register_if  (<%= register.register_if %>),
+  .bit_field_if (<%= bit_field_if %>),
   .o_value      (<%= value_out[loop_variables] %>)
 );

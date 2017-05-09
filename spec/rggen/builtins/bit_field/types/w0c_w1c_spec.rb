@@ -7,7 +7,7 @@ describe 'bit_fields/type/w0c_w1c' do
 
   before(:all) do
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:clock_reset, :host_if, :bus_splitter]
+    enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
@@ -191,14 +191,13 @@ describe 'bit_fields/type/w0c_w1c' do
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (0),
-  .MSB              (31),
-  .LSB              (16),
+  .WIDTH            (16),
   .INITIAL_VALUE    (16'h0123)
 ) u_bit_field_0_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_set),
-  .register_if    (register_if[0]),
+  .bit_field_if   (register_0_bit_field_if.bit_fields[0].slave),
   .o_value        ()
 );
 CODE
@@ -209,14 +208,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (0),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_0_1 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_set),
-  .register_if    (register_if[0]),
+  .bit_field_if   (register_0_bit_field_if.bit_fields[1].slave),
   .o_value        ()
 );
 CODE
@@ -227,14 +225,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (0),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_1_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_set[g_i]),
-  .register_if    (register_if[1+g_i]),
+  .bit_field_if   (register_1_bit_field_if[g_i].bit_fields[0].slave),
   .o_value        ()
 );
 CODE
@@ -245,14 +242,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (0),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_2_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_set[g_i][g_j]),
-  .register_if    (register_if[3+2*g_i+g_j]),
+  .bit_field_if   (register_2_bit_field_if[g_i][g_j].bit_fields[0].slave),
   .o_value        ()
 );
 CODE
@@ -263,14 +259,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (1),
-  .MSB              (31),
-  .LSB              (16),
+  .WIDTH            (16),
   .INITIAL_VALUE    (16'h4567)
 ) u_bit_field_3_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_set),
-  .register_if    (register_if[7]),
+  .bit_field_if   (register_3_bit_field_if.bit_fields[0].slave),
   .o_value        ()
 );
 CODE
@@ -281,14 +276,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (1),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_3_1 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_set),
-  .register_if    (register_if[7]),
+  .bit_field_if   (register_3_bit_field_if.bit_fields[1].slave),
   .o_value        ()
 );
 CODE
@@ -299,14 +293,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (1),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_4_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_set[g_i]),
-  .register_if    (register_if[8+g_i]),
+  .bit_field_if   (register_4_bit_field_if[g_i].bit_fields[0].slave),
   .o_value        ()
 );
 CODE
@@ -317,14 +310,13 @@ CODE
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (1),
-  .MSB              (0),
-  .LSB              (0),
+  .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
 ) u_bit_field_5_0 (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_set[g_i][g_j]),
-  .register_if    (register_if[10+2*g_i+g_j]),
+  .bit_field_if   (register_5_bit_field_if[g_i][g_j].bit_fields[0].slave),
   .o_value        ()
 );
 CODE

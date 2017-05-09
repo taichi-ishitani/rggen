@@ -1,7 +1,6 @@
 rggen_bit_field_ro #(
-  .MSB  (<%= msb %>),
-  .LSB  (<%= lsb %>)
+  .WIDTH  (<%= width %>)
 ) u_<%= bit_field.name %> (
-  .register_if  (<%= register.register_if %>),
+  .bit_field_if (<%= bit_field_if %>)
   .i_value      (<%= value_in[loop_variables] %>)
 );

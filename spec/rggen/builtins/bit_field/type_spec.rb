@@ -28,7 +28,8 @@ describe 'bit_field/type' do
     enable :register, :type, [:indirect]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :foo, :BAR]
-    enable :register_block, :bus_splitter
+    enable :register_block, [:clock_reset, :host_if]
+    enable :register_block, :host_if, :apb
 
     @items    = items
     @factory  = build_register_map_factory
@@ -528,6 +529,16 @@ describe 'bit_field/type' do
         expect(rtl[2].value).to match_identifier 'register_if[3+4*g_i+g_j].value[0]'
         expect(rtl[3].value).to match_identifier 'register_if[15].value[31:16]'
         expect(rtl[4].value).to match_identifier 'register_if[15].value[15:0]'
+      end
+    end
+
+    describe "#bit_field_if" do
+      it "自身が接続されるbit_field_ifの識別子を返す" do
+        expect(rtl[0].bit_field_if).to match_identifier 'register_0_bit_field_if.bit_fields[0].slave'
+        expect(rtl[1].bit_field_if).to match_identifier 'register_1_bit_field_if[g_i].bit_fields[0].slave'
+        expect(rtl[2].bit_field_if).to match_identifier 'register_2_bit_field_if[g_i][g_j].bit_fields[0].slave'
+        expect(rtl[3].bit_field_if).to match_identifier 'register_3_bit_field_if.bit_fields[0].slave'
+        expect(rtl[4].bit_field_if).to match_identifier 'register_3_bit_field_if.bit_fields[1].slave'
       end
     end
   end
