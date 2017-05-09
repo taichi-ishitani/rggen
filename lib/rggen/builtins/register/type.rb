@@ -175,24 +175,18 @@ list_item :register, :type do
 
   rtl do
     item_base do
-      export :valid_bits
-      export :readable_bits
       export :register_if
 
       delegate [:data_width, :byte_width] => :configuration
       delegate [:local_address_width] => :register_block
-      delegate [:loop_variables, :local_index] => :register
+      delegate [:loop_variables, :local_index, :dimensions] => :register
 
-      def valid_bits
-        valid_bit_fields.inject(0) do |bits, bit_field|
-          bits | ((1 << bit_field.width) - 1) << bit_field.lsb
-        end
-      end
-
-      def readable_bits
-        readable_bit_fields.inject(0) do |bits, bit_field|
-          bits | ((1 << bit_field.width) - 1) << bit_field.lsb
-        end
+      build do
+        interface :bit_field_if,
+                  type:       :rggen_bit_field_if,
+                  name:       "#{register.name}_bit_field_if",
+                  parameters: [data_width],
+                  dimensions: bit_field_if_dimensions if total_bit_fields > 0
       end
 
       def register_if
@@ -201,12 +195,25 @@ list_item :register, :type do
 
       private
 
-      def valid_bit_fields
-        register.bit_fields.reject(&:reserved?)
+      def actual_bit_fields
+        @non_reserved_bit_fields  ||= register.bit_fields.reject(&:reserved?)
       end
 
-      def readable_bit_fields
-        register.bit_fields.select(&:readable?)
+      def total_bit_fields
+        actual_bit_fields.size
+      end
+
+      def msb_list
+        array(actual_bit_fields.map(&:msb))
+      end
+
+      def lsb_list
+        array(actual_bit_fields.map(&:lsb))
+      end
+
+      def bit_field_if_dimensions
+        return [total_bit_fields] unless register.array?
+        [register.dimensions, total_bit_fields].flatten
       end
 
       def start_address

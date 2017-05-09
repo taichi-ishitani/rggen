@@ -5,19 +5,20 @@ describe 'register/types/external' do
   include_context 'configuration common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width]
-    ConfigurationDummyLoader.load_data({})
-    @configuration  = build_configuration_factory.create(configuration_file)
-  end
-
-  before(:all) do
     enable :register_block, [:name, :byte_size]
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :external
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
-    enable :register_block, [:clock_reset, :bus_splitter]
+    enable :register_block, [:clock_reset, :host_if]
+    enable :register_block, :host_if, :apb
     @factory  = build_register_map_factory
+  end
+
+  before(:all) do
+    enable :global, [:data_width, :address_width]
+    ConfigurationDummyLoader.load_data({})
+    @configuration  = build_configuration_factory.create(configuration_file)
   end
 
   after(:all) do
@@ -107,11 +108,10 @@ rggen_external_register #(
   .END_ADDRESS    (8'h7f),
   .DATA_WIDTH     (32)
 ) u_register_0 (
-  .clk                  (clk),
-  .rst_n                (rst_n),
-  .register_control_if  (register_if[0]),
-  .register_data_if     (register_if[0]),
-  .bus_if               (register_0_bus_if)
+  .clk          (clk),
+  .rst_n        (rst_n),
+  .register_if  (register_if[0]),
+  .bus_if       (register_0_bus_if)
 );
 CODE
       end

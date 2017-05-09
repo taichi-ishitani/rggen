@@ -1,13 +1,12 @@
 rggen_bit_field_w01s_w01c #(
   .MODE             (rggen_rtl_pkg::RGGEN_CLEAR_MODE),
   .SET_CLEAR_VALUE  (<%= clear_value %>),
-  .MSB              (<%= msb %>),
-  .LSB              (<%= lsb %>),
+  .WIDTH            (<%= width %>),
   .INITIAL_VALUE    (<%= initial_value %>)
 ) u_<%= name%> (
   .clk            (<%= register_block.clock %>),
   .rst_n          (<%= register_block.reset %>),
   .i_set_or_clear (<%= set[loop_variables] %>),
-  .register_if    (<%= register.register_if %>),
+  .bit_field_if   (<%= bit_field_if %>),
   .o_value        ()
 );

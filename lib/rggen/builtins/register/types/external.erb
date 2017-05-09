@@ -4,9 +4,8 @@ rggen_external_register #(
   .END_ADDRESS    (<%= end_address %>),
   .DATA_WIDTH     (<%= configuration.data_width %>)
 ) u_<%= register.name %> (
-  .clk                  (<%= register_block.clock %>),
-  .rst_n                (<%= register_block.reset %>),
-  .register_control_if  (<%= register.register_if %>),
-  .register_data_if     (<%= register.register_if %>),
-  .bus_if               (<%= bus_if %>)
+  .clk          (<%= register_block.clock %>),
+  .rst_n        (<%= register_block.reset %>),
+  .register_if  (<%= register.register_if %>),
+  .bus_if       (<%= bus_if %>)
 );

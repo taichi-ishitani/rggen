@@ -10,7 +10,8 @@ describe 'register/types/external' do
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value]
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
-    enable :register_block, [:clock_reset, :bus_splitter]
+    enable :register_block, [:clock_reset, :host_if]
+    enable :register_block, :host_if, :apb
     @factory  = build_register_map_factory
   end
 
@@ -397,16 +398,18 @@ describe 'register/types/external' do
         <<'CODE'
 assign register_0_indirect_index = {register_if[0].value[9:8]};
 rggen_indirect_register #(
-  .ADDRESS_WIDTH  (8),
-  .START_ADDRESS  (8'h08),
-  .END_ADDRESS    (8'h0b),
-  .INDEX_WIDTH    (2),
-  .INDEX_VALUE    ({2'h0}),
-  .DATA_WIDTH     (32),
-  .VALID_BITS     (32'hffffffff),
-  .READABLE_BITS  (32'hffffffff)
+  .ADDRESS_WIDTH    (8),
+  .START_ADDRESS    (8'h08),
+  .END_ADDRESS      (8'h0b),
+  .INDEX_WIDTH      (2),
+  .INDEX_VALUE      ({2'h0}),
+  .DATA_WIDTH       (32),
+  .TOTAL_BIT_FIELDS (1),
+  .MSB_LIST         ('{31}),
+  .LSB_LIST         ('{0})
 ) u_register_0 (
   .register_if  (register_if[2]),
+  .bit_field_if (register_0_bit_field_if),
   .i_index      (register_0_indirect_index)
 );
 CODE
@@ -416,16 +419,18 @@ CODE
         <<'CODE'
 assign register_4_indirect_index = {register_if[0].value[9:8], register_if[0].value[1:0]};
 rggen_indirect_register #(
-  .ADDRESS_WIDTH  (8),
-  .START_ADDRESS  (8'h10),
-  .END_ADDRESS    (8'h13),
-  .INDEX_WIDTH    (4),
-  .INDEX_VALUE    ({2'h0, 2'h0}),
-  .DATA_WIDTH     (32),
-  .VALID_BITS     (32'hffffffff),
-  .READABLE_BITS  (32'hffffffff)
+  .ADDRESS_WIDTH    (8),
+  .START_ADDRESS    (8'h10),
+  .END_ADDRESS      (8'h13),
+  .INDEX_WIDTH      (4),
+  .INDEX_VALUE      ({2'h0, 2'h0}),
+  .DATA_WIDTH       (32),
+  .TOTAL_BIT_FIELDS (1),
+  .MSB_LIST         ('{31}),
+  .LSB_LIST         ('{0})
 ) u_register_4 (
   .register_if  (register_if[6]),
+  .bit_field_if (register_4_bit_field_if),
   .i_index      (register_4_indirect_index)
 );
 CODE
@@ -435,16 +440,18 @@ CODE
         <<'CODE'
     assign register_8_indirect_index[g_i] = {register_if[0].value[9:8]};
     rggen_indirect_register #(
-      .ADDRESS_WIDTH  (8),
-      .START_ADDRESS  (8'h18),
-      .END_ADDRESS    (8'h1b),
-      .INDEX_WIDTH    (2),
-      .INDEX_VALUE    ({g_i[1:0]}),
-      .DATA_WIDTH     (32),
-      .VALID_BITS     (32'hffffffff),
-      .READABLE_BITS  (32'hffffffff)
+      .ADDRESS_WIDTH    (8),
+      .START_ADDRESS    (8'h18),
+      .END_ADDRESS      (8'h1b),
+      .INDEX_WIDTH      (2),
+      .INDEX_VALUE      ({g_i[1:0]}),
+      .DATA_WIDTH       (32),
+      .TOTAL_BIT_FIELDS (1),
+      .MSB_LIST         ('{31}),
+      .LSB_LIST         ('{0})
     ) u_register_8 (
       .register_if  (register_if[10+g_i]),
+      .bit_field_if (register_8_bit_field_if[g_i]),
       .i_index      (register_8_indirect_index[g_i])
     );
 CODE
@@ -454,16 +461,18 @@ CODE
         <<'CODE'
       assign register_10_indirect_index[g_i][g_j] = {register_if[0].value[9:8], register_if[0].value[1:0]};
       rggen_indirect_register #(
-        .ADDRESS_WIDTH  (8),
-        .START_ADDRESS  (8'h20),
-        .END_ADDRESS    (8'h23),
-        .INDEX_WIDTH    (4),
-        .INDEX_VALUE    ({g_i[1:0], g_j[1:0]}),
-        .DATA_WIDTH     (32),
-        .VALID_BITS     (32'hffffffff),
-        .READABLE_BITS  (32'hffffffff)
+        .ADDRESS_WIDTH    (8),
+        .START_ADDRESS    (8'h20),
+        .END_ADDRESS      (8'h23),
+        .INDEX_WIDTH      (4),
+        .INDEX_VALUE      ({g_i[1:0], g_j[1:0]}),
+        .DATA_WIDTH       (32),
+        .TOTAL_BIT_FIELDS (1),
+        .MSB_LIST         ('{31}),
+        .LSB_LIST         ('{0})
       ) u_register_10 (
         .register_if  (register_if[16+4*g_i+g_j]),
+        .bit_field_if (register_10_bit_field_if[g_i][g_j]),
         .i_index      (register_10_indirect_index[g_i][g_j])
       );
 CODE
@@ -473,16 +482,18 @@ CODE
         <<'CODE'
         assign register_13_indirect_index[g_i][g_j][g_k] = {register_if[0].value[1:0], register_if[1].value[9:8], register_if[1].value[1:0]};
         rggen_indirect_register #(
-          .ADDRESS_WIDTH  (8),
-          .START_ADDRESS  (8'h24),
-          .END_ADDRESS    (8'h27),
-          .INDEX_WIDTH    (6),
-          .INDEX_VALUE    ({g_i[1:0], g_j[1:0], g_k[1:0]}),
-          .DATA_WIDTH     (32),
-          .VALID_BITS     (32'hffffffff),
-          .READABLE_BITS  (32'hffffffff)
+          .ADDRESS_WIDTH    (8),
+          .START_ADDRESS    (8'h24),
+          .END_ADDRESS      (8'h27),
+          .INDEX_WIDTH      (6),
+          .INDEX_VALUE      ({g_i[1:0], g_j[1:0], g_k[1:0]}),
+          .DATA_WIDTH       (32),
+          .TOTAL_BIT_FIELDS (1),
+          .MSB_LIST         ('{31}),
+          .LSB_LIST         ('{0})
         ) u_register_13 (
           .register_if  (register_if[34+4*g_i+2*g_j+g_k]),
+          .bit_field_if (register_13_bit_field_if[g_i][g_j][g_k]),
           .i_index      (register_13_indirect_index[g_i][g_j][g_k])
         );
 CODE
@@ -492,16 +503,18 @@ CODE
         <<'CODE'
       assign register_14_indirect_index[g_i][g_j] = {register_if[0].value[9:8], register_if[0].value[1:0], register_if[1].value[9:8]};
       rggen_indirect_register #(
-        .ADDRESS_WIDTH  (8),
-        .START_ADDRESS  (8'h28),
-        .END_ADDRESS    (8'h2b),
-        .INDEX_WIDTH    (6),
-        .INDEX_VALUE    ({g_i[1:0], 2'h0, g_j[1:0]}),
-        .DATA_WIDTH     (32),
-        .VALID_BITS     (32'hffffffff),
-        .READABLE_BITS  (32'hffffffff)
+        .ADDRESS_WIDTH    (8),
+        .START_ADDRESS    (8'h28),
+        .END_ADDRESS      (8'h2b),
+        .INDEX_WIDTH      (6),
+        .INDEX_VALUE      ({g_i[1:0], 2'h0, g_j[1:0]}),
+        .DATA_WIDTH       (32),
+        .TOTAL_BIT_FIELDS (1),
+        .MSB_LIST         ('{31}),
+        .LSB_LIST         ('{0})
       ) u_register_14 (
         .register_if  (register_if[42+4*g_i+g_j]),
+        .bit_field_if (register_14_bit_field_if[g_i][g_j]),
         .i_index      (register_14_indirect_index[g_i][g_j])
       );
 CODE

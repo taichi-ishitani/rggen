@@ -16,14 +16,6 @@ interface rggen_register_if #(
   logic [DATA_WIDTH-1:0]    value;
   rggen_status              status;
 
-  function automatic logic write_access();
-    return (request && select && (direction == RGGEN_WRITE)) ? 1'b1 : 1'b0;
-  endfunction
-
-  function automatic logic read_access();
-    return (request && select && (direction == READ)) ? 1'b1 : 1'b0;
-  endfunction
-
   modport master (
     output  request,
     input   select,
@@ -31,35 +23,23 @@ interface rggen_register_if #(
     output  direction,
     output  write_data,
     output  write_strobe,
+    output  write_mask,
     input   ready,
     input   read_data,
     input   status
   );
 
-  modport control (
+  modport slave (
     input   request,
     output  select,
+    input   address,
     input   direction,
-    output  ready,
-    output  read_data,
-    output  value,
-    output  status
-  );
-
-  modport data (
     input   write_data,
     input   write_strobe,
     input   write_mask,
+    output  ready,
     output  read_data,
-    output  value,
-    import  write_access,
-    import  read_access
+    output  status,
+    output  value
   );
-
-  generate if (1) begin : g
-    genvar  i;
-    for (i = 0;i < DATA_WIDTH;i += 8) begin
-      assign  write_mask[i:+8]  = {8{write_strobe[i/8]}};
-    end
-  end endgenerate
 endinterface

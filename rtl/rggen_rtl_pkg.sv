@@ -1,4 +1,4 @@
-package rgge_rtl_types_pkg;
+package rggen_rtl_pkg;
   typedef enum logic {
     RGGEN_READ  = 1'b0,
     RGGEN_WRITE = 1'b1

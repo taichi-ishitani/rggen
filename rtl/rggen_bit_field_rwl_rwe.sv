@@ -1,29 +1,33 @@
 module rggen_bit_field_rwl_rwe
-  import rgge_rtl_type_pkg::*;
+  import rggen_rtl_pkg::*;
 #(
   parameter rggen_rwle_mode   MODE          = RGGEN_LOCK_MODE,
-  parameter int               MSB           = 0,
-  parameter int               LSB           = 0,
-  parameter logic [MSB-LSB:0] INITIAL_VALUE = '0
+  parameter int               WIDTH         = 1,
+  parameter bit [WIDTH-1:0]   INITIAL_VALUE = '0
 )(
-  input                   clk,
-  input                   rst_n,
-  input                   i_lock_or_enable,
-  rggen_register_if.data  register_if,
-  output  [MSB-LSB:0]     o_value
+  input   logic             clk,
+  input   logic             rst_n,
+  input   logic             i_lock_or_enable,
+  rggen_bit_field_if.slave  bit_field_if,
+  output  logic [WIDTH-1:0] o_value
 );
-  logic [MSB-LSB:0] value;
+  logic [WIDTH-1:0] write_data;
+  logic [WIDTH-1:0] write_mask;
+  logic [WIDTH-1:0] value;
 
-  assign  o_value                         = value;
-  assign  register_if.value[MSB:LSB]      = value;
-  assign  register_if.read_data[MSB:LSB]  = value;
+  assign  o_value                           = value;
+  assign  bit_field_if.value[WIDTH-1:0]     = value;
+  assign  bit_field_if.read_data[WIDTH-1:0] = value;
+
+  assign  write_data  = bit_field_if.write_data[WIDTH-1:0];
+  assign  write_mask  = bit_field_if.write_mask[WIDTH-1:0];
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
       value <= INITIAL_VALUE;
     end
-    else if ((i_lock_or_enable == MODE) && register_if.write_access()) begin
-      value <= (value                           & (~register_if.write_mask[MSB:LSB]))
-             | (register_if.write_data[MSB:LSB] &   register_if.write_mask[MSB:LSB] );
+    else if ((i_lock_or_enable == MODE) && bit_field_if.write_access) begin
+      value <= (value      & (~write_mask))
+             | (write_data &   write_mask );
     end
   end
 endmodule

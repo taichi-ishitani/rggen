@@ -1,30 +1,24 @@
 module rggen_indirect_register #(
-  parameter int                     ADDRESS_WIDTH = 16,
-  parameter bit [ADDRESS_WIDTH-1:0] START_ADDRESS = '0,
-  parameter bit [ADDRESS_WIDTH-1:0] END_ADDRESS   = '0,
-  parameter int                     INDEX_WIDTH   = 1,
-  parameter bit [INDEX_WIDTH-1:0]   INDEX_VALUE   = '0,
-  parameter int                     DATA_WIDTH    = 32,
-  parameter bit [DATA_WIDTH-1:0]    VALID_BITS    = '1,
-  parameter bit [DATA_WIDTH-1:0]    READABLE_BITS = '1
+  parameter int                     ADDRESS_WIDTH               = 16,
+  parameter bit [ADDRESS_WIDTH-1:0] START_ADDRESS               = '0,
+  parameter bit [ADDRESS_WIDTH-1:0] END_ADDRESS                 = '0,
+  parameter int                     INDEX_WIDTH                 = 1,
+  parameter bit [INDEX_WIDTH-1:0]   INDEX_VALUE                 = '0,
+  parameter int                     DATA_WIDTH                  = 32,
+  parameter int                     TOTAL_BIT_FIELDS            = 1,
+  parameter int                     MSB_LIST[TOTAL_BIT_FIELDS]  = '{0},
+  parameter int                     LSB_LIST[TOTAL_BIT_FIELDS]  = '{0}
 )(
-  rggen_register_if.control register_if,
+  rggen_register_if.slave   register_if,
+  rggen_bit_field_if.master bit_field_if[TOTAL_BIT_FIELDS],
   input [INDEX_WIDTH-1:0]   i_index
 );
-  logic select;
-  logic address_match;
+  logic index_match;
 
-  assign  select              = (address_match && (i_index == INDEX_VALUE)) ? 1'b1 : 1'b0;
-  assign  register_if.select  = select;
-  assign  register_if.ready   = register_if.request & select;
-
-  rggen_default_register #(
-    .ADDRESS_WIDTH  (ADDRESS_WIDTH  ),
-    .START_ADDRESS  (START_ADDRESS  ),
-    .END_ADDRESS    (END_ADDRESS    ),
-    .DATA_WIDTH     (DATA_WIDTH     ),
-    .VALID_BITS     (VALID_BITS     ),
-    .READABLE_BITS  (READABLE_BITS  ),
-    .INTERNAL_USE   (1              )
-  ) u_register (register_if, address_match);
+  assign  index_match = (i_index == INDEX_VALUE) ? 1'b1 : 1'b0;
+  rggen_register_base #(
+    ADDRESS_WIDTH, START_ADDRESS, END_ADDRESS,
+    DATA_WIDTH,
+    TOTAL_BIT_FIELDS, MSB_LIST, LSB_LIST
+  ) u_register_base (register_if, bit_field_if, index_match);
 endmodule

@@ -11,17 +11,19 @@ describe "register_block/host_if" do
         configuration {} if host_if == :Foo
 
         rtl {
-          define_method(:test) {host_if}
+          define_method(:get_host_type) { host_if }
         }
       end
     end
 
-    RgGen.enable(:global, :address_width)
-    RgGen.enable(:global, :data_width   )
-    RgGen.enable(:register_block, :name     )
-    RgGen.enable(:register_block, :byte_size)
-    RgGen.enable(:register_block, :host_if  )
-    RgGen.enable(:register_block, :host_if, [:bar, :Foo, :qux])
+    enable :global, [:address_width, :data_width]
+    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:host_if, :clock_reset]
+    enable :register_block, :host_if, [:bar, :Foo, :qux]
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, [:indirect, :external]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :bit_field, :type, :rw
 
     @configuration_factory  = build_configuration_factory
   end
@@ -79,8 +81,17 @@ describe "register_block/host_if" do
       @register_map = create_register_map(
         configuration,
         "block_0" => [
-          [nil, nil, "block_0"],
-          [nil, nil, 252      ]
+          [nil, nil         , "block_0"                                                                                                 ],
+          [nil, nil         , 252                                                                                                       ],
+          [                                                                                                                             ],
+          [                                                                                                                             ],
+          [nil, "register_0", "0x00"     , nil    , nil                                     , "bit_field_0_0", "[0]"    , "rw", 0  , nil],
+          [nil, nil         , nil        , nil    , nil                                     , "bit_field_0_1", "[31:16]", "rw", 0  , nil],
+          [nil, "register_1", "0x04"     , nil    , nil                                     , "bit_field_1_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_2", "0x08-0x0F", "[2]"  , nil                                     , "bit_field_2_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_3", "0x10"     , "[2,4]", "indirect: bit_field_0_0, bit_field_0_1", "bit_field_3_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_4", "0x14"     , nil    , :external                               , nil            , nil      , nil , nil, nil],
+          [nil, "register_5", "0x18"     , nil    , :external                               , nil            , nil      , nil , nil, nil]
         ]
       )
     end
@@ -97,16 +108,20 @@ describe "register_block/host_if" do
       8
     end
 
+    let(:total_registers) do
+      14
+    end
+
     specify "configurationで指定したホストIFが生成される" do
       [:Foo, :bar].each do |host_if|
-        expect(rtl(host_if: host_if).items[0].test).to eq host_if
+        expect(rtl(host_if: host_if).items[0].get_host_type).to eq host_if
       end
     end
 
     it "rggen_bus_if のインスタンスを持つ" do
       host_if_rtl = rtl(host_if: :foo, data_width: data_width)
       expect(host_if_rtl).to have_interface(
-        :bus_if, type: :rggen_bus_if, parameters: [address_width, data_width]
+        :register_if, type: :rggen_register_if, parameters: [address_width, data_width], dimensions: [total_registers]
       )
     end
   end

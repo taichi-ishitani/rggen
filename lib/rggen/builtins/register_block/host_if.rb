@@ -40,13 +40,18 @@ list_item :register_block, :host_if do
     shared_context.enabled_host_ifs = @enabled_items
 
     item_base do
-      delegate [:local_address_width] => :register_block
+      delegate [:local_address_width, :clock, :reset] => :register_block
       delegate [:data_width] => :configuration
 
       build do
-        interface :bus_if,
-                  type: :rggen_bus_if,
-                  parameters: [local_address_width, data_width]
+        interface :register_if,
+                  type: :rggen_register_if,
+                  parameters: [local_address_width, data_width],
+                  dimensions: [total_registers]
+      end
+
+      def total_registers
+        register_block.registers.sum(0, &:count)
       end
     end
 

@@ -166,6 +166,12 @@ RSpec::Matchers.define :have_interface_instantiation do |attributes|
     actual.any? { |declaration| declaration.to_s == expectation }
   end
 
+  match_when_negated do |component|
+    @actual = component.signal_declarations
+    pattern = /#{attributes[:type]}.+#{attributes[:name]}/
+    actual.none? { |declaration| pattern.match(declaration.to_s) }
+  end
+
   failure_message do
     "signal(#{expectation}) is not declared.\n" \
     "actual declarations: \n#{actual.map(&:to_s).join("\n")}"

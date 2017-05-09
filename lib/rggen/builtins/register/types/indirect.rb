@@ -131,7 +131,7 @@ list_item :register, :type, :indirect do
       logic :indirect_index,
             name:       "#{register.name}_indirect_index",
             width:      indirect_index_width,
-            dimensions: register.dimensions
+            dimensions: dimensions
     end
 
     generate_code :module_item do |code|

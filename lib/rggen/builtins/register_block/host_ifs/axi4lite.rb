@@ -9,13 +9,6 @@ list_item :register_block, :host_if, :axi4lite do
   end
 
   rtl do
-    delegate [
-      :address_width, :data_width, :byte_width
-    ] => :configuration
-    delegate [
-      :local_address_width, :clock, :reset
-    ] => :register_block
-
     build do
       parameter :access_priority,
                 name:    'ACCESS_PRIORITY',

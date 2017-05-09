@@ -167,10 +167,7 @@ list_item :bit_field, :type do
   rtl do
     item_base do
       export :value
-
-      def value
-        register.register_if.value[msb, lsb]
-      end
+      export :bit_field_if
 
       delegate [
         :width, :msb, :lsb
@@ -178,6 +175,20 @@ list_item :bit_field, :type do
       delegate [
         :dimensions, :index, :local_index, :loop_variables
       ] => :register
+
+      def value
+        register.register_if.value[msb, lsb]
+      end
+
+      def bit_field_if
+        register.bit_field_if[loop_variables][bit_field_index]
+      end
+
+      private
+
+      def bit_field_index
+        register.bit_fields.find_index { |r| bit_field.equal?(r) }
+      end
     end
 
     default_item do
