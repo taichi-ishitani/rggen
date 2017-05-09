@@ -159,7 +159,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_clear),
-  .bit_field_if   (register_0_bit_field_if.bit_fields[0].slave),
+  .bit_field_if   (register_0_bit_field_if[0]),
   .o_value        (o_bit_field_0_0)
 );
 CODE
@@ -176,7 +176,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_clear),
-  .bit_field_if   (register_0_bit_field_if.bit_fields[1].slave),
+  .bit_field_if   (register_0_bit_field_if[1]),
   .o_value        (o_bit_field_0_1)
 );
 CODE
@@ -193,7 +193,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_clear[g_i]),
-  .bit_field_if   (register_1_bit_field_if[g_i].bit_fields[0].slave),
+  .bit_field_if   (register_1_bit_field_if[g_i][0]),
   .o_value        (o_bit_field_1_0[g_i])
 );
 CODE
@@ -210,7 +210,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_clear[g_i][g_j]),
-  .bit_field_if   (register_2_bit_field_if[g_i][g_j].bit_fields[0].slave),
+  .bit_field_if   (register_2_bit_field_if[g_i][g_j][0]),
   .o_value        (o_bit_field_2_0[g_i][g_j])
 );
 CODE
@@ -227,7 +227,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_clear),
-  .bit_field_if   (register_3_bit_field_if.bit_fields[0].slave),
+  .bit_field_if   (register_3_bit_field_if[0]),
   .o_value        (o_bit_field_3_0)
 );
 CODE
@@ -244,7 +244,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_clear),
-  .bit_field_if   (register_3_bit_field_if.bit_fields[1].slave),
+  .bit_field_if   (register_3_bit_field_if[1]),
   .o_value        (o_bit_field_3_1)
 );
 CODE
@@ -261,7 +261,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_clear[g_i]),
-  .bit_field_if   (register_4_bit_field_if[g_i].bit_fields[0].slave),
+  .bit_field_if   (register_4_bit_field_if[g_i][0]),
   .o_value        (o_bit_field_4_0[g_i])
 );
 CODE
@@ -278,7 +278,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_clear[g_i][g_j]),
-  .bit_field_if   (register_5_bit_field_if[g_i][g_j].bit_fields[0].slave),
+  .bit_field_if   (register_5_bit_field_if[g_i][g_j][0]),
   .o_value        (o_bit_field_5_0[g_i][g_j])
 );
 CODE

@@ -181,11 +181,7 @@ list_item :bit_field, :type do
       end
 
       def bit_field_if
-        register.bit_field_if[
-          loop_variables
-        ].bit_fields[
-          bit_field_index
-        ].slave
+        register.bit_field_if[loop_variables][bit_field_index]
       end
 
       private

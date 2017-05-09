@@ -534,11 +534,11 @@ describe 'bit_field/type' do
 
     describe "#bit_field_if" do
       it "自身が接続されるbit_field_ifの識別子を返す" do
-        expect(rtl[0].bit_field_if).to match_identifier 'register_0_bit_field_if.bit_fields[0].slave'
-        expect(rtl[1].bit_field_if).to match_identifier 'register_1_bit_field_if[g_i].bit_fields[0].slave'
-        expect(rtl[2].bit_field_if).to match_identifier 'register_2_bit_field_if[g_i][g_j].bit_fields[0].slave'
-        expect(rtl[3].bit_field_if).to match_identifier 'register_3_bit_field_if.bit_fields[0].slave'
-        expect(rtl[4].bit_field_if).to match_identifier 'register_3_bit_field_if.bit_fields[1].slave'
+        expect(rtl[0].bit_field_if).to match_identifier 'register_0_bit_field_if[0]'
+        expect(rtl[1].bit_field_if).to match_identifier 'register_1_bit_field_if[g_i][0]'
+        expect(rtl[2].bit_field_if).to match_identifier 'register_2_bit_field_if[g_i][g_j][0]'
+        expect(rtl[3].bit_field_if).to match_identifier 'register_3_bit_field_if[0]'
+        expect(rtl[4].bit_field_if).to match_identifier 'register_3_bit_field_if[1]'
       end
     end
   end
