@@ -39,7 +39,7 @@ module rggen_bus_splitter #(
     assign  register_if[g_i].direction    = bus_if.direction;
     assign  register_if[g_i].write_data   = bus_if.write_data;
     assign  register_if[g_i].write_strobe = bus_if.write_strobe;
-    assign  register_if[g_i].write_mask   = get_write_mask();
+    assign  register_if[g_i].write_mask   = get_write_mask(bus_if.write_strobe);
     assign  select[g_i]                   = register_if[g_i].select;
     assign  ready[g_i]                    = register_if[g_i].ready;
     assign  response[g_i].read_data       = register_if[g_i].read_data;
@@ -52,15 +52,15 @@ module rggen_bus_splitter #(
   assign  ready[TOTAL_REGISTERS]    = no_register_selected;
   assign  response[TOTAL_REGISTERS] = '{read_data: '0, status: RGGEN_SLAVE_ERROR};
 
-  function automatic logic [DATA_WIDTH-1:0] get_write_mask();
+  function automatic logic [DATA_WIDTH-1:0] get_write_mask(logic [DATA_WIDTH/8-1:0] strobe);
     logic [DATA_WIDTH-1:0]  write_mask;
     for (int i = 0;i < DATA_WIDTH;i += 8) begin
-      write_mask[i+:8]  = {8{bus_if.write_strobe[i/8]}};
+      write_mask[i+:8]  = {8{strobe[i/8]}};
     end
     return write_mask;
   endfunction
 
-  assign  response_ready  =  |ready;
+  assign  response_ready  = |ready;
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
       done              <= '0;
