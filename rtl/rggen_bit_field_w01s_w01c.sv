@@ -6,17 +6,18 @@ module rggen_bit_field_w01s_w01c
   parameter int               WIDTH           = 1,
   parameter bit [WIDTH-1:0]   INITIAL_VALUE   = '0
 )(
-  input               clk,
-  input               rst_n,
-  input   [WIDTH-1:0] i_set_or_clear,
-  interface           bit_field_if,
-  output  [WIDTH-1:0] o_value
+  input   logic             clk,
+  input   logic             rst_n,
+  input   logic [WIDTH-1:0] i_set_or_clear,
+  rggen_bit_field_if.slave  bit_field_if,
+  output  logic [WIDTH-1:0] o_value
 );
   logic [WIDTH-1:0] value;
 
-  assign  o_value                 = value;
-  assign  bit_field_if.value      = value;
-  assign  bit_field_if.read_data  = value;
+  assign  o_value                           = value;
+  assign  bit_field_if.value[WIDTH-1:0]     = value;
+  assign  bit_field_if.read_data[WIDTH-1:0] = value;
+
   always_ff @(posedge clk, negedge rst_n) begin
     if (!rst_n) begin
       value <= INITIAL_VALUE;
@@ -33,8 +34,8 @@ module rggen_bit_field_w01s_w01c
     logic [WIDTH-1:0] set;
     logic [WIDTH-1:0] clear;
 
-    write_data  = bit_field_if.write_data;
-    write_mask  = bit_field_if.write_mask;
+    write_data  = bit_field_if.write_data[WIDTH-1:0];
+    write_mask  = bit_field_if.write_mask[WIDTH-1:0];
     if (bit_field_if.write_access) begin
       control_value = write_mask & ((SET_CLEAR_VALUE) ? write_data : ~write_data);
     end
