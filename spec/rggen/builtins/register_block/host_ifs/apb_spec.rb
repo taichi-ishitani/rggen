@@ -105,8 +105,10 @@ describe "register_block/apb" do
 rggen_host_if_apb #(
   .LOCAL_ADDRESS_WIDTH  (8)
 ) u_host_if (
-  .apb_if (apb_if),
-  .bus_if (bus_if)
+  .clk          (clk),
+  .rst_n        (rst_n),
+  .apb_if       (apb_if),
+  .register_if  (register_if)
 );
 CODE
       end

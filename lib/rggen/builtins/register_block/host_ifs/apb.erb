@@ -1,6 +1,8 @@
 rggen_host_if_apb #(
-  .LOCAL_ADDRESS_WIDTH  (<%= register_block.local_address_width %>)
+  .LOCAL_ADDRESS_WIDTH  (<%= local_address_width %>)
 ) u_host_if (
-  .apb_if (<%= apb_if %>),
-  .bus_if (<%= bus_if %>)
+  .clk          (<%= clock %>),
+  .rst_n        (<%= reset %>),
+  .apb_if       (<%= apb_if %>),
+  .register_if  (<%= register_if %>)
 );

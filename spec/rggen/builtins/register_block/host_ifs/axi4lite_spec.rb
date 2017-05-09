@@ -89,7 +89,7 @@ rggen_host_if_axi4lite #(
   .clk          (clk),
   .rst_n        (rst_n),
   .axi4lite_if  (axi4lite_if),
-  .bus_if       (bus_if)
+  .register_if  (register_if)
 );
 CODE
       end

@@ -40,7 +40,7 @@ list_item :register_block, :host_if do
     shared_context.enabled_host_ifs = @enabled_items
 
     item_base do
-      delegate [:local_address_width] => :register_block
+      delegate [:local_address_width, :clock, :reset] => :register_block
       delegate [:data_width] => :configuration
 
       build do
