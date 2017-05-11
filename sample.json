@@ -1,0 +1,4 @@
+{
+  "address_width": 16,
+  "host_if"      : "apb"
+}

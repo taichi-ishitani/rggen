@@ -1,0 +1,21 @@
+,block name,block_0,,,,,,,
+,byte size,256,,,,,,,
+,,,,,,,,,
+,offset address,registe name,array dimension,type,assignment,field name,type,initial value,reference
+,0x00,register_0,,,[31:16],bit_field_0_0,rw,0,
+,,,,,[15:0],bit_field_0_1,rw,0,
+,0x04,register_1,,,[31:0],bit_field_1_0,rw,0,
+,0x08,register_2,,,[16],bit_field_2_0,ro,,
+,,,,,[0],bit_field_2_1,rw,0,
+,0x0C,register_3,,,[31:0],bit_field_3_0,ro,,
+,0x10 - 0x1F,register_4,[4],,[31:16],bit_field_4_0,ro,,
+,,,,,[15:0],bit_field_4_1,rw,0,
+,0x20,register_5,"[2,4]","indirect: bit_field_2_1:1, bit_field_0_0, bit_field_0_1",[31:16],bit_field_5_0,ro,,
+,,,,,[15:0],bit_field_5_1,rw,0,
+,0x24,register_6,,,[8],bit_field_6_0,w0c,0,bit_field_2_1
+,,,,,[0],bit_field_6_1,w1c,0,bit_field_2_1
+,0x28,register_7,,,[8],bit_field_7_0,w0s,0,
+,,,,,[0],bit_field_7_1,w1s,0,
+,0x2C,register_8,,,[31:16],bit_field_8_0,rwl,0,bit_field_2_1
+,,,,,[15:0],bit_field_8_1,rwe,0,bit_field_2_1
+,0x80-0xFF,register_9,,external,,,,,
