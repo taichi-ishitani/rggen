@@ -26,11 +26,11 @@ Gem::Specification.new do |spec|
       |Gemfile
       |Rakefile
       |rggen.gemspec
-      |.gitignore
       |.rspec
       |.rubocop_todo.yml
       |.rubocop.yml
       |.travis.yml
+      |(?:.+/)*.gitignore
     )$}x
   }
   spec.bindir         = 'bin'
