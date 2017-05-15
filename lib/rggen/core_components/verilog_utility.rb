@@ -48,6 +48,10 @@ module RgGen
       SubroutineDefinition.new(:function, name, &body).to_code
     end
 
+    def local_scope(block_name, &body)
+      LocalScope.new(block_name, &body).to_code
+    end
+
     def argument(name, attributes)
       port_declaration(attributes.merge(name: name))
     end
