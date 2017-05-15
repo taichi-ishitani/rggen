@@ -7,7 +7,7 @@ list_item :register, :type, :external do
 
   rtl do
     build do
-      interface_port :bus_if,
+      interface_port :register_block, :bus_if,
                      name:    "#{register.name}_bus_if",
                      type:    :rggen_bus_if,
                      modport: :master

@@ -182,7 +182,7 @@ list_item :register, :type do
       delegate [:loop_variables, :local_index, :dimensions] => :register
 
       build do
-        interface :bit_field_if,
+        interface :register_block, :bit_field_if,
                   type:       :rggen_bit_field_if,
                   name:       "#{register.name}_bit_field_if",
                   parameters: [data_width],

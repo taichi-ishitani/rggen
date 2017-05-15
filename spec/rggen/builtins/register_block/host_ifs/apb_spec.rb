@@ -106,7 +106,7 @@ describe "register_block/apb" do
     end
 
     it "rggen_apb_ifを入出力ポートに持つ" do
-      expect(rtl).to have_interface_port(:apb_if, type: :rggen_apb_if, modport: :slave)
+      expect(rtl).to have_interface_port(:register_block, :apb_if, type: :rggen_apb_if, modport: :slave)
     end
 
     describe "#generate_code" do

@@ -75,12 +75,12 @@ describe "register_block/irq_controller" do
     end
 
     it "割り込み関連のポート、信号群を持つ" do
-      expect(rtl[0]).to have_output :irq, width: 1, name: 'o_irq'
-      expect(rtl[0]).to have_logic  :ier, width: 1
-      expect(rtl[0]).to have_logic  :isr, width: 1
-      expect(rtl[1]).to have_output :irq, width: 1, name: 'o_irq'
-      expect(rtl[1]).to have_logic  :ier, width: 2
-      expect(rtl[1]).to have_logic  :isr, width: 2
+      expect(rtl[0]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
+      expect(rtl[0]).to have_logic  :register_block, :ier, width: 1
+      expect(rtl[0]).to have_logic  :register_block, :isr, width: 1
+      expect(rtl[1]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
+      expect(rtl[1]).to have_logic  :register_block, :ier, width: 2
+      expect(rtl[1]).to have_logic  :register_block, :isr, width: 2
     end
 
     describe "#generate_code" do

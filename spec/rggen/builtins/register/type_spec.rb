@@ -953,15 +953,15 @@ describe 'register/type' do
           end
 
           it "rggen_bit_field_if のインスタンスを持つ" do
-            expect(rtl[0]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_0_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[1]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_1_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[2]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_2_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[3]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_3_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[4]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_4_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[5]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_5_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[6]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_6_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[7]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_7_bit_field_if", parameters: [32], dimensions: [4, 1]
-            expect(rtl[8]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_8_bit_field_if", parameters: [32], dimensions: [2, 4, 1]
+            expect(rtl[0]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_0_bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[1]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_1_bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[2]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_2_bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[3]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_3_bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[4]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_4_bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[5]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_5_bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[6]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_6_bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[7]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_7_bit_field_if", parameters: [32], dimensions: [4, 1]
+            expect(rtl[8]).to have_interface :register_block, :bit_field_if, type: :rggen_bit_field_if, name: "register_8_bit_field_if", parameters: [32], dimensions: [2, 4, 1]
           end
         end
 
@@ -982,10 +982,10 @@ describe 'register/type' do
 
           it "rggen_bit_field_ifのインスタンスを持たない" do
             expect(rtl[0]).not_to have_identifier :bit_field_if, name: "register_0_bit_field_if"
-            expect(rtl[0]).not_to have_interface_instantiation type: :rggen_bit_field_if, name: "register_0_bit_field_if"
+            expect(rtl[0]).not_to have_interface_instantiation :register_block, type: :rggen_bit_field_if, name: "register_0_bit_field_if"
 
             expect(rtl[1]).not_to have_identifier :bit_field_if, name: "register_1_bit_field_if"
-            expect(rtl[1]).not_to have_interface_instantiation type: :rggen_bit_field_if, name: "register_1_bit_field_if"
+            expect(rtl[1]).not_to have_interface_instantiation :register_block, type: :rggen_bit_field_if, name: "register_1_bit_field_if"
           end
         end
       end

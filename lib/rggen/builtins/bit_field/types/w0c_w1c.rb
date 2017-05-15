@@ -10,7 +10,10 @@ list_item :bit_field, :type, [:w0c, :w1c] do
     delegate [:name, :type] => :bit_field
 
     build do
-      input :set, name: "i_#{name}_set", width: width, dimensions: dimensions
+      input :register_block, :set,
+            name: "i_#{name}_set",
+            width: width,
+            dimensions: dimensions
     end
 
     generate_code_from_template :module_item

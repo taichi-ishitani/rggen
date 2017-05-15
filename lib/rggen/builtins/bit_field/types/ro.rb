@@ -5,7 +5,7 @@ list_item :bit_field, :type, :ro do
 
   rtl do
     build do
-      input :value_in,
+      input :register_block, :value_in,
             name:       "i_#{bit_field.name}",
             width:      width,
             dimensions: dimensions

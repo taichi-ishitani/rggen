@@ -128,7 +128,7 @@ list_item :register, :type, :indirect do
 
   rtl do
     build do
-      logic :indirect_index,
+      logic :register_block, :indirect_index,
             name:       "#{register.name}_indirect_index",
             width:      indirect_index_width,
             dimensions: dimensions

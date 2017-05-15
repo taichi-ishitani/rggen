@@ -107,10 +107,10 @@ describe 'bit_fields/type/rw' do
     end
 
     it "出力ポートvalue_outを持つ" do
-      expect(rtl[0]).to have_output(:value_out, name: 'o_bit_field_0_0', width: 16)
-      expect(rtl[1]).to have_output(:value_out, name: 'o_bit_field_0_1', width: 1 )
-      expect(rtl[2]).to have_output(:value_out, name: 'o_bit_field_1_0', width: 32, dimensions: [2])
-      expect(rtl[3]).to have_output(:value_out, name: 'o_bit_field_2_0', width: 32, dimensions: [4, 2])
+      expect(rtl[0]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_0', width: 16)
+      expect(rtl[1]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_1', width: 1 )
+      expect(rtl[2]).to have_output(:register_block, :value_out, name: 'o_bit_field_1_0', width: 32, dimensions: [2])
+      expect(rtl[3]).to have_output(:register_block, :value_out, name: 'o_bit_field_2_0', width: 32, dimensions: [4, 2])
     end
 
     describe "#generate_code" do

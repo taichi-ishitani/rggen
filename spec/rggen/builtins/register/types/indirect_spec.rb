@@ -385,12 +385,12 @@ describe 'register/types/external' do
     end
 
     it "間接参照用インデックス信号を持つ" do
-      expect(rtl[ 0]).to have_logic :indirect_index, name: "register_0_indirect_index" , width: 2
-      expect(rtl[ 4]).to have_logic :indirect_index, name: "register_4_indirect_index" , width: 4
-      expect(rtl[ 8]).to have_logic :indirect_index, name: "register_8_indirect_index" , width: 2, dimensions: [4]
-      expect(rtl[10]).to have_logic :indirect_index, name: "register_10_indirect_index", width: 4, dimensions: [2, 4]
-      expect(rtl[13]).to have_logic :indirect_index, name: "register_13_indirect_index", width: 6, dimensions: [2, 2, 2]
-      expect(rtl[14]).to have_logic :indirect_index, name: "register_14_indirect_index", width: 6, dimensions: [2, 4]
+      expect(rtl[ 0]).to have_logic :register_block, :indirect_index, name: "register_0_indirect_index" , width: 2
+      expect(rtl[ 4]).to have_logic :register_block, :indirect_index, name: "register_4_indirect_index" , width: 4
+      expect(rtl[ 8]).to have_logic :register_block, :indirect_index, name: "register_8_indirect_index" , width: 2, dimensions: [4]
+      expect(rtl[10]).to have_logic :register_block, :indirect_index, name: "register_10_indirect_index", width: 4, dimensions: [2, 4]
+      expect(rtl[13]).to have_logic :register_block, :indirect_index, name: "register_13_indirect_index", width: 6, dimensions: [2, 2, 2]
+      expect(rtl[14]).to have_logic :register_block, :indirect_index, name: "register_14_indirect_index", width: 6, dimensions: [2, 4]
     end
 
     describe "#generate_code" do

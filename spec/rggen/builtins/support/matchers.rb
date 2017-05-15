@@ -112,9 +112,9 @@ RSpec::Matchers.define :have_identifier do |*expectation|
   end
 end
 
-RSpec::Matchers.define :have_port_declaration do |attributes|
+RSpec::Matchers.define :have_port_declaration do |domain, attributes|
   match do |component|
-    @actual = component.port_declarations
+    @actual = component.port_declarations(domain)
     actual.any? { |declaration| declaration.to_s == expectation }
   end
 
@@ -128,9 +128,9 @@ RSpec::Matchers.define :have_port_declaration do |attributes|
   end
 end
 
-RSpec::Matchers.define :have_interface_port_declaration do |attributes|
+RSpec::Matchers.define :have_interface_port_declaration do |domain, attributes|
   match do |component|
-    @actual = component.port_declarations
+    @actual = component.port_declarations(domain)
     actual.any? { |declaration| declaration.to_s == expectation }
   end
 
@@ -144,9 +144,9 @@ RSpec::Matchers.define :have_interface_port_declaration do |attributes|
   end
 end
 
-RSpec::Matchers.define :have_signal_declaration do |attributes|
+RSpec::Matchers.define :have_signal_declaration do |domain, attributes|
   match do |component|
-    @actual = component.signal_declarations
+    @actual = component.signal_declarations(domain)
     actual.any? { |declaration| declaration.to_s == expectation }
   end
 
@@ -160,14 +160,14 @@ RSpec::Matchers.define :have_signal_declaration do |attributes|
   end
 end
 
-RSpec::Matchers.define :have_interface_instantiation do |attributes|
+RSpec::Matchers.define :have_interface_instantiation do |domain, attributes|
   match do |component|
-    @actual = component.signal_declarations
+    @actual = component.signal_declarations(domain)
     actual.any? { |declaration| declaration.to_s == expectation }
   end
 
   match_when_negated do |component|
-    @actual = component.signal_declarations
+    @actual = component.signal_declarations(domain)
     pattern = /#{attributes[:type]}.+#{attributes[:name]}/
     actual.none? { |declaration| pattern.match(declaration.to_s) }
   end
@@ -184,7 +184,7 @@ end
 
 RSpec::Matchers.define :have_parameter_declaration do |domain, attributes|
   match do |component|
-    @actual = (domain && component.parameter_declarations(domain)) || component.parameter_declarations
+    @actual = component.parameter_declarations(domain)
     @actual.any? { |declaration| declaration.to_s == expectation }
   end
 

@@ -96,7 +96,7 @@ describe 'register/types/external' do
     end
 
     it "rggen_bus_ifをポートとして持つ" do
-      expect(rtl).to have_interface_port(:bus_if, name: "register_0_bus_if", type: :rggen_bus_if, modport: :master)
+      expect(rtl).to have_interface_port(:register_block, :bus_if, name: "register_0_bus_if", type: :rggen_bus_if, modport: :master)
     end
 
     describe "#generate_code" do

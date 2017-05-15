@@ -44,7 +44,7 @@ list_item :register_block, :host_if do
       delegate [:data_width] => :configuration
 
       build do
-        interface :register_if,
+        interface :register_block, :register_if,
                   type: :rggen_register_if,
                   parameters: [local_address_width, data_width],
                   dimensions: [total_registers]

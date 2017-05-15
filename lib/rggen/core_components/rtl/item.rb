@@ -7,28 +7,27 @@ module RgGen
       def initialize(owner)
         super(owner)
         @identifiers              = []
-        @signal_declarations      = []
-        @port_declarations        = []
-        @parameter_declarations   = []
-        @localparam_declarations  = []
+        @signal_declarations      = Hash.new { |h, d| h[d]  = [] }
+        @port_declarations        = Hash.new { |h, d| h[d]  = [] }
+        @parameter_declarations   = Hash.new { |h, d| h[d]  = [] }
+        @localparam_declarations  = Hash.new { |h, d| h[d]  = [] }
       end
 
       attr_reader :identifiers
-      attr_reader :signal_declarations
-      attr_reader :port_declarations
-      attr_reader :parameter_declarations
-      attr_reader :localparam_declarations
 
-      private
+      def_delegator :@signal_declarations    , :[], :signal_declarations
+      def_delegator :@port_declarations      , :[], :port_declarations
+      def_delegator :@parameter_declarations , :[], :parameter_declarations
+      def_delegator :@localparam_declarations, :[], :localparam_declarations
 
       class << self
         private
 
         def define_declaration_method(method_name)
-          define_method(method_name) do |handle_name, attributes = {}|
+          define_method(method_name) do |domain, handle_name, attributes = {}|
             attributes[:name] ||= handle_name
             add_identifier(handle_name, attributes[:name])
-            add_declaration(method_name, attributes)
+            add_declaration(method_name, domain, attributes)
           end
           private method_name
         end
@@ -44,26 +43,22 @@ module RgGen
       define_declaration_method :parameter
       define_declaration_method :localparam
 
-      def group(group_name, &body)
-        create_group(group_name)
-        instance_exec(&body)
-        @group  = nil
-      end
+      private
 
-      def add_declaration(type, attributes)
+      def add_declaration(type, domain, attributes)
         case type
         when :wire, :reg, :logic
-          signal_declarations << variable_declaration(type, attributes)
+          @signal_declarations[domain] << variable_declaration(type, attributes)
         when :interface
-          signal_declarations << interface_instantiation(attributes)
+          @signal_declarations[domain] << interface_instantiation(attributes)
         when :input, :output
-          port_declarations << port_declaration(type, attributes)
+          @port_declarations[domain] << port_declaration(type, attributes)
         when :interface_port
-          port_declarations << interface_port_declaration(attributes)
+          @port_declarations[domain] << interface_port_declaration(attributes)
         when :parameter
-          parameter_declarations  << parameter_declaration(type, attributes)
+          @parameter_declarations[domain] << parameter_declaration(type, attributes)
         when :localparam
-          localparam_declarations << parameter_declaration(type, attributes)
+          @localparam_declarations[domain] << parameter_declaration(type, attributes)
         end
       end
 
@@ -81,18 +76,11 @@ module RgGen
 
       def add_identifier(handle_name, name)
         identifier  = create_identifier(name)
-        (@group || self).instance_exec do
+        instance_exec do
           instance_variable_set(handle_name.variablize, identifier)
           attr_singleton_reader(handle_name)
         end
-        identifiers << handle_name if @group.nil?
-      end
-
-      def create_group(group_name)
-        instance_variable_set(group_name.variablize, Object.new)
-        attr_singleton_reader(group_name)
-        identifiers << group_name
-        @group      = __send__(group_name)
+        identifiers << handle_name
       end
     end
   end
