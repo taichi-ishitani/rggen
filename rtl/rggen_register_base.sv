@@ -13,8 +13,6 @@ module rggen_register_base #(
 );
   import  rggen_rtl_pkg::*;
 
-  localparam  bit [DATA_WIDTH-1:0]  VALID_BITS  = get_valid_bits();
-
   logic                   address_match;
   logic                   select;
   logic [DATA_WIDTH-1:0]  value;
@@ -56,20 +54,18 @@ module rggen_register_base #(
 
   //  Drive Dummy Data
   generate for (g_i = 0;g_i < DATA_WIDTH;++g_i) begin : dummy
-    if (!VALID_BITS[g_i]) begin
+    if (!is_valid_bit(g_i)) begin
       assign  value[g_i]      = 1'b0;
       assign  read_data[g_i]  = 1'b0;
     end
   end endgenerate
 
-  function automatic bit [DATA_WIDTH-1:0] get_valid_bits();
-    bit [DATA_WIDTH-1:0]  bits[TOTAL_BIT_FIELDS];
+  function automatic bit is_valid_bit(int index);
     for (int i = 0;i < TOTAL_BIT_FIELDS;++i) begin
-      bits[i] = '0;
-      for (int j = LSB_LIST[i];j <= MSB_LIST[i];++j) begin
-        bits[i][j]  = 1;
+      if ((index >= LSB_LIST[i]) && (index <= MSB_LIST[i])) begin
+        return 1;
       end
     end
-    return bits.or();
+    return 0;
   endfunction
 endmodule
