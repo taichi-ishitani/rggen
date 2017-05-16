@@ -42,7 +42,7 @@ simple_item :register, :rtl_top do
     private
 
     def base_index
-      former_registers.sum(&:count)
+      former_registers.sum(0, &:count)
     end
 
     def former_registers

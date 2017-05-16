@@ -149,7 +149,7 @@ list_item :register, :type, :indirect do
     end
 
     def indirect_index_width
-      indirect_index_fields.sum(&:width)
+      indirect_index_fields.sum(0, &:width)
     end
 
     def indirect_index_value
