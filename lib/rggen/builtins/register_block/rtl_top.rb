@@ -1,4 +1,4 @@
-define_simple_item :register_block, :top_module do
+define_simple_item :register_block, :rtl_top do
   rtl do
     write_file '<%= register_block.name %>.sv' do |f|
       f.body { source_file_body }
