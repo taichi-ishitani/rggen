@@ -12,6 +12,7 @@ describe 'register/types/external' do
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
+    enable :register, :rtl_top
     @factory  = build_register_map_factory
   end
 
@@ -117,7 +118,7 @@ CODE
       end
 
       it "外部レジスタモジュールをインスタンスするコードを生成する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+        expect(rtl).to generate_code(:register, :top_down, expected_code)
       end
     end
   end

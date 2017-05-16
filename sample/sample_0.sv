@@ -157,7 +157,7 @@ module sample_0 (
   end endgenerate
   generate if (1) begin : g_register_4
     genvar g_i;
-    for (g_i = 0;g_i < 4;g_i++) begin : g
+    for (g_i = 0;g_i < 4;++g_i) begin : g
       rggen_bit_field_if #(32) bit_field_if[2]();
       rggen_default_register #(
         .ADDRESS_WIDTH    (8),
@@ -190,9 +190,9 @@ module sample_0 (
   end endgenerate
   generate if (1) begin : g_register_5
     genvar g_i;
-    for (g_i = 0;g_i < 2;g_i++) begin : g
+    for (g_i = 0;g_i < 2;++g_i) begin : g
       genvar g_j;
-      for (g_j = 0;g_j < 4;g_j++) begin : g
+      for (g_j = 0;g_j < 4;++g_j) begin : g
         rggen_bit_field_if #(32) bit_field_if[2]();
         logic [32:0] indirect_index;
         assign indirect_index = {register_if[2].value[0], register_if[0].value[31:16], register_if[0].value[15:0]};

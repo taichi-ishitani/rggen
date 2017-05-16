@@ -11,6 +11,7 @@ describe 'bit_fields/type/w0c_w1c' do
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
+    enable :register, :rtl_top
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, [:w0c, :w1c, :rw]
 
@@ -197,7 +198,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_set),
-  .bit_field_if   (register_0_bit_field_if[0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
@@ -214,7 +215,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_set),
-  .bit_field_if   (register_0_bit_field_if[1]),
+  .bit_field_if   (bit_field_if[1]),
   .o_value        ()
 );
 CODE
@@ -231,7 +232,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_set[g_i]),
-  .bit_field_if   (register_1_bit_field_if[g_i][0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
@@ -248,7 +249,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_set[g_i][g_j]),
-  .bit_field_if   (register_2_bit_field_if[g_i][g_j][0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
@@ -265,7 +266,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_set),
-  .bit_field_if   (register_3_bit_field_if[0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
@@ -282,7 +283,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_set),
-  .bit_field_if   (register_3_bit_field_if[1]),
+  .bit_field_if   (bit_field_if[1]),
   .o_value        ()
 );
 CODE
@@ -299,7 +300,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_set[g_i]),
-  .bit_field_if   (register_4_bit_field_if[g_i][0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
@@ -316,21 +317,21 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_set[g_i][g_j]),
-  .bit_field_if   (register_5_bit_field_if[g_i][g_j][0]),
+  .bit_field_if   (bit_field_if[0]),
   .o_value        ()
 );
 CODE
       end
 
       it "W0C/W1Cビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code :module_item, :top_down, expected_code_0
-        expect(rtl[1]).to generate_code :module_item, :top_down, expected_code_1
-        expect(rtl[2]).to generate_code :module_item, :top_down, expected_code_2
-        expect(rtl[3]).to generate_code :module_item, :top_down, expected_code_3
-        expect(rtl[4]).to generate_code :module_item, :top_down, expected_code_4
-        expect(rtl[5]).to generate_code :module_item, :top_down, expected_code_5
-        expect(rtl[6]).to generate_code :module_item, :top_down, expected_code_6
-        expect(rtl[7]).to generate_code :module_item, :top_down, expected_code_7
+        expect(rtl[0]).to generate_code :register, :top_down, expected_code_0
+        expect(rtl[1]).to generate_code :register, :top_down, expected_code_1
+        expect(rtl[2]).to generate_code :register, :top_down, expected_code_2
+        expect(rtl[3]).to generate_code :register, :top_down, expected_code_3
+        expect(rtl[4]).to generate_code :register, :top_down, expected_code_4
+        expect(rtl[5]).to generate_code :register, :top_down, expected_code_5
+        expect(rtl[6]).to generate_code :register, :top_down, expected_code_6
+        expect(rtl[7]).to generate_code :register, :top_down, expected_code_7
       end
     end
   end

@@ -13,7 +13,7 @@ list_item :register, :type, :external do
                      modport: :master
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
   end
 
   c_header do

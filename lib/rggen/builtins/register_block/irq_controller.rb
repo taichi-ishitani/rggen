@@ -8,7 +8,7 @@ simple_item :register_block, :irq_controller do
       logic  :register_block, :isr, width: total_interrupts
     end
 
-    generate_code :module_item do |code|
+    generate_code :register_block do |code|
       code << assign_ier << nl
       code << assign_isr << nl
       code << process_template

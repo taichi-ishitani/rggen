@@ -19,6 +19,6 @@ list_item :register_block, :host_if, :apb do
                      modport: :slave
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register_block
   end
 end

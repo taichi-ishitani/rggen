@@ -11,7 +11,7 @@ list_item :bit_field, :type, :ro do
             dimensions: dimensions
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
   end
 
   ral do

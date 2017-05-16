@@ -126,7 +126,7 @@ CODE
       end
 
       it "APB用のホストIFモジュールをインスタンスするコードを出力する" do
-        expect(rtl).to generate_code(:module_item, :top_down, expected_code)
+        expect(rtl).to generate_code(:register_block, :top_down, expected_code)
       end
     end
   end

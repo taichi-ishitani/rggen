@@ -13,7 +13,7 @@ describe "register_block/irq_controller" do
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :register, :index
+    enable :register, :rtl_top
     enable :bit_field, :type, [:w0c, :w1c, :rw]
 
     configuration = create_configuration
@@ -117,8 +117,8 @@ CODE
       end
 
       it "割り込み制御モジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code :module_item, :top_down, expected_code_0
-        expect(rtl[1]).to generate_code :module_item, :top_down, expected_code_1
+        expect(rtl[0]).to generate_code :register_block, :top_down, expected_code_0
+        expect(rtl[1]).to generate_code :register_block, :top_down, expected_code_1
       end
     end
   end

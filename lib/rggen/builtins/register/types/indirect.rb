@@ -128,13 +128,10 @@ list_item :register, :type, :indirect do
 
   rtl do
     build do
-      logic :register_block, :indirect_index,
-            name:       "#{register.name}_indirect_index",
-            width:      indirect_index_width,
-            dimensions: dimensions
+      logic :register, :indirect_index, width: indirect_index_width
     end
 
-    generate_code :module_item do |code|
+    generate_code :register do |code|
       code << indirect_index_assignment << nl
       code << process_template
     end
@@ -147,8 +144,7 @@ list_item :register, :type, :indirect do
 
     def indirect_index_assignment
       assign(
-        indirect_index[loop_variables],
-        concat(indirect_index_fields.map(&:value))
+        indirect_index, concat(indirect_index_fields.map(&:value))
       )
     end
 

@@ -13,6 +13,7 @@ describe 'bit_fields/type/ro' do
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
+    enable :register, :rtl_top
     enable :bit_field, [:name, :bit_assignment, :type, :reference]
     enable :bit_field, :type, :ro
 
@@ -107,7 +108,7 @@ describe 'bit_fields/type/ro' do
 rggen_bit_field_ro #(
   .WIDTH  (32)
 ) u_bit_field_0_0 (
-  .bit_field_if (register_0_bit_field_if[g_i][0]),
+  .bit_field_if (bit_field_if[0]),
   .i_value      (i_bit_field_0_0[g_i])
 );
 CODE
@@ -118,7 +119,7 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (16)
 ) u_bit_field_1_0 (
-  .bit_field_if (register_1_bit_field_if[0]),
+  .bit_field_if (bit_field_if[0]),
   .i_value      (i_bit_field_1_0)
 );
 CODE
@@ -129,7 +130,7 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (1)
 ) u_bit_field_1_1 (
-  .bit_field_if (register_1_bit_field_if[1]),
+  .bit_field_if (bit_field_if[1]),
   .i_value      (i_bit_field_1_1)
 );
 CODE
@@ -140,16 +141,16 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (32)
 ) u_bit_field_2_0 (
-  .bit_field_if (register_2_bit_field_if[g_i][g_j][0]),
+  .bit_field_if (bit_field_if[0]),
   .i_value      (i_bit_field_2_0[g_i][g_j])
 CODE
       end
 
       it "ROビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
-        expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
-        expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
-        expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
+        expect(rtl[0]).to generate_code(:register, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:register, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:register, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:register, :top_down, expected_code_3)
       end
     end
   end

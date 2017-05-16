@@ -14,7 +14,7 @@ define_simple_item :register_block, :top_module do
     end
 
     def module_body(code)
-      register_block.generate_code(:module_item, :top_down, code)
+      register_block.generate_code(:register_block, :top_down, code)
     end
   end
 end

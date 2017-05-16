@@ -12,7 +12,7 @@ list_item :bit_field, :type, :rw do
              dimensions: dimensions
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
 
     def port_name
       "o_#{bit_field.name}"
