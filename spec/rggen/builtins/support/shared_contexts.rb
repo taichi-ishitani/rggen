@@ -135,44 +135,44 @@ shared_context 'rtl common' do
     RgGen.builder.build_factory(:rtl)
   end
 
-  def have_parameter(*expectation)
+  def have_parameter(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name     ]  ||= handle_name.to_s
     attributes[:parameter_type] = :parameter
-    have_identifier(*expectation).and have_parameter_declaration(nil, attributes)
+    have_identifier(*expectation).and have_parameter_declaration(domain, attributes)
   end
 
-  def have_input(*expectation)
+  def have_input(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name     ]  ||= handle_name.to_s
     attributes[:direction]  = :input
-    have_identifier(*expectation).and have_port_declaration(attributes)
+    have_identifier(*expectation).and have_port_declaration(domain, attributes)
   end
 
-  def have_output(*expectation)
+  def have_output(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name     ]  ||= handle_name.to_s
     attributes[:direction]  = :output
-    have_identifier(*expectation).and have_port_declaration(attributes)
+    have_identifier(*expectation).and have_port_declaration(domain, attributes)
   end
 
-  def have_interface_port(*expectation)
+  def have_interface_port(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name] ||= handle_name
-    have_identifier(*expectation).and have_interface_port_declaration(attributes)
+    have_identifier(*expectation).and have_interface_port_declaration(domain, attributes)
   end
 
-  def have_logic(*expectation)
+  def have_logic(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name]  ||= handle_name.to_s
     attributes[:data_type]  = :logic
-    have_identifier(*expectation).and have_signal_declaration(attributes)
+    have_identifier(*expectation).and have_signal_declaration(domain, attributes)
   end
 
-  def have_interface(*expectation)
+  def have_interface(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name] ||= handle_name.to_s
-    have_identifier(*expectation).and have_interface_instantiation(attributes)
+    have_identifier(*expectation).and have_interface_instantiation(domain, attributes)
   end
 end
 

@@ -121,7 +121,7 @@ describe "register_block/host_if" do
     it "rggen_bus_if のインスタンスを持つ" do
       host_if_rtl = rtl(host_if: :foo, data_width: data_width)
       expect(host_if_rtl).to have_interface(
-        :register_if, type: :rggen_register_if, parameters: [address_width, data_width], dimensions: [total_registers]
+        :register_block, :register_if, type: :rggen_register_if, parameters: [address_width, data_width], dimensions: [total_registers]
       )
     end
   end

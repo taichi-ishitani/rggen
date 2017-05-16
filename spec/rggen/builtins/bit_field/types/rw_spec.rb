@@ -11,6 +11,7 @@ describe 'bit_fields/type/rw' do
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :rtl_top
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
     enable :bit_field, :type, :rw
@@ -107,10 +108,10 @@ describe 'bit_fields/type/rw' do
     end
 
     it "出力ポートvalue_outを持つ" do
-      expect(rtl[0]).to have_output(:value_out, name: 'o_bit_field_0_0', width: 16)
-      expect(rtl[1]).to have_output(:value_out, name: 'o_bit_field_0_1', width: 1 )
-      expect(rtl[2]).to have_output(:value_out, name: 'o_bit_field_1_0', width: 32, dimensions: [2])
-      expect(rtl[3]).to have_output(:value_out, name: 'o_bit_field_2_0', width: 32, dimensions: [4, 2])
+      expect(rtl[0]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_0', width: 16)
+      expect(rtl[1]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_1', width: 1 )
+      expect(rtl[2]).to have_output(:register_block, :value_out, name: 'o_bit_field_1_0', width: 32, dimensions: [2])
+      expect(rtl[3]).to have_output(:register_block, :value_out, name: 'o_bit_field_2_0', width: 32, dimensions: [4, 2])
     end
 
     describe "#generate_code" do
@@ -122,7 +123,7 @@ rggen_bit_field_rw #(
 ) u_bit_field_0_0 (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (register_0_bit_field_if[0]),
+  .bit_field_if (bit_field_if[0]),
   .o_value      (o_bit_field_0_0)
 );
 CODE
@@ -136,7 +137,7 @@ rggen_bit_field_rw #(
 ) u_bit_field_0_1 (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (register_0_bit_field_if[1]),
+  .bit_field_if (bit_field_if[1]),
   .o_value      (o_bit_field_0_1)
 );
 CODE
@@ -150,7 +151,7 @@ rggen_bit_field_rw #(
 ) u_bit_field_1_0 (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (register_1_bit_field_if[g_i][0]),
+  .bit_field_if (bit_field_if[0]),
   .o_value      (o_bit_field_1_0[g_i])
 );
 CODE
@@ -164,17 +165,17 @@ rggen_bit_field_rw #(
 ) u_bit_field_2_0 (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (register_2_bit_field_if[g_i][g_j][0]),
+  .bit_field_if (bit_field_if[0]),
   .o_value      (o_bit_field_2_0[g_i][g_j])
 );
 CODE
       end
 
       it "#value_outと#valueを接続、RWビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
-        expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
-        expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
-        expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
+        expect(rtl[0]).to generate_code(:register, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:register, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:register, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:register, :top_down, expected_code_3)
       end
     end
   end

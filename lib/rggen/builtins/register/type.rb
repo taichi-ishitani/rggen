@@ -182,11 +182,11 @@ list_item :register, :type do
       delegate [:loop_variables, :local_index, :dimensions] => :register
 
       build do
-        interface :bit_field_if,
+        interface :register, :bit_field_if,
                   type:       :rggen_bit_field_if,
-                  name:       "#{register.name}_bit_field_if",
+                  name:       :bit_field_if,
                   parameters: [data_width],
-                  dimensions: bit_field_if_dimensions if total_bit_fields > 0
+                  dimensions: [total_bit_fields] if total_bit_fields > 0
       end
 
       def register_if
@@ -209,11 +209,6 @@ list_item :register, :type do
 
       def lsb_list
         array(actual_bit_fields.map(&:lsb))
-      end
-
-      def bit_field_if_dimensions
-        return [total_bit_fields] unless register.array?
-        [register.dimensions, total_bit_fields].flatten
       end
 
       def start_address
@@ -239,7 +234,7 @@ list_item :register, :type do
     end
 
     default_item do
-      generate_code :module_item do
+      generate_code :register do
         process_template File.join(__dir__, 'types', 'default.erb')
       end
     end

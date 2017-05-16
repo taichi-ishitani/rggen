@@ -3,12 +3,12 @@ simple_item :register_block, :irq_controller do
     available? { total_interrupts > 0 }
 
     build do
-      output :irq, width: 1               , name: 'o_irq'
-      logic  :ier, width: total_interrupts
-      logic  :isr, width: total_interrupts
+      output :register_block, :irq, width: 1               , name: 'o_irq'
+      logic  :register_block, :ier, width: total_interrupts
+      logic  :register_block, :isr, width: total_interrupts
     end
 
-    generate_code :module_item do |code|
+    generate_code :register_block do |code|
       code << assign_ier << nl
       code << assign_isr << nl
       code << process_template

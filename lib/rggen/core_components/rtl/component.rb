@@ -8,20 +8,20 @@ module RgGen
         end
       end
 
-      def signal_declarations
-        [*@items, *@children].flat_map(&:signal_declarations)
+      def signal_declarations(domain)
+        [*@items, *@children].flat_map { |o| o.signal_declarations(domain) }
       end
 
-      def port_declarations
-        [*@items, *@children].flat_map(&:port_declarations)
+      def port_declarations(domain)
+        [*@items, *@children].flat_map { |o| o.port_declarations(domain) }
       end
 
-      def parameter_declarations
-        [*@items, *@children].flat_map(&:parameter_declarations)
+      def parameter_declarations(domain)
+        [*@items, *@children].flat_map { |o| o.parameter_declarations(domain) }
       end
 
-      def localparam_declarations
-        [*@items, *@children].flat_map(&:localparam_declarations)
+      def localparam_declarations(domain)
+        [*@items, *@children].flat_map { |o| o.localparam_declarations(domain) }
       end
     end
   end

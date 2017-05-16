@@ -14,9 +14,11 @@ list_item :register_block, :host_if, :apb do
 
   rtl do
     build do
-      interface_port :apb_if, type: :rggen_apb_if, modport: :slave
+      interface_port :register_block, :apb_if,
+                     type: :rggen_apb_if,
+                     modport: :slave
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register_block
   end
 end

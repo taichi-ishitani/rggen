@@ -24,6 +24,7 @@ describe 'register/type' do
     enable :bit_field, :type, [:rw, :ro, :wo, :reserved]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
+    enable :register, :rtl_top
 
     @factory  = build_register_map_factory
   end
@@ -953,15 +954,15 @@ describe 'register/type' do
           end
 
           it "rggen_bit_field_if のインスタンスを持つ" do
-            expect(rtl[0]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_0_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[1]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_1_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[2]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_2_bit_field_if", parameters: [32], dimensions: [1]
-            expect(rtl[3]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_3_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[4]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_4_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[5]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_5_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[6]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_6_bit_field_if", parameters: [32], dimensions: [2]
-            expect(rtl[7]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_7_bit_field_if", parameters: [32], dimensions: [4, 1]
-            expect(rtl[8]).to have_interface :bit_field_if, type: :rggen_bit_field_if, name: "register_8_bit_field_if", parameters: [32], dimensions: [2, 4, 1]
+            expect(rtl[0]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[1]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[2]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[3]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[4]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[5]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[6]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [2]
+            expect(rtl[7]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [1]
+            expect(rtl[8]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32], dimensions: [1]
           end
         end
 
@@ -982,10 +983,10 @@ describe 'register/type' do
 
           it "rggen_bit_field_ifのインスタンスを持たない" do
             expect(rtl[0]).not_to have_identifier :bit_field_if, name: "register_0_bit_field_if"
-            expect(rtl[0]).not_to have_interface_instantiation type: :rggen_bit_field_if, name: "register_0_bit_field_if"
+            expect(rtl[0]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "register_0_bit_field_if"
 
             expect(rtl[1]).not_to have_identifier :bit_field_if, name: "register_1_bit_field_if"
-            expect(rtl[1]).not_to have_interface_instantiation type: :rggen_bit_field_if, name: "register_1_bit_field_if"
+            expect(rtl[1]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "register_1_bit_field_if"
           end
         end
       end
@@ -1049,7 +1050,7 @@ rggen_default_register #(
   .LSB_LIST         ('{0})
 ) u_register_0 (
   .register_if  (register_if[0]),
-  .bit_field_if (register_0_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
@@ -1066,7 +1067,7 @@ rggen_default_register #(
   .LSB_LIST         ('{0})
 ) u_register_1 (
   .register_if  (register_if[1]),
-  .bit_field_if (register_1_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
@@ -1083,7 +1084,7 @@ rggen_default_register #(
   .LSB_LIST         ('{8})
 ) u_register_2 (
   .register_if  (register_if[2]),
-  .bit_field_if (register_2_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
@@ -1100,7 +1101,7 @@ rggen_default_register #(
   .LSB_LIST         ('{8, 0})
 ) u_register_3 (
   .register_if  (register_if[3]),
-  .bit_field_if (register_3_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
@@ -1117,7 +1118,7 @@ rggen_default_register #(
   .LSB_LIST         ('{16, 0})
 ) u_register_4 (
   .register_if  (register_if[4]),
-  .bit_field_if (register_4_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
@@ -1134,36 +1135,36 @@ rggen_default_register #(
   .LSB_LIST         ('{16, 0})
 ) u_register_5 (
   .register_if  (register_if[5]),
-  .bit_field_if (register_5_bit_field_if)
+  .bit_field_if (bit_field_if)
 );
 CODE
         end
 
         let(:expected_code_6) do
           <<'CODE'
-    rggen_default_register #(
-      .ADDRESS_WIDTH    (8),
-      .START_ADDRESS    (8'h20 + 8'h04 * g_i),
-      .END_ADDRESS      (8'h23 + 8'h04 * g_i),
-      .DATA_WIDTH       (32),
-      .TOTAL_BIT_FIELDS (1),
-      .MSB_LIST         ('{0}),
-      .LSB_LIST         ('{0})
-    ) u_register_6 (
-      .register_if  (register_if[6+g_i]),
-      .bit_field_if (register_6_bit_field_if[g_i])
-    );
+rggen_default_register #(
+  .ADDRESS_WIDTH    (8),
+  .START_ADDRESS    (8'h20 + 8'h04 * g_i),
+  .END_ADDRESS      (8'h23 + 8'h04 * g_i),
+  .DATA_WIDTH       (32),
+  .TOTAL_BIT_FIELDS (1),
+  .MSB_LIST         ('{0}),
+  .LSB_LIST         ('{0})
+) u_register_6 (
+  .register_if  (register_if[6+g_i]),
+  .bit_field_if (bit_field_if)
+);
 CODE
         end
 
-        it "rggen_registerをインスタンスするコードを生成する" do
-          expect(rtl[0]).to generate_code(:module_item, :top_down, expected_code_0)
-          expect(rtl[1]).to generate_code(:module_item, :top_down, expected_code_1)
-          expect(rtl[2]).to generate_code(:module_item, :top_down, expected_code_2)
-          expect(rtl[3]).to generate_code(:module_item, :top_down, expected_code_3)
-          expect(rtl[4]).to generate_code(:module_item, :top_down, expected_code_4)
-          expect(rtl[5]).to generate_code(:module_item, :top_down, expected_code_5)
-          expect(rtl[6]).to generate_code(:module_item, :top_down, expected_code_6)
+        it "rggen_default_registerをインスタンスするコードを生成する" do
+          expect(rtl[0]).to generate_code(:register, :top_down, expected_code_0)
+          expect(rtl[1]).to generate_code(:register, :top_down, expected_code_1)
+          expect(rtl[2]).to generate_code(:register, :top_down, expected_code_2)
+          expect(rtl[3]).to generate_code(:register, :top_down, expected_code_3)
+          expect(rtl[4]).to generate_code(:register, :top_down, expected_code_4)
+          expect(rtl[5]).to generate_code(:register, :top_down, expected_code_5)
+          expect(rtl[6]).to generate_code(:register, :top_down, expected_code_6)
         end
       end
     end

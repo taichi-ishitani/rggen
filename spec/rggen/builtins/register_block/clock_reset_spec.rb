@@ -23,10 +23,10 @@ describe "register_block/clock_reset" do
   end
 
   it "クロック入力ポートを持つ" do
-    expect(@rtl.register_blocks[0]).to have_input(:clock, name: "clk", width:1)
+    expect(@rtl.register_blocks[0]).to have_input(:register_block, :clock, name: "clk", width:1)
   end
 
   it "リセット入力ポートを持つ" do
-    expect(@rtl.register_blocks[0]).to have_input(:reset, name: "rst_n", width:1)
+    expect(@rtl.register_blocks[0]).to have_input(:register_block, :reset, name: "rst_n", width:1)
   end
 end

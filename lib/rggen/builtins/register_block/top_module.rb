@@ -6,15 +6,15 @@ define_simple_item :register_block, :top_module do
 
     def source_file_body
       module_definition register_block.name do |m|
-        m.parameters register_block.parameter_declarations
-        m.ports      register_block.port_declarations
-        m.signals    register_block.signal_declarations
+        m.parameters register_block.parameter_declarations(:register_block)
+        m.ports      register_block.port_declarations(:register_block)
+        m.signals    register_block.signal_declarations(:register_block)
         m.body { |code| module_body(code) }
       end
     end
 
     def module_body(code)
-      register_block.generate_code(:module_item, :top_down, code)
+      register_block.generate_code(:register_block, :top_down, code)
     end
   end
 end

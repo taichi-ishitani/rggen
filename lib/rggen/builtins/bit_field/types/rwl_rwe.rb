@@ -7,13 +7,13 @@ list_item :bit_field, :type, [:rwl, :rwe] do
 
   rtl do
     build do
-      output :value_out,
+      output :register_block, :value_out,
              name:      "o_#{bit_field.name}",
              width:      width,
              dimensions: dimensions
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
 
     def mode
       {

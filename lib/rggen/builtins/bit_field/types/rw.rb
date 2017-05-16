@@ -6,10 +6,13 @@ list_item :bit_field, :type, :rw do
 
   rtl do
     build do
-      output :value_out, name: port_name, width: width, dimensions: dimensions
+      output :register_block, :value_out,
+             name: port_name,
+             width: width,
+             dimensions: dimensions
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
 
     def port_name
       "o_#{bit_field.name}"

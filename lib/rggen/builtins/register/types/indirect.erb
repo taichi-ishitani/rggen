@@ -10,6 +10,6 @@ rggen_indirect_register #(
   .LSB_LIST         (<%= lsb_list %>)
 ) u_<%= register.name %> (
   .register_if  (<%= register.register_if %>),
-  .bit_field_if (<%= bit_field_if[loop_variables] %>),
-  .i_index      (<%= indirect_index[loop_variables] %>)
+  .bit_field_if (<%= bit_field_if %>),
+  .i_index      (<%= indirect_index %>)
 );

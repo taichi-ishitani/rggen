@@ -13,7 +13,7 @@ describe "register_block/irq_controller" do
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, :indirect
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :register, :index
+    enable :register, :rtl_top
     enable :bit_field, :type, [:w0c, :w1c, :rw]
 
     configuration = create_configuration
@@ -75,12 +75,12 @@ describe "register_block/irq_controller" do
     end
 
     it "割り込み関連のポート、信号群を持つ" do
-      expect(rtl[0]).to have_output :irq, width: 1, name: 'o_irq'
-      expect(rtl[0]).to have_logic  :ier, width: 1
-      expect(rtl[0]).to have_logic  :isr, width: 1
-      expect(rtl[1]).to have_output :irq, width: 1, name: 'o_irq'
-      expect(rtl[1]).to have_logic  :ier, width: 2
-      expect(rtl[1]).to have_logic  :isr, width: 2
+      expect(rtl[0]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
+      expect(rtl[0]).to have_logic  :register_block, :ier, width: 1
+      expect(rtl[0]).to have_logic  :register_block, :isr, width: 1
+      expect(rtl[1]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
+      expect(rtl[1]).to have_logic  :register_block, :ier, width: 2
+      expect(rtl[1]).to have_logic  :register_block, :isr, width: 2
     end
 
     describe "#generate_code" do
@@ -117,8 +117,8 @@ CODE
       end
 
       it "割り込み制御モジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code :module_item, :top_down, expected_code_0
-        expect(rtl[1]).to generate_code :module_item, :top_down, expected_code_1
+        expect(rtl[0]).to generate_code :register_block, :top_down, expected_code_0
+        expect(rtl[1]).to generate_code :register_block, :top_down, expected_code_1
       end
     end
   end

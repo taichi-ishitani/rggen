@@ -8,17 +8,17 @@ list_item :bit_field, :type, [:w0s, :w1s] do
     delegate [:name, :type] => :bit_field
 
     build do
-      output :value_out,
+      output :register_block, :value_out,
              name:      "o_#{name}",
              width:      width,
              dimensions: dimensions
-       input :clear,
+       input :register_block, :clear,
              name:       "i_#{name}_clear",
              width:      width,
              dimensions: dimensions
     end
 
-    generate_code_from_template :module_item
+    generate_code_from_template :register
 
     def initial_value
       hex(bit_field.initial_value, width)
