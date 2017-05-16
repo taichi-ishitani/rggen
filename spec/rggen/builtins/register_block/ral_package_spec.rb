@@ -131,12 +131,12 @@ package block_0_ral_pkg;
       super.new(name);
     endfunction
     function void create_sub_models();
-      `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
+      `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "g_register_0")
       foreach (register_1[i, j]) begin
         `rggen_ral_create_reg_model(register_1[i][j], $sformatf("register_1[%0d][%0d]", i, j), '{i, j}, 8'h04, "RW", 1, $sformatf("g_register_1.g[%0d].g[%0d]", i, j))
       end
-      `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_3, "register_3", '{}, 8'h0c, "RW", 0, "")
+      `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0, "g_register_2")
+      `rggen_ral_create_reg_model(register_3, "register_3", '{}, 8'h0c, "RW", 0, "g_register_3")
       `rggen_ral_create_block_model(register_4, "register_4", 8'h10)
     endfunction
     function uvm_reg_map create_default_map();
