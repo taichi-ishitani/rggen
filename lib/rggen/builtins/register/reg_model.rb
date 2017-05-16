@@ -80,7 +80,7 @@ simple_item :register, :reg_model do
     end
 
     def hdl_path
-      return string('') unless array?
+      return string("g_#{name}") unless array?
       subroutine_call '$sformatf', [
         string("g_#{name}" + '.g[%0d]' * loop_varibles.size),
         *loop_varibles

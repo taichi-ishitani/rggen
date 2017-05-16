@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe "register_block/top_module" do
+describe "register_block/rtl_top" do
   include_context 'configuration common'
   include_context 'register_map common'
   include_context 'rtl common'
@@ -8,7 +8,7 @@ describe "register_block/top_module" do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:top_module, :clock_reset, :host_if, :irq_controller]
+    enable :register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:external, :indirect]

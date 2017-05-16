@@ -49,7 +49,7 @@ describe 'register_block/sub_model_creator' do
     let(:expected_code) do
       <<'CODE'
 function void create_sub_models();
-  `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
+  `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "g_register_0")
   foreach (register_1[i]) begin
     `rggen_ral_create_reg_model(register_1[i], $sformatf("register_1[%0d]", i), '{i}, 8'h04 + 4 * i, "RO", 0, $sformatf("g_register_1.g[%0d]", i))
   end

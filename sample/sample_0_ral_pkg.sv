@@ -122,19 +122,19 @@ package sample_0_ral_pkg;
       super.new(name);
     endfunction
     function void create_sub_models();
-      `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_1, "register_1", '{}, 8'h04, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_3, "register_3", '{}, 8'h0c, "RO", 0, "")
+      `rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "g_register_0")
+      `rggen_ral_create_reg_model(register_1, "register_1", '{}, 8'h04, "RW", 0, "g_register_1")
+      `rggen_ral_create_reg_model(register_2, "register_2", '{}, 8'h08, "RW", 0, "g_register_2")
+      `rggen_ral_create_reg_model(register_3, "register_3", '{}, 8'h0c, "RO", 0, "g_register_3")
       foreach (register_4[i]) begin
         `rggen_ral_create_reg_model(register_4[i], $sformatf("register_4[%0d]", i), '{i}, 8'h10 + 4 * i, "RW", 0, $sformatf("g_register_4.g[%0d]", i))
       end
       foreach (register_5[i, j]) begin
         `rggen_ral_create_reg_model(register_5[i][j], $sformatf("register_5[%0d][%0d]", i, j), '{i, j}, 8'h20, "RW", 1, $sformatf("g_register_5.g[%0d].g[%0d]", i, j))
       end
-      `rggen_ral_create_reg_model(register_6, "register_6", '{}, 8'h24, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_7, "register_7", '{}, 8'h28, "RW", 0, "")
-      `rggen_ral_create_reg_model(register_8, "register_8", '{}, 8'h2c, "RW", 0, "")
+      `rggen_ral_create_reg_model(register_6, "register_6", '{}, 8'h24, "RW", 0, "g_register_6")
+      `rggen_ral_create_reg_model(register_7, "register_7", '{}, 8'h28, "RW", 0, "g_register_7")
+      `rggen_ral_create_reg_model(register_8, "register_8", '{}, 8'h2c, "RW", 0, "g_register_8")
       `rggen_ral_create_block_model(register_9, "register_9", 8'h80)
     endfunction
     function uvm_reg_map create_default_map();

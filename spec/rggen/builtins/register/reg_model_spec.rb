@@ -84,7 +84,7 @@ describe 'register/reg_model' do
 
       let(:expected_code_0) do
         <<'CODE'
-`rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "")
+`rggen_ral_create_reg_model(register_0, "register_0", '{}, 8'h00, "RW", 0, "g_register_0")
 CODE
       end
 
@@ -114,13 +114,13 @@ CODE
 
       let(:expected_code_4) do
         <<'CODE'
-`rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0, "")
+`rggen_ral_create_reg_model(register_4, "register_4", '{}, 8'h18, "RW", 0, "g_register_4")
 CODE
       end
 
       let(:expected_code_5) do
         <<'CODE'
-`rggen_ral_create_reg_model(register_5, "register_5", '{}, 8'h1c, "RW", 0, "")
+`rggen_ral_create_reg_model(register_5, "register_5", '{}, 8'h1c, "RW", 0, "g_register_5")
 CODE
       end
 
