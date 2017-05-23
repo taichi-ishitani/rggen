@@ -185,8 +185,7 @@ list_item :register, :type do
         interface :register, :bit_field_if,
                   type:       :rggen_bit_field_if,
                   name:       :bit_field_if,
-                  parameters: [data_width],
-                  dimensions: [total_bit_fields] if total_bit_fields > 0
+                  parameters: [data_width] if total_bit_fields > 0
       end
 
       def register_if
@@ -196,19 +195,11 @@ list_item :register, :type do
       private
 
       def actual_bit_fields
-        @non_reserved_bit_fields  ||= register.bit_fields.reject(&:reserved?)
+        @non_reserved_bit_fields ||= register.bit_fields.reject(&:reserved?)
       end
 
       def total_bit_fields
         actual_bit_fields.size
-      end
-
-      def msb_list
-        array(actual_bit_fields.map(&:msb))
-      end
-
-      def lsb_list
-        array(actual_bit_fields.map(&:lsb))
       end
 
       def start_address
@@ -229,6 +220,16 @@ list_item :register, :type do
           "#{base} + #{increment_value} * #{local_index}"
         else
           base
+        end
+      end
+
+      def valid_bits
+        hex(valid_bits_value, data_width)
+      end
+
+      def valid_bits_value
+        actual_bit_fields.inject(0) do |bits, bit_field|
+          bits |= (((1 << bit_field.width) - 1) << bit_field.lsb)
         end
       end
     end

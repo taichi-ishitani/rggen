@@ -160,7 +160,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_clear),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_0_0_if),
   .o_value        (o_bit_field_0_0)
 );
 CODE
@@ -177,7 +177,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_clear),
-  .bit_field_if   (bit_field_if[1]),
+  .bit_field_if   (bit_field_0_1_if),
   .o_value        (o_bit_field_0_1)
 );
 CODE
@@ -194,7 +194,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_clear[g_i]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_1_0_if),
   .o_value        (o_bit_field_1_0[g_i])
 );
 CODE
@@ -211,7 +211,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_clear[g_i][g_j]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_2_0_if),
   .o_value        (o_bit_field_2_0[g_i][g_j])
 );
 CODE
@@ -228,7 +228,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_clear),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_3_0_if),
   .o_value        (o_bit_field_3_0)
 );
 CODE
@@ -245,7 +245,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_clear),
-  .bit_field_if   (bit_field_if[1]),
+  .bit_field_if   (bit_field_3_1_if),
   .o_value        (o_bit_field_3_1)
 );
 CODE
@@ -262,7 +262,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_clear[g_i]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_4_0_if),
   .o_value        (o_bit_field_4_0[g_i])
 );
 CODE
@@ -279,7 +279,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_clear[g_i][g_j]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_5_0_if),
   .o_value        (o_bit_field_5_0[g_i][g_j])
 );
 CODE

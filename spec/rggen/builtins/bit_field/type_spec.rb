@@ -27,7 +27,7 @@ describe 'bit_field/type' do
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:indirect]
     enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
-    enable :bit_field, :type, [:rw, :ro, :foo, :BAR]
+    enable :bit_field, :type, [:rw, :ro, :foo, :BAR, :reserved]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, :rtl_top
@@ -510,17 +510,51 @@ describe 'bit_field/type' do
   describe "rtl" do
     let(:register_map) do
       set_load_data([
-        [nil, "register_0", "0x00"     , nil     , nil                                     , "bit_field_0_0", "[31:0]" , "foo", nil, nil],
-        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                     , "bit_field_1_0", "[0]"    , "foo", nil, nil],
-        [nil, "register_2", "0x0C"     , "[3, 4]", "indirect: bit_field_3_0, bit_field_3_1", "bit_field_2_0", "[0]"    , "foo", nil, nil],
-        [nil, "register_3", "0x10"     , nil     , nil                                     , "bit_field_3_0", "[31:16]", "ro" , nil, nil],
-        [nil, nil         , nil        , nil     , nil                                     , "bit_field_3_1", "[15:0]" , "ro" , nil, nil]
+        [nil, "register_0", "0x00"     , nil     , nil                                     , "bit_field_0_0", "[31:0]" , "foo"     , nil, nil],
+        [nil, "register_1", "0x04-0x0B", "[2]"   , nil                                     , "bit_field_1_0", "[0]"    , "foo"     , nil, nil],
+        [nil, "register_2", "0x0C"     , "[3, 4]", "indirect: bit_field_3_0, bit_field_3_1", "bit_field_2_0", "[0]"    , "foo"     , nil, nil],
+        [nil, "register_3", "0x10"     , nil     , nil                                     , "bit_field_3_0", "[31:16]", "ro"      , nil, nil],
+        [nil, nil         , nil        , nil     , nil                                     , "bit_field_3_1", "[15:0]" , "ro"      , nil, nil],
+        [nil, "register_4", "0x20"     , nil     , nil                                     , "bit_field_4_0", "[31:0]" , "reserved", nil, nil]
       ])
       @factory.create(configuration, register_map_file)
     end
 
     let(:rtl) do
       build_rtl_factory.create(@configuration, register_map).bit_fields
+    end
+
+    context "reservedではない場合" do
+      it "rggen_bit_field_ifのインスタンスを持つ" do
+        expect(rtl[0]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_0_0_if", parameters: [32]
+        expect(rtl[1]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_1_0_if", parameters: [1]
+        expect(rtl[2]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_2_0_if", parameters: [1]
+        expect(rtl[3]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_3_0_if", parameters: [16]
+        expect(rtl[4]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_3_1_if", parameters: [16]
+      end
+
+      describe "#generate_code" do
+        it "bit_field_ifを接続するコードを生成する" do
+          expect(rtl[0]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_0_0_if, 31, 0)\n"
+          expect(rtl[1]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_1_0_if, 0, 0)\n"
+          expect(rtl[2]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_2_0_if, 0, 0)\n"
+          expect(rtl[3]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_3_0_if, 31, 16)\n"
+          expect(rtl[4]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_3_1_if, 15, 0)\n"
+        end
+      end
+    end
+
+    context "reservedの場合" do
+      it "rggen_bit_field_ifのインスタンスを持たない" do
+        expect(rtl[5]).not_to have_identifier :bit_field_if, name: "bit_field_4_0_if"
+        expect(rtl[5]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "bit_field_4_0_if"
+      end
+
+      describe "#generate_code" do
+        it "何もコードを生成しない" do
+          expect(rtl[5]).not_to generate_code :register, :top_down
+        end
+      end
     end
 
     describe "#value" do
@@ -530,16 +564,6 @@ describe 'bit_field/type' do
         expect(rtl[2].value).to match_identifier 'register_if[3+4*g_i+g_j].value[0]'
         expect(rtl[3].value).to match_identifier 'register_if[15].value[31:16]'
         expect(rtl[4].value).to match_identifier 'register_if[15].value[15:0]'
-      end
-    end
-
-    describe "#bit_field_if" do
-      it "自身が接続されるbit_field_ifの識別子を返す" do
-        expect(rtl[0].bit_field_if).to match_identifier 'bit_field_if[0]'
-        expect(rtl[1].bit_field_if).to match_identifier 'bit_field_if[0]'
-        expect(rtl[2].bit_field_if).to match_identifier 'bit_field_if[0]'
-        expect(rtl[3].bit_field_if).to match_identifier 'bit_field_if[0]'
-        expect(rtl[4].bit_field_if).to match_identifier 'bit_field_if[1]'
       end
     end
   end

@@ -10,7 +10,6 @@ interface rggen_register_if #(
   rggen_direction           direction;
   logic [DATA_WIDTH-1:0]    write_data;
   logic [DATA_WIDTH/8-1:0]  write_strobe;
-  logic [DATA_WIDTH-1:0]    write_mask;
   logic                     ready;
   logic [DATA_WIDTH-1:0]    read_data;
   logic [DATA_WIDTH-1:0]    value;
@@ -23,7 +22,6 @@ interface rggen_register_if #(
     output  direction,
     output  write_data,
     output  write_strobe,
-    output  write_mask,
     input   ready,
     input   read_data,
     input   status
@@ -36,7 +34,6 @@ interface rggen_register_if #(
     input   direction,
     input   write_data,
     input   write_strobe,
-    input   write_mask,
     output  ready,
     output  read_data,
     output  status,

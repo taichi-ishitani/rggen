@@ -108,7 +108,7 @@ describe 'bit_fields/type/ro' do
 rggen_bit_field_ro #(
   .WIDTH  (32)
 ) u_bit_field_0_0 (
-  .bit_field_if (bit_field_if[0]),
+  .bit_field_if (bit_field_0_0_if),
   .i_value      (i_bit_field_0_0[g_i])
 );
 CODE
@@ -119,7 +119,7 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (16)
 ) u_bit_field_1_0 (
-  .bit_field_if (bit_field_if[0]),
+  .bit_field_if (bit_field_1_0_if),
   .i_value      (i_bit_field_1_0)
 );
 CODE
@@ -130,7 +130,7 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (1)
 ) u_bit_field_1_1 (
-  .bit_field_if (bit_field_if[1]),
+  .bit_field_if (bit_field_1_1_if),
   .i_value      (i_bit_field_1_1)
 );
 CODE
@@ -141,7 +141,7 @@ CODE
 rggen_bit_field_ro #(
   .WIDTH  (32)
 ) u_bit_field_2_0 (
-  .bit_field_if (bit_field_if[0]),
+  .bit_field_if (bit_field_2_0_if),
   .i_value      (i_bit_field_2_0[g_i][g_j])
 CODE
       end

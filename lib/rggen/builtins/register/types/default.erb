@@ -1,11 +1,9 @@
 rggen_default_register #(
-  .ADDRESS_WIDTH    (<%= local_address_width %>),
-  .START_ADDRESS    (<%= start_address %>),
-  .END_ADDRESS      (<%= end_address %>),
-  .DATA_WIDTH       (<%= data_width %>),
-  .TOTAL_BIT_FIELDS (<%= total_bit_fields %>),
-  .MSB_LIST         (<%= msb_list %>),
-  .LSB_LIST         (<%= lsb_list %>)
+  .ADDRESS_WIDTH  (<%= local_address_width %>),
+  .START_ADDRESS  (<%= start_address %>),
+  .END_ADDRESS    (<%= end_address %>),
+  .DATA_WIDTH     (<%= data_width %>),
+  .VALID_BITS     (<%= valid_bits %>)
 ) u_<%= register.name %> (
   .register_if  (<%= register.register_if %>),
   .bit_field_if (<%= bit_field_if %>)

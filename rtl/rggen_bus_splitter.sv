@@ -39,7 +39,6 @@ module rggen_bus_splitter #(
     assign  register_if[g_i].direction    = bus_if.direction;
     assign  register_if[g_i].write_data   = bus_if.write_data;
     assign  register_if[g_i].write_strobe = bus_if.write_strobe;
-    assign  register_if[g_i].write_mask   = get_write_mask(bus_if.write_strobe);
     assign  select[g_i]                   = register_if[g_i].select;
     assign  ready[g_i]                    = register_if[g_i].ready;
     assign  response[g_i].read_data       = register_if[g_i].read_data;
@@ -51,14 +50,6 @@ module rggen_bus_splitter #(
   assign  select[TOTAL_REGISTERS]   = no_register_selected;
   assign  ready[TOTAL_REGISTERS]    = no_register_selected;
   assign  response[TOTAL_REGISTERS] = '{read_data: '0, status: RGGEN_SLAVE_ERROR};
-
-  function automatic logic [DATA_WIDTH-1:0] get_write_mask(logic [DATA_WIDTH/8-1:0] strobe);
-    logic [DATA_WIDTH-1:0]  write_mask;
-    for (int i = 0;i < DATA_WIDTH;i += 8) begin
-      write_mask[i+:8]  = {8{strobe[i/8]}};
-    end
-    return write_mask;
-  endfunction
 
   assign  response_ready  = |ready;
   always_ff @(posedge clk, negedge rst_n) begin
@@ -83,10 +74,14 @@ module rggen_bus_splitter #(
   end
 
   function automatic logic [INDEX_WIDTH-1:0] calc_index();
-    logic [INDEX_WIDTH-1:0] masked_index[TOTAL_REGISTERS+1];
-    for (int i = 0;i <= TOTAL_REGISTERS;++i) begin
-      masked_index[i] = i[INDEX_WIDTH-1:0] & {INDEX_WIDTH{select[i]}};
+    logic [INDEX_WIDTH-1:0] index;
+    for (int i = 0;i < INDEX_WIDTH;++i) begin
+      logic [TOTAL_REGISTERS:0] temp;
+      for (int j = 0;j <= TOTAL_REGISTERS;++j) begin
+        temp[j] = j[i] & select[j];
+      end
+      index[i]  = |temp;
     end
-    return masked_index.or();
+    return index;
   endfunction
 endmodule
