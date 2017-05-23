@@ -34,8 +34,8 @@ module rggen_bit_field_w01s_w01c
     logic [WIDTH-1:0] set;
     logic [WIDTH-1:0] clear;
 
-    write_data  = bit_field_if.write_data[WIDTH-1:0];
-    write_mask  = bit_field_if.write_mask[WIDTH-1:0];
+    write_data  = bit_field_if.write_data;
+    write_mask  = bit_field_if.write_mask;
     if (bit_field_if.write_access) begin
       control_value = write_mask & ((SET_CLEAR_VALUE) ? write_data : ~write_data);
     end
