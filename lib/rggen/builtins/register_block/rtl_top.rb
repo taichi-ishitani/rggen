@@ -16,5 +16,13 @@ define_simple_item :register_block, :rtl_top do
     def module_body(code)
       register_block.generate_code(:register_block, :top_down, code)
     end
+
+    generate_pre_code :register_block do
+      process_template
+    end
+
+    generate_post_code :register_block do
+      :'`undef rggen_connect_bit_field_if'
+    end
   end
 end

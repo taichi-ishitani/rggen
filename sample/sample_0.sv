@@ -23,6 +23,9 @@ module sample_0 (
   output [15:0] o_bit_field_8_1,
   rggen_bus_if.master register_9_bus_if
 );
+  rggen_register_if #(8, 32) register_if[20]();
+  logic [1:0] ier;
+  logic [1:0] isr;
   `define rggen_connect_bit_field_if(RIF, FIF, MSB, LSB) \
     assign  FIF.read_access         = RIF.read_access; \
     assign  FIF.write_access        = RIF.write_access; \
@@ -30,9 +33,6 @@ module sample_0 (
     assign  FIF.write_mask          = RIF.write_mask[MSB:LSB]; \
     assign  RIF.value[MSB:LSB]      = FIF.value; \
     assign  RIF.read_data[MSB:LSB]  = FIF.read_data;
-  rggen_register_if #(8, 32) register_if[20]();
-  logic [1:0] ier;
-  logic [1:0] isr;
   rggen_host_if_apb #(
     .LOCAL_ADDRESS_WIDTH  (8),
     .DATA_WIDTH           (32),
@@ -168,7 +168,7 @@ module sample_0 (
   end endgenerate
   generate if (1) begin : g_register_4
     genvar g_i;
-    for (g_i = 0;g_i < 4;g_i++) begin : g
+    for (g_i = 0;g_i < 4;++g_i) begin : g
       rggen_bit_field_if #(32) bit_field_if();
       rggen_bit_field_if #(16) bit_field_4_0_if();
       rggen_bit_field_if #(16) bit_field_4_1_if();
@@ -203,13 +203,13 @@ module sample_0 (
   end endgenerate
   generate if (1) begin : g_register_5
     genvar g_i;
-    for (g_i = 0;g_i < 2;g_i++) begin : g
+    for (g_i = 0;g_i < 2;++g_i) begin : g
       genvar g_j;
-      for (g_j = 0;g_j < 4;g_j++) begin : g
+      for (g_j = 0;g_j < 4;++g_j) begin : g
         rggen_bit_field_if #(32) bit_field_if();
+        logic [32:0] indirect_index;
         rggen_bit_field_if #(16) bit_field_5_0_if();
         rggen_bit_field_if #(16) bit_field_5_1_if();
-        logic [32:0] indirect_index;
         assign indirect_index = {register_if[2].value[0], register_if[0].value[31:16], register_if[0].value[15:0]};
         rggen_indirect_register #(
           .ADDRESS_WIDTH  (8),
@@ -253,7 +253,7 @@ module sample_0 (
       .START_ADDRESS  (8'h24),
       .END_ADDRESS    (8'h27),
       .DATA_WIDTH     (32),
-      .VALID_BITS     (32'h000000101)
+      .VALID_BITS     (32'h00000101)
     ) u_register_6 (
       .register_if  (register_if[16]),
       .bit_field_if (bit_field_if)
@@ -294,7 +294,7 @@ module sample_0 (
       .START_ADDRESS  (8'h28),
       .END_ADDRESS    (8'h2b),
       .DATA_WIDTH     (32),
-      .VALID_BITS     (32'h000000101)
+      .VALID_BITS     (32'h00000101)
     ) u_register_7 (
       .register_if  (register_if[17]),
       .bit_field_if (bit_field_if)

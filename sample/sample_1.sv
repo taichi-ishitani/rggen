@@ -8,6 +8,7 @@ module sample_1 (
   input i_bit_field_2_0,
   output o_bit_field_2_1
 );
+  rggen_register_if #(7, 32) register_if[3]();
   `define rggen_connect_bit_field_if(RIF, FIF, MSB, LSB) \
     assign  FIF.read_access         = RIF.read_access; \
     assign  FIF.write_access        = RIF.write_access; \
@@ -15,7 +16,6 @@ module sample_1 (
     assign  FIF.write_mask          = RIF.write_mask[MSB:LSB]; \
     assign  RIF.value[MSB:LSB]      = FIF.value; \
     assign  RIF.read_data[MSB:LSB]  = FIF.read_data;
-  rggen_register_if #(7, 32) register_if[3]();
   rggen_host_if_apb #(
     .LOCAL_ADDRESS_WIDTH  (7),
     .DATA_WIDTH           (32),
@@ -83,8 +83,6 @@ module sample_1 (
     );
   end endgenerate
   generate if (1) begin : g_register_2
-    localparam int MSB_LIST[2] = '{16, 0};
-    localparam int LSB_LIST[2] = '{16, 0};
     rggen_bit_field_if #(32) bit_field_if();
     rggen_bit_field_if #(1) bit_field_2_0_if();
     rggen_bit_field_if #(1) bit_field_2_1_if();
