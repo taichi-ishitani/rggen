@@ -5,6 +5,7 @@ interface rggen_apb_if #(
   logic                     psel;
   logic                     penable;
   logic [ADDRESS_WIDTH-1:0] paddr;
+  logic [2:0]               pprot;
   logic                     pwrite;
   logic [DATA_WIDTH-1:0]    pwdata;
   logic [DATA_WIDTH/8-1:0]  pstrb;
@@ -16,6 +17,7 @@ interface rggen_apb_if #(
     output  psel,
     output  penable,
     output  paddr,
+    output  pprot,
     output  pwrite,
     output  pwdata,
     output  pstrb,
@@ -28,6 +30,7 @@ interface rggen_apb_if #(
     input   psel,
     input   penable,
     input   paddr,
+    input   pprot,
     input   pwrite,
     input   pwdata,
     input   pstrb,
