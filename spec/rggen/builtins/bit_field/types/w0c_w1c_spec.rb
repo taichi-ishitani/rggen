@@ -198,7 +198,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_set),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_0_0_if),
   .o_value        ()
 );
 CODE
@@ -215,7 +215,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_set),
-  .bit_field_if   (bit_field_if[1]),
+  .bit_field_if   (bit_field_0_1_if),
   .o_value        ()
 );
 CODE
@@ -232,7 +232,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_set[g_i]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_1_0_if),
   .o_value        ()
 );
 CODE
@@ -249,7 +249,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_set[g_i][g_j]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_2_0_if),
   .o_value        ()
 );
 CODE
@@ -266,7 +266,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_set),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_3_0_if),
   .o_value        ()
 );
 CODE
@@ -283,7 +283,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_set),
-  .bit_field_if   (bit_field_if[1]),
+  .bit_field_if   (bit_field_3_1_if),
   .o_value        ()
 );
 CODE
@@ -300,7 +300,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_set[g_i]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_4_0_if),
   .o_value        ()
 );
 CODE
@@ -317,7 +317,7 @@ rggen_bit_field_w01s_w01c #(
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_set[g_i][g_j]),
-  .bit_field_if   (bit_field_if[0]),
+  .bit_field_if   (bit_field_5_0_if),
   .o_value        ()
 );
 CODE

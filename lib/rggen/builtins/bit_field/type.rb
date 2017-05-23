@@ -167,27 +167,31 @@ list_item :bit_field, :type do
   rtl do
     item_base do
       export :value
-      export :bit_field_if
 
       delegate [
-        :width, :msb, :lsb
+        :name, :width, :msb, :lsb, :reserved?
       ] => :bit_field
       delegate [
         :dimensions, :index, :local_index, :loop_variables
       ] => :register
 
+      available? { !bit_field.reserved? }
+
+      build do
+        interface :register, :bit_field_if,
+                  type:       :rggen_bit_field_if,
+                  name:       "#{name}_if",
+                  parameters: [width]
+      end
+
+      generate_pre_code :register do |c|
+        c << subroutine_call(:'`rggen_connect_bit_field_if', [
+          register.bit_field_if, bit_field_if, msb, lsb
+        ]) << nl
+      end
+
       def value
         register.register_if.value[msb, lsb]
-      end
-
-      def bit_field_if
-        register.bit_field_if[bit_field_index]
-      end
-
-      private
-
-      def bit_field_index
-        register.bit_fields.find_index { |r| bit_field.equal?(r) }
       end
     end
 
