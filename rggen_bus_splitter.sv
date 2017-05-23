@@ -83,10 +83,14 @@ module rggen_bus_splitter #(
   end
 
   function automatic logic [INDEX_WIDTH-1:0] calc_index();
-    logic [INDEX_WIDTH-1:0] masked_index[TOTAL_REGISTERS+1];
-    for (int i = 0;i <= TOTAL_REGISTERS;++i) begin
-      masked_index[i] = i[INDEX_WIDTH-1:0] & {INDEX_WIDTH{select[i]}};
+    logic [INDEX_WIDTH-1:0] index;
+    for (int i = 0;i < INDEX_WIDTH;++i) begin
+      logic [TOTAL_REGISTERS:0] temp;
+      for (int j = 0;j <= TOTAL_REGISTERS;++j) begin
+        temp[j] = j[i] & select[j];
+      end
+      index[i]  = |temp;
     end
-    return masked_index.or();
+    return index;
   endfunction
 endmodule
