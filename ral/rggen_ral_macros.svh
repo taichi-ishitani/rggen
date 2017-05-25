@@ -3,12 +3,9 @@
 
 `define rggen_ral_create_field_model(handle, name, width, lsb, access, volatile, reset, has_reset, hdl_path) \
 begin \
-  string  __hdl_path  = hdl_path; \
   handle  = new(name); \
   handle.configure(this.cfg, this, width, lsb, access, volatile, reset, has_reset, 1, 1); \
-  if (__hdl_path.len() > 0) begin \
-    this.add_hdl_path_slice(__hdl_path, lsb, width); \
-  end \
+  this.add_field_hdl_path(hdl_path, lsb, width); \
 end
 
 `define rggen_ral_create_reg_model(handle, name, array_index, offset_address, rights, unmapped, hdl_path) \
