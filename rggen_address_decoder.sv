@@ -7,9 +7,9 @@ module rggen_address_decoder #(
   input   [ADDRESS_WIDTH-1:0] i_address,
   output                      o_match
 );
-  localparam  int                       LSB       = $clog2(DATA_WIDTH / 8);
-  localparam  bit [ADDRESS_WIDTH-LSB:0] SADDRESS  = STAET_ADDRESS[ADDRESS_WIDTH-1:LSB];
-  localparam  bit [ADDRESS_WIDTH-LSB:0] EADDRESS  = END_ADDRESS[ADDRESS_WIDTH-1:LSB];
+  localparam  int                         LSB       = $clog2(DATA_WIDTH / 8);
+  localparam  bit [ADDRESS_WIDTH-LSB-1:0] SADDRESS  = STAET_ADDRESS[ADDRESS_WIDTH-1:LSB];
+  localparam  bit [ADDRESS_WIDTH-LSB-1:0] EADDRESS  = END_ADDRESS[ADDRESS_WIDTH-1:LSB];
 
   generate if (SADDRESS == EADDRESS) begin
     assign  o_match = (i_address[ADDRESS_WIDTH-1:LSB] == SADDRESS) ? 1'b1 : 1'b0;
