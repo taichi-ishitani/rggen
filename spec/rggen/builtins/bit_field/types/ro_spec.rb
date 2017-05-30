@@ -107,8 +107,8 @@ describe 'bit_fields/type/ro' do
         <<'CODE'
 rggen_bit_field_ro #(
   .WIDTH  (32)
-) u_bit_field_0_0 (
-  .bit_field_if (bit_field_0_0_if),
+) u_bit_field (
+  .bit_field_if (bit_field_sub_if),
   .i_value      (i_bit_field_0_0[g_i])
 );
 CODE
@@ -118,8 +118,8 @@ CODE
         <<'CODE'
 rggen_bit_field_ro #(
   .WIDTH  (16)
-) u_bit_field_1_0 (
-  .bit_field_if (bit_field_1_0_if),
+) u_bit_field (
+  .bit_field_if (bit_field_sub_if),
   .i_value      (i_bit_field_1_0)
 );
 CODE
@@ -129,8 +129,8 @@ CODE
         <<'CODE'
 rggen_bit_field_ro #(
   .WIDTH  (1)
-) u_bit_field_1_1 (
-  .bit_field_if (bit_field_1_1_if),
+) u_bit_field (
+  .bit_field_if (bit_field_sub_if),
   .i_value      (i_bit_field_1_1)
 );
 CODE
@@ -140,17 +140,17 @@ CODE
         <<'CODE'
 rggen_bit_field_ro #(
   .WIDTH  (32)
-) u_bit_field_2_0 (
-  .bit_field_if (bit_field_2_0_if),
+) u_bit_field (
+  .bit_field_if (bit_field_sub_if),
   .i_value      (i_bit_field_2_0[g_i][g_j])
 CODE
       end
 
       it "ROビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code(:register, :top_down, expected_code_0)
-        expect(rtl[1]).to generate_code(:register, :top_down, expected_code_1)
-        expect(rtl[2]).to generate_code(:register, :top_down, expected_code_2)
-        expect(rtl[3]).to generate_code(:register, :top_down, expected_code_3)
+        expect(rtl[0]).to generate_code(:bit_field, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:bit_field, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:bit_field, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:bit_field, :top_down, expected_code_3)
       end
     end
   end
@@ -178,9 +178,9 @@ CODE
 
     describe "#hdl_path" do
       it "ROビットフィールド特有の階層パスを返す" do
-        expect(ral[0].hdl_path).to eq "u_bit_field_0_0.i_value"
-        expect(ral[1].hdl_path).to eq "u_bit_field_1_0.i_value"
-        expect(ral[2].hdl_path).to eq "u_bit_field_1_1.i_value"
+        expect(ral[0].hdl_path).to eq "g_bit_field_0_0.u_bit_field.i_value"
+        expect(ral[1].hdl_path).to eq "g_bit_field_1_0.u_bit_field.i_value"
+        expect(ral[2].hdl_path).to eq "g_bit_field_1_1.u_bit_field.i_value"
       end
     end
   end

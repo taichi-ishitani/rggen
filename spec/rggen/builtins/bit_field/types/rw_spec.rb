@@ -120,10 +120,10 @@ describe 'bit_fields/type/rw' do
 rggen_bit_field_rw #(
   .WIDTH          (16),
   .INITIAL_VALUE  (16'habcd)
-) u_bit_field_0_0 (
+) u_bit_field (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (bit_field_0_0_if),
+  .bit_field_if (bit_field_sub_if),
   .o_value      (o_bit_field_0_0)
 );
 CODE
@@ -134,10 +134,10 @@ CODE
 rggen_bit_field_rw #(
   .WIDTH          (1),
   .INITIAL_VALUE  (1'h1)
-) u_bit_field_0_1 (
+) u_bit_field (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (bit_field_0_1_if),
+  .bit_field_if (bit_field_sub_if),
   .o_value      (o_bit_field_0_1)
 );
 CODE
@@ -148,10 +148,10 @@ CODE
 rggen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
-) u_bit_field_1_0 (
+) u_bit_field (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (bit_field_1_0_if),
+  .bit_field_if (bit_field_sub_if),
   .o_value      (o_bit_field_1_0[g_i])
 );
 CODE
@@ -162,20 +162,20 @@ CODE
 rggen_bit_field_rw #(
   .WIDTH          (32),
   .INITIAL_VALUE  (32'h00000000)
-) u_bit_field_2_0 (
+) u_bit_field (
   .clk          (clk),
   .rst_n        (rst_n),
-  .bit_field_if (bit_field_2_0_if),
+  .bit_field_if (bit_field_sub_if),
   .o_value      (o_bit_field_2_0[g_i][g_j])
 );
 CODE
       end
 
       it "#value_outと#valueを接続、RWビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code(:register, :top_down, expected_code_0)
-        expect(rtl[1]).to generate_code(:register, :top_down, expected_code_1)
-        expect(rtl[2]).to generate_code(:register, :top_down, expected_code_2)
-        expect(rtl[3]).to generate_code(:register, :top_down, expected_code_3)
+        expect(rtl[0]).to generate_code(:bit_field, :top_down, expected_code_0)
+        expect(rtl[1]).to generate_code(:bit_field, :top_down, expected_code_1)
+        expect(rtl[2]).to generate_code(:bit_field, :top_down, expected_code_2)
+        expect(rtl[3]).to generate_code(:bit_field, :top_down, expected_code_3)
       end
     end
   end

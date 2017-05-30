@@ -13,7 +13,7 @@ list_item :bit_field, :type, [:rwl, :rwe] do
              dimensions: dimensions
     end
 
-    generate_code_from_template :register
+    generate_code_from_template :bit_field
 
     def mode
       {
