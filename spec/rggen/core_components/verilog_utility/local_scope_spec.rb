@@ -103,6 +103,17 @@ CODE
 
       expect(
         local_scope(:g_foo) { |s|
+          s.without_generate_keyword
+          s.body { 'assign foo = bar;' }
+        }
+      ).to eq <<'CODE'
+if (1) begin : g_foo
+  assign foo = bar;
+end
+CODE
+
+      expect(
+        local_scope(:g_foo) { |s|
           s.body { 'assign foo = bar;' }
           s.signals [
             signal(data_type: :logic, name: :foo),
@@ -123,8 +134,30 @@ generate if (1) begin : g_foo
   end
 end endgenerate
 CODE
+
+      expect(
+        local_scope(:g_foo) { |s|
+          s.body { 'assign foo = bar;' }
+          s.signals [
+            signal(data_type: :logic, name: :foo),
+            signal(data_type: :logic, name: :bar)
+          ]
+          s.loops g_i: 2, g_j: 4
+          s.without_generate_keyword
+        }
+      ).to eq <<'CODE'
+if (1) begin : g_foo
+  genvar g_i;
+  for (g_i = 0;g_i < 2;++g_i) begin : g
+    genvar g_j;
+    for (g_j = 0;g_j < 4;++g_j) begin : g
+      logic foo;
+      logic bar;
+      assign foo = bar;
     end
-
-
+  end
+end
+CODE
+    end
   end
 end
