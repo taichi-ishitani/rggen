@@ -4,7 +4,7 @@ rggen_default_register #(
   .END_ADDRESS    (<%= end_address %>),
   .DATA_WIDTH     (<%= data_width %>),
   .VALID_BITS     (<%= valid_bits %>)
-) u_<%= register.name %> (
+) u_register (
   .register_if  (<%= register.register_if %>),
   .bit_field_if (<%= bit_field_if %>)
 );

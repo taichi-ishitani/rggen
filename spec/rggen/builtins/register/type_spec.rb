@@ -1046,7 +1046,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h03),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'h00000001)
-) u_register_0 (
+) u_register (
   .register_if  (register_if[0]),
   .bit_field_if (bit_field_if)
 );
@@ -1061,7 +1061,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h07),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_1 (
+) u_register (
   .register_if  (register_if[1]),
   .bit_field_if (bit_field_if)
 );
@@ -1076,7 +1076,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h0b),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'h00ffff00)
-) u_register_2 (
+) u_register (
   .register_if  (register_if[2]),
   .bit_field_if (bit_field_if)
 );
@@ -1091,7 +1091,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h13),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'h00000101)
-) u_register_3 (
+) u_register (
   .register_if  (register_if[3]),
   .bit_field_if (bit_field_if)
 );
@@ -1106,7 +1106,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h17),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_4 (
+) u_register (
   .register_if  (register_if[4]),
   .bit_field_if (bit_field_if)
 );
@@ -1121,7 +1121,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h1b),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'h00ff00ff)
-) u_register_5 (
+) u_register (
   .register_if  (register_if[5]),
   .bit_field_if (bit_field_if)
 );
@@ -1136,7 +1136,7 @@ rggen_default_register #(
   .END_ADDRESS    (8'h23 + 8'h04 * g_i),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'h00000001)
-) u_register_6 (
+) u_register (
   .register_if  (register_if[6+g_i]),
   .bit_field_if (bit_field_if)
 );
