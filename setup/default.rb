@@ -7,6 +7,7 @@ enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :r
 enable :register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]
 enable :register_block, :host_if, [:apb, :axi4lite]
 enable :register      , :rtl_top
+enable :bit_field     , :rtl_top
 enable :register_block, [:ral_package, :block_model, :constructor, :sub_model_creator, :default_map_creator]
 enable :register      , [:reg_model, :constructor, :field_model_creator, :indirect_index_configurator, :sub_block_model]
 enable :bit_field     , :field_model

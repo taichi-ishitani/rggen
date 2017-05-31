@@ -3,7 +3,7 @@ rggen_external_register #(
   .START_ADDRESS  (<%= start_address %>),
   .END_ADDRESS    (<%= end_address %>),
   .DATA_WIDTH     (<%= configuration.data_width %>)
-) u_<%= register.name %> (
+) u_register (
   .clk          (<%= register_block.clock %>),
   .rst_n        (<%= register_block.reset %>),
   .register_if  (<%= register.register_if %>),

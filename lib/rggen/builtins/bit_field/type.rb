@@ -169,7 +169,7 @@ list_item :bit_field, :type do
       export :value
 
       delegate [
-        :name, :width, :msb, :lsb, :reserved?
+        :name, :width, :msb, :lsb, :type, :reserved?
       ] => :bit_field
       delegate [
         :dimensions, :index, :local_index, :loop_variables
@@ -178,15 +178,15 @@ list_item :bit_field, :type do
       available? { !bit_field.reserved? }
 
       build do
-        interface :register, :bit_field_if,
+        interface :bit_field, :bit_field_sub_if,
                   type:       :rggen_bit_field_if,
-                  name:       "#{name}_if",
+                  name:       :bit_field_sub_if,
                   parameters: [width]
       end
 
-      generate_pre_code :register do |c|
+      generate_pre_code :bit_field do |c|
         c << subroutine_call(:'`rggen_connect_bit_field_if', [
-          register.bit_field_if, bit_field_if, msb, lsb
+          register.bit_field_if, bit_field_sub_if, msb, lsb
         ]) << nl
       end
 
@@ -232,7 +232,7 @@ list_item :bit_field, :type do
       end
 
       def hdl_path
-        "u_#{bit_field.name}.value"
+        "g_#{bit_field.name}.u_bit_field.value"
       end
     end
 

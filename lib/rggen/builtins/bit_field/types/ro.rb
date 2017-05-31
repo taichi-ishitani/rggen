@@ -11,10 +11,10 @@ list_item :bit_field, :type, :ro do
             dimensions: dimensions
     end
 
-    generate_code_from_template :register
+    generate_code_from_template :bit_field
   end
 
   ral do
-    hdl_path { "u_#{bit_field.name}.i_value" }
+    hdl_path { "g_#{bit_field.name}.u_bit_field.i_value" }
   end
 end

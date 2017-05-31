@@ -406,7 +406,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({2'h0}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_0 (
+) u_register (
   .register_if  (register_if[2]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)
@@ -425,7 +425,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({2'h0, 2'h0}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_4 (
+) u_register (
   .register_if  (register_if[6]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)
@@ -444,7 +444,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({g_i[1:0]}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_8 (
+) u_register (
   .register_if  (register_if[10+g_i]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)
@@ -463,7 +463,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({g_i[1:0], g_j[1:0]}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_10 (
+) u_register (
   .register_if  (register_if[16+4*g_i+g_j]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)
@@ -482,7 +482,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({g_i[1:0], g_j[1:0], g_k[1:0]}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_13 (
+) u_register (
   .register_if  (register_if[34+4*g_i+2*g_j+g_k]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)
@@ -501,7 +501,7 @@ rggen_indirect_register #(
   .INDEX_VALUE    ({g_i[1:0], 2'h0, g_j[1:0]}),
   .DATA_WIDTH     (32),
   .VALID_BITS     (32'hffffffff)
-) u_register_14 (
+) u_register (
   .register_if  (register_if[42+4*g_i+g_j]),
   .bit_field_if (bit_field_if),
   .i_index      (indirect_index)

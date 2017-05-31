@@ -12,8 +12,8 @@ package sample_1_ral_pkg;
       super.new(name, 32, 0);
     endfunction
     function void create_fields();
-      `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 16, 16, "RW", 0, 16'h0000, 1, "u_bit_field_0_0.value")
-      `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 16, 0, "RO", 0, 16'h0000, 0, "u_bit_field_0_1.i_value")
+      `rggen_ral_create_field_model(bit_field_0_0, "bit_field_0_0", 16, 16, "RW", 0, 16'h0000, 1, "g_bit_field_0_0.u_bit_field.value")
+      `rggen_ral_create_field_model(bit_field_0_1, "bit_field_0_1", 16, 0, "RO", 0, 16'h0000, 0, "g_bit_field_0_1.u_bit_field.i_value")
     endfunction
   endclass
   class register_1_reg_model extends rggen_ral_reg;
@@ -22,7 +22,7 @@ package sample_1_ral_pkg;
       super.new(name, 32, 0);
     endfunction
     function void create_fields();
-      `rggen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 32, 0, "RW", 0, 32'h00000000, 1, "u_bit_field_1_0.value")
+      `rggen_ral_create_field_model(bit_field_1_0, "bit_field_1_0", 32, 0, "RW", 0, 32'h00000000, 1, "g_bit_field_1_0.u_bit_field.value")
     endfunction
   endclass
   class register_2_reg_model extends rggen_ral_reg;
@@ -32,8 +32,8 @@ package sample_1_ral_pkg;
       super.new(name, 24, 0);
     endfunction
     function void create_fields();
-      `rggen_ral_create_field_model(bit_field_2_0, "bit_field_2_0", 1, 16, "RO", 0, 1'h0, 0, "u_bit_field_2_0.i_value")
-      `rggen_ral_create_field_model(bit_field_2_1, "bit_field_2_1", 1, 0, "RW", 0, 1'h0, 1, "u_bit_field_2_1.value")
+      `rggen_ral_create_field_model(bit_field_2_0, "bit_field_2_0", 1, 16, "RO", 0, 1'h0, 0, "g_bit_field_2_0.u_bit_field.i_value")
+      `rggen_ral_create_field_model(bit_field_2_1, "bit_field_2_1", 1, 0, "RW", 0, 1'h0, 1, "g_bit_field_2_1.u_bit_field.value")
     endfunction
   endclass
   class sample_1_block_model extends rggen_ral_block;

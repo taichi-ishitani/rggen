@@ -526,33 +526,33 @@ describe 'bit_field/type' do
 
     context "reservedではない場合" do
       it "rggen_bit_field_ifのインスタンスを持つ" do
-        expect(rtl[0]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_0_0_if", parameters: [32]
-        expect(rtl[1]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_1_0_if", parameters: [1]
-        expect(rtl[2]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_2_0_if", parameters: [1]
-        expect(rtl[3]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_3_0_if", parameters: [16]
-        expect(rtl[4]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_3_1_if", parameters: [16]
+        expect(rtl[0]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [32]
+        expect(rtl[1]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
+        expect(rtl[2]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
+        expect(rtl[3]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
+        expect(rtl[4]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
       end
 
       describe "#generate_code" do
         it "bit_field_ifを接続するコードを生成する" do
-          expect(rtl[0]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_0_0_if, 31, 0)\n"
-          expect(rtl[1]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_1_0_if, 0, 0)\n"
-          expect(rtl[2]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_2_0_if, 0, 0)\n"
-          expect(rtl[3]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_3_0_if, 31, 16)\n"
-          expect(rtl[4]).to generate_code :register, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_3_1_if, 15, 0)\n"
+          expect(rtl[0]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 0)\n"
+          expect(rtl[1]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
+          expect(rtl[2]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
+          expect(rtl[3]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 16)\n"
+          expect(rtl[4]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 15, 0)\n"
         end
       end
     end
 
     context "reservedの場合" do
       it "rggen_bit_field_ifのインスタンスを持たない" do
-        expect(rtl[5]).not_to have_identifier :bit_field_if, name: "bit_field_4_0_if"
-        expect(rtl[5]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "bit_field_4_0_if"
+        expect(rtl[5]).not_to have_identifier :bit_field_sub_if, name: "bit_field_sub_if"
+        expect(rtl[5]).not_to have_interface_instantiation :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
       end
 
       describe "#generate_code" do
         it "何もコードを生成しない" do
-          expect(rtl[5]).not_to generate_code :register, :top_down
+          expect(rtl[5]).not_to generate_code :bit_field, :top_down
         end
       end
     end
@@ -615,8 +615,8 @@ describe 'bit_field/type' do
     describe "#hdl_path" do
       context "通常の場合" do
         it "デフォルトの階層パスを返す" do
-          expect(ral[0].hdl_path).to eq "u_bit_field_0_0.value"
-          expect(ral[1].hdl_path).to eq "u_bit_field_1_0.value"
+          expect(ral[0].hdl_path).to eq "g_bit_field_0_0.u_bit_field.value"
+          expect(ral[1].hdl_path).to eq "g_bit_field_1_0.u_bit_field.value"
         end
       end
 

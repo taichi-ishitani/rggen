@@ -194,11 +194,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (0),
   .WIDTH            (16),
   .INITIAL_VALUE    (16'h0123)
-) u_bit_field_0_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_set),
-  .bit_field_if   (bit_field_0_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -211,11 +211,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (0),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_0_1 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_set),
-  .bit_field_if   (bit_field_0_1_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -228,11 +228,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (0),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_1_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_set[g_i]),
-  .bit_field_if   (bit_field_1_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -245,11 +245,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (0),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_2_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_set[g_i][g_j]),
-  .bit_field_if   (bit_field_2_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -262,11 +262,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (1),
   .WIDTH            (16),
   .INITIAL_VALUE    (16'h4567)
-) u_bit_field_3_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_set),
-  .bit_field_if   (bit_field_3_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -279,11 +279,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (1),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_3_1 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_set),
-  .bit_field_if   (bit_field_3_1_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -296,11 +296,11 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (1),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_4_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_set[g_i]),
-  .bit_field_if   (bit_field_4_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
@@ -313,25 +313,25 @@ rggen_bit_field_w01s_w01c #(
   .SET_CLEAR_VALUE  (1),
   .WIDTH            (1),
   .INITIAL_VALUE    (1'h0)
-) u_bit_field_5_0 (
+) u_bit_field (
   .clk            (clk),
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_set[g_i][g_j]),
-  .bit_field_if   (bit_field_5_0_if),
+  .bit_field_if   (bit_field_sub_if),
   .o_value        ()
 );
 CODE
       end
 
       it "W0C/W1Cビットフィールドモジュールをインスタンスするコードを生成する" do
-        expect(rtl[0]).to generate_code :register, :top_down, expected_code_0
-        expect(rtl[1]).to generate_code :register, :top_down, expected_code_1
-        expect(rtl[2]).to generate_code :register, :top_down, expected_code_2
-        expect(rtl[3]).to generate_code :register, :top_down, expected_code_3
-        expect(rtl[4]).to generate_code :register, :top_down, expected_code_4
-        expect(rtl[5]).to generate_code :register, :top_down, expected_code_5
-        expect(rtl[6]).to generate_code :register, :top_down, expected_code_6
-        expect(rtl[7]).to generate_code :register, :top_down, expected_code_7
+        expect(rtl[0]).to generate_code :bit_field, :top_down, expected_code_0
+        expect(rtl[1]).to generate_code :bit_field, :top_down, expected_code_1
+        expect(rtl[2]).to generate_code :bit_field, :top_down, expected_code_2
+        expect(rtl[3]).to generate_code :bit_field, :top_down, expected_code_3
+        expect(rtl[4]).to generate_code :bit_field, :top_down, expected_code_4
+        expect(rtl[5]).to generate_code :bit_field, :top_down, expected_code_5
+        expect(rtl[6]).to generate_code :bit_field, :top_down, expected_code_6
+        expect(rtl[7]).to generate_code :bit_field, :top_down, expected_code_7
       end
     end
   end

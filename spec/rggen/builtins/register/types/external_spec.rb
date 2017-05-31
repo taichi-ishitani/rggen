@@ -108,7 +108,7 @@ rggen_external_register #(
   .START_ADDRESS  (8'h00),
   .END_ADDRESS    (8'h7f),
   .DATA_WIDTH     (32)
-) u_register_0 (
+) u_register (
   .clk          (clk),
   .rst_n        (rst_n),
   .register_if  (register_if[0]),

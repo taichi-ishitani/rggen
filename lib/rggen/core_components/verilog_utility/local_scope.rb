@@ -4,6 +4,10 @@ module RgGen
       attr_setter :signals
       attr_setter :loops
 
+      def without_generate_keyword
+        @without_generate_keyword = true
+      end
+
       def to_code
         bodies.unshift(signal_declarations) if signals?
         code_block do |c|
@@ -16,13 +20,16 @@ module RgGen
       private
 
       def header_code(code)
-        code << :'generate if (1) begin : ' << @name << nl
+        code << :generate << space unless @without_generate_keyword
+        code << :'if (1) begin : ' << @name << nl
         loops? && generate_for_header(code)
       end
 
       def footer_code(code)
         loops? && generate_for_footer(code)
-        code << :'end endgenerate' << nl
+        code << :end
+        code << space << :endgenerate unless @without_generate_keyword
+        code << nl
       end
 
       def loops?
