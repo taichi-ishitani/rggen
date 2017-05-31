@@ -182,7 +182,6 @@ module sample_0 (
     genvar g_i;
     for (g_i = 0;g_i < 4;++g_i) begin : g
       rggen_bit_field_if #(32) bit_field_if();
-      
       rggen_default_register #(
         .ADDRESS_WIDTH  (8),
         .START_ADDRESS  (8'h10 + 8'h04 * g_i),
