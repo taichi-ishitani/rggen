@@ -5,18 +5,24 @@ module RgGen
   class BuilderError < RgGenError
   end
 
-  class LoadError < RgGenError
+  class RunTimeError < RgGenError
   end
 
-  class ConfigurationError < RgGenError
+  class LoadError < RunTimeError
   end
 
-  class RegisterMapError < RgGenError
-    def initialize(message, position)
+  class ConfigurationError < RunTimeError
+  end
+
+  class RegisterMapError < RunTimeError
+    def initialize(message, position = nil)
       super(message)
       @position = position
     end
 
-    attr_reader :position
+    def to_s
+      return super.to_s unless @position
+      "#{super.to_s} -- #{@position}"
+    end
   end
 end

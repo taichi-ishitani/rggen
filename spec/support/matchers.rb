@@ -51,7 +51,7 @@ RSpec::Matchers.define :raise_register_map_error do |expected_message, expected_
     begin
       given_proc.call
     rescue RgGen::RegisterMapError => e
-      e.message == expected_message && e.position == expected_position
+      e.to_s == "#{expected_message} -- #{expected_position}"
     else
       false
     end

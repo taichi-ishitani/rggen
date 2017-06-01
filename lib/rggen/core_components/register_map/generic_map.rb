@@ -2,7 +2,16 @@ module RgGen
   module RegisterMap
     class GenericMap
       class Cell
-        Position  = Struct.new(:file, :sheet, :row, :column)
+        Position  = Struct.new(:file, :sheet, :row, :column) do
+          def to_s
+            [
+              "file: #{file}",
+              "sheet: #{sheet}",
+              "row: #{row}",
+              "column: #{column}"
+            ].join(' ')
+          end
+        end
 
         def initialize(file, sheet, row, column)
           @position = Position.new(file, sheet, row, column)
