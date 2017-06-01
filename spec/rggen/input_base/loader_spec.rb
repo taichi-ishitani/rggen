@@ -29,5 +29,23 @@ module RgGen::InputBase
         end
       end
     end
+
+    describe "#load" do
+      context "入力ファイルが存在しない場合" do
+        before do
+          allow(File).to receive(:exist?).with(file_name).and_return(false)
+        end
+
+        let(:file_name) do
+          "test.foo"
+        end
+
+        it "LoadErrorを発生させる" do
+          expect {
+            loader.new.load(file_name)
+          }.to raise_load_error "cannot load such file -- #{file_name}"
+        end
+      end
+    end
   end
 end

@@ -154,19 +154,33 @@ HELP
       end
 
       context "--setupでセットアップファイルの指定がある場合" do
-        before do
-          expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
+        context "指定したファイルが存在しない場合" do
+          before do
+            expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
+          end
+
+          after do
+            clear_dummy_list_items(:type   , [:foo])
+            clear_dummy_list_items(:host_if, [:bar])
+          end
+
+          it "--setupで指定したファイルからセットアップが実行される" do
+            expect {
+              generator.run(["--setup", sample_setup, sample_register_maps[1]])
+            }.not_to raise_error
+          end
         end
 
-        after do
-          clear_dummy_list_items(:type   , [:foo])
-          clear_dummy_list_items(:host_if, [:bar])
-        end
+        context "指定したファイルが存在しない場合" do
+          before do
+            allow(File).to receive(:exist?).with(sample_setup).and_return(false)
+          end
 
-        it "--setupで指定したファイルからセットアップが実行される" do
-          expect {
-            generator.run(["--setup", sample_setup, sample_register_maps[1]])
-          }.not_to raise_error
+          it "LoadErrorを発生させる" do
+            expect {
+              generator.run(["--setup", sample_setup, sample_register_maps[1]])
+            }.to raise_load_error "cannot load such file -- #{sample_setup}"
+          end
         end
       end
 
