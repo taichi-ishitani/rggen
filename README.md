@@ -8,8 +8,8 @@
 
 # RgGen
 
-RgGen is a code generation tool for SoC designers.
-It will automatically generate source code for control registers in a SoC design, e.g. RTL, UVM RAL model, C header file, from its register map document.
+RgGen is a code generator tool for SoC/IP/FPGA/RTL engineers.
+It will automatically generate source code for control/status registers, e.g. RTL, UVM RAL model, C header file, from its register map document.
 Also RgGen is customizable so you can build your specific generate tool.
 
 ## Ruby
