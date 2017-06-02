@@ -442,6 +442,10 @@ HELP
           }.to raise_error(SystemExit).and output("[LoadError] cannot load such file -- #{sample_yaml}\n").to_stderr
 
           expect {
+            generator.run([])
+          }.to raise_error(SystemExit).and output("[LoadError] no register map is specified\n").to_stderr
+
+          expect {
             generator.run([sample_register_maps[0]])
           }.to raise_error(SystemExit).and output("[LoadError] cannot load such file -- #{sample_register_maps[0]}\n").to_stderr
         end
