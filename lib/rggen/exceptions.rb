@@ -5,16 +5,16 @@ module RgGen
   class BuilderError < RgGenError
   end
 
-  class RunTimeError < RgGenError
+  class RuntimeError < RgGenError
   end
 
-  class LoadError < RunTimeError
+  class LoadError < RgGen::RuntimeError
   end
 
-  class ConfigurationError < RunTimeError
+  class ConfigurationError < RgGen::RuntimeError
   end
 
-  class RegisterMapError < RunTimeError
+  class RegisterMapError < RgGen::RuntimeError
     def initialize(message, position = nil)
       super(message)
       @position = position

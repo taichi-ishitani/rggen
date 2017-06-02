@@ -143,6 +143,8 @@ module RgGen
         load_register_map(context, argv.first)
         write_files(context)
       end
+    rescue RgGen::RuntimeError, OptionParser::ParseError => e
+      abort "[#{e.class.lastname}] #{e.message}"
     end
 
     private

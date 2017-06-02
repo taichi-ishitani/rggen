@@ -170,18 +170,6 @@ HELP
             }.not_to raise_error
           end
         end
-
-        context "指定したファイルが存在しない場合" do
-          before do
-            allow(File).to receive(:exist?).with(sample_setup).and_return(false)
-          end
-
-          it "LoadErrorを発生させる" do
-            expect {
-              generator.run(["--setup", sample_setup, sample_register_maps[1]])
-            }.to raise_load_error "cannot load such file -- #{sample_setup}"
-          end
-        end
       end
 
       context "環境変数 RGGEN_DEFAULT_SETUP_FILE が設定されている場合" do
@@ -423,6 +411,71 @@ HELP
             generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', '--except', 'c_header', sample_register_maps[0]])
           }.not_to write_binary_files
           clear_enabled_items
+        end
+      end
+    end
+
+    describe "例外の捕捉" do
+      context " OptionParser::ParseErrorが発生した場合" do
+        it "標準エラー出力にメッセージを出力し、終了する" do
+          expect {
+            generator.run(['--foo'])
+          }.to raise_error(SystemExit).and output("[InvalidOption] invalid option: --foo\n").to_stderr
+        end
+      end
+
+      context "LoadErrorが発生した場合" do
+        before do
+          allow(File).to receive(:exist?).and_call_original
+          allow(File).to receive(:exist?).with(sample_setup           ).and_return(false)
+          allow(File).to receive(:exist?).with(sample_yaml            ).and_return(false)
+          allow(File).to receive(:exist?).with(sample_register_maps[0]).and_return(false)
+        end
+
+        it "標準エラー出力にメッセージを出力し、終了する" do
+          expect {
+            generator.run(["--setup", sample_setup, sample_register_maps[1]])
+          }.to raise_error(SystemExit).and output("[LoadError] cannot load such file -- #{sample_setup}\n").to_stderr
+
+          expect {
+            generator.run(['-c', sample_yaml, sample_register_maps[0]])
+          }.to raise_error(SystemExit).and output("[LoadError] cannot load such file -- #{sample_yaml}\n").to_stderr
+
+          expect {
+            generator.run([sample_register_maps[0]])
+          }.to raise_error(SystemExit).and output("[LoadError] cannot load such file -- #{sample_register_maps[0]}\n").to_stderr
+        end
+      end
+
+      context "ConfiguratinErrorが発生した場合" do
+        before do
+          allow_any_instance_of(Configuration::Item).to receive(:build) do
+            raise RgGen::ConfigurationError, "bad configuration"
+          end
+        end
+
+        it "標準エラー出力にメッセージを出力し、終了する" do
+          expect {
+            generator.run(['-c', sample_yaml, sample_register_maps[0]])
+          }.to raise_error(SystemExit).and output("[ConfigurationError] bad configuration\n").to_stderr
+        end
+      end
+
+      context "RegisterMapErrorが発生した場合" do
+        before do
+          allow_any_instance_of(Configuration::Item).to receive(:build) do
+            raise RgGen::RegisterMapError.new("bad register map", position)
+          end
+        end
+
+        let(:position) do
+          RgGen::RegisterMap::GenericMap::Cell::Position.new(sample_register_maps[0], "block_0", 0, 0)
+        end
+
+        it "標準エラー出力にメッセージを出力し、終了する" do
+          expect {
+            generator.run(['-c', sample_yaml, sample_register_maps[0]])
+          }.to raise_error(SystemExit).and output("[RegisterMapError] bad register map -- #{position}\n").to_stderr
         end
       end
     end
