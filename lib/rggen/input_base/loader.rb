@@ -4,10 +4,19 @@ module RgGen
       class << self
         attr_writer :supported_types
 
-        def acceptable?(file_name)
-          ext = File.ext(file_name).to_sym
+        def acceptable?(file)
+          ext = File.ext(file).to_sym
           @supported_types.any? { |type| type.casecmp(ext) == 0 }
         end
+
+        def load(file)
+          new.load(file)
+        end
+      end
+
+      def load(file)
+        return load_file(file) if File.exist?(file)
+        raise RgGen::LoadError, "cannot load such file -- #{file}"
       end
     end
   end

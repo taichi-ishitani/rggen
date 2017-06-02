@@ -104,25 +104,35 @@ module RgGen::InputBase
           end
         end
 
-        it "生成したコンポーネントオブジェクトの#validateを呼び出す" do
-          component = Component.new(nil)
-          allow(factory).to receive(:create_component).and_return(component)
-          expect(component).to receive(:validate).with(no_args)
-          factory.create(file_name)
-        end
+        context "入力ファイルがサポートするタイプの場合" do
+          before do
+            allow(factory).to receive(:create_component).and_return(component)
+          end
 
-        context "入力ファイルに対応するローダが登録されている場合" do
-          it "ローダの#load_fileを呼び出す" do
-            loader  = double("loader")
-            allow(foo_loader).to receive(:new).and_return(loader)
-            expect(loader).to receive(:load_file).with(file_name)
+          before do
+            allow(File).to receive(:exist?).with(file_name).and_return(true)
+          end
+
+          let(:component) do
+            Component.new(nil)
+          end
+
+          it "対応するローダを使って、ファイルを読み出す" do
+            expect_any_instance_of(foo_loader).to receive(:load).with(file_name)
+            factory.create(file_name)
+          end
+
+          it "生成したコンポーネントオブジェクトのバリデーションを行う" do
+            expect(component).to receive(:validate).with(no_args)
             factory.create(file_name)
           end
         end
 
         context "入力ファイルに対応するローダが登録されていない場合" do
           it "LoadErrorを発生させる" do
-            expect {factory.create("test.bar")}.to raise_load_error "unsupported file type: bar"
+            expect {
+              factory.create("test.bar")
+            }.to raise_load_error "unsupported file type -- test.bar"
           end
         end
       end

@@ -11,15 +11,19 @@ shared_context 'configuration common' do
       @load_data  = nil
     end
 
+    def load(file)
+      load_file(file)
+    end
+
     def load_file(file)
       self.class.load_data
     end
   end
 
   def build_configuration_factory
-    f         = RgGen.builder.build_factory(:configuration)
-    f.loaders = [ConfigurationDummyLoader]
-    f
+    RgGen.builder.build_factory(:configuration).tap do |f|
+      f.loaders = [ConfigurationDummyLoader]
+    end
   end
 
   def configuration_file
@@ -53,15 +57,19 @@ shared_context 'register_map common' do
       @load_data  = nil
     end
 
+    def load(file)
+      load_file(file)
+    end
+
     def load_file(file)
       create_map(self.class.load_data, file)
     end
   end
 
   def build_register_map_factory
-    f         = RgGen.builder.build_factory(:register_map)
-    f.loaders = [RegisterMapDummyLoader]
-    f
+    RgGen.builder.build_factory(:register_map).tap do |f|
+      f.loaders = [RegisterMapDummyLoader]
+    end
   end
 
   def build_register_block_factory

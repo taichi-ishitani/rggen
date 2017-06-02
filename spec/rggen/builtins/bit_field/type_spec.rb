@@ -294,7 +294,7 @@ describe 'bit_field/type' do
           ])
           expect {
             @factory.create(configuration, register_map_file)
-          }.to raise_error "no initial value", position("block_0", 4, 7)
+          }.to raise_register_map_error "no initial value", position("block_0", 4, 7)
           end
         end
       end
@@ -369,7 +369,7 @@ describe 'bit_field/type' do
               ])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_error "reference bit field required", position("block_0", 4, 7)
+              }.to raise_register_map_error "reference bit field required", position("block_0", 4, 7)
             end
           end
         end
@@ -399,7 +399,7 @@ describe 'bit_field/type' do
               ])
               expect {
                 @factory.create(configuration, register_map_file)
-              }.to raise_error "1 bit(s) reference bit field required: 2", position("block_0", 4, 7)
+              }.to raise_register_map_error "1 bit(s) reference bit field required: 2", position("block_0", 5, 7)
             end
           end
         end
@@ -428,7 +428,7 @@ describe 'bit_field/type' do
                 ])
                 expect {
                   @factory.create(configuration, register_map_file)
-                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 7)
+                }.to raise_register_map_error "2 bit(s) reference bit field required: #{width}", position("block_0", 5, 7)
               end
             end
           end
@@ -458,7 +458,7 @@ describe 'bit_field/type' do
                 ])
                 expect {
                   @factory.create(configuration, register_map_file)
-                }.to raise_error "2 bit(s) reference bit field required: #{width}", position("block_0", 4, 7)
+                }.to raise_register_map_error "2 bit(s) reference bit field required: #{width}", position("block_0", 5, 7)
               end
             end
           end

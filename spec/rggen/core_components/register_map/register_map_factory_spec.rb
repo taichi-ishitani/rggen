@@ -65,6 +65,10 @@ module RgGen::RegisterMap
     end
 
     describe "#create" do
+      before do
+        allow(File).to receive(:exist?).with(file).and_return(true)
+      end
+
       let(:register_map) do
         register_map_factory.create(configuration, file)
       end

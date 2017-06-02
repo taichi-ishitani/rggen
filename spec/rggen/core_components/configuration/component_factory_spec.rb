@@ -3,12 +3,12 @@ require_relative  '../../../spec_helper'
 module RgGen::Configuration
   describe "component_factory" do
     let(:factory) do
-      f                   = get_component_factory(:configuration, 0).new
-      f.target_component  = get_component_class(:configuration, 0)
-      f.item_factories    = {foo: foo_factory, bar: bar_factory, baz: baz_factory}
-      f.loaders           = [loader]
-      f.root_factory
-      f
+      get_component_factory(:configuration, 0).new.tap do |f|
+        f.target_component  = get_component_class(:configuration, 0)
+        f.item_factories    = {foo: foo_factory, bar: bar_factory, baz: baz_factory}
+        f.loaders           = [loader]
+        f.root_factory
+      end
     end
 
     [:foo, :bar, :baz].each do |item_name|
@@ -22,9 +22,9 @@ module RgGen::Configuration
       end
 
       let("#{item_name}_factory") do
-        f             = get_item_factory(:configuration, 0).new
-        f.target_item = send("#{item_name}_item")
-        f
+        get_item_factory(:configuration, 0).new.tap do |f|
+          f.target_item = send("#{item_name}_item")
+        end
       end
     end
 
@@ -32,6 +32,14 @@ module RgGen::Configuration
       Class.new(RgGen::InputBase::Loader) do
         self.supported_types  = [:txt]
       end
+    end
+
+    let(:file_name) do
+      "test.txt"
+    end
+
+    before do
+      allow(File).to receive(:exist?).with(file_name).and_return(true)
     end
 
     describe "#create" do

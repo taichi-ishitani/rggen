@@ -143,6 +143,8 @@ module RgGen
         load_register_map(context, argv.first)
         write_files(context)
       end
+    rescue RgGen::RuntimeError, OptionParser::ParseError => e
+      abort "[#{e.class.lastname}] #{e.message}"
     end
 
     private
@@ -167,7 +169,12 @@ module RgGen
     end
 
     def load_setup(context)
-      load(context.options[:setup])
+      context.options[:setup].tap do |setup|
+        File.exist?(setup) || (
+          raise RgGen::LoadError, "cannot load such file -- #{setup}"
+        )
+        load(setup)
+      end
     end
 
     def build_factory(component_name)
