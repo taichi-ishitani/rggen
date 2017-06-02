@@ -140,7 +140,7 @@ module RgGen
         parse_options(argv, context)
         load_setup(context)
         load_configuration(context)
-        load_register_map(context, argv.first)
+        load_register_map(context, argv)
         write_files(context)
       end
     rescue RgGen::RuntimeError, OptionParser::ParseError => e
@@ -186,9 +186,10 @@ module RgGen
         build_factory(:configuration).create(context.options[:configuration])
     end
 
-    def load_register_map(context, file)
+    def load_register_map(context, argv)
+      raise RgGen::LoadError, 'no register map is specified' if argv.empty?
       context.register_map  =
-        build_factory(:register_map).create(context.configuration, file)
+        build_factory(:register_map).create(context.configuration, argv.first)
     end
 
     def write_files(context)
