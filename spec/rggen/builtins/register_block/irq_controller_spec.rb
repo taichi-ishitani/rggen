@@ -46,6 +46,15 @@ describe "register_block/irq_controller" do
         [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", :rw , 0, nil            ],
         [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[8]", :w0c, 0, "bit_field_0_1"],
         [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[0]", :w1c, 0, "bit_field_0_0"]
+      ],
+      "block_3" => [
+        [nil, nil         , "block_3"                                                           ],
+        [nil, nil         , 256                                                                 ],
+        [                                                                                       ],
+        [                                                                                       ],
+        [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[1:0]", :rw , 0, nil            ],
+        [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[9:8]", :w0c, 0, "bit_field_0_0"],
+        [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[1:0]", :w1c, 0, "bit_field_0_0"]
       ]
     )
     @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks
@@ -67,7 +76,7 @@ describe "register_block/irq_controller" do
 
   context "割り込みビットフィールドを含む場合" do
     let(:rtl) do
-      @rtl[1..2]
+      @rtl[1..3]
     end
 
     it "有効なアイテムである" do
@@ -81,6 +90,9 @@ describe "register_block/irq_controller" do
       expect(rtl[1]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
       expect(rtl[1]).to have_logic  :register_block, :ier, width: 2
       expect(rtl[1]).to have_logic  :register_block, :isr, width: 2
+      expect(rtl[2]).to have_output :register_block, :irq, width: 1, name: 'o_irq'
+      expect(rtl[2]).to have_logic  :register_block, :ier, width: 4
+      expect(rtl[2]).to have_logic  :register_block, :isr, width: 4
     end
 
     describe "#generate_code" do
@@ -116,9 +128,26 @@ rggen_irq_controller #(
 CODE
       end
 
+      let(:expected_code_2) do
+        <<'CODE'
+assign ier = {register_if[0].value[1:0], register_if[0].value[1:0]};
+assign isr = {register_if[1].value[9:8], register_if[2].value[1:0]};
+rggen_irq_controller #(
+  .TOTAL_INTERRUPTS (4)
+) u_irq_controller (
+  .clk    (clk),
+  .rst_n  (rst_n),
+  .i_ier  (ier),
+  .i_isr  (isr),
+  .o_irq  (o_irq)
+);
+CODE
+      end
+
       it "割り込み制御モジュールをインスタンスするコードを生成する" do
         expect(rtl[0]).to generate_code :register_block, :top_down, expected_code_0
         expect(rtl[1]).to generate_code :register_block, :top_down, expected_code_1
+        expect(rtl[2]).to generate_code :register_block, :top_down, expected_code_2
       end
     end
   end
