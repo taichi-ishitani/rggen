@@ -1,6 +1,6 @@
 simple_item :register_block, :irq_controller do
   rtl do
-    available? { total_interrupts > 0 }
+    available? { register_block.source.bit_fields.any?(&:irq?) }
 
     build do
       output :register_block, :irq, width: 1               , name: 'o_irq'
@@ -14,11 +14,6 @@ simple_item :register_block, :irq_controller do
       code << process_template
     end
 
-    def total_interrupts
-      @total_interrupts ||=
-        register_block.source.bit_fields.count(&:irq?)
-    end
-
     def assign_ier
       assign(ier, concat(ier_fields.map(&:value)))
     end
@@ -28,17 +23,21 @@ simple_item :register_block, :irq_controller do
     end
 
     def isr_fields
-      register_block.bit_fields.select(&:irq?)
+      @isr_fields ||= register_block.bit_fields.select(&:irq?)
     end
 
     def ier_fields
-      isr_fields.each_with_object([]) do |isr_field, fields|
+      @ier_fields ||= isr_fields.each_with_object([]) do |isr_field, fields|
         fields << find_ier_field(isr_field.reference)
       end
     end
 
     def find_ier_field(reference)
       register_block.bit_fields.find_by(name: reference.name)
+    end
+
+    def total_interrupts
+      @total_interrupts ||= isr_fields.sum(0, &:width)
     end
   end
 end
