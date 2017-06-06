@@ -78,7 +78,7 @@ module RgGen
     private
 
     def option_parser
-      OptParse.new do |parser|
+      OptionParser.new do |parser|
         parser.version      = RgGen::VERSION
         parser.program_name = 'rggen'
         parser.banner       = 'Usage: rggen [options] REGISTER_MAP'
