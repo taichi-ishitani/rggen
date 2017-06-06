@@ -49,6 +49,8 @@ module RgGen
   require_relative 'rggen/builder/category'
   require_relative 'rggen/builder/builder'
 
+  require_relative 'rggen/options'
+  require_relative 'rggen/option_switches'
   require_relative 'rggen/generator'
 
   require_relative 'rggen/commands'

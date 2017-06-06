@@ -58,6 +58,32 @@ RSpec::Matchers.define :raise_register_map_error do |expected_message, expected_
   end
 end
 
+RSpec::Matchers.define :exit_with_code do |code|
+  def supports_block_expectations?
+    true
+  end
+
+  actual  = nil
+
+  match do |block|
+    begin
+      block.call
+    rescue SystemExit => e
+      actual  = e.status
+    end
+
+    actual && actual == code
+  end
+
+  failure_message do
+    if actual
+      "expected to exit with code (#{code}) but exited with code #{actual}"
+    else
+      "expected to exit but not exited"
+    end
+  end
+end
+
 RSpec::Matchers.define :match_string do |expected|
   match do |actual|
     values_match?(expected, actual) || values_match?(expected, actual.to_s)
@@ -133,4 +159,3 @@ RSpec::Matchers.define :write_binary_files do |expectations|
     ::RSpec::Matchers::ExpectedsForMultipleDiffs.from(expected).message_with_diff(message, ::RSpec::Expectations.differ, actual)
   end
 end
-
