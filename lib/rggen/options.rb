@@ -54,6 +54,10 @@ module RgGen
     end
 
     class << self
+      def parse(args)
+        new.tap { |options| options.parse(args) }
+      end
+
       def option_switches
         @option_switches ||= {}
       end
