@@ -68,57 +68,6 @@ module RgGen
       ["#{RGGEN_HOME}/sample/sample.xls", "#{RGGEN_HOME}/sample/sample.xlsx", "#{RGGEN_HOME}/sample/sample.csv"]
     end
 
-    describe "RgGenホームディレクトリの表示" do
-      let(:home) do
-        "#{RgGen::RGGEN_HOME}\n"
-      end
-
-      it "RgGenのホームディレクトリを表示し、そのまま終了する" do
-        expect {
-          generator.run(['--show-home'])
-        }.to raise_error(SystemExit).and output(home).to_stdout
-      end
-    end
-
-    describe "バージョンの出力" do
-      let(:version) do
-        "rggen #{RgGen::VERSION}\n"
-      end
-
-      it "バージョンを出力し、そのまま終了する" do
-        expect {
-          generator.run(['-v'])
-        }.to raise_error(SystemExit).and output(version).to_stdout
-        expect {
-          generator.run(['--version'])
-        }.to raise_error(SystemExit).and output(version).to_stdout
-      end
-    end
-
-    describe "ヘルプの表示" do
-      let(:help) do
-        <<HELP
-Usage: rggen [options] REGISTER_MAP
-        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{default_setup})
-    -c, --configuration FILE         Specify a configuration file for generated source code
-    -o, --output DIR                 Specify output directory(default: .)
-        --except [TYPE1,TYPE2,...]   Disable the given output file type(s)
-        --show-home                  Display the path of RgGen tool home directory
-    -v, --version                    Display the version
-    -h, --help                       Display this message
-HELP
-      end
-
-      it "ヘルプを表示し、そのまま終了する" do
-        expect {
-          generator.run(['-h'])
-        }.to raise_error(SystemExit).and output(help).to_stdout
-        expect {
-          generator.run(['--help'])
-        }.to raise_error(SystemExit).and output(help).to_stdout
-      end
-    end
-
     describe "ジェネレータのセットアップ" do
       before do
         allow(File).to receive(:binwrite)
@@ -171,40 +120,6 @@ HELP
           end
         end
       end
-
-      context "環境変数 RGGEN_DEFAULT_SETUP_FILE が設定されている場合" do
-        before do
-          allow(ENV).to receive(:[]).and_call_original
-          allow(ENV).to receive(:[]).with('RGGEN_DEFAULT_SETUP_FILE').and_return(sample_setup)
-        end
-
-        after do
-          clear_dummy_list_items(:type   , [:foo])
-          clear_dummy_list_items(:host_if, [:bar])
-        end
-
-        specify "指定されたファイルをデフォルトのセットアップファイルとする" do
-          expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
-          expect {
-            generator.run([sample_register_maps[1]])
-          }.not_to raise_error
-          clear_enabled_items
-
-          expect_any_instance_of(RgGen::Generator).to receive(:load).with(default_setup).and_call_original
-          expect {
-            generator.run(["--setup", default_setup, sample_register_maps[0]])
-          }.not_to raise_error
-        end
-
-        specify "ヘルプメッセージを変更される" do
-          help  = <<HELP
-        --setup FILE                 Specify a setup file to set up RgGen tool(default: #{sample_setup})
-HELP
-          expect {
-            generator.run(['-h'])
-          }.to raise_error(SystemExit).and output(/#{Regexp.escape(help.chomp)}/).to_stdout
-        end
-      end
     end
 
     describe "コンフィグレーションの読み出し" do
@@ -227,41 +142,6 @@ HELP
             generator.run(["-c", sample_yaml, sample_register_maps[0]])
           }.not_to raise_error
           expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_yaml)
-          clear_enabled_items
-
-          expect {
-            generator.run(["--configuration", sample_json, sample_register_maps[0]])
-          }.not_to raise_error
-          expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_json)
-        end
-      end
-
-      context "環境変数 RGGEN_DEFAULT_CONFIGURATION_FILE が設定されている場合" do
-        before do
-          allow(ENV).to receive(:[]).and_call_original
-          allow(ENV).to receive(:[]).with('RGGEN_DEFAULT_CONFIGURATION_FILE').and_return(sample_json)
-        end
-
-        specify "指定されたファイルをデフォルトのコンフィグレーションファイルとする" do
-          expect {
-            generator.run([sample_register_maps[0]])
-          }.not_to raise_error
-          expect(factory_cache[:configuration][0]).to have_received(:create).with(sample_json)
-
-          expect {
-            generator.run(["-c", sample_yaml, sample_register_maps[0]])
-          }.not_to raise_error
-          expect(factory_cache[:configuration][1]).to have_received(:create).with(sample_yaml)
-          clear_enabled_items
-        end
-
-        specify "ヘルプメッセージが変更される" do
-          help  = <<HELP
--c, --configuration FILE         Specify a configuration file for generated source code(default: #{sample_json})
-HELP
-          expect {
-            generator.run(['-h'])
-          }.to raise_error(SystemExit).and output(/#{Regexp.escape(help.chomp)}/).to_stdout
         end
       end
     end
@@ -285,21 +165,9 @@ HELP
 
       it "オプション解析後の先頭の引数をレジスタマップとして読み出す" do
         expect {
-          generator.run(['-c', sample_yaml, sample_register_maps[0]])
+          generator.run(['-c', sample_yaml, sample_register_maps[0], 'foo'])
         }.not_to raise_error
         expect(factory_cache[:register_map][0]).to have_received(:create).with(configuration_cache[0], sample_register_maps[0])
-        clear_enabled_items
-
-        expect {
-          generator.run(['--setup', sample_setup, sample_register_maps[1]])
-        }.not_to raise_error
-        expect(factory_cache[:register_map][1]).to have_received(:create).with(configuration_cache[1], sample_register_maps[1])
-        clear_enabled_items
-
-        expect {
-          generator.run([sample_register_maps[2]])
-        }.not_to raise_error
-        expect(factory_cache[:register_map][2]).to have_received(:create).with(configuration_cache[2], sample_register_maps[2])
       end
     end
 
@@ -380,25 +248,25 @@ HELP
             ["/foo/bar/c_header/sample_0.h"    , expected_c_header_code[0]],
             ["/foo/bar/c_header/sample_1.h"    , expected_c_header_code[1]]
           ]
-          clear_enabled_items
-
-          expect {
-            generator.run(['-c', sample_yaml, '--output', '../baz', sample_register_maps[0]])
-          }.to write_binary_files [
-            ["../baz/rtl/sample_0.sv"        , expected_rtl_code[0]     ],
-            ["../baz/rtl/sample_1.sv"        , expected_rtl_code[1]     ],
-            ["../baz/ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
-            ["../baz/ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
-            ["../baz/c_header/sample_0.h"    , expected_c_header_code[0]],
-            ["../baz/c_header/sample_1.h"    , expected_c_header_code[1]]
-          ]
         end
       end
 
-      context "--exceptで書き出し除外指定がある場合" do
-        it "除外されていない種類のファイルを書き出す" do
+      context "--load-onlyが指定されている場合" do
+        before do
+          expect(File).not_to receive(:binwrite)
+        end
+
+        it "ファイルの読み出しのみ行う" do
+          generator.run(['--load-only', '-c', sample_yaml, sample_register_maps[0]])
+          expect(factory_cache[:configuration][0]).to have_received(:create)
+          expect(factory_cache[:register_map ][0]).to have_received(:create)
+        end
+      end
+
+      context "--disableで書き出し無効指定がある場合" do
+        it "無効になっていない種類のファイルを書き出す" do
           expect {
-            generator.run(['-c', sample_yaml, '--except', 'rtl', sample_register_maps[0]])
+            generator.run(['-c', sample_yaml, '--disable', 'rtl,foo', sample_register_maps[0]])
           }.to write_binary_files [
             ["./ral/sample_0_ral_pkg.sv", expected_ral_code[0]     ],
             ["./ral/sample_1_ral_pkg.sv", expected_ral_code[1]     ],
@@ -408,7 +276,7 @@ HELP
           clear_enabled_items
 
           expect {
-            generator.run(['-c', sample_yaml, '--except', 'ral', '--except', 'rtl,foo', '--except', 'c_header', sample_register_maps[0]])
+            generator.run(['-c', sample_yaml, '--disable', 'rtl,ral,c_header', sample_register_maps[0]])
           }.not_to write_binary_files
           clear_enabled_items
         end
