@@ -3,10 +3,10 @@ module RgGen
     class DataStructureDefinition
       include CodeUtility
 
-      def initialize(type_keyword, type_name, &body)
+      def initialize(type_keyword, type_name)
         @type_keyword = type_keyword
         @type_name    = type_name
-        body.call(self) if block_given?
+        yield(self) if block_given?
       end
 
       attr_setter :members

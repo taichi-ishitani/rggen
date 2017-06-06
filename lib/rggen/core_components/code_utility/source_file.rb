@@ -10,9 +10,9 @@ module RgGen
         attr_setter :include_keyword
       end
 
-      def initialize(path, &body)
+      def initialize(path)
         @path = path
-        body.call(self) if block_given?
+        yield(self) if block_given?
       end
 
       attr_reader :path

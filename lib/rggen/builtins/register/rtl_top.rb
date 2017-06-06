@@ -27,7 +27,7 @@ simple_item :register, :rtl_top do
 
     def loop_variables
       return nil unless array?
-      dimensions.size.times.map(&method(:loop_variable))
+      Array.new(dimensions.size, &method(:loop_variable))
     end
 
     def loop_variable(level)

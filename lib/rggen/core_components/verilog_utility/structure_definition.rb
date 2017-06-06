@@ -3,9 +3,9 @@ module RgGen
     class StructureDefinition
       include CodeUtility
 
-      def initialize(name, &body)
+      def initialize(name)
         @name = name
-        body.call(self) if block_given?
+        yield(self) if block_given?
       end
 
       def body(&block)
@@ -43,7 +43,7 @@ module RgGen
       end
 
       def body_code?
-        @bodies && @bodies.size > 0
+        !(@bodies.nil? || @bodies.empty?)
       end
     end
   end
