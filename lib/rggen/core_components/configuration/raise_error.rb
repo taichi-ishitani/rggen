@@ -4,7 +4,7 @@ module RgGen
       private
 
       def error(message = nil)
-        fail RgGen::ConfigurationError, message
+        raise RgGen::ConfigurationError, message
       end
     end
   end

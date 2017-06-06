@@ -34,9 +34,7 @@ module RgGen
 
       def body_code(code)
         indent(code, 2) do
-          @members.each do |member, i|
-            code << member << semicolon << nl
-          end
+          @members.each { |member| code << member << semicolon << nl }
         end
       end
 

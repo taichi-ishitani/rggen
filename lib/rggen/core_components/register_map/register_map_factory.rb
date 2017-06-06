@@ -9,12 +9,9 @@ module RgGen
 
       def load(file)
         map = load_file(file)
-        if map.is_a?(GenericMap)
-          map
-        else
-          message = "GenericMap type required for register map: #{map.class}"
-          fail RgGen::LoadError, message
-        end
+        return map if map.is_a?(GenericMap)
+        message = "GenericMap type required for register map: #{map.class}"
+        raise RgGen::LoadError, message
       end
     end
   end

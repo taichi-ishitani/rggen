@@ -10,7 +10,7 @@ module RgGen
           when GenericMap::Cell then cell_or_position.position
           else @position
           end
-        fail RgGen::RegisterMapError.new(message, error_position)
+        raise RgGen::RegisterMapError.new(message, error_position)
       end
     end
   end
