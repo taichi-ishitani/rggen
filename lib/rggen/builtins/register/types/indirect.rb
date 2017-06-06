@@ -55,9 +55,7 @@ list_item :register, :type, :indirect do
         :check_using_non_existing_index,
         :check_using_own_bit_field_for_index,
         :check_using_arrayed_bit_field_for_index
-      ].each do |checker|
-        send(checker, entry)
-      end
+      ].each { |checker| send(checker, entry) }
     end
 
     def check_using_same_index_more_than_once(entry)
@@ -82,7 +80,7 @@ list_item :register, :type, :indirect do
 
     def check_number_of_array_indexes
       return if array_indexes.size == size_of_dimensions
-      error "not match size of array dimensions and number of array indexes"
+      error 'not match size of array dimensions and number of array indexes'
     end
 
     def check_array_index_values
@@ -94,7 +92,7 @@ list_item :register, :type, :indirect do
     end
 
     def check_fixed_value_index_values
-      fixed_value_indexes.each_with_index do |entry, i|
+      fixed_value_indexes.each do |entry|
         next if entry.value <= max_value(entry.name)
         error "index value(#{entry.value}) is greater thatn " \
               "maximum value of #{entry.name}(#{max_value(entry.name)})"
@@ -114,7 +112,7 @@ list_item :register, :type, :indirect do
     end
 
     def fixed_value_indexes
-      indexes.select { |entry| entry.value }
+      indexes.select(&:value)
     end
 
     def size_of_dimensions

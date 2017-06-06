@@ -158,7 +158,7 @@ list_item :bit_field, :type do
 
       def convert(cell)
         @target_items.keys.find(proc { cell }) do |type|
-          type.to_sym.casecmp(cell.to_sym) == 0
+          type.to_sym.casecmp(cell.to_sym).zero?
         end
       end
     end
