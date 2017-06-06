@@ -9,6 +9,6 @@ loader :register_map, [:csv, :tsv] do
   end
 
   def separator(file)
-    (File.ext(file) == 'csv') ? ',' : "\t"
+    { 'csv' => ',', 'tsv' => "\t" }[File.ext(file).downcase]
   end
 end

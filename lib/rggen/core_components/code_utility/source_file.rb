@@ -10,9 +10,9 @@ module RgGen
         attr_setter :include_keyword
       end
 
-      def initialize(path, &body)
+      def initialize(path)
         @path = path
-        body.call(self) if block_given?
+        yield(self) if block_given?
       end
 
       attr_reader :path
@@ -62,7 +62,7 @@ module RgGen
       end
 
       def default_guard_macro(prefix, suffix)
-       "#{prefix}#{path.basename.to_s.upcase.gsub(/\W/, '_')}#{suffix}"
+        "#{prefix}#{path.basename.to_s.upcase.gsub(/\W/, '_')}#{suffix}"
       end
 
       def include_guard_header
@@ -73,7 +73,7 @@ module RgGen
       end
 
       def include_guard_footer
-        @guard_macro && lambda { |c| c << self.class.endif_keyword << nl }
+        @guard_macro && ->(c) { c << self.class.endif_keyword << nl }
       end
 
       def include_files_block

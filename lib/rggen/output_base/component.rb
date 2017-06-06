@@ -49,7 +49,7 @@ module RgGen
 
       def generate_child_code(kind, mode, code)
         children.inject(code) do |c, child|
-          child.generate_code(kind, mode, code)
+          child.generate_code(kind, mode, c)
         end
       end
 
@@ -58,14 +58,16 @@ module RgGen
       end
 
       def main_code_generator(mode)
-        return [
-          method(:generate_item_code ).curry[:generate_code],
-          method(:generate_child_code)
-        ] if mode == :top_down
-        return [
-          method(:generate_child_code),
-          method(:generate_item_code ).curry[:generate_code]
-        ] if mode == :bottom_up
+        {
+          top_down: [
+            method(:generate_item_code ).curry[:generate_code],
+            method(:generate_child_code)
+          ],
+          bottom_up: [
+            method(:generate_child_code),
+            method(:generate_item_code ).curry[:generate_code]
+          ]
+        }[mode]
       end
 
       def post_code_generator

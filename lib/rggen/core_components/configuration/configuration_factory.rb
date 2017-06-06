@@ -15,7 +15,7 @@ module RgGen
           data.symbolize_keys!
         else
           message = "Hash type required for configuration: #{data.class}"
-          fail RgGen::LoadError, message
+          raise RgGen::LoadError, message
         end
       end
     end

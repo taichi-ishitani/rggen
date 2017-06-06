@@ -142,7 +142,7 @@ list_item :register, :type do
     factory do
       define_struct :cell_value, [:type, :options] do
         def empty?
-          self.type.nil?
+          type.nil?
         end
       end
 
@@ -229,7 +229,7 @@ list_item :register, :type do
 
       def valid_bits_value
         actual_bit_fields.inject(0) do |bits, bit_field|
-          bits |= (((1 << bit_field.width) - 1) << bit_field.lsb)
+          bits | (((1 << bit_field.width) - 1) << bit_field.lsb)
         end
       end
     end

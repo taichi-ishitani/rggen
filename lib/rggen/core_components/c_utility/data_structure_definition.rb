@@ -3,10 +3,10 @@ module RgGen
     class DataStructureDefinition
       include CodeUtility
 
-      def initialize(type_keyword, type_name, &body)
+      def initialize(type_keyword, type_name)
         @type_keyword = type_keyword
         @type_name    = type_name
-        body.call(self) if block_given?
+        yield(self) if block_given?
       end
 
       attr_setter :members
@@ -34,9 +34,7 @@ module RgGen
 
       def body_code(code)
         indent(code, 2) do
-          @members.each do |member, i|
-            code << member << semicolon << nl
-          end
+          @members.each { |member| code << member << semicolon << nl }
         end
       end
 

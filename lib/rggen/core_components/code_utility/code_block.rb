@@ -47,7 +47,7 @@ module RgGen
       def merge_code_block(other_block)
         other_block.lines.each_with_index do |line, i|
           line.indent += @indent
-          if i == 0
+          if i.zero?
             @lines.last.indent  = line.indent if last_line_empty?
             @lines.last.words.concat(line.words)
           else

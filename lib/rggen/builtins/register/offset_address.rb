@@ -36,7 +36,7 @@ simple_item :register, :offset_address do
 
     def check_start_end_adderss_relation(cell)
       return if start_address < end_address
-      return if [configuration.byte_width, byte_size].all? { |v| v == 1}
+      return if [configuration.byte_width, byte_size].all? { |v| v == 1 }
       error "start address is equal to or greater than end address: #{cell}"
     end
 

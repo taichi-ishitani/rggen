@@ -32,7 +32,7 @@ module RgGen
           enable_list_item(args[0], args[1])
         else
           message = "wrong number of arguments (#{args.size} for 1..2)"
-          fail ArgumentError, message
+          raise ArgumentError, message
         end
       end
 
@@ -65,7 +65,7 @@ module RgGen
       def define_list_item_class(list_name, item_name, context, body)
         unless @list_item_entries.key?(list_name)
           message = "undefined list item entry: #{list_name}"
-          fail RgGen::BuilderError, message
+          raise RgGen::BuilderError, message
         end
         entry = @list_item_entries[list_name]
         entry.define_list_item(item_name, context, &body)
@@ -76,7 +76,7 @@ module RgGen
           next if @enabled_entries.include?(entry_name)
           next unless @simple_item_entries.key?(entry_name) ||
                       @list_item_entries.key?(entry_name)
-          @enabled_entries  << entry_name
+          @enabled_entries << entry_name
         end
       end
 

@@ -13,10 +13,10 @@ module RgGen
           define_method(:available?, &body)
         end
 
-        def inherit_class_instance_variable(variable_name, klass, &block)
+        def inherit_class_instance_variable(variable_name, klass)
           return unless klass.instance_variable_defined?(variable_name)
           v = klass.instance_variable_get(variable_name)
-          v = block.call(v) if block_given?
+          v = yield(v) if block_given?
           instance_variable_set(variable_name, v)
         end
       end

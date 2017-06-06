@@ -30,7 +30,7 @@ list_item :register_block, :host_if do
 
       def find_host_if(value, &ifnone)
         shared_context.enabled_host_ifs.find(ifnone) do |host_if|
-          host_if.to_sym.casecmp(value.to_sym) == 0
+          host_if.to_sym.casecmp(value.to_sym).zero?
         end
       end
     end
