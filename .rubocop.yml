@@ -3,3 +3,6 @@ AllCops:
     - 'sample/*'
     - 'setup/*'
     - 'spec/**/*'
+
+Style/EndOfLine:
+  EnforcedStyle: lf

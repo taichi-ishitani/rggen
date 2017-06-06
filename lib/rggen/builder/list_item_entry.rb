@@ -36,7 +36,7 @@ module RgGen
         klass = Class.new(item_base)
         unless context.nil?
           if item_base.private_method_defined?(:shared_context)
-            fail BuilderError, 'base class already has #shared_context'
+            raise BuilderError, 'base class already has #shared_context'
           end
           set_context(klass, context)
         end
@@ -48,7 +48,7 @@ module RgGen
         Array(item_or_items).each do |item|
           next unless @items.key?(item)
           next if @enabled_items.include?(item)
-          @enabled_items  << item
+          @enabled_items << item
         end
       end
 

@@ -8,12 +8,11 @@ module RgGen
 
       private
 
-      def create_item(owner, *args, &block)
+      def create_item(owner, *args)
         item  = create_item_object(owner, *args)
-        if item.available?
-          block.call(item) if block_given?
-          owner.add_item(item)
-        end
+        return unless item.available?
+        yield item if block_given?
+        owner.add_item(item)
       end
 
       def create_item_object(owner, *args)

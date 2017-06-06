@@ -10,10 +10,10 @@ module RgGen
 
       def initialize
         @stores = Hash.new do |_, component_name|
-          fail RgGen::BuilderError, "unknown component: #{component_name}"
+          raise RgGen::BuilderError, "unknown component: #{component_name}"
         end
         @categories = Hash.new do |_, category_name|
-          fail RgGen::BuilderError, "unknown category: #{category_name}"
+          raise RgGen::BuilderError, "unknown category: #{category_name}"
         end
         INITIAL_CATEGORIES.each do |category_name|
           @categories[category_name]  = Category.new
