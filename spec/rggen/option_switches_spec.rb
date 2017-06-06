@@ -109,6 +109,25 @@ module RgGen
       end
     end
 
+    describe 'load_only' do
+      context "--load-only が指定された場合" do
+        it "真を返す" do
+          aggregate_failures do
+            expect {
+              options.parse(['--load-only'])
+            }.not_to raise_error
+            expect(options[:load_only]).to be
+          end
+        end
+      end
+
+      describe "デフォルト値" do
+        it "偽を返す" do
+          expect(options[:load_only]).not_to be
+        end
+      end
+    end
+
     describe 'disable' do
       it "指定した無効タイプリストを返す" do
         aggregate_failures do
@@ -141,6 +160,7 @@ Usage: rggen [options] REGISTER_MAP
         --setup FILE                 Specify a setup file to set up RgGen tool(default: #{RgGen::RGGEN_HOME}/setup/default.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code
     -o, --output DIR                 Specify output directory(default: .)
+        --load-only                  Load input files only if specified
         --disable TYPE1[,TYPE2,...]  Disable the given output file type(s)(default: [])
         --show-home                  Display the path of RgGen tool home directory
     -v, --version                    Display the version
@@ -170,6 +190,7 @@ Usage: rggen [options] REGISTER_MAP
         --setup FILE                 Specify a setup file to set up RgGen tool(default: foo/bar.rb)
     -c, --configuration FILE         Specify a configuration file for generated source code(default: baz/qux.yaml)
     -o, --output DIR                 Specify output directory(default: .)
+        --load-only                  Load input files only if specified
         --disable TYPE1[,TYPE2,...]  Disable the given output file type(s)(default: [])
         --show-home                  Display the path of RgGen tool home directory
     -v, --version                    Display the version

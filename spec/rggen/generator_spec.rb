@@ -251,6 +251,18 @@ module RgGen
         end
       end
 
+      context "--load-onlyが指定されている場合" do
+        before do
+          expect(File).not_to receive(:binwrite)
+        end
+
+        it "ファイルの読み出しのみ行う" do
+          generator.run(['--load-only', '-c', sample_yaml, sample_register_maps[0]])
+          expect(factory_cache[:configuration][0]).to have_received(:create)
+          expect(factory_cache[:register_map ][0]).to have_received(:create)
+        end
+      end
+
       context "--disableで書き出し無効指定がある場合" do
         it "無効になっていない種類のファイルを書き出す" do
           expect {

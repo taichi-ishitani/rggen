@@ -23,6 +23,13 @@ module RgGen
     default     '.'
   end
 
+  Options.add_option_switch :load_only do
+    long          '--load-only'
+    option_class  TrueClass
+    description   'Load input files only if specified'
+    default       false
+  end
+
   Options.add_option_switch :disable do
     long          '--disable TYPE1[,TYPE2,...]'
     option_class  Array

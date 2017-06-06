@@ -47,7 +47,7 @@ module RgGen
     def write_files(context)
       file_generators(context).each do |generator|
         generator.write_file(context.options[:output])
-      end
+      end unless context.options[:load_only]
     end
 
     def file_generators(context)
