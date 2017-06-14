@@ -7,13 +7,8 @@ email:
 cache:
   bundler
 
-env:
-  global:
-   - secure: "P77SdCW/jWAn4E9cvXIlHGD3O+QrodgF0Qb2VYvHNb9HYqIT63kxuu2yryMgnYecFmEW8ZJV0TeVVQ9HHovhU6tsHtjPrsOo7rSQg7JfXymifskA13Nb0Jhb/gnU4ZMRv8PkKjE5cKKi5Mh027/O/jIGJ2oQlkmvv+x5dwlKmZLD11FxUlc5gTuQmPXc7GIafkvNoSxK9RTvKmDjTt0VwQ8JRhiH3QMnSyZ8jnlqr4aHg3yid7r47CboWzn2c5uqEo4vuMy6pHiJrhx59Mp9IEHnczN1LImCpJCmz5jArZRzVU2B2LHE6Mb14qjtUTeWgutprM4JMicC7XBD60fwo6mAJtshaXJJla4qtn3pzYgzbAEMlzHy77u1EFnweSI8co0t9p9jZxFX+BLKhc5RaXNrnZGMc4UIlem9oja18GMAEzuuxA2yDmC5sV4h1W0qWcDvl9AaQ2q5nNnQ7clUskYrT8mPPN/Y+bGAEKn8ExEWbJEv0eXDqAv5LwJK3RX3M1vM+UvGlOVipkqGTPmloLJf9I5UG46wS5ZJPneZN4A5yvY8eBIg3atkVRWmQAH4ZrFVcz+5pfL4w2W+R3haJxmEqYyBkA2dT1I+P1cO/6qNpJJSO4wWf8pW7AE3iw29K9Nj9A1QsjSYSV5KijqpOXWTCqiJW6S77BQ1ty2MmWE="
-
 before_install:
   - gem update bundler
-  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 after_success:
   - bundle exec codeclimate-test-reporter
@@ -37,11 +32,3 @@ script:
 addons:
   code_climate:
     repo_token: ab20c4024c80ee5ca492cf40f0039212d6aad4c8680c861042970d76a42005df
-  coverity_scan:
-    project:
-      name: "taichi-ishitani/rggen"
-      description: "Build submitted via Travis CI"
-    notification_email: taichi730@gmail.com
-    build_command_prepend: ""
-    build_command:   "--no-command --fs-capture-search ./lib"
-    branch_pattern: coverity_scan
