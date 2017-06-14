@@ -1,6 +1,11 @@
-language: ruby
+sudo:
+  false
 
-cache: bundler
+email:
+  false
+
+cache:
+  bundler
 
 env:
   global:
@@ -13,6 +18,9 @@ before_install:
 after_success:
   - bundle exec codeclimate-test-reporter
 
+language:
+  ruby
+
 rvm:
   - 2.0
   - 2.1
@@ -24,7 +32,7 @@ rvm:
   - 2.4.1
 
 script:
-  - bundle exec rspec
+  - bundle exec rake spec
 
 addons:
   code_climate:
