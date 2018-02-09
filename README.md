@@ -52,7 +52,6 @@ If you have any questions, problems, ideas or somethings, you can post them on t
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/taichi-ishitani/rggen. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-## License
+## Copyright
 
-Copyright &copy; 2015-2017 Taichi Ishitani.
-RgGen is available as open source under the terms of [the MIT License](LICENSE.txt).
+Copyright &copy; 2015-2018 Taichi Ishitani. See [LICENSE.txt](LICENSE.txt) for further details.
