@@ -6,7 +6,7 @@ require 'rggen/version'
 Gem::Specification.new do |spec|
   spec.name                   = 'rggen'
   spec.version                = RgGen::VERSION
-  spec.required_ruby_version  = '>= 2.0'
+  spec.required_ruby_version  = '>= 2.2'
   spec.authors                = ['Taichi Ishitani']
   spec.email                  = ['taichi730@gmail.com']
   spec.homepage               = 'https://github.com/taichi-ishitani/rggen'
