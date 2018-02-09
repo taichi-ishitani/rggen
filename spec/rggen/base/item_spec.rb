@@ -29,7 +29,7 @@ module RgGen::Base
       end
 
       it "特異クラスのコンテキストでブロックを実行し、ヘルパーメソッドの定義を行う" do
-        expect(item_class.singleton_methods(false)).to match [:foo, :bar]
+        expect(item_class.singleton_methods(false)).to contain_exactly :foo, :bar
       end
     end
 
