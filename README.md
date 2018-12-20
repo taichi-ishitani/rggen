@@ -13,7 +13,7 @@ Also RgGen is customizable so you can build your specific generate tool.
 
 ## Ruby
 
-RgGen is written in the [*Ruby*](https://www.ruby-lang.org/en/about/) programing language and supports version 2.0 or later.
+RgGen is written in the [*Ruby*](https://www.ruby-lang.org/en/about/) programing language and supports version 2.3 or later.
 If you don't have above version of Ruby, you need to install the Ruby at first.
 To install the Ruby, see [this page](https://www.ruby-lang.org/en/downloads/).
 
