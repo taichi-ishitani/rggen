@@ -2,7 +2,7 @@ module RgGen
   module OutputBase
     class FileWriter
       def initialize(pattern, body)
-        @pattern  = BabyErubis::Text.new.from_str(pattern)
+        @pattern  = Erubi::Engine.new(pattern)
         @body     = body
       end
 
@@ -17,7 +17,7 @@ module RgGen
 
       def generate_path(context, output_directory)
         [
-          *Array(output_directory), @pattern.render(context)
+          *Array(output_directory), context.instance_eval(@pattern.src)
         ].map(&:to_s).reject(&:empty?).to_path
       end
 

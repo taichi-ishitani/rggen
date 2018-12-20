@@ -8,10 +8,10 @@ module RgGen::OutputBase
           :erb
         end
         def parse_template(path)
-          BabyErubis::Text.new.from_str(File.read(path), path)
+          Erubi::Engine.new(File.read(path), filename: path)
         end
         def render(context, template)
-          template.render(context)
+          context.instance_eval(template.src, template.filename, 1)
         end
       end
     end
