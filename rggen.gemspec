@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.executables    = ['rggen']
   spec.require_paths  = ['lib']
 
-  spec.add_runtime_dependency 'baby_erubis', '>= 2.0'
+  spec.add_runtime_dependency 'erubi'      , '>= 1.7'
   spec.add_runtime_dependency 'facets'     , '>= 3.0'
   spec.add_runtime_dependency 'roo'        , '>= 2.1.1'
   spec.add_runtime_dependency 'spreadsheet', '>= 1.0.3'

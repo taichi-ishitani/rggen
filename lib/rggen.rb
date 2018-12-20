@@ -3,7 +3,7 @@ module RgGen
   require 'singleton'
   require 'pathname'
   require 'optparse'
-  require 'baby_erubis'
+  require 'erubi'
 
   require_relative 'rggen/version'
   require_relative 'rggen/rggen_home'
