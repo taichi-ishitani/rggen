@@ -24,7 +24,7 @@ module SingleForwardable
     end
   end
 
-  if ['2.3.1'].include?(RUBY_VERSION)
+  if ['2.3.1', '2.3.2', '2.3.3'].include?(RUBY_VERSION)
     # https://bugs.ruby-lang.org/issues/12478
     def def_single_delegator(accessor, method, ali = method)
       accessor = accessor.to_s
