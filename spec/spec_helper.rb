@@ -1,6 +1,11 @@
-if ENV['TRAVIS']
+if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start
+
+  if ENV['CODECOV_TOKEN']
+    require 'codecov'
+    SimpleCov.formatter = SimpleCov::Formatter::Codecov
+  end
 end
 
 Encoding.default_external = Encoding::UTF_8
