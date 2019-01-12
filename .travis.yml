@@ -7,11 +7,12 @@ email:
 cache:
   bundler
 
+env:
+  global:
+    - CODECOV_TOKEN="c711db27-63bc-4710-a10f-452de9e6014b"
+
 before_install:
   - gem update bundler
-
-after_success:
-  - bundle exec codeclimate-test-reporter
 
 language:
   ruby
@@ -30,8 +31,4 @@ rvm:
   - 2.5.0
 
 script:
-  - bundle exec rake spec
-
-addons:
-  code_climate:
-    repo_token: ab20c4024c80ee5ca492cf40f0039212d6aad4c8680c861042970d76a42005df
+  - bundle exec rake coverage
