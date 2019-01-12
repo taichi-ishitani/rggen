@@ -1,6 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/rggen.svg)](https://badge.fury.io/rb/rggen)
 [![Build Status](https://travis-ci.org/taichi-ishitani/rggen.svg?branch=master)](https://travis-ci.org/taichi-ishitani/rggen)
-[![Code Climate](https://codeclimate.com/github/taichi-ishitani/rggen/badges/gpa.svg)](https://codeclimate.com/github/taichi-ishitani/rggen)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8f184e6e714a0fbdb6b0/maintainability)](https://codeclimate.com/github/taichi-ishitani/rggen/maintainability)
 [![codecov](https://codecov.io/gh/taichi-ishitani/rggen/branch/master/graph/badge.svg)](https://codecov.io/gh/taichi-ishitani/rggen)
 [![Join the chat at https://gitter.im/taichi-ishitani/rggen](https://badges.gitter.im/taichi-ishitani/rggen.svg)](https://gitter.im/taichi-ishitani/rggen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
