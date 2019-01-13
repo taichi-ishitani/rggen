@@ -7,8 +7,13 @@ describe 'register_block/axi4lite' do
 
   before(:all) do
     enable :global, [:address_width, :data_width]
-    enable :register_block, [:name, :byte_size, :clock_reset, :host_if]
+    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:host_if, :clock_reset]
     enable :register_block, :host_if, :axi4lite
+    enable :register, [:name, :offset_address, :array, :type]
+    enable :register, :type, [:indirect, :external]
+    enable :bit_field, [:name, :bit_assignment, :type, :initial_value, :reference]
+    enable :bit_field, :type, :rw
   end
 
   after(:all) do
@@ -51,8 +56,17 @@ describe 'register_block/axi4lite' do
       register_map  = create_register_map(
         configuration,
         "block_0" => [
-          [nil, nil, "block_0"],
-          [nil, nil, 256      ]
+          [nil, nil         , "block_0"                                                                                                 ],
+          [nil, nil         , 252                                                                                                       ],
+          [                                                                                                                             ],
+          [                                                                                                                             ],
+          [nil, "register_0", "0x00"     , nil    , nil                                     , "bit_field_0_0", "[0]"    , "rw", 0  , nil],
+          [nil, nil         , nil        , nil    , nil                                     , "bit_field_0_1", "[31:16]", "rw", 0  , nil],
+          [nil, "register_1", "0x04"     , nil    , nil                                     , "bit_field_1_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_2", "0x08-0x0F", "[2]"  , nil                                     , "bit_field_2_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_3", "0x10"     , "[2,4]", "indirect: bit_field_0_0, bit_field_0_1", "bit_field_3_0", "[31:0]" , "rw", 0  , nil],
+          [nil, "register_4", "0x14"     , nil    , :external                               , nil            , nil      , nil , nil, nil],
+          [nil, "register_5", "0x18"     , nil    , :external                               , nil            , nil      , nil , nil, nil]
         ]
       )
       @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks[0]
@@ -60,14 +74,6 @@ describe 'register_block/axi4lite' do
 
     let(:rtl) do
       @rtl
-    end
-
-    let(:data_width) do
-      32
-    end
-
-    let(:host_address_width) do
-      16
     end
 
     it "読み書きの優先度を決めるパラメータを持つ" do
@@ -84,6 +90,7 @@ describe 'register_block/axi4lite' do
 rggen_host_if_axi4lite #(
   .LOCAL_ADDRESS_WIDTH  (8),
   .DATA_WIDTH           (32),
+  .TOTAL_REGISTERS      (14),
   .ACCESS_PRIORITY      (ACCESS_PRIORITY)
 ) u_host_if (
   .clk          (clk),
