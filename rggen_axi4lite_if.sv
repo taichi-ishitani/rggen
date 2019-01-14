@@ -7,7 +7,7 @@ interface rggen_axi4lite_if #(
   logic [ADDRESS_WIDTH-1:0] awaddr;
   logic [2:0]               awprot;
   logic                     wvalid;
-  logic                     wraedy;
+  logic                     wready;
   logic [DATA_WIDTH-1:0]    wdata;
   logic [DATA_WIDTH/8-1:0]  wstrb;
   logic                     bvalid;
@@ -28,7 +28,7 @@ interface rggen_axi4lite_if #(
     output  awaddr,
     output  awprot,
     output  wvalid,
-    input   wraedy,
+    input   wready,
     output  wdata,
     output  wstrb,
     input   bvalid,
@@ -50,7 +50,7 @@ interface rggen_axi4lite_if #(
       input   awaddr,
       input   awprot,
       input   wvalid,
-      output  wraedy,
+      output  wready,
       input   wdata,
       input   wstrb,
       output  bvalid,
