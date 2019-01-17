@@ -7,6 +7,7 @@ list_item :bit_field, :type, :ro do
     build do
       input :register_block, :value_in,
             name:       "i_#{bit_field.name}",
+            data_type:  :logic,
             width:      width,
             dimensions: dimensions
     end

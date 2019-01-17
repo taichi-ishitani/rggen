@@ -127,25 +127,25 @@ describe 'bit_fields/type/w0s_w1s' do
     end
 
     it "出力ポートvalue_outを持つ" do
-      expect(rtl[0]).to have_output :register_block, :value_out, name: "o_bit_field_0_0", width: 16
-      expect(rtl[1]).to have_output :register_block, :value_out, name: "o_bit_field_0_1", width: 1
-      expect(rtl[2]).to have_output :register_block, :value_out, name: "o_bit_field_1_0", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_output :register_block, :value_out, name: "o_bit_field_2_0", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_output :register_block, :value_out, name: "o_bit_field_3_0", width: 16
-      expect(rtl[5]).to have_output :register_block, :value_out, name: "o_bit_field_3_1", width: 1
-      expect(rtl[6]).to have_output :register_block, :value_out, name: "o_bit_field_4_0", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_output :register_block, :value_out, name: "o_bit_field_5_0", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_output :register_block, :value_out, name: "o_bit_field_0_0", data_type: :logic, width: 16
+      expect(rtl[1]).to have_output :register_block, :value_out, name: "o_bit_field_0_1", data_type: :logic, width: 1
+      expect(rtl[2]).to have_output :register_block, :value_out, name: "o_bit_field_1_0", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[3]).to have_output :register_block, :value_out, name: "o_bit_field_2_0", data_type: :logic, width: 1 , dimensions: [2, 2]
+      expect(rtl[4]).to have_output :register_block, :value_out, name: "o_bit_field_3_0", data_type: :logic, width: 16
+      expect(rtl[5]).to have_output :register_block, :value_out, name: "o_bit_field_3_1", data_type: :logic, width: 1
+      expect(rtl[6]).to have_output :register_block, :value_out, name: "o_bit_field_4_0", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[7]).to have_output :register_block, :value_out, name: "o_bit_field_5_0", data_type: :logic, width: 1 , dimensions: [2, 2]
     end
 
     it "入力ポートclearを持つ" do
-      expect(rtl[0]).to have_input :register_block, :clear, name: "i_bit_field_0_0_clear", width: 16
-      expect(rtl[1]).to have_input :register_block, :clear, name: "i_bit_field_0_1_clear", width: 1
-      expect(rtl[2]).to have_input :register_block, :clear, name: "i_bit_field_1_0_clear", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_input :register_block, :clear, name: "i_bit_field_2_0_clear", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_input :register_block, :clear, name: "i_bit_field_3_0_clear", width: 16
-      expect(rtl[5]).to have_input :register_block, :clear, name: "i_bit_field_3_1_clear", width: 1
-      expect(rtl[6]).to have_input :register_block, :clear, name: "i_bit_field_4_0_clear", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_input :register_block, :clear, name: "i_bit_field_5_0_clear", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_input :register_block, :clear, name: "i_bit_field_0_0_clear", data_type: :logic, width: 16
+      expect(rtl[1]).to have_input :register_block, :clear, name: "i_bit_field_0_1_clear", data_type: :logic, width: 1
+      expect(rtl[2]).to have_input :register_block, :clear, name: "i_bit_field_1_0_clear", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[3]).to have_input :register_block, :clear, name: "i_bit_field_2_0_clear", data_type: :logic, width: 1 , dimensions: [2, 2]
+      expect(rtl[4]).to have_input :register_block, :clear, name: "i_bit_field_3_0_clear", data_type: :logic, width: 16
+      expect(rtl[5]).to have_input :register_block, :clear, name: "i_bit_field_3_1_clear", data_type: :logic, width: 1
+      expect(rtl[6]).to have_input :register_block, :clear, name: "i_bit_field_4_0_clear", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[7]).to have_input :register_block, :clear, name: "i_bit_field_5_0_clear", data_type: :logic, width: 1 , dimensions: [2, 2]
     end
 
     describe "#generate_code" do

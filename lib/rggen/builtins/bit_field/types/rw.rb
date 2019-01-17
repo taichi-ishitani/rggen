@@ -7,8 +7,9 @@ list_item :bit_field, :type, :rw do
   rtl do
     build do
       output :register_block, :value_out,
-             name: "o_#{bit_field.name}",
-             width: width,
+             name:      "o_#{bit_field.name}",
+             data_type: :logic,
+             width:      width,
              dimensions: dimensions
     end
 

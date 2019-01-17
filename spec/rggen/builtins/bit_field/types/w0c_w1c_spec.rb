@@ -162,14 +162,14 @@ describe 'bit_fields/type/w0c_w1c' do
     end
 
     it "入力ポートsetを持つ" do
-      expect(rtl[0]).to have_input :register_block, :set, name: "i_bit_field_0_0_set", width: 16
-      expect(rtl[1]).to have_input :register_block, :set, name: "i_bit_field_0_1_set", width: 1
-      expect(rtl[2]).to have_input :register_block, :set, name: "i_bit_field_1_0_set", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_input :register_block, :set, name: "i_bit_field_2_0_set", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_input :register_block, :set, name: "i_bit_field_3_0_set", width: 16
-      expect(rtl[5]).to have_input :register_block, :set, name: "i_bit_field_3_1_set", width: 1
-      expect(rtl[6]).to have_input :register_block, :set, name: "i_bit_field_4_0_set", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_input :register_block, :set, name: "i_bit_field_5_0_set", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_input :register_block, :set, name: "i_bit_field_0_0_set", data_type: :logic, width: 16
+      expect(rtl[1]).to have_input :register_block, :set, name: "i_bit_field_0_1_set", data_type: :logic, width: 1
+      expect(rtl[2]).to have_input :register_block, :set, name: "i_bit_field_1_0_set", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[3]).to have_input :register_block, :set, name: "i_bit_field_2_0_set", data_type: :logic, width: 1 , dimensions: [2, 2]
+      expect(rtl[4]).to have_input :register_block, :set, name: "i_bit_field_3_0_set", data_type: :logic, width: 16
+      expect(rtl[5]).to have_input :register_block, :set, name: "i_bit_field_3_1_set", data_type: :logic, width: 1
+      expect(rtl[6]).to have_input :register_block, :set, name: "i_bit_field_4_0_set", data_type: :logic, width: 1 , dimensions: [2]
+      expect(rtl[7]).to have_input :register_block, :set, name: "i_bit_field_5_0_set", data_type: :logic, width: 1 , dimensions: [2, 2]
     end
 
     describe "#generate_code" do

@@ -54,19 +54,19 @@ describe "register_block/rtl_top" do
     let(:expected_code) do
       <<'CODE'
 module block_0 (
-  input clk,
-  input rst_n,
+  input logic clk,
+  input logic rst_n,
   rggen_apb_if.slave apb_if,
-  output o_bit_field_0_0,
-  input i_bit_field_0_1,
-  input [15:0] i_bit_field_1_0,
-  output [15:0] o_bit_field_1_1,
-  input [15:0] i_bit_field_2_0[2],
-  output [15:0] o_bit_field_2_1[2],
-  input [15:0] i_bit_field_3_0[2][4],
-  output [15:0] o_bit_field_3_1[2][4],
-  input i_bit_field_4_0_set,
-  input i_bit_field_4_1_set,
+  output logic o_bit_field_0_0,
+  input logic i_bit_field_0_1,
+  input logic [15:0] i_bit_field_1_0,
+  output logic [15:0] o_bit_field_1_1,
+  input logic [15:0] i_bit_field_2_0[2],
+  output logic [15:0] o_bit_field_2_1[2],
+  input logic [15:0] i_bit_field_3_0[2][4],
+  output logic [15:0] o_bit_field_3_1[2][4],
+  input logic i_bit_field_4_0_set,
+  input logic i_bit_field_4_1_set,
   rggen_bus_if.master register_5_bus_if
 );
   `include "rggen_rtl_macros.svh"

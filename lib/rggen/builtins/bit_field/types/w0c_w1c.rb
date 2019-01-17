@@ -8,8 +8,9 @@ list_item :bit_field, :type, [:w0c, :w1c] do
   rtl do
     build do
       input :register_block, :set,
-            name: "i_#{name}_set",
-            width: width,
+            name:       "i_#{name}_set",
+            data_type:  :logic,
+            width:      width,
             dimensions: dimensions
     end
 
