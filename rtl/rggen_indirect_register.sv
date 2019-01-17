@@ -7,9 +7,9 @@ module rggen_indirect_register #(
   parameter int                     DATA_WIDTH    = 32,
   parameter bit [DATA_WIDTH-1:0]    VALID_BITS    = '0
 )(
-  rggen_register_if.slave   register_if,
-  rggen_bit_field_if.master bit_field_if,
-  input [INDEX_WIDTH-1:0]   i_index
+  rggen_register_if.slave       register_if,
+  rggen_bit_field_if.master     bit_field_if,
+  input logic [INDEX_WIDTH-1:0] i_index
 );
   logic index_match;
 
