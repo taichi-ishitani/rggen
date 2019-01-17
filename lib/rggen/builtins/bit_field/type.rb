@@ -70,10 +70,6 @@ list_item :bit_field, :type do
         def same_width
           :same_width
         end
-
-        def irq?(&body)
-          define_method(:irq?, &body)
-        end
       end
 
       field :type
@@ -82,7 +78,6 @@ list_item :bit_field, :type do
       field :read_only? , forward_to_helper: true
       field :write_only?, forward_to_helper: true
       field :reserved?  , forward_to_helper: true
-      field :irq?       , default:           false
 
       class_delegator :full_width
       class_delegator :need_initial_value?

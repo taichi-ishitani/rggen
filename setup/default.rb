@@ -4,7 +4,7 @@ enable :register      , [:offset_address, :name, :array, :type, :uniquness_valid
 enable :register      , :type, [:indirect, :external]
 enable :bit_field     , [:bit_assignment, :name, :type, :initial_value, :reference]
 enable :bit_field     , :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :reserved]
-enable :register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]
+enable :register_block, [:rtl_top, :clock_reset, :host_if]
 enable :register_block, :host_if, [:apb, :axi4lite]
 enable :register      , :rtl_top
 enable :bit_field     , :rtl_top

@@ -98,13 +98,6 @@ describe 'bit_fields/type/w0c_w1c' do
       it "エラーなく使用できる" do
         expect { bit_fields }.not_to raise_error
       end
-
-      it "割り込み要求ではない" do
-        expect(bit_fields[0]).not_to be_irq
-        expect(bit_fields[1]).not_to be_irq
-        expect(bit_fields[2]).not_to be_irq
-        expect(bit_fields[3]).not_to be_irq
-      end
     end
 
     context "同一幅の参照ビットフィールドの指定がある場合" do
@@ -121,13 +114,6 @@ describe 'bit_fields/type/w0c_w1c' do
 
       it "エラーなく使用できる" do
         expect {bit_fields}.not_to raise_error
-      end
-
-      it "割り込み要求である" do
-        expect(bit_fields[0]).to be_irq
-        expect(bit_fields[1]).to be_irq
-        expect(bit_fields[2]).to be_irq
-        expect(bit_fields[3]).to be_irq
       end
     end
 

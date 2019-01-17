@@ -85,7 +85,7 @@ module RgGen
           expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :reserved]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:rtl_top, :clock_reset, :host_if]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :axi4lite]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register , :rtl_top).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :rtl_top).and_call_original

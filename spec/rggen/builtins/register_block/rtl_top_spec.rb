@@ -8,7 +8,7 @@ describe "register_block/rtl_top" do
   before(:all) do
     enable :global, [:data_width, :address_width]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]
+    enable :register_block, [:rtl_top, :clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:external, :indirect]
@@ -57,7 +57,6 @@ module block_0 (
   input clk,
   input rst_n,
   rggen_apb_if.slave apb_if,
-  output o_irq,
   output o_bit_field_0_0,
   input i_bit_field_0_1,
   input [15:0] i_bit_field_1_0,
@@ -72,8 +71,6 @@ module block_0 (
 );
   `include "rggen_rtl_macros.svh"
   rggen_register_if #(8, 32) register_if[14]();
-  logic [1:0] ier;
-  logic [1:0] isr;
   rggen_host_if_apb #(
     .LOCAL_ADDRESS_WIDTH  (8),
     .DATA_WIDTH           (32),
@@ -83,17 +80,6 @@ module block_0 (
     .rst_n        (rst_n),
     .apb_if       (apb_if),
     .register_if  (register_if)
-  );
-  assign ier = {register_if[0].value[16], register_if[0].value[16]};
-  assign isr = {register_if[12].value[8], register_if[12].value[0]};
-  rggen_irq_controller #(
-    .TOTAL_INTERRUPTS (2)
-  ) u_irq_controller (
-    .clk    (clk),
-    .rst_n  (rst_n),
-    .i_ier  (ier),
-    .i_isr  (isr),
-    .o_irq  (o_irq)
   );
   generate if (1) begin : g_register_0
     rggen_bit_field_if #(32) bit_field_if();

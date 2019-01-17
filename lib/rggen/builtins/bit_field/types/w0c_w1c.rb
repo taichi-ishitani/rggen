@@ -3,7 +3,6 @@ list_item :bit_field, :type, [:w0c, :w1c] do
     read_write
     need_initial_value
     use_reference width: same_width
-    irq? { bit_field.has_reference? }
   end
 
   rtl do
