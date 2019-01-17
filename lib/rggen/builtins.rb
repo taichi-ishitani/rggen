@@ -6,6 +6,7 @@ require_relative 'builtins/loaders/register_map/xlsx_ods_loader'
 
 require_relative 'builtins/global/address_width'
 require_relative 'builtins/global/data_width'
+require_relative 'builtins/global/unfold_sv_interface_port'
 
 require_relative 'builtins/bit_field/bit_assignment'
 require_relative 'builtins/bit_field/field_model'
