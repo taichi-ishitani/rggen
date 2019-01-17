@@ -3,8 +3,8 @@ module rggen_host_if_apb #(
   parameter int DATA_WIDTH          = 32,
   parameter int TOTAL_REGISTERS     = 1
 )(
-  input                     clk,
-  input                     rst_n,
+  input logic               clk,
+  input logic               rst_n,
   rggen_apb_if.slave        apb_if,
   rggen_register_if.master  register_if[TOTAL_REGISTERS]
 );

@@ -4,8 +4,8 @@ module rggen_address_decoder #(
   parameter bit [ADDRESS_WIDTH-1:0] END_ADDRESS   = '0,
   parameter int                     DATA_WIDTH    = 32
 )(
-  input   [ADDRESS_WIDTH-1:0] i_address,
-  output                      o_match
+  input   logic [ADDRESS_WIDTH-1:0] i_address,
+  output  logic                     o_match
 );
   localparam  int                         LSB       = $clog2(DATA_WIDTH / 8);
   localparam  bit [ADDRESS_WIDTH-LSB-1:0] SADDRESS  = STAET_ADDRESS[ADDRESS_WIDTH-1:LSB];

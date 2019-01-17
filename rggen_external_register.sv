@@ -4,8 +4,8 @@ module rggen_external_register #(
   parameter bit [ADDRESS_WIDTH-1:0] END_ADDRESS   = '0,
   parameter int                     DATA_WIDTH    = 32
 )(
-  input                     clk,
-  input                     rst_n,
+  input logic               clk,
+  input logic               rst_n,
   rggen_register_if.slave   register_if,
   rggen_bus_if.master       bus_if
 );
