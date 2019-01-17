@@ -100,6 +100,24 @@ CODE
 
       expect(
         module_declaration(:foo) { |m|
+          m.include_file 'fizz.svh'
+          m.include_file 'buzz.svh'
+          m.signals [
+            variable(data_type: :logic, name: 'foo')
+          ]
+          m.body { 'assign foo = 0;' }
+        }
+      ).to eq <<'CODE'
+module foo ();
+  `include "fizz.svh"
+  `include "buzz.svh"
+  logic foo;
+  assign foo = 0;
+endmodule
+CODE
+
+      expect(
+        module_declaration(:foo) { |m|
           m.parameters [
             parameter(parameter_type: :parameter , name: 'P_FOO', default: 0)
           ]
@@ -109,6 +127,7 @@ CODE
           m.signals [
             variable(data_type: :logic, name: 'foo'),
           ]
+          m.include_file 'foo.svh'
           m.body { 'assign foo = 0;' }
         }
       ).to eq <<'CODE'
@@ -117,6 +136,7 @@ module foo #(
 )(
   input i_foo
 );
+  `include "foo.svh"
   logic foo;
   assign foo = 0;
 endmodule

@@ -9,7 +9,6 @@ module RgGen
       end
 
       def to_code
-        bodies.unshift(signal_declarations) if signals?
         code_block do |c|
           header_code(c)
           body_code(c)
@@ -23,6 +22,13 @@ module RgGen
         code << :generate << space unless @without_generate_keyword
         code << :'if (1) begin : ' << @name << nl
         loops? && generate_for_header(code)
+      end
+
+      def body_code_blocks
+        blocks = []
+        signals? && (blocks << signal_declarations)
+        blocks.concat(super)
+        blocks
       end
 
       def footer_code(code)
@@ -61,9 +67,7 @@ module RgGen
 
       def signal_declarations
         lambda do |code|
-          signals.each do |signal|
-            code << signal << semicolon << nl
-          end
+          signals.each { |signal| code << signal << semicolon << nl }
         end
       end
     end

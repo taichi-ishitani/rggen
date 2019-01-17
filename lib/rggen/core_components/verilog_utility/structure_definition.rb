@@ -9,7 +9,8 @@ module RgGen
       end
 
       def body(&block)
-        bodies << block if block_given?
+        @bodies ||= []
+        @bodies << block if block_given?
       end
 
       def to_code
@@ -22,14 +23,14 @@ module RgGen
 
       private
 
-      def bodies
-        @bodies ||= []
-      end
-
       def body_code(code)
-        bodies.each do |body|
+        body_code_blocks.each do |body|
           generate_body_code(code, body)
         end
+      end
+
+      def body_code_blocks
+        @bodies || []
       end
 
       def generate_body_code(code, body)

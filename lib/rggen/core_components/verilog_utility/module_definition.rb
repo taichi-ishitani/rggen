@@ -5,9 +5,9 @@ module RgGen
       attr_setter :ports
       attr_setter :signals
 
-      def to_code
-        bodies.unshift(signal_declarations) if signals?
-        super
+      def include_file(file)
+        @include_files ||= []
+        @include_files << "`include #{file.to_s.quote}"
       end
 
       private
@@ -15,10 +15,18 @@ module RgGen
       def header_code
         code_block do |code|
           code << :module << space << @name << space
-          parameter_declarations(code)
+          parameters? && parameter_declarations(code)
           port_declarations(code)
           code << semicolon
         end
+      end
+
+      def body_code_blocks
+        blocks = []
+        @include_files && (blocks << include_files_code)
+        signals? && (blocks << signal_declarations)
+        blocks.concat(super)
+        blocks
       end
 
       def footer_code
@@ -38,7 +46,6 @@ module RgGen
       end
 
       def parameter_declarations(code)
-        return unless parameters?
         wrap(code, '#(', ')') do
           declarations(@parameters, code)
         end
@@ -46,15 +53,19 @@ module RgGen
 
       def port_declarations(code)
         wrap(code, '(', ')') do
-          declarations(@ports, code) if ports?
+          ports? && declarations(@ports, code)
+        end
+      end
+
+      def include_files_code
+        lambda do |code|
+          @include_files.each { |file| code << file << nl }
         end
       end
 
       def signal_declarations
         lambda do |code|
-          signals.each do |signal|
-            code << signal << semicolon << nl
-          end
+          signals.each { |signal| code << signal << semicolon << nl }
         end
       end
 
