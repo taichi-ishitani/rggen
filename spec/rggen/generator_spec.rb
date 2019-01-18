@@ -79,7 +79,7 @@ module RgGen
         end
 
         before do
-          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width, :unfold_sv_interface_port]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original

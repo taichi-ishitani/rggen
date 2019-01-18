@@ -7,7 +7,7 @@ describe 'bit_fields/type/ro' do
   include_context 'ral common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width]
+    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb

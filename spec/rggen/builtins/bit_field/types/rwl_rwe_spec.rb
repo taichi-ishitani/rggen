@@ -7,7 +7,7 @@ describe 'bit_fields/type/rwl_rwe' do
   include_context 'ral common'
 
   before(:all) do
-    enable :register_block, [:name, :byte_size]
+    enable :register_block, [:name, :byte_size, :unfold_sv_interface_port]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]

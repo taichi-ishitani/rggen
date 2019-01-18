@@ -16,7 +16,7 @@ describe "register_block/host_if" do
       end
     end
 
-    enable :global, [:address_width, :data_width]
+    enable :global, [:address_width, :data_width, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:host_if, :clock_reset]
     enable :register_block, :host_if, [:bar, :Foo, :qux]

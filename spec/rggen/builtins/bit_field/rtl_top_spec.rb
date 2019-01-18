@@ -6,7 +6,7 @@ describe 'bit_field/rtl_top' do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width]
+    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
