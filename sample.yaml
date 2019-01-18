@@ -1,2 +1,3 @@
 address_width: 16
 host_if: apb
+unfold_sv_interface_port: no

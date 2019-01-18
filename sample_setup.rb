@@ -8,7 +8,7 @@ define_list_item :register_block, :host_if, :bar do
   end
 end
 
-enable :global        , [:data_width, :address_width]
+enable :global        , [:data_width, :address_width, :unfold_sv_interface_port]
 enable :register_block, [:name, :base_address]
 enable :register      , [:offset_address, :name, :array, :type, :uniquness_validator]
 enable :register      , :type, [:indirect, :external]
