@@ -2,28 +2,16 @@ require_relative '../../../spec_helper'
 
 module RgGen::VerilogUtility
   describe Identifier do
-    let(:name) do
-      "foo"
-    end
+    let(:name) { 'foo' }
 
-    let(:index) do
-      2
-    end
+    let(:width) { 8 }
 
-    let(:indexes) do
-      [3, 4, 5]
-    end
+    let(:array_dimensions) { [2, 3, 4] }
 
-    let(:msb) do
-      1
-    end
-
-    let(:lsb) do
-      0
-    end
+    let(:array_format) { [:unpacked, :vector].shuffle.first }
 
     let(:identifier) do
-      Identifier.new(name)
+      Identifier.new(name, width, array_dimensions, array_format)
     end
 
     def match_identifier(expectation)
@@ -32,26 +20,70 @@ module RgGen::VerilogUtility
 
     describe "#[]" do
       context "#[]にnilが与えられた場合" do
-        it "そのまま変数を返す" do
+        it "そのまま識別子を返す" do
           expect(identifier[nil]).to match_identifier name
         end
       end
 
       context "#[]でビット選択がされた場合" do
-        it "ビット選択込みの変数を返す" do
+        let(:index) { rand(width - 1) }
+
+        it "ビット選択された識別子を返す" do
           expect(identifier[index]).to match_identifier "#{name}[#{index}]"
         end
       end
 
-      context "#[]で配列が与えられた場合" do
-        it "連続したビット選択込みの変数を返す" do
-          expect(identifier[indexes]).to match_identifier "#{name}#{indexes.map { |i| "[#{i}]" }.join}"
+      context "配列選択用のインデックスが配列で与えられて" do
+        let(:array_index) { [:i, :j, :k] }
+
+        context "配列の出力形式がunpackedの場合" do
+          let(:array_format) { :unpacked }
+
+          it "配列選択された識別子を返す" do
+            array_selection = array_index.map { |i| "[#{i}]" }.join
+            expect(identifier[array_index]).to match_identifier "#{name}#{array_selection}"
+          end
+        end
+
+        context "配列の出力形式がvectorの場合" do
+          let(:array_format) { :vector }
+
+          it "ベクトル形式で選択された識別子を返す" do
+            total_elements  = 1
+            vector_index    = []
+            array_dimensions.reverse_each.with_index do |d, i|
+              if i.zero?
+                vector_index.unshift(array_index.reverse[i])
+              else
+                vector_index.unshift("#{total_elements}*#{array_index.reverse[i]}")
+              end
+              total_elements  *= d
+            end
+
+            expect(identifier[array_index]).to match_identifier "#{name}[#{width}*(#{vector_index.join('+')})+:#{width}]"
+          end
         end
       end
 
-      context "#[]でパート選択がされた場合" do
-        it "パート選択込みの変数を返す" do
-          expect(identifier[msb, lsb]).to match_identifier "#{name}[#{msb}:#{lsb}]"
+      context "#[]でパート選択がされて、" do
+        context "MSBとLSBが異なる場合" do
+          let(:msb) { rand(1..(width - 1)) }
+
+          let(:lsb) { rand(0..(msb - 1)) }
+
+          it "パート選択された識別子を返す" do
+            expect(identifier[msb, lsb]).to match_identifier "#{name}[#{msb}:#{lsb}]"
+          end
+        end
+
+        context "MSBとLSBが同じ場合" do
+          let(:msb) { rand(0..(width - 1)) }
+
+          let(:lsb) { msb }
+
+          it "ビット選択された識別子を返す" do
+            expect(identifier[msb, lsb]).to match_identifier "#{name}[#{msb}]"
+          end
         end
       end
     end

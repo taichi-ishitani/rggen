@@ -518,7 +518,7 @@ describe 'bit_field/type' do
     context "reservedの場合" do
       it "rggen_bit_field_ifのインスタンスを持たない" do
         expect(rtl[5]).not_to have_identifier :bit_field_sub_if, name: "bit_field_sub_if"
-        expect(rtl[5]).not_to have_interface_instantiation :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
+        expect(rtl[5]).not_to have_interface_instance :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
       end
 
       describe "#generate_code" do

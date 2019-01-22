@@ -1,6 +1,6 @@
 module RgGen
   module VerilogUtility
-    class InterfaceInstantiation
+    class InterfaceInstance
       def initialize(attributes)
         @attributes = attributes
       end

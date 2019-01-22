@@ -1,6 +1,6 @@
 module RgGen
   module VerilogUtility
-    class InterfacePortDeclaration
+    class InterfacePort
       def initialize(attributes)
         @attributes = attributes
       end

@@ -1,8 +1,8 @@
 module RgGen
   module VerilogUtility
-    class Declaration
-      def initialize(declation_type, attributes)
-        @declation_type = declation_type
+    class Variable
+      def initialize(variable_type, attributes)
+        @variable_type  = variable_type
         @attributes     = attributes
       end
 
@@ -27,7 +27,7 @@ module RgGen
           variable:  @attributes[:random] && :rand,
           port:      @attributes[:direction],
           parameter: @attributes[:parameter_type]
-        }[@declation_type]
+        }[@variable_type]
       end
 
       def data_type
@@ -55,7 +55,7 @@ module RgGen
       end
 
       def parameter?
-        @declation_type == :parameter
+        @variable_type == :parameter
       end
 
       def vector?

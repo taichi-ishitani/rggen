@@ -50,7 +50,7 @@ module RgGen
         when :wire, :reg, :logic
           @signal_declarations[domain] << variable_declaration(type, attributes)
         when :interface
-          @signal_declarations[domain] << interface_instantiation(attributes)
+          @signal_declarations[domain] << interface_instance(attributes)
         when :input, :output
           @port_declarations[domain] << port_declaration(type, attributes)
         when :interface_port

@@ -124,7 +124,7 @@ RSpec::Matchers.define :have_port_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::Declaration.new(:port, attributes).to_s
+    RgGen::VerilogUtility::Variable.new(:port, attributes).to_s
   end
 end
 
@@ -140,7 +140,7 @@ RSpec::Matchers.define :have_interface_port_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::InterfacePortDeclaration.new(attributes).to_s
+    RgGen::VerilogUtility::InterfacePort.new(attributes).to_s
   end
 end
 
@@ -156,11 +156,11 @@ RSpec::Matchers.define :have_signal_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    RgGen::VerilogUtility::Variable.new(:variable, attributes).to_s
   end
 end
 
-RSpec::Matchers.define :have_interface_instantiation do |domain, attributes|
+RSpec::Matchers.define :have_interface_instance do |domain, attributes|
   match do |component|
     @actual = component.signal_declarations(domain)
     actual.any? { |declaration| declaration.to_s == expectation }
@@ -178,7 +178,7 @@ RSpec::Matchers.define :have_interface_instantiation do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::InterfaceInstantiation.new(attributes).to_s
+    RgGen::VerilogUtility::InterfaceInstance.new(attributes).to_s
   end
 end
 
@@ -194,7 +194,7 @@ RSpec::Matchers.define :have_parameter_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::Declaration.new(:parameter, attributes).to_s
+    RgGen::VerilogUtility::Variable.new(:parameter, attributes).to_s
   end
 end
 
@@ -210,7 +210,7 @@ RSpec::Matchers.define :have_variable_declaration do |domain, attributes|
   end
 
   define_method(:expectation) do
-    RgGen::VerilogUtility::Declaration.new(:variable, attributes).to_s
+    RgGen::VerilogUtility::Variable.new(:variable, attributes).to_s
   end
 end
 

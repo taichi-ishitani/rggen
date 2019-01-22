@@ -1,9 +1,9 @@
 require_relative '../../../spec_helper'
 
 module RgGen::VerilogUtility
-  describe InterfaceInstantiation do
+  describe InterfaceInstance do
     def interface(attributes)
-      InterfaceInstantiation.new(attributes).to_s
+      InterfaceInstance.new(attributes).to_s
     end
 
     it "インターフェースのインスタンスを行うコードを生成する" do
