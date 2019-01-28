@@ -10,6 +10,14 @@ module RgGen
         code_snippets.join(' ')
       end
 
+      def identifier
+        name          = @attributes[:name]
+        width         = @attributes[:width] || 1
+        dimensions    = @attributes[:dimensions]
+        array_fomrat  = @attributes[:array_format] || :unpacked
+        Identifier.new(name, width, dimensions, array_fomrat)
+      end
+
       private
 
       def code_snippets
@@ -19,7 +27,7 @@ module RgGen
           parameter_keyword,
           data_type,
           width,
-          identifier,
+          variable_identifier,
           default_value_assignment
         ].select(&:itself)
       end
@@ -58,7 +66,7 @@ module RgGen
         @attributes[:dimensions].inject(&:*)
       end
 
-      def identifier
+      def variable_identifier
         "#{@attributes[:name]}#{dimensions}"
       end
 

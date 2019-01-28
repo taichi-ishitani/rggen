@@ -6,7 +6,11 @@ module RgGen
       end
 
       def to_s
-        "#{interface_type} #{identifier}"
+        "#{interface_type} #{port_identifier}"
+      end
+
+      def identifier
+        Identifier.new(@attributes[:name], nil, nil, nil)
       end
 
       private
@@ -16,7 +20,7 @@ module RgGen
         "#{@attributes[:type]}.#{@attributes[:modport]}"
       end
 
-      def identifier
+      def port_identifier
         "#{@attributes[:name]}#{dimensions}"
       end
 

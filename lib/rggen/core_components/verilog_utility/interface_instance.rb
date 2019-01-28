@@ -6,7 +6,11 @@ module RgGen
       end
 
       def to_s
-        "#{interface_type} #{identifier}()"
+        "#{interface_type} #{instance_identifier}()"
+      end
+
+      def identifier
+        Identifier.new(@attributes[:name], nil, nil, nil)
       end
 
       private
@@ -20,7 +24,7 @@ module RgGen
         "#(#{@attributes[:parameters].join(', ')})"
       end
 
-      def identifier
+      def instance_identifier
         "#{@attributes[:name]}#{dimensions}"
       end
 

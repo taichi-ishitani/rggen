@@ -290,13 +290,13 @@ module RgGen::RTL
         expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "localparam宣言用のVariableDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
-        expect(item.localparam_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
-        expect(item.localparam_declarations(:domain_a)[0].to_s).to eq "localparam foo = 0"
-        expect(item.localparam_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
-        expect(item.localparam_declarations(:domain_a)[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
-        expect(item.localparam_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
-        expect(item.localparam_declarations(:domain_b)[0].to_s).to eq "localparam lp_baz = 1"
+      it "localparam宣言用のVariableDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
+        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_a)[0].to_s).to eq "localparam foo = 0"
+        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_a)[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
+        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_b)[0].to_s).to eq "localparam lp_baz = 1"
       end
     end
   end
