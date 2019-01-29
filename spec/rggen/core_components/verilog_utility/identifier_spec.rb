@@ -8,7 +8,7 @@ module RgGen::VerilogUtility
 
     let(:array_dimensions) { [2, 3, 4] }
 
-    let(:array_format) { [:unpacked, :vector].shuffle.first }
+    let(:array_format) { [:unpacked, :vectored].shuffle.first }
 
     let(:identifier) do
       Identifier.new(name, width, array_dimensions, array_format)
@@ -45,8 +45,8 @@ module RgGen::VerilogUtility
           end
         end
 
-        context "配列の出力形式がvectorの場合" do
-          let(:array_format) { :vector }
+        context "配列の出力形式がvectoredの場合" do
+          let(:array_format) { :vectored }
 
           it "ベクトル形式で選択された識別子を返す" do
             total_elements  = 1

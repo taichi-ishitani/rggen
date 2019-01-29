@@ -52,17 +52,17 @@ module RgGen
         vector? || return
         msb =
           if numerical_width?
-            vectorized_array_size * (@attributes[:width] || 1) - 1
-          elsif vectorized_array?
-            "#{vectorized_array_size}*#{@attributes[:width]}-1"
+            vectored_array_size * (@attributes[:width] || 1) - 1
+          elsif vectored_array?
+            "#{vectored_array_size}*#{@attributes[:width]}-1"
           else
             "#{@attributes[:width]}-1"
           end
         "[#{msb}:0]"
       end
 
-      def vectorized_array_size
-        vectorized_array? || (return 1)
+      def vectored_array_size
+        vectored_array? || (return 1)
         @attributes[:dimensions].inject(&:*)
       end
 
@@ -86,7 +86,7 @@ module RgGen
 
       def vector?
         @attributes[:vector] && (return true)
-        vectorized_array? && (return true)
+        vectored_array? && (return true)
         @attributes[:width] || (return false)
         numerical_width? || (return true)
         parameter? && (return true)
@@ -101,13 +101,13 @@ module RgGen
 
       def unpacked_array?
         @attributes[:dimensions] || (return false)
-        @attributes[:array_format] == :vector && (return false)
+        @attributes[:array_format] == :vectored && (return false)
         true
       end
 
-      def vectorized_array?
+      def vectored_array?
         @attributes[:dimensions] || (return false)
-        @attributes[:array_format] == :vector && (return true)
+        @attributes[:array_format] == :vectored && (return true)
         false
       end
     end
