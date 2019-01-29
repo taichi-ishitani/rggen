@@ -95,8 +95,7 @@ describe 'global/unfold_sv_interface_port' do
       load_data.each do |data|
         ConfigurationDummyLoader.load_data({ unfold_sv_interface_port: data })
         expect {
-          c = @factory.create(configuration_file)
-          p c.unfold_sv_interface_port?
+          @factory.create(configuration_file)
         }.to raise_configuration_error "non boolean value; should be true/false/nil/on/off/yes/no: #{data.inspect}"
       end
     end
