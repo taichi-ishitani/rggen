@@ -44,23 +44,6 @@ module RgGen
 
       private
 
-      def add_declaration(type, domain, attributes)
-        case type
-        when :wire, :reg, :logic
-          @signal_declarations[domain] << variable_declaration(type, attributes)
-        when :interface
-          @signal_declarations[domain] << interface_instance(attributes)
-        when :input, :output
-          @port_declarations[domain] << port_declaration(type, attributes)
-        when :interface_port
-          @port_declarations[domain] << interface_port_declaration(attributes)
-        when :parameter
-          @parameter_declarations[domain] << parameter_declaration(type, attributes)
-        when :localparam
-          @localparam_declarations[domain] << parameter_declaration(type, attributes)
-        end
-      end
-
       def create_declaration(type, attributes)
         case type
         when :wire, :reg, :logic
