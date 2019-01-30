@@ -6,9 +6,11 @@ list_item :bit_field, :type, :ro do
   rtl do
     build do
       input :register_block, :value_in,
-            name:       "i_#{bit_field.name}",
-            width:      width,
-            dimensions: dimensions
+            name:         "i_#{bit_field.name}",
+            data_type:    :logic,
+            width:        width,
+            dimensions:   dimensions,
+            array_format: array_port_format
     end
 
     generate_code_from_template :bit_field

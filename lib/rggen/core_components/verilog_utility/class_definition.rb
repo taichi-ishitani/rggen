@@ -5,20 +5,22 @@ module RgGen
       attr_setter :parameters
       attr_setter :variables
 
-      def to_code
-        bodies.unshift(variables_declarations) if variables?
-        super
-      end
-
       private
 
       def header_code
         code_block do |code|
-          code << :class << space   << @name
-          paraemter_declarations(code) if parameters?
-          code << space  <<:extends << space << @base unless @base.nil?
+          code << :class << space << @name
+          parameters? && paraemter_declarations(code)
+          @base && (code << space <<:extends << space << @base)
           code << semicolon
         end
+      end
+
+      def body_code_blocks
+        blocks = []
+        variables? && (blocks << variables_declarations)
+        blocks.concat(super)
+        blocks
       end
 
       def footer_code
@@ -46,9 +48,7 @@ module RgGen
 
       def variables_declarations
         lambda do |code|
-          variables.each do |variable|
-            code << variable << semicolon << nl
-          end
+          variables.each { |variable| code << variable << semicolon << nl }
         end
       end
     end

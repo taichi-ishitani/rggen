@@ -180,7 +180,7 @@ shared_context 'rtl common' do
   def have_interface(domain, *expectation)
     handle_name, attributes = expectation.last(2)
     attributes[:name] ||= handle_name.to_s
-    have_identifier(*expectation).and have_interface_instantiation(domain, attributes)
+    have_identifier(*expectation).and have_interface_instance(domain, attributes)
   end
 end
 

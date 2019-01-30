@@ -22,7 +22,7 @@ describe 'bit_field/type' do
       end
     end
 
-    enable :global, [:data_width, :address_width]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:indirect]
@@ -476,35 +476,6 @@ describe 'bit_field/type' do
         end
       end
     end
-
-    describe "#irq?" do
-      let(:load_data) do
-        [
-          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[8]", "foo", nil, nil],
-          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[0]", "foo", nil, nil]
-        ]
-      end
-
-      context "通常の場合" do
-        it "割り込み要求ではないことを示す" do
-          expect(bit_fields[0]).not_to be_irq
-          expect(bit_fields[1]).not_to be_irq
-        end
-      end
-
-      context ".irq?で#irq?が再定義された場合" do
-        before do
-          define_item(:foo) do
-            irq? { bit_field.name == "bit_field_0_0" }
-          end
-        end
-
-        it ".irq?に与えたブロックの評価結果を返す" do
-          expect(bit_fields[0]).to be_irq
-          expect(bit_fields[1]).not_to be_irq
-        end
-      end
-    end
   end
 
   describe "rtl" do
@@ -547,7 +518,7 @@ describe 'bit_field/type' do
     context "reservedの場合" do
       it "rggen_bit_field_ifのインスタンスを持たない" do
         expect(rtl[5]).not_to have_identifier :bit_field_sub_if, name: "bit_field_sub_if"
-        expect(rtl[5]).not_to have_interface_instantiation :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
+        expect(rtl[5]).not_to have_interface_instance :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
       end
 
       describe "#generate_code" do

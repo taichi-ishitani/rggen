@@ -1,9 +1,0 @@
-rggen_irq_controller #(
-  .TOTAL_INTERRUPTS (<%= total_interrupts %>)
-) u_irq_controller (
-  .clk    (<%= register_block.clock %>),
-  .rst_n  (<%= register_block.reset %>),
-  .i_ier  (<%= ier %>),
-  .i_isr  (<%= isr %>),
-  .o_irq  (<%= irq %>)
-);

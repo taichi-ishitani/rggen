@@ -35,11 +35,11 @@ module RgGen::RTL
       end
 
       it "wire宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[0].to_s).to eq "wire foo"
-        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[1].to_s).to eq "wire [1:0] bar[4]"
-        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_b)[0].to_s).to eq "wire w_baz"
       end
     end
@@ -67,11 +67,11 @@ module RgGen::RTL
       end
 
       it "reg宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[0].to_s).to eq "reg foo"
-        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[1].to_s).to eq "reg [1:0] bar[4]"
-        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_b)[0].to_s).to eq "reg r_baz"
       end
     end
@@ -99,11 +99,11 @@ module RgGen::RTL
       end
 
       it "logic宣言用のVariableDeclarationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[0].to_s).to eq "logic foo"
-        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_a)[1].to_s).to eq "logic [1:0] bar[4]"
-        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.signal_declarations(:domain_b)[0].to_s).to eq "logic l_baz"
       end
     end
@@ -130,12 +130,12 @@ module RgGen::RTL
         expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "interfaceインスタンス用のInterfaceInstantiationオブジェクトを生成し、#signal_declarationsに追加する" do
-        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+      it "interfaceインスタンス用のInterfaceInstanceオブジェクトを生成し、#signal_declarationsに追加する" do
+        expect(item.signal_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstance
         expect(item.signal_declarations(:domain_a)[0].to_s).to eq "test_bus_if foo()"
-        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+        expect(item.signal_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstance
         expect(item.signal_declarations(:domain_a)[1].to_s).to eq "test_bus_if #(2, 4) bar[2][4]()"
-        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstantiation
+        expect(item.signal_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfaceInstance
         expect(item.signal_declarations(:domain_b)[0].to_s).to eq "test_bus_if baz_if()"
       end
     end
@@ -163,11 +163,11 @@ module RgGen::RTL
       end
 
       it "input宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_a)[0].to_s).to eq "input foo"
-        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_a)[1].to_s).to eq "input [1:0] bar[4]"
-        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_b)[0].to_s).to eq "input i_baz"
       end
     end
@@ -195,11 +195,11 @@ module RgGen::RTL
       end
 
       it "output宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_a)[0].to_s).to eq "output foo"
-        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_a)[1].to_s).to eq "output [1:0] bar[4]"
-        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.port_declarations(:domain_b)[0].to_s).to eq "output o_baz"
       end
     end
@@ -227,11 +227,11 @@ module RgGen::RTL
       end
 
       it "output宣言用のVariableDeclarationオブジェクトを生成し、#port_declarationsに追加する" do
-        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfacePort
         expect(item.port_declarations(:domain_a)[0].to_s).to eq "test_bus_if foo"
-        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::InterfacePort
         expect(item.port_declarations(:domain_a)[1].to_s).to eq "test_bus_if.slave bar[2][4]"
-        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfacePortDeclaration
+        expect(item.port_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::InterfacePort
         expect(item.port_declarations(:domain_b)[0].to_s).to eq "test_bus_if baz_if"
       end
     end
@@ -259,11 +259,11 @@ module RgGen::RTL
       end
 
       it "parameter宣言用のVariableDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
-        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations(:domain_a)[0].to_s).to eq "parameter foo = 0"
-        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations(:domain_a)[1].to_s).to eq "parameter [1:0] bar[4] = '{0, 1, 2, 3}"
-        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations(:domain_b)[0].to_s).to eq "parameter p_baz = 1"
       end
     end
@@ -290,13 +290,13 @@ module RgGen::RTL
         expect(item.identifiers).to match [:foo, :bar, :baz]
       end
 
-      it "localparam宣言用のVariableDeclarationオブジェクトを生成し、#localparam_declarationsに追加する" do
-        expect(item.localparam_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
-        expect(item.localparam_declarations(:domain_a)[0].to_s).to eq "localparam foo = 0"
-        expect(item.localparam_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
-        expect(item.localparam_declarations(:domain_a)[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
-        expect(item.localparam_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
-        expect(item.localparam_declarations(:domain_b)[0].to_s).to eq "localparam lp_baz = 1"
+      it "localparam宣言用のVariableDeclarationオブジェクトを生成し、#parameter_declarationsに追加する" do
+        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_a)[0].to_s).to eq "localparam foo = 0"
+        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_a)[1].to_s).to eq "localparam [1:0] bar[4] = '{0, 1, 2, 3}"
+        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
+        expect(item.parameter_declarations(:domain_b)[0].to_s).to eq "localparam lp_baz = 1"
       end
     end
   end

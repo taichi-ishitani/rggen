@@ -30,7 +30,7 @@ describe 'register/type' do
   end
 
   before(:all) do
-    enable :global, [:data_width, :address_width]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     @configuration_factory  = build_configuration_factory
   end
 
@@ -983,10 +983,10 @@ describe 'register/type' do
 
           it "rggen_bit_field_ifのインスタンスを持たない" do
             expect(rtl[0]).not_to have_identifier :bit_field_if, name: "bit_field_if"
-            expect(rtl[0]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "bit_field_if"
+            expect(rtl[0]).not_to have_interface_instance :register, type: :rggen_bit_field_if, name: "bit_field_if"
 
             expect(rtl[1]).not_to have_identifier :bit_field_if, name: "bit_field_if"
-            expect(rtl[1]).not_to have_interface_instantiation :register, type: :rggen_bit_field_if, name: "bit_field_if"
+            expect(rtl[1]).not_to have_interface_instance :register, type: :rggen_bit_field_if, name: "bit_field_if"
           end
         end
       end

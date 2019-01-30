@@ -202,15 +202,21 @@ list_item :register, :type do
         actual_bit_fields.size
       end
 
+      def address_range
+        @address_range ||=
+          if register.array?
+            register.start_address..(register.start_address + byte_width - 1)
+          else
+            register.start_address..register.end_address
+          end
+      end
+
       def start_address
         address_code(register.start_address)
       end
 
       def end_address
-        return address_code(register.end_address) unless register.array?
-        address_code(
-          register.start_address + byte_width - 1
-        )
+        address_code(address_range.last)
       end
 
       def address_code(address)

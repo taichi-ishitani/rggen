@@ -147,28 +147,9 @@ module RgGen::RTL
         end
       end
 
-      it "配下のアイテムオブジェクトが持つParameterDeclarationオブジェクト(type:parameter)を返す" do
+      it "配下のアイテムオブジェクトが持つParameterDeclarationオブジェクトを返す" do
         expect(component.parameter_declarations(:domain_a)).to match(declarations[:domain_a].map {|d| eql(d)})
         expect(component.parameter_declarations(:domain_b)).to match(declarations[:domain_b].map {|d| eql(d)})
-      end
-    end
-
-    describe "#localparam_declarations" do
-      before do
-        component.add_item(foo_item)
-        component.add_item(bar_item)
-        children[0].add_item(baz_item)
-      end
-
-      let(:declarations) do
-        Hash.new do |h, d|
-          [foo_item, bar_item, baz_item].flat_map { |i| i.localparam_declarations(d) }
-        end
-      end
-
-      it "配下のアイテムオブジェクトが持つParameterDeclarationオブジェクト(type:localparam)を返す" do
-        expect(component.localparam_declarations(:domain_a)).to match(declarations[:domain_a].map {|d| eql(d)})
-        expect(component.localparam_declarations(:domain_b)).to match(declarations[:domain_b].map {|d| eql(d)})
       end
     end
   end

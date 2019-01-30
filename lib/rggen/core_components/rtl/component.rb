@@ -19,10 +19,6 @@ module RgGen
       def parameter_declarations(domain)
         [*@items, *@children].flat_map { |o| o.parameter_declarations(domain) }
       end
-
-      def localparam_declarations(domain)
-        [*@items, *@children].flat_map { |o| o.localparam_declarations(domain) }
-      end
     end
   end
 end

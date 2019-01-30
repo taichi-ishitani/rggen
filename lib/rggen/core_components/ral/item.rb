@@ -15,12 +15,12 @@ module RgGen
 
       class << self
         private
-
         def define_declaration_method(method_name)
           define_method(method_name) do |domain, handle_name, attributes = {}|
             attributes[:name] ||= handle_name
-            add_identifier(handle_name, attributes[:name])
-            add_declaration(method_name, domain, attributes)
+            declaration = create_declaration(method_name, attributes)
+            add_declaration(method_name, domain, declaration)
+            add_identifier(handle_name, declaration.identifier)
           end
         end
       end
@@ -29,29 +29,30 @@ module RgGen
       define_declaration_method :parameter
 
       def variable_declarations(domain = nil)
-        return @variable_declarations if domain.nil?
+        domain || (return @variable_declarations)
         @variable_declarations[domain]
       end
 
       def parameter_declarations(domain = nil)
-        return @parameter_declarations if domain.nil?
+        domain || (return @parameter_declarations)
         @parameter_declarations[domain]
       end
 
       private
 
-      def add_identifier(handle_name, name)
-        create_identifier(name).tap do |i|
-          instance_variable_set(handle_name.variablize, i)
-          attr_singleton_reader(handle_name)
-          identifiers << handle_name
-        end
+      def create_declaration(type, attributes)
+        __send__("#{type}_declaration", attributes)
       end
 
-      def add_declaration(type, domain, attributes)
-        instance_variable_get("@#{type}_declarations").tap do |list|
-          list[domain] << __send__("#{type}_declaration", attributes)
-        end
+      def add_identifier(handle_name, identifier)
+        instance_variable_set(handle_name.variablize, identifier)
+        attr_singleton_reader(handle_name)
+        identifiers << handle_name
+      end
+
+      def add_declaration(type, domain, declaration)
+        list  = instance_variable_get("@#{type}_declarations")
+        list[domain]  << declaration
       end
     end
   end

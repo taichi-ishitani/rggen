@@ -6,6 +6,7 @@ describe 'bit_fields/type/w0s_w1s' do
   include_context 'rtl common'
 
   before(:all) do
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
@@ -18,18 +19,17 @@ describe 'bit_fields/type/w0s_w1s' do
     @factory  = build_register_map_factory
   end
 
-  before(:all) do
-    enable :global, [:data_width, :address_width]
-    ConfigurationDummyLoader.load_data({})
-    @configuration  = build_configuration_factory.create(configuration_file)
-  end
-
   after(:all) do
     clear_enabled_items
   end
 
   let(:configuration) do
-    @configuration
+    ConfigurationDummyLoader.load_data({array_port_format: array_port_format})
+    build_configuration_factory.create(configuration_file)
+  end
+
+  let(:array_port_format) do
+    [:unpacked, :vectored].shuffle.first
   end
 
   describe "register_map" do
@@ -99,9 +99,9 @@ describe 'bit_fields/type/w0s_w1s' do
   end
 
   describe "rtl" do
-    before(:all) do
-      register_map  = create_register_map(
-        @configuration,
+    let(:register_map) do
+      create_register_map(
+        configuration,
         "block_0" => [
           [nil, nil         , "block_0"                                                                                                        ],
           [nil, nil         , 256                                                                                                              ],
@@ -119,36 +119,37 @@ describe 'bit_fields/type/w0s_w1s' do
           [nil, nil         , nil        , nil     , nil                                     , "bit_field_6_1", "[1:0]"  , "rw" , "0x0"   , nil]
         ]
       )
-      @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
     end
 
     let(:rtl) do
-      @rtl
+      build_rtl_factory.create(configuration, register_map).bit_fields
     end
 
     it "出力ポートvalue_outを持つ" do
-      expect(rtl[0]).to have_output :register_block, :value_out, name: "o_bit_field_0_0", width: 16
-      expect(rtl[1]).to have_output :register_block, :value_out, name: "o_bit_field_0_1", width: 1
-      expect(rtl[2]).to have_output :register_block, :value_out, name: "o_bit_field_1_0", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_output :register_block, :value_out, name: "o_bit_field_2_0", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_output :register_block, :value_out, name: "o_bit_field_3_0", width: 16
-      expect(rtl[5]).to have_output :register_block, :value_out, name: "o_bit_field_3_1", width: 1
-      expect(rtl[6]).to have_output :register_block, :value_out, name: "o_bit_field_4_0", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_output :register_block, :value_out, name: "o_bit_field_5_0", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_output :register_block, :value_out, name: "o_bit_field_0_0", data_type: :logic, width: 16
+      expect(rtl[1]).to have_output :register_block, :value_out, name: "o_bit_field_0_1", data_type: :logic, width: 1
+      expect(rtl[2]).to have_output :register_block, :value_out, name: "o_bit_field_1_0", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[3]).to have_output :register_block, :value_out, name: "o_bit_field_2_0", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
+      expect(rtl[4]).to have_output :register_block, :value_out, name: "o_bit_field_3_0", data_type: :logic, width: 16
+      expect(rtl[5]).to have_output :register_block, :value_out, name: "o_bit_field_3_1", data_type: :logic, width: 1
+      expect(rtl[6]).to have_output :register_block, :value_out, name: "o_bit_field_4_0", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[7]).to have_output :register_block, :value_out, name: "o_bit_field_5_0", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
     end
 
     it "入力ポートclearを持つ" do
-      expect(rtl[0]).to have_input :register_block, :clear, name: "i_bit_field_0_0_clear", width: 16
-      expect(rtl[1]).to have_input :register_block, :clear, name: "i_bit_field_0_1_clear", width: 1
-      expect(rtl[2]).to have_input :register_block, :clear, name: "i_bit_field_1_0_clear", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_input :register_block, :clear, name: "i_bit_field_2_0_clear", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_input :register_block, :clear, name: "i_bit_field_3_0_clear", width: 16
-      expect(rtl[5]).to have_input :register_block, :clear, name: "i_bit_field_3_1_clear", width: 1
-      expect(rtl[6]).to have_input :register_block, :clear, name: "i_bit_field_4_0_clear", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_input :register_block, :clear, name: "i_bit_field_5_0_clear", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_input :register_block, :clear, name: "i_bit_field_0_0_clear", data_type: :logic, width: 16
+      expect(rtl[1]).to have_input :register_block, :clear, name: "i_bit_field_0_1_clear", data_type: :logic, width: 1
+      expect(rtl[2]).to have_input :register_block, :clear, name: "i_bit_field_1_0_clear", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[3]).to have_input :register_block, :clear, name: "i_bit_field_2_0_clear", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
+      expect(rtl[4]).to have_input :register_block, :clear, name: "i_bit_field_3_0_clear", data_type: :logic, width: 16
+      expect(rtl[5]).to have_input :register_block, :clear, name: "i_bit_field_3_1_clear", data_type: :logic, width: 1
+      expect(rtl[6]).to have_input :register_block, :clear, name: "i_bit_field_4_0_clear", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[7]).to have_input :register_block, :clear, name: "i_bit_field_5_0_clear", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
     end
 
     describe "#generate_code" do
+      let(:array_port_format) { :unpacked }
+
       let(:expected_code_0) do
         <<'CODE'
 rggen_bit_field_w01s_w01c #(

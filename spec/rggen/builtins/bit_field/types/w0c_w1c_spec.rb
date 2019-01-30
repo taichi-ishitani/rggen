@@ -6,6 +6,7 @@ describe 'bit_fields/type/w0c_w1c' do
   include_context 'rtl common'
 
   before(:all) do
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
@@ -18,18 +19,17 @@ describe 'bit_fields/type/w0c_w1c' do
     @factory  = build_register_map_factory
   end
 
-  before(:all) do
-    enable :global, [:data_width, :address_width]
-    ConfigurationDummyLoader.load_data({})
-    @configuration  = build_configuration_factory.create(configuration_file)
-  end
-
   after(:all) do
     clear_enabled_items
   end
 
   let(:configuration) do
-    @configuration
+    ConfigurationDummyLoader.load_data({array_port_format: array_port_format})
+    build_configuration_factory.create(configuration_file)
+  end
+
+  let(:array_port_format) do
+    [:unpacked, :vectored].shuffle.first
   end
 
   describe "register_map" do
@@ -85,72 +85,28 @@ describe 'bit_fields/type/w0c_w1c' do
       }.to raise_error RgGen::RegisterMapError
     end
 
-    context "参照ビットフィールドの指定がない場合" do
-      let(:bit_fields) do
+    it "参照ビットフィールドの有無に関わらず使用できる" do
+      expect {
         build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', nil],
-          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', nil],
-          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', nil],
-          [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', nil]
+          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[4]"  , "rw" , '0', nil            ],
+          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "rw" , '0', nil            ],
+          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[4]"  , "w0c", '0', nil            ],
+          [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[3:0]", "w0c", '0', "bit_field_0_0"],
+          [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[4]"  , "w0c", '0', "bit_field_0_1"],
+          [nil, nil         , nil   , nil, nil, "bit_field_2_1", "[3:0]", "w0c", '0', nil            ],
+          [nil, "register_3", "0x0C", nil, nil, "bit_field_3_0", "[4]"  , "w1c", '0', nil            ],
+          [nil, nil         , nil   , nil, nil, "bit_field_3_1", "[3:0]", "w1c", '0', "bit_field_0_0"],
+          [nil, "register_4", "0x10", nil, nil, "bit_field_4_0", "[4]"  , "w1c", '0', "bit_field_0_1"],
+          [nil, nil         , nil   , nil, nil, "bit_field_4_1", "[3:0]", "w1c", '0', nil            ]
         ])
-      end
-
-      it "エラーなく使用できる" do
-        expect { bit_fields }.not_to raise_error
-      end
-
-      it "割り込み要求ではない" do
-        expect(bit_fields[0]).not_to be_irq
-        expect(bit_fields[1]).not_to be_irq
-        expect(bit_fields[2]).not_to be_irq
-        expect(bit_fields[3]).not_to be_irq
-      end
-    end
-
-    context "同一幅の参照ビットフィールドの指定がある場合" do
-      let(:bit_fields) do
-        build_bit_fields([
-          [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', "bit_field_2_0"],
-          [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', "bit_field_2_1"],
-          [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', "bit_field_2_0"],
-          [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', "bit_field_2_1"],
-          [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[4]"  , "rw" , '0', nil            ],
-          [nil, nil         , nil   , nil, nil, "bit_field_2_1", "[3:0]", "rw" , '0', nil            ]
-        ])
-      end
-
-      it "エラーなく使用できる" do
-        expect {bit_fields}.not_to raise_error
-      end
-
-      it "割り込み要求である" do
-        expect(bit_fields[0]).to be_irq
-        expect(bit_fields[1]).to be_irq
-        expect(bit_fields[2]).to be_irq
-        expect(bit_fields[3]).to be_irq
-      end
-    end
-
-    context "ビット幅が異なる参照ビットフィールドの指定がある場合" do
-      it "RgGen::RegisterMapErrorを発生させる" do
-        expect {
-          build_bit_fields([
-            [nil, "register_0", "0x00", nil, nil, "bit_field_0_0", "[4]"  , "w0c", '0', "bit_field_2_0"],
-            [nil, nil         , nil   , nil, nil, "bit_field_0_1", "[3:0]", "w0c", '0', "bit_field_2_1"],
-            [nil, "register_1", "0x04", nil, nil, "bit_field_1_0", "[4]"  , "w1c", '0', "bit_field_2_0"],
-            [nil, nil         , nil   , nil, nil, "bit_field_1_1", "[3:0]", "w1c", '0', "bit_field_2_1"],
-            [nil, "register_2", "0x08", nil, nil, "bit_field_2_0", "[7:4]", "rw" , '0', nil            ],
-            [nil, nil         , nil   , nil, nil, "bit_field_2_1", "[0]"  , "rw" , '0', nil            ]
-          ])
-        }.to raise_error RgGen::RegisterMapError
-      end
+      }.not_to raise_error
     end
   end
 
   describe "rtl" do
-    before(:all) do
-      register_map  = create_register_map(
-        @configuration,
+    let(:register_map) do
+      create_register_map(
+        configuration,
         "block_0" => [
           [nil, nil         , "block_0"                                                                                                        ],
           [nil, nil         , 256                                                                                                              ],
@@ -168,25 +124,37 @@ describe 'bit_fields/type/w0c_w1c' do
           [nil, nil         , nil        , nil     , nil                                     , "bit_field_6_1", "[1:0]"  , "rw" , "0x0"   , nil]
         ]
       )
-      @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
     end
 
     let(:rtl) do
-      @rtl
+      build_rtl_factory.create(configuration, register_map).bit_fields
     end
 
     it "入力ポートsetを持つ" do
-      expect(rtl[0]).to have_input :register_block, :set, name: "i_bit_field_0_0_set", width: 16
-      expect(rtl[1]).to have_input :register_block, :set, name: "i_bit_field_0_1_set", width: 1
-      expect(rtl[2]).to have_input :register_block, :set, name: "i_bit_field_1_0_set", width: 1 , dimensions: [2]
-      expect(rtl[3]).to have_input :register_block, :set, name: "i_bit_field_2_0_set", width: 1 , dimensions: [2, 2]
-      expect(rtl[4]).to have_input :register_block, :set, name: "i_bit_field_3_0_set", width: 16
-      expect(rtl[5]).to have_input :register_block, :set, name: "i_bit_field_3_1_set", width: 1
-      expect(rtl[6]).to have_input :register_block, :set, name: "i_bit_field_4_0_set", width: 1 , dimensions: [2]
-      expect(rtl[7]).to have_input :register_block, :set, name: "i_bit_field_5_0_set", width: 1 , dimensions: [2, 2]
+      expect(rtl[0]).to have_input :register_block, :set, name: "i_bit_field_0_0_set", data_type: :logic, width: 16
+      expect(rtl[1]).to have_input :register_block, :set, name: "i_bit_field_0_1_set", data_type: :logic, width: 1
+      expect(rtl[2]).to have_input :register_block, :set, name: "i_bit_field_1_0_set", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[3]).to have_input :register_block, :set, name: "i_bit_field_2_0_set", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
+      expect(rtl[4]).to have_input :register_block, :set, name: "i_bit_field_3_0_set", data_type: :logic, width: 16
+      expect(rtl[5]).to have_input :register_block, :set, name: "i_bit_field_3_1_set", data_type: :logic, width: 1
+      expect(rtl[6]).to have_input :register_block, :set, name: "i_bit_field_4_0_set", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[7]).to have_input :register_block, :set, name: "i_bit_field_5_0_set", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
+    end
+
+    it "出力ポートvalue_outを持つ" do
+      expect(rtl[0]).to have_output :register_block, :value_out, name: "o_bit_field_0_0", data_type: :logic, width: 16
+      expect(rtl[1]).to have_output :register_block, :value_out, name: "o_bit_field_0_1", data_type: :logic, width: 1
+      expect(rtl[2]).to have_output :register_block, :value_out, name: "o_bit_field_1_0", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[3]).to have_output :register_block, :value_out, name: "o_bit_field_2_0", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
+      expect(rtl[4]).to have_output :register_block, :value_out, name: "o_bit_field_3_0", data_type: :logic, width: 16
+      expect(rtl[5]).to have_output :register_block, :value_out, name: "o_bit_field_3_1", data_type: :logic, width: 1
+      expect(rtl[6]).to have_output :register_block, :value_out, name: "o_bit_field_4_0", data_type: :logic, width: 1 , dimensions: [2], array_format: array_port_format
+      expect(rtl[7]).to have_output :register_block, :value_out, name: "o_bit_field_5_0", data_type: :logic, width: 1 , dimensions: [2, 2], array_format: array_port_format
     end
 
     describe "#generate_code" do
+      let(:array_port_format) { :unpacked }
+
       let(:expected_code_0) do
         <<'CODE'
 rggen_bit_field_w01s_w01c #(
@@ -199,7 +167,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_0_set),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_0_0)
 );
 CODE
       end
@@ -216,7 +184,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_0_1_set),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_0_1)
 );
 CODE
       end
@@ -233,7 +201,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_1_0_set[g_i]),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_1_0[g_i])
 );
 CODE
       end
@@ -250,7 +218,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_2_0_set[g_i][g_j]),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_2_0[g_i][g_j])
 );
 CODE
       end
@@ -267,7 +235,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_0_set),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_3_0)
 );
 CODE
       end
@@ -284,7 +252,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_3_1_set),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_3_1)
 );
 CODE
       end
@@ -301,7 +269,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_4_0_set[g_i]),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_4_0[g_i])
 );
 CODE
       end
@@ -318,7 +286,7 @@ rggen_bit_field_w01s_w01c #(
   .rst_n          (rst_n),
   .i_set_or_clear (i_bit_field_5_0_set[g_i][g_j]),
   .bit_field_if   (bit_field_sub_if),
-  .o_value        ()
+  .o_value        (o_bit_field_5_0[g_i][g_j])
 );
 CODE
       end

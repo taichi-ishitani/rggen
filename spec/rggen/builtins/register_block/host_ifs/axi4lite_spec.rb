@@ -6,7 +6,7 @@ describe 'register_block/axi4lite' do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:address_width, :data_width]
+    enable :global, [:address_width, :data_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:host_if, :clock_reset]
     enable :register_block, :host_if, :axi4lite
@@ -51,13 +51,26 @@ describe 'register_block/axi4lite' do
   end
 
   describe 'rtl' do
-    before(:all) do
-      configuration = create_configuration(host_if: :axi4lite, data_width: 32, address_width: 16)
-      register_map  = create_register_map(
+    let(:data_width) { 32 }
+
+    let(:address_width) { 16 }
+
+    let(:byte_size) { 252 }
+
+    let(:local_address_width) { Math.clog2(byte_size) }
+
+    let(:unfold_sv_interface_port) { [true, false].shuffle.first }
+
+    let(:configuration) do
+      create_configuration(host_if: :axi4lite, data_width: 32, address_width: 16, unfold_sv_interface_port: unfold_sv_interface_port)
+    end
+
+    let(:register_map) do
+      create_register_map(
         configuration,
         "block_0" => [
           [nil, nil         , "block_0"                                                                                                 ],
-          [nil, nil         , 252                                                                                                       ],
+          [nil, nil         , byte_size                                                                                                 ],
           [                                                                                                                             ],
           [                                                                                                                             ],
           [nil, "register_0", "0x00"     , nil    , nil                                     , "bit_field_0_0", "[0]"    , "rw", 0  , nil],
@@ -69,24 +82,25 @@ describe 'register_block/axi4lite' do
           [nil, "register_5", "0x18"     , nil    , :external                               , nil            , nil      , nil , nil, nil]
         ]
       )
-      @rtl  = build_rtl_factory.create(configuration, register_map).register_blocks[0]
     end
 
     let(:rtl) do
-      @rtl
+      build_rtl_factory.create(configuration, register_map).register_blocks[0]
     end
 
     it "読み書きの優先度を決めるパラメータを持つ" do
       expect(rtl).to have_parameter(:register_block, :access_priority, name: 'ACCESS_PRIORITY', data_type: :'rggen_rtl_pkg::rggen_direction', default: :'rggen_rtl_pkg::RGGEN_WRITE')
     end
 
-    it "rggen_axi4lite_ifを入出力ポートに持つ" do
-      expect(rtl).to have_interface_port(:register_block, :axi4lite_if, type: :rggen_axi4lite_if, modport: :slave)
-    end
+    context "unfold_sv_interface_portにfalseが設定されている場合" do
+      let(:unfold_sv_interface_port) { [false, nil, 'false', 'nil', 'off', 'no'].shuffle.first }
 
-    describe "#generate_code" do
-      let(:expected_code) do
-        <<'CODE'
+      it "rggen_axi4lite_ifを入出力ポートに持つ" do
+        expect(rtl).to have_interface_port(:register_block, :axi4lite_if, type: :rggen_axi4lite_if, modport: :slave)
+      end
+
+      it "AXI4-Lite用のホストIFモジュールをインスタンスするコードを生成する" do
+        expected_code =<<'CODE'
 rggen_host_if_axi4lite #(
   .LOCAL_ADDRESS_WIDTH  (8),
   .DATA_WIDTH           (32),
@@ -99,9 +113,72 @@ rggen_host_if_axi4lite #(
   .register_if  (register_if)
 );
 CODE
+        expect(rtl).to generate_code(:register_block, :top_down, expected_code)
+      end
+    end
+
+    context "unfold_sv_interface_portにtrueが設定されている場合" do
+      let(:unfold_sv_interface_port) { [true, 'true', 'on', 'yes'].shuffle.first }
+
+      it "AXI4 Lite用の入出力ポートを持つ" do
+        expect(rtl).to have_input(:register_block, :awvalid, name: 'i_awvalid', data_type: :logic, width: 1)
+        expect(rtl).to have_output(:register_block, :awready, name: 'o_awready', data_type: :logic, width: 1)
+        expect(rtl).to have_input(:register_block, :awaddr, name: 'i_awaddr', data_type: :logic, width: local_address_width)
+        expect(rtl).to have_input(:register_block, :awprot, name: 'i_awprot', data_type: :logic, width: 3)
+        expect(rtl).to have_input(:register_block, :wvalid, name: 'i_wvalid', data_type: :logic, width: 1)
+        expect(rtl).to have_output(:register_block, :wready, name: 'o_wready', data_type: :logic, width: 1)
+        expect(rtl).to have_input(:register_block, :wdata, name: 'i_wdata', data_type: :logic, width: data_width)
+        expect(rtl).to have_input(:register_block, :wstrb, name: 'i_wstrb', data_type: :logic, width: data_width / 8)
+        expect(rtl).to have_output(:register_block, :bvalid, name: 'o_bvalid', data_type: :logic, width: 1)
+        expect(rtl).to have_input(:register_block, :bready, name: 'i_bready', data_type: :logic, width: 1)
+        expect(rtl).to have_output(:register_block, :bresp, name: 'o_bresp', data_type: :logic, width: 2)
+        expect(rtl).to have_input(:register_block, :arvalid, name: 'i_arvalid', data_type: :logic, width: 1)
+        expect(rtl).to have_output(:register_block, :arready, name: 'o_arready', data_type: :logic, width: 1)
+        expect(rtl).to have_input(:register_block, :araddr, name: 'i_araddr', data_type: :logic, width: local_address_width)
+        expect(rtl).to have_input(:register_block, :arprot, name: 'i_arprot', data_type: :logic, width: 3)
+        expect(rtl).to have_output(:register_block, :rvalid, name: 'o_rvalid', data_type: :logic, width: 1)
+        expect(rtl).to have_input(:register_block, :rready, name: 'i_rready', data_type: :logic, width: 1)
+        expect(rtl).to have_output(:register_block, :rdata, name: 'o_rdata', data_type: :logic, width: data_width)
+        expect(rtl).to have_output(:register_block, :rresp, name: 'o_rresp', data_type: :logic, width: 2)
       end
 
-      it "AXI4-Lite用のホストIFモジュールをインスタンスするコードを生成する" do
+      it "rggen_axi4lite_ifのインスタンスを持つ" do
+        expect(rtl). to have_interface(:register_block, :axi4lite_if, type: :rggen_axi4lite_if, name: 'axi4lite_if', parameters: [local_address_width, data_width])
+      end
+
+      it "AXI$ Lite用のホストIFモジュールをインスタンスするコード(IF接続含む)を出力する" do
+        expected_code =<<'CODE'
+assign axi4lite_if.awvalid = i_awvalid;
+assign o_awready = axi4lite_if.awready;
+assign axi4lite_if.awaddr = i_awaddr;
+assign axi4lite_if.awprot = i_awprot;
+assign axi4lite_if.wvalid = i_wvalid;
+assign o_wready = axi4lite_if.wready;
+assign axi4lite_if.wdata = i_wdata;
+assign axi4lite_if.wstrb = i_wstrb;
+assign o_bvalid = axi4lite_if.bvalid;
+assign axi4lite_if.bready = i_bready;
+assign o_bresp = axi4lite_if.bresp;
+assign axi4lite_if.arvalid = i_arvalid;
+assign o_arready = axi4lite_if.arready;
+assign axi4lite_if.araddr = i_araddr;
+assign axi4lite_if.arprot = i_arprot;
+assign o_rvalid = axi4lite_if.rvalid;
+assign axi4lite_if.rready = i_rready;
+assign o_rdata = axi4lite_if.rdata;
+assign o_rresp = axi4lite_if.rresp;
+rggen_host_if_axi4lite #(
+  .LOCAL_ADDRESS_WIDTH  (8),
+  .DATA_WIDTH           (32),
+  .TOTAL_REGISTERS      (14),
+  .ACCESS_PRIORITY      (ACCESS_PRIORITY)
+) u_host_if (
+  .clk          (clk),
+  .rst_n        (rst_n),
+  .axi4lite_if  (axi4lite_if),
+  .register_if  (register_if)
+);
+CODE
         expect(rtl).to generate_code(:register_block, :top_down, expected_code)
       end
     end

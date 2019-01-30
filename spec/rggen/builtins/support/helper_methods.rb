@@ -26,3 +26,14 @@ def match_bit_assignment(msb, lsb)
   width = msb - lsb + 1
   have_attributes(msb: msb, lsb: lsb, width: width)
 end
+
+def random_updown_case(string)
+  string.each_char.with_object(''.dup) do |c, s|
+    s <<
+      if [true, false].shuffle.first
+        c.swapcase
+      else
+        c
+      end
+  end
+end

@@ -41,7 +41,7 @@ list_item :register_block, :host_if do
 
     item_base do
       delegate [:local_address_width, :clock, :reset] => :register_block
-      delegate [:data_width] => :configuration
+      delegate [:data_width, :unfold_sv_interface_port?] => :configuration
 
       build do
         interface :register_block, :register_if,

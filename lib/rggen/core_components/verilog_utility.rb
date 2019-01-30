@@ -13,23 +13,23 @@ module RgGen
     end
 
     def variable_declaration(attributes)
-      Declaration.new(:variable, attributes)
+      Variable.new(:variable, attributes)
     end
 
-    def interface_instantiation(attributes)
-      InterfaceInstantiation.new(attributes)
+    def interface_instance(attributes)
+      InterfaceInstance.new(attributes)
     end
 
     def port_declaration(attributes)
-      Declaration.new(:port, attributes)
+      Variable.new(:port, attributes)
     end
 
     def interface_port_declaration(attributes)
-      InterfacePortDeclaration.new(attributes)
+      InterfacePort.new(attributes)
     end
 
     def parameter_declaration(attributes)
-      Declaration.new(:parameter, attributes)
+      Variable.new(:parameter, attributes)
     end
 
     def module_definition(name, &body)

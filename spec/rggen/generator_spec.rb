@@ -79,13 +79,13 @@ module RgGen
         end
 
         before do
-          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, [:bit_assignment, :name, :type, :initial_value, :reference]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :type, [:rw, :ro, :w0c, :w1c, :w0s, :w1s, :rwl, :rwe, :reserved]).and_call_original
-          expect(RgGen.builder).to receive(:enable).with(:register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:register_block, [:rtl_top, :clock_reset, :host_if]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, :host_if, [:apb, :axi4lite]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register , :rtl_top).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:bit_field, :rtl_top).and_call_original
@@ -102,8 +102,8 @@ module RgGen
         end
       end
 
-      context "--setupでセットアップファイルの指定がある場合" do
-        context "指定したファイルが存在しない場合" do
+      context "--setupでセットアップファイルの指定があり、" do
+        context "指定したファイルが存在する場合" do
           before do
             expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
           end

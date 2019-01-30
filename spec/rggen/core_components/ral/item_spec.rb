@@ -45,11 +45,11 @@ module RgGen::RAL
       end
 
       it "変数宣言オブジェクトを生成し、#variable_declarationsに追加する" do
-        expect(item.variable_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.variable_declarations[:domain_a][0].to_s).to eq "foo_type foo"
-        expect(item.variable_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.variable_declarations[:domain_b][0].to_s).to eq "bar_type bar[2]"
-        expect(item.variable_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.variable_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.variable_declarations[:domain_a][1].to_s).to eq "rand baz_type BAZ"
       end
     end
@@ -77,11 +77,11 @@ module RgGen::RAL
       end
 
       it "変数宣言オブジェクトを生成し、#variable_declarationsに追加する" do
-        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations[:domain_a][0].to_s).to eq "type foo = uvm_object"
-        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_b)[0]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations[:domain_b][0].to_s).to eq "int bar = 1"
-        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Declaration
+        expect(item.parameter_declarations(:domain_a)[1]     ).to be_instance_of RgGen::VerilogUtility::Variable
         expect(item.parameter_declarations[:domain_a][1].to_s).to eq "BAZ = 0"
       end
     end

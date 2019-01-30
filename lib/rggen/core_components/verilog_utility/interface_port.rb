@@ -1,26 +1,26 @@
 module RgGen
   module VerilogUtility
-    class InterfaceInstantiation
+    class InterfacePort
       def initialize(attributes)
         @attributes = attributes
       end
 
       def to_s
-        "#{interface_type} #{identifier}()"
+        "#{interface_type} #{port_identifier}"
+      end
+
+      def identifier
+        Identifier.new(@attributes[:name], nil, nil, nil)
       end
 
       private
 
       def interface_type
-        return @attributes[:type] unless @attributes[:parameters]
-        "#{@attributes[:type]} #{parameters}"
+        return @attributes[:type] unless @attributes[:modport]
+        "#{@attributes[:type]}.#{@attributes[:modport]}"
       end
 
-      def parameters
-        "#(#{@attributes[:parameters].join(', ')})"
-      end
-
-      def identifier
+      def port_identifier
         "#{@attributes[:name]}#{dimensions}"
       end
 

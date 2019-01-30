@@ -6,9 +6,9 @@ describe "register_block/rtl_top" do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
-    enable :register_block, [:rtl_top, :clock_reset, :host_if, :irq_controller]
+    enable :register_block, [:rtl_top, :clock_reset, :host_if]
     enable :register_block, :host_if, :apb
     enable :register, [:name, :offset_address, :array, :type]
     enable :register, :type, [:external, :indirect]
@@ -54,32 +54,31 @@ describe "register_block/rtl_top" do
     let(:expected_code) do
       <<'CODE'
 module block_0 (
-  input clk,
-  input rst_n,
+  input logic clk,
+  input logic rst_n,
   rggen_apb_if.slave apb_if,
-  output o_irq,
-  output o_bit_field_0_0,
-  input i_bit_field_0_1,
-  input [15:0] i_bit_field_1_0,
-  output [15:0] o_bit_field_1_1,
-  input [15:0] i_bit_field_2_0[2],
-  output [15:0] o_bit_field_2_1[2],
-  input [15:0] i_bit_field_3_0[2][4],
-  output [15:0] o_bit_field_3_1[2][4],
-  input i_bit_field_4_0_set,
-  input i_bit_field_4_1_set,
+  output logic o_bit_field_0_0,
+  input logic i_bit_field_0_1,
+  input logic [15:0] i_bit_field_1_0,
+  output logic [15:0] o_bit_field_1_1,
+  input logic [15:0] i_bit_field_2_0[2],
+  output logic [15:0] o_bit_field_2_1[2],
+  input logic [15:0] i_bit_field_3_0[2][4],
+  output logic [15:0] o_bit_field_3_1[2][4],
+  input logic i_bit_field_4_0_set,
+  output logic o_bit_field_4_0,
+  input logic i_bit_field_4_1_set,
+  output logic o_bit_field_4_1,
   rggen_bus_if.master register_5_bus_if
 );
   rggen_register_if #(8, 32) register_if[14]();
-  logic [1:0] ier;
-  logic [1:0] isr;
   `define rggen_connect_bit_field_if(RIF, FIF, MSB, LSB) \
-    assign  FIF.read_access         = RIF.read_access; \
-    assign  FIF.write_access        = RIF.write_access; \
-    assign  FIF.write_data          = RIF.write_data[MSB:LSB]; \
-    assign  FIF.write_mask          = RIF.write_mask[MSB:LSB]; \
-    assign  RIF.value[MSB:LSB]      = FIF.value; \
-    assign  RIF.read_data[MSB:LSB]  = FIF.read_data;
+  assign  FIF.read_access         = RIF.read_access; \
+  assign  FIF.write_access        = RIF.write_access; \
+  assign  FIF.write_data          = RIF.write_data[MSB:LSB]; \
+  assign  FIF.write_mask          = RIF.write_mask[MSB:LSB]; \
+  assign  RIF.value[MSB:LSB]      = FIF.value; \
+  assign  RIF.read_data[MSB:LSB]  = FIF.read_data;
   rggen_host_if_apb #(
     .LOCAL_ADDRESS_WIDTH  (8),
     .DATA_WIDTH           (32),
@@ -89,17 +88,6 @@ module block_0 (
     .rst_n        (rst_n),
     .apb_if       (apb_if),
     .register_if  (register_if)
-  );
-  assign ier = {register_if[0].value[16], register_if[0].value[16]};
-  assign isr = {register_if[12].value[8], register_if[12].value[0]};
-  rggen_irq_controller #(
-    .TOTAL_INTERRUPTS (2)
-  ) u_irq_controller (
-    .clk    (clk),
-    .rst_n  (rst_n),
-    .i_ier  (ier),
-    .i_isr  (isr),
-    .o_irq  (o_irq)
   );
   generate if (1) begin : g_register_0
     rggen_bit_field_if #(32) bit_field_if();
@@ -284,7 +272,7 @@ module block_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_4_0_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_4_0)
       );
     end
     if (1) begin : g_bit_field_4_1
@@ -300,7 +288,7 @@ module block_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_4_1_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_4_1)
       );
     end
   end endgenerate

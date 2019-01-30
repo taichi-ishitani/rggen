@@ -1,9 +1,9 @@
 require_relative '../../../spec_helper'
 
 module RgGen::VerilogUtility
-  describe InterfacePortDeclaration do
+  describe InterfacePort do
     def interface_port(attribute)
-      InterfacePortDeclaration.new(attribute).to_s
+      InterfacePort.new(attribute).to_s
     end
 
     it "インターフェースポート宣言を行うコードを生成する" do

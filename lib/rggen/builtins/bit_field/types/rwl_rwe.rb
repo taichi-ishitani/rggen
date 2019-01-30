@@ -8,9 +8,11 @@ list_item :bit_field, :type, [:rwl, :rwe] do
   rtl do
     build do
       output :register_block, :value_out,
-             name:      "o_#{bit_field.name}",
-             width:      width,
-             dimensions: dimensions
+             name:          "o_#{bit_field.name}",
+             data_type:     :logic,
+             width:         width,
+             dimensions:    dimensions,
+             array_format:  array_port_format
     end
 
     generate_code_from_template :bit_field

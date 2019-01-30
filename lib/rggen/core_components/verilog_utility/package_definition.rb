@@ -14,17 +14,13 @@ module RgGen
       end
 
       def import_package(name, items = nil)
-        import_packages << ImportedPackage.new(name, items)
+        @import_packages ||= []
+        @import_packages << ImportedPackage.new(name, items)
       end
 
       def include_file(name)
-        include_files << "`include #{name.to_s.quote}"
-      end
-
-      def to_code
-        bodies.unshift(include_fiels_code ) unless @include_files.nil?
-        bodies.unshift(import_packges_code) unless @import_packages.nil?
-        super
+        @include_files ||= []
+        @include_files << "`include #{name.to_s.quote}"
       end
 
       private
@@ -33,31 +29,27 @@ module RgGen
         "package #{@name};"
       end
 
+      def body_code_blocks
+        blocks = []
+        @import_packages && (blocks << import_packges_code)
+        @include_files && (blocks << include_files_code)
+        blocks.concat(super)
+        blocks
+      end
+
       def footer_code
         :endpackage
       end
 
-      def import_packages
-        @import_packages ||= []
-      end
-
-      def include_files
-        @include_files ||= []
-      end
-
       def import_packges_code
         lambda do |code|
-          import_packages.each do |package|
-            code << package << nl
-          end
+          @import_packages.each { |package| code << package << nl }
         end
       end
 
-      def include_fiels_code
+      def include_files_code
         lambda do |code|
-          include_files.each do |file|
-            code << file << nl
-          end
+          @include_files.each { |file| code << file << nl }
         end
       end
     end
