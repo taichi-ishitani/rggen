@@ -2,7 +2,6 @@ list_item :bit_field, :type, [:w0c, :w1c] do
   register_map do
     read_write
     need_initial_value
-    use_reference width: same_width
   end
 
   rtl do
@@ -13,6 +12,12 @@ list_item :bit_field, :type, [:w0c, :w1c] do
             width:        width,
             dimensions:   dimensions,
             array_format: array_port_format
+      output :register_block, :value_out,
+             name:          "o_#{name}",
+             data_type:     :logic,
+             width:         width,
+             dimensions:    dimensions,
+             array_format:  array_port_format
     end
 
     generate_code_from_template :bit_field

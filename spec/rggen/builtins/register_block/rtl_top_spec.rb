@@ -66,7 +66,9 @@ module block_0 (
   input logic [15:0] i_bit_field_3_0[2][4],
   output logic [15:0] o_bit_field_3_1[2][4],
   input logic i_bit_field_4_0_set,
+  output logic o_bit_field_4_0,
   input logic i_bit_field_4_1_set,
+  output logic o_bit_field_4_1,
   rggen_bus_if.master register_5_bus_if
 );
   `include "rggen_rtl_macros.svh"
@@ -264,7 +266,7 @@ module block_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_4_0_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_4_0)
       );
     end
     if (1) begin : g_bit_field_4_1
@@ -280,7 +282,7 @@ module block_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_4_1_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_4_1)
       );
     end
   end endgenerate
