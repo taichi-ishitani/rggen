@@ -1,5 +1,6 @@
 {
   "address_width": 16,
   "host_if": "apb",
+  "array_port_format": "unpacked",
   "unfold_sv_interface_port": "no"
 }

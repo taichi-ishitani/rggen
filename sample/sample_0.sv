@@ -13,7 +13,9 @@ module sample_0 (
   input logic [15:0] i_bit_field_5_0[2][4],
   output logic [15:0] o_bit_field_5_1[2][4],
   input logic i_bit_field_6_0_set,
+  output logic o_bit_field_6_0,
   input logic i_bit_field_6_1_set,
+  output logic o_bit_field_6_1,
   output logic o_bit_field_7_0,
   input logic i_bit_field_7_0_clear,
   output logic o_bit_field_7_1,
@@ -22,8 +24,14 @@ module sample_0 (
   output logic [15:0] o_bit_field_8_1,
   rggen_bus_if.master register_9_bus_if
 );
-  `include "rggen_rtl_macros.svh"
   rggen_register_if #(8, 32) register_if[20]();
+  `define rggen_connect_bit_field_if(RIF, FIF, MSB, LSB) \
+  assign  FIF.read_access         = RIF.read_access; \
+  assign  FIF.write_access        = RIF.write_access; \
+  assign  FIF.write_data          = RIF.write_data[MSB:LSB]; \
+  assign  FIF.write_mask          = RIF.write_mask[MSB:LSB]; \
+  assign  RIF.value[MSB:LSB]      = FIF.value; \
+  assign  RIF.read_data[MSB:LSB]  = FIF.read_data;
   rggen_host_if_apb #(
     .LOCAL_ADDRESS_WIDTH  (8),
     .DATA_WIDTH           (32),
@@ -269,7 +277,7 @@ module sample_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_6_0_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_6_0)
       );
     end
     if (1) begin : g_bit_field_6_1
@@ -285,7 +293,7 @@ module sample_0 (
         .rst_n          (rst_n),
         .i_set_or_clear (i_bit_field_6_1_set),
         .bit_field_if   (bit_field_sub_if),
-        .o_value        ()
+        .o_value        (o_bit_field_6_1)
       );
     end
   end endgenerate
@@ -390,4 +398,5 @@ module sample_0 (
       .bus_if       (register_9_bus_if)
     );
   end endgenerate
+  `undef rggen_connect_bit_field_if
 endmodule
