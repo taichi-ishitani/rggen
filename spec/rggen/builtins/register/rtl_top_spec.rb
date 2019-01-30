@@ -18,7 +18,7 @@ describe 'register/rtl_top' do
   end
 
   before(:all) do
-    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     @configuration  = create_configuration(data_width: 32, address_width: 16)
   end
 

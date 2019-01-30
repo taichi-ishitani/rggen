@@ -79,7 +79,7 @@ module RgGen
         end
 
         before do
-          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width, :unfold_sv_interface_port]).and_call_original
+          expect(RgGen.builder).to receive(:enable).with(:global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register_block, [:name, :byte_size]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, [:offset_address, :name, :array, :type, :uniquness_validator]).and_call_original
           expect(RgGen.builder).to receive(:enable).with(:register, :type, [:indirect, :external]).and_call_original
@@ -102,8 +102,8 @@ module RgGen
         end
       end
 
-      context "--setupでセットアップファイルの指定がある場合" do
-        context "指定したファイルが存在しない場合" do
+      context "--setupでセットアップファイルの指定があり、" do
+        context "指定したファイルが存在する場合" do
           before do
             expect_any_instance_of(RgGen::Generator).to receive(:load).with(sample_setup).and_call_original
           end

@@ -6,7 +6,7 @@ describe "register_block/rtl_top" do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:rtl_top, :clock_reset, :host_if]
     enable :register_block, :host_if, :apb

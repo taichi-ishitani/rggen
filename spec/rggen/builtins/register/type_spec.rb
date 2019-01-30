@@ -30,7 +30,7 @@ describe 'register/type' do
   end
 
   before(:all) do
-    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     @configuration_factory  = build_configuration_factory
   end
 

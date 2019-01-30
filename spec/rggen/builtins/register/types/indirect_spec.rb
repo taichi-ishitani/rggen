@@ -17,7 +17,7 @@ describe 'register/types/external' do
   end
 
   before(:all) do
-    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     ConfigurationDummyLoader.load_data({})
     @configuration  = build_configuration_factory.create(configuration_file)
   end

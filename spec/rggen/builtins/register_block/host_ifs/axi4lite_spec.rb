@@ -6,7 +6,7 @@ describe 'register_block/axi4lite' do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:address_width, :data_width, :unfold_sv_interface_port]
+    enable :global, [:address_width, :data_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:host_if, :clock_reset]
     enable :register_block, :host_if, :axi4lite

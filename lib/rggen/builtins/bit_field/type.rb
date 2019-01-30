@@ -169,6 +169,9 @@ list_item :bit_field, :type do
       delegate [
         :dimensions, :index, :local_index, :loop_variables
       ] => :register
+      delegate [
+        :array_port_format
+      ] => :configuration
 
       available? { !bit_field.reserved? }
 

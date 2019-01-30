@@ -6,7 +6,7 @@ describe 'bit_fields/type/rw' do
   include_context 'rtl common'
 
   before(:all) do
-    enable :global, [:data_width, :address_width, :unfold_sv_interface_port]
+    enable :global, [:data_width, :address_width, :array_port_format, :unfold_sv_interface_port]
     enable :register_block, [:name, :byte_size]
     enable :register_block, [:clock_reset, :host_if]
     enable :register_block, :host_if, :apb
@@ -19,17 +19,17 @@ describe 'bit_fields/type/rw' do
     @factory  = build_register_map_factory
   end
 
-  before(:all) do
-    ConfigurationDummyLoader.load_data({})
-    @configuration  = build_configuration_factory.create(configuration_file)
-  end
-
   after(:all) do
     clear_enabled_items
   end
 
   let(:configuration) do
-    @configuration
+    ConfigurationDummyLoader.load_data({array_port_format: array_port_format})
+    build_configuration_factory.create(configuration_file)
+  end
+
+  let(:array_port_format) do
+    [:unpacked, :vectored].shuffle.first
   end
 
   describe "register_map" do
@@ -86,9 +86,9 @@ describe 'bit_fields/type/rw' do
   end
 
   describe "#rtl" do
-    before(:all) do
-      register_map  = create_register_map(
-        @configuration,
+    let(:register_map) do
+      create_register_map(
+        configuration,
         "block_0" => [
           [nil, nil, "block_0"                                                                                                                ],
           [nil, nil, 256                                                                                                                      ],
@@ -100,21 +100,22 @@ describe 'bit_fields/type/rw' do
           [nil, "register_2", "0x0C"     , "[4, 2]", "indirect: bit_field_0_0, bit_field_0_1", "bit_field_2_0", "[31:0]" , "rw", "0"     , nil]
         ]
       )
-      @rtl  = build_rtl_factory.create(@configuration, register_map).bit_fields
     end
 
     let(:rtl) do
-      @rtl
+      build_rtl_factory.create(configuration, register_map).bit_fields
     end
 
     it "出力ポートvalue_outを持つ" do
       expect(rtl[0]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_0', data_type: :logic, width: 16)
       expect(rtl[1]).to have_output(:register_block, :value_out, name: 'o_bit_field_0_1', data_type: :logic, width: 1 )
-      expect(rtl[2]).to have_output(:register_block, :value_out, name: 'o_bit_field_1_0', data_type: :logic, width: 32, dimensions: [2])
-      expect(rtl[3]).to have_output(:register_block, :value_out, name: 'o_bit_field_2_0', data_type: :logic, width: 32, dimensions: [4, 2])
+      expect(rtl[2]).to have_output(:register_block, :value_out, name: 'o_bit_field_1_0', data_type: :logic, width: 32, dimensions: [2], array_format: array_port_format)
+      expect(rtl[3]).to have_output(:register_block, :value_out, name: 'o_bit_field_2_0', data_type: :logic, width: 32, dimensions: [4, 2], array_format: array_port_format)
     end
 
     describe "#generate_code" do
+      let(:array_port_format) { :unpacked }
+
       let(:expected_code_0) do
         <<'CODE'
 rggen_bit_field_rw #(
