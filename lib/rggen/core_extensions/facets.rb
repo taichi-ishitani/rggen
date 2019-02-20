@@ -1,18 +1,16 @@
 require 'facets/enumerable/exclude'
 require 'facets/enumerable/find_yield'
-require 'facets/enumerable/sum' unless Enumerable.public_method_defined?(:sum)
+require 'facets/enumerable/sum' if RUBY_VERSION < '2.4'
 require 'facets/file/ext'
 require 'facets/hash/symbolize_keys'
 require 'facets/integer/multiple'
 require 'facets/kernel/attr_singleton'
 require 'facets/kernel/not'
 require 'facets/kernel/not_nil'
-require 'facets/method/curry' unless Method.public_method_defined?(:curry)
 require 'facets/module/attr_class_accessor'
 require 'facets/module/attr_setter'
 require 'facets/module/lastname'
 require 'facets/numeric/positive'
-require 'facets/object/itself' unless Object.public_method_defined?(:itself)
 require 'facets/pathname/to_path'
 require 'facets/pathname/to_str'
 require 'facets/range/overlap'
