@@ -1,6 +1,4 @@
 loader :register_map, :xls do
-  require 'spreadsheet'
-
   def load_file(file)
     create_map(file) do |map|
       load_spreadsheet(file).each do |worksheet|

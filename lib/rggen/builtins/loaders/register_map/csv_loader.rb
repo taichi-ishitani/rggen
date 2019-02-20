@@ -1,6 +1,4 @@
 loader :register_map, [:csv, :tsv] do
-  require 'csv'
-
   def load_file(file)
     create_map(file) do |map|
       sheet_name      = File.basename(file, '.*')

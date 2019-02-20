@@ -4,6 +4,9 @@ module RgGen
   require 'pathname'
   require 'optparse'
   require 'erubi'
+  require 'csv'
+  require 'roo'
+  require 'spreadsheet'
 
   require_relative 'rggen/version'
   require_relative 'rggen/rggen_home'
@@ -15,6 +18,7 @@ module RgGen
   require_relative 'rggen/core_extensions/forwardable'
   require_relative 'rggen/core_extensions/integer'
   require_relative 'rggen/core_extensions/math'
+  require_relative 'rggen/core_extensions/roo'
 
   require_relative 'rggen/base/hierarchical_accessors'
   require_relative 'rggen/base/hierarchical_item_accessors'
