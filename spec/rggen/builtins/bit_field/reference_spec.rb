@@ -8,10 +8,10 @@ describe 'bit_field/reference' do
     RgGen.enable(:register_block, :name          )
     RgGen.enable(:register      , :name          )
     RgGen.enable(:bit_field     , :name          )
-    RgGen.enable(:bit_field     , :reference     )
     RgGen.enable(:bit_field     , :type          )
     RgGen.enable(:bit_field     , :bit_assignment)
     RgGen.enable(:bit_field     , :initial_value )
+    RgGen.enable(:bit_field     , :reference     )
     RgGen.enable(:bit_field     , :type     , [:rw, :reserved])
     @factory  = build_register_map_factory
   end
@@ -36,8 +36,9 @@ describe 'bit_field/reference' do
         [nil, nil         , "block_0"                             ],
         [nil, nil         , nil                                   ],
         [nil, nil         , nil                                   ],
-        [nil, "register_0", "bit_field_0", nil, "rw", "[31:16]", 0],
-        [nil, nil         , "bit_field_1", "" , "rw", "[15: 0]", 0]
+        [nil, "register_0", "bit_field_0", "rw", "[23:16]", 0, nil],
+        [nil, nil         , "bit_field_1", "rw", "[15: 8]", 0, "" ],
+        [nil, nil         , "bit_field_2", "rw", "[ 7: 0]", 0     ]
       ]
     end
 
@@ -72,10 +73,10 @@ describe 'bit_field/reference' do
         [nil, nil         , "block_0"                                       ],
         [nil, nil         , nil                                             ],
         [nil, nil         , nil                                             ],
-        [nil, "register_0", "bit_field_0", "bit_field_1", "rw", "[31:16]", 0],
-        [nil, nil         , "bit_field_1", "bit_field_0", "rw", "[15: 0]", 0],
-        [nil, "register_1", "bit_field_2", "bit_field_3", "rw", "[15: 0]", 0],
-        [nil, "register_2", "bit_field_3", "bit_field_2", "rw", "[15: 0]", 0]
+        [nil, "register_0", "bit_field_0", "rw", "[31:16]", 0, "bit_field_1"],
+        [nil, nil         , "bit_field_1", "rw", "[15: 0]", 0, "bit_field_0"],
+        [nil, "register_1", "bit_field_2", "rw", "[15: 0]", 0, "bit_field_3"],
+        [nil, "register_2", "bit_field_3", "rw", "[15: 0]", 0, "bit_field_2"]
       ]
     end
 
@@ -111,7 +112,7 @@ describe 'bit_field/reference' do
         [nil, nil         , "block_0"                                   ],
         [nil, nil         , nil                                         ],
         [nil, nil         , nil                                         ],
-        [nil, "register_0", "bit_field_0", "bit_field_0", "rw", "[0]", 0]
+        [nil, "register_0", "bit_field_0", "rw", "[0]", 0, "bit_field_0"]
       ]
     end
 
@@ -123,18 +124,18 @@ describe 'bit_field/reference' do
       message = "self reference: bit_field_0"
       expect{
         @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 3, 3))
+      }.to raise_register_map_error(message, position("block_0", 3, 6))
     end
   end
 
   context "入力されたビットフィールド名が存在しないとき" do
     let(:load_data) do
       [
-        [nil, nil         , "block_0"                         ],
-        [nil, nil         , nil                               ],
-        [nil, nil         , nil                               ],
-        [nil, "register_0", "bit_field_0", "bit_field_5", "rw"],
-        [nil, nil         , "bit_field_1", nil          , "rw"]
+        [nil, nil         , "block_0"                                   ],
+        [nil, nil         , nil                                         ],
+        [nil, nil         , nil                                         ],
+        [nil, "register_0", "bit_field_0", "rw", "[1]", 0, "bit_field_5"],
+        [nil, nil         , "bit_field_1", "rw", "[0]", 0, nil          ]
       ]
     end
 
@@ -146,7 +147,7 @@ describe 'bit_field/reference' do
       message = "no such reference bit field: bit_field_5"
       expect{
         @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 3, 3))
+      }.to raise_register_map_error(message, position("block_0", 3, 6))
     end
   end
 
@@ -156,8 +157,8 @@ describe 'bit_field/reference' do
         [nil, nil         , "block_0"                                           ],
         [nil, nil         , nil                                                 ],
         [nil, nil         , nil                                                 ],
-        [nil, "register_0", "bit_field_0", "bit_field_1", "rw"      , "[1]", 0  ],
-        [nil, nil         , "bit_field_1", nil          , "reserved", "[0]", nil]
+        [nil, "register_0", "bit_field_0", "rw"      , "[1]", 0  , "bit_field_1"],
+        [nil, nil         , "bit_field_1", "reserved", "[0]", nil, nil          ]
       ]
     end
 
@@ -169,7 +170,7 @@ describe 'bit_field/reference' do
       message = "reserved bit field is refered: bit_field_1"
       expect{
         @factory.create(configuration, register_map_file)
-      }.to raise_register_map_error(message, position("block_0", 3, 3))
+      }.to raise_register_map_error(message, position("block_0", 3, 6))
     end
   end
 
@@ -178,11 +179,11 @@ describe 'bit_field/reference' do
       [nil, nil         , "block_0"                        ],
       [nil, nil         , nil                              ],
       [nil, nil         , nil                              ],
-      [nil, "register_0", "bit_field_0", "", "rw", "[0]", 0]
+      [nil, "register_0", "bit_field_0", "rw", "[0]", 0, ""]
     ])
     register_map  = @factory.create(configuration, register_map_file)
 
-    expect(register_map.bit_fields[0].items[1]).to receive(:validate).with(no_args)
+    expect(register_map.bit_fields[0].items[4]).to receive(:validate).with(no_args)
     register_map.bit_fields[0].reference
   end
 end
