@@ -941,8 +941,9 @@ describe 'register/type' do
               [nil, nil         , nil          , nil    , nil , "bit_field_6_1", "[16]"   , :reserved, 0, nil],
               [nil, nil         , nil          , nil    , nil , "bit_field_6_2", "[8]"    , :rw      , 0, nil],
               [nil, nil         , nil          , nil    , nil , "bit_field_6_3", "[0]"    , :reserved, 0, nil],
-              [nil, "register_7", "0x20 - 0x2f", "[4]"  , nil , "bit_field_7_0", "[0]"    , :rw      , 0, nil],
-              [nil, "register_8", "0x30"       , "[2,4]", :foo, "bit_field_8_0", "[0]"    , :rw      , 0, nil],
+              [nil, "register_7", "0x20"       , nil    , nil , "bit_field_7_0", "[0]"    , :reserved, 0, nil],
+              [nil, "register_8", "0x30 - 0x3f", "[4]"  , nil , "bit_field_8_0", "[0]"    , :rw      , 0, nil],
+              [nil, "register_9", "0x40"       , "[2,4]", :foo, "bit_field_9_0", "[0]"    , :rw      , 0, nil],
             ])
           end
 
@@ -963,14 +964,14 @@ describe 'register/type' do
             expect(rtl[6]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32]
             expect(rtl[7]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32]
             expect(rtl[8]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32]
+            expect(rtl[9]).to have_interface :register, :bit_field_if, type: :rggen_bit_field_if, name: "bit_field_if", parameters: [32]
           end
         end
 
         context "ビットフィールドを持たない場合" do
           before do
             set_load_data([
-              [nil, "register_0", "0x00", nil, nil , "bit_field_0_0", "[0]", :reserved, 0, nil],
-              [nil, "register_1", "0x04", nil, :foo,                                          ]
+              [nil, "register_1", "0x04", nil, :foo]
             ])
           end
 
@@ -984,9 +985,6 @@ describe 'register/type' do
           it "rggen_bit_field_ifのインスタンスを持たない" do
             expect(rtl[0]).not_to have_identifier :bit_field_if, name: "bit_field_if"
             expect(rtl[0]).not_to have_interface_instance :register, type: :rggen_bit_field_if, name: "bit_field_if"
-
-            expect(rtl[1]).not_to have_identifier :bit_field_if, name: "bit_field_if"
-            expect(rtl[1]).not_to have_interface_instance :register, type: :rggen_bit_field_if, name: "bit_field_if"
           end
         end
       end

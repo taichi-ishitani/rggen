@@ -173,8 +173,6 @@ list_item :bit_field, :type do
         :array_port_format
       ] => :configuration
 
-      available? { !bit_field.reserved? }
-
       build do
         interface :bit_field, :bit_field_sub_if,
                   type:       :rggen_bit_field_if,

@@ -194,12 +194,8 @@ list_item :register, :type do
 
       private
 
-      def actual_bit_fields
-        @non_reserved_bit_fields ||= register.bit_fields.reject(&:reserved?)
-      end
-
       def total_bit_fields
-        actual_bit_fields.size
+        register.bit_fields.size
       end
 
       def address_range
@@ -234,7 +230,7 @@ list_item :register, :type do
       end
 
       def valid_bits_value
-        actual_bit_fields.inject(0) do |bits, bit_field|
+        register.bit_fields.inject(0) do |bits, bit_field|
           bits | (((1 << bit_field.width) - 1) << bit_field.lsb)
         end
       end

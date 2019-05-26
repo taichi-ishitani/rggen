@@ -84,7 +84,7 @@ describe 'bit_field/field_model' do
         "`rggen_ral_create_field_model(bit_field_0_0, \"bit_field_0_0\", 32, 0, \"RW\", 0, 32'h00000123, 1, \"g_bit_field_0_0.u_bit_field.value\")\n",
         "`rggen_ral_create_field_model(bit_field_1_0, \"bit_field_1_0\", 2, 8, \"RO\", 0, 2'h0, 0, \"g_bit_field_1_0.u_bit_field.i_value\")\n",
         "`rggen_ral_create_field_model(bit_field_1_1, \"bit_field_1_1\", 1, 4, \"RO\", 0, 1'h1, 1, \"g_bit_field_1_1.u_bit_field.i_value\")\n",
-        "`rggen_ral_create_field_model(bit_field_1_2, \"bit_field_1_2\", 1, 0, \"RO\", 0, 1'h0, 0, \"\")\n",
+        "`rggen_ral_create_field_model(bit_field_1_2, \"bit_field_1_2\", 1, 0, \"RO\", 0, 1'h0, 0, \"g_bit_field_1_2.u_bit_field.i_value\")\n",
         "`rggen_ral_create_field_model(bit_field_2_0, \"bit_field_2_0\", 1, 8, \"W0C\", 0, 1'h0, 1, \"g_bit_field_2_0.u_bit_field.value\")\n",
         "`rggen_ral_create_field_model(bit_field_2_1, \"bit_field_2_1\", 1, 0, \"W1C\", 0, 1'h0, 1, \"g_bit_field_2_1.u_bit_field.value\")\n",
         "`rggen_ral_create_field_model(bit_field_3_0, \"bit_field_3_0\", 1, 8, \"W0S\", 0, 1'h0, 1, \"g_bit_field_3_0.u_bit_field.value\")\n",
