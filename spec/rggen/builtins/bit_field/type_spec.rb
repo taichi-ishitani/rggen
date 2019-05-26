@@ -495,38 +495,26 @@ describe 'bit_field/type' do
       build_rtl_factory.create(@configuration, register_map).bit_fields
     end
 
-    context "reservedではない場合" do
-      it "rggen_bit_field_ifのインスタンスを持つ" do
-        expect(rtl[0]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [32]
-        expect(rtl[1]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
-        expect(rtl[2]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
-        expect(rtl[3]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
-        expect(rtl[4]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
-      end
+    it "rggen_bit_field_ifのインスタンスを持つ" do
+      expect(rtl[0]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [32]
+      expect(rtl[1]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
+      expect(rtl[2]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [1]
+      expect(rtl[3]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
+      expect(rtl[4]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [16]
+      expect(rtl[5]).to have_interface :bit_field, :bit_field_sub_if, type: :rggen_bit_field_if, name: :bit_field_sub_if, parameters: [32]
+    end
 
-      describe "#generate_code" do
-        it "bit_field_ifを接続するコードを生成する" do
-          expect(rtl[0]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 0)\n"
-          expect(rtl[1]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
-          expect(rtl[2]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
-          expect(rtl[3]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 16)\n"
-          expect(rtl[4]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 15, 0)\n"
-        end
+    describe "#generate_code" do
+      it "bit_field_ifを接続するコードを生成する" do
+        expect(rtl[0]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 0)\n"
+        expect(rtl[1]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
+        expect(rtl[2]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 0)\n"
+        expect(rtl[3]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 16)\n"
+        expect(rtl[4]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 15, 0)\n"
+        expect(rtl[5]).to generate_code :bit_field, :top_down, "\`rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 31, 0)\n"
       end
     end
 
-    context "reservedの場合" do
-      it "rggen_bit_field_ifのインスタンスを持たない" do
-        expect(rtl[5]).not_to have_identifier :bit_field_sub_if, name: "bit_field_sub_if"
-        expect(rtl[5]).not_to have_interface_instance :bit_field, type: :rggen_bit_field_if, name: :bit_field_sub_if
-      end
-
-      describe "#generate_code" do
-        it "何もコードを生成しない" do
-          expect(rtl[5]).not_to generate_code :bit_field, :top_down
-        end
-      end
-    end
 
     describe "#value" do
       it "自身がアサインされているregister_ifのvalue信号を返す" do
@@ -535,6 +523,7 @@ describe 'bit_field/type' do
         expect(rtl[2].value).to match_identifier 'register_if[3+4*g_i+g_j].value[0]'
         expect(rtl[3].value).to match_identifier 'register_if[15].value[31:16]'
         expect(rtl[4].value).to match_identifier 'register_if[15].value[15:0]'
+        expect(rtl[5].value).to match_identifier 'register_if[16].value[31:0]'
       end
     end
   end
