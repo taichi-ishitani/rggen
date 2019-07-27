@@ -4,6 +4,17 @@
 [![codecov](https://codecov.io/gh/taichi-ishitani/rggen/branch/master/graph/badge.svg)](https://codecov.io/gh/taichi-ishitani/rggen)
 [![Join the chat at https://gitter.im/taichi-ishitani/rggen](https://badges.gitter.im/taichi-ishitani/rggen.svg)](https://gitter.im/taichi-ishitani/rggen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## NO LONGER MAINTAINED !
+
+RgGen has been re-implemented so this repositry is no longer maintained. New repositries are listed below.
+
+* https://github.com/rggen/rggen
+* https://github.com/rggen/rggen-core
+* https://github.com/rggen/rggen-systemverilog
+* https://github.com/rggen/rggen-spreadsheet-loader
+* https://github.com/rggen/rggen-sv-rtl
+* https://github.com/rggen/rggen-sv-ral
+
 # RgGen
 
 RgGen is a code generator tool for SoC/IP/FPGA/RTL engineers.
