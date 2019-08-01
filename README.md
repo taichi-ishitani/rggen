@@ -6,14 +6,9 @@
 
 ## NO LONGER MAINTAINED !
 
-RgGen has been re-implemented so this repositry is no longer maintained. New repositries are listed below.
+RgGen has been re-implemented so this repositry is no longer maintained. RgGen is maintained here.
 
 * https://github.com/rggen/rggen
-* https://github.com/rggen/rggen-core
-* https://github.com/rggen/rggen-systemverilog
-* https://github.com/rggen/rggen-spreadsheet-loader
-* https://github.com/rggen/rggen-sv-rtl
-* https://github.com/rggen/rggen-sv-ral
 
 # RgGen
 
